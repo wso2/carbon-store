@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<artifactType type="application/vnd.wso2-gadget+xml" shortName="gadget" singularLabel="Gadget" pluralLabel="Gadgets"
+<artifactType type="application/vnd.wso2-ebook+xml" shortName="ebook" singularLabel="EBook" pluralLabel="EBooks"
               hasNamespace="false" iconSet="10">
-    <storagePath>/gadgets/@{overview_provider}/@{overview_name}/@{overview_version}</storagePath>
+    <storagePath>/ebooks/@{overview_provider}/@{overview_name}/@{overview_version}</storagePath>
     <nameAttribute>overview_name</nameAttribute>
     <ui>
         <list>
@@ -26,6 +26,23 @@
             </field>
             <field type="text" required="true">
                 <name>Version</name>
+            </field>
+	    <field type="options">
+                <name label="Category">Category</name>
+                <values>
+                    <value>Technical</value>
+                    <value>Novels</value>
+                    <value>Horror</value>
+                </values>
+            </field>
+	    <field type="text" url="true">
+                <name>URL</name>
+            </field>
+	    <field type="text" required="true">
+                <name>Author</name>
+            </field>
+	    <field type="text" required="true">
+                <name>ISBN</name>
             </field>
             <field type="text-area">
                 <name>Description</name>
