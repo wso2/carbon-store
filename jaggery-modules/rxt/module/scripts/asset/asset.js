@@ -1250,7 +1250,7 @@ var asset = {};
     };
     var createRenderer = function (session, tenantId, type) {
         var reflection = require('utils').reflection;
-        var context = core.createAssetContext(session, type);
+        var context = core.createAssetContext(session, type, tenantId);
         var assetResources = core.assetResources(tenantId, type);
         var customRenderer = (assetResources.renderer) ? assetResources.renderer(context) : {};
         var renderer = new AssetRenderer(asset.getAssetPageUrl(type), asset.getBaseUrl());
@@ -1295,8 +1295,8 @@ var asset = {};
      * @param  {String} type    The type of asset
      * @return {Object} A server callback
      */
-    var createServer = function (session, type) {
-        var context = core.createAssetContext(session, type);
+    var createServer = function (session, type, tenantId) {
+        var context = core.createAssetContext(session, type, tenantId);
         var assetResources = core.assetResources(context.tenantId, type);
         var reflection = require('utils').reflection;
         var serverCb = assetResources.server;
@@ -1389,8 +1389,8 @@ var asset = {};
      * @param  {String} type     The asset type for which the endpoints must be returned
      * @return {Object}         A JSON object containing a api and page endpoints
      */
-    asset.getAssetEndpoints = function (session, type) {
-        var serverCb = createServer(session, type);
+    asset.getAssetEndpoints = function (session, type, tenantId) {
+        var serverCb = createServer(session, type , tenantId);
         return serverCb ? serverCb.endpoints : {};
     };
     /**
@@ -1400,8 +1400,8 @@ var asset = {};
      * @param  {String} type    The asset type for which the API endpoints should be returned
      * @return {Array}          An array of API endpoints
      */
-    asset.getAssetApiEndpoints = function (session, type) {
-        var endpoints = this.getAssetEndpoints(session, type);
+    asset.getAssetApiEndpoints = function (session, type, tenantId) {
+        var endpoints = this.getAssetEndpoints(session, type, tenantId);
         return endpoints['apis'] || [];
     };
     /**
@@ -1411,8 +1411,8 @@ var asset = {};
      * @param  {String} type    The asset type for which the API endpoints should be returned
      * @return {Array}          An array of page endpoints
      */
-    asset.getAssetPageEndpoints = function (session, type) {
-        var endpoints = this.getAssetEndpoints(session, type);
+    asset.getAssetPageEndpoints = function (session, type, tenantId) {
+        var endpoints = this.getAssetEndpoints(session, type, tenantId);
         return endpoints['pages'] || [];
     };
     asset.getAssetExtensionPath = function (type) {
@@ -1481,7 +1481,9 @@ var asset = {};
         //TODO: Use the constants
         var uriPattern = '/{context}/asts/{type}/{+options}';
         var extensionPattern = '/{root}/extensions/assets/{type}/{+suffix}';
-        uriMatcher.match(uriPattern);
+        var tenantedUriPattern = '/{context}/t/{domain}/pages/{+suffix}';
+
+        uriMatcher.match(uriPattern) || uriMatcher.match(tenantedUriPattern);//TODO check with samples
         extensionMatcher.match(extensionPattern);
         var pathOptions = extensionMatcher.elements() || {};
         var uriOptions = uriMatcher.elements() || {};

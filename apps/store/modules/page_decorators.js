@@ -194,21 +194,26 @@ var pageDecorators = {};
     };
     pageDecorators.socialFeature = function(ctx, page) {
         var app = require('rxt').app;
+        var carbon = require('carbon');
         var constants = require('rxt').constants;
         if (!app.isFeatureEnabled(ctx.tenantId, constants.SOCIAL_FEATURE)) {
             log.warn('social feature has been disabled.');
             return page;
         }
         var socialFeatureDetails = app.getSocialFeatureDetails(ctx.tenantId);
+
+        var domain = carbon.server.tenantDomain({
+            tenantId: ctx.tenantId
+        });
+        socialFeatureDetails.keys.tenantedSocialAppUrl = socialFeatureDetails.keys.socialAppUrl + '/t/' + domain;
         page.features[constants.SOCIAL_FEATURE] = socialFeatureDetails;
         return page;
     };
     var getAssetManager = function(ctx) {
         var asset = require('rxt').asset;
         var am;
-        var tenantId = -1234;
         if (ctx.isAnonContext) {
-            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, tenantId);
+            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, ctx.tenantId);
         } else {
             am = asset.createUserAssetManager(ctx.session, ctx.assetType);
         }

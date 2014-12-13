@@ -79,7 +79,7 @@ var ui = {};
             tenantId = user.tenantId;
         }
         var uriMatcher = new URIMatcher(request.getRequestURI());
-        uriMatcher.match(constants.ASSET_PAGE_URL_PATTERN);
+        uriMatcher.match(constants.ASSET_PAGE_URL_PATTERN) || uriMatcher.match(constants.ASSET_TENANT_PAGE_URL_PATTERN) || {};
         var options = uriMatcher.elements() || {};
         var pageDetails = {};
         //Check if it is an asset URL
@@ -90,8 +90,8 @@ var ui = {};
             return pageDetails;
         }
         //Check if it is an application extension URL
-        uriMatcher.match(constants.APP_PAGE_URL_PATTERN);
-        options = uriMatcher.elements() || {};
+       // uriMatcher.match(constants.APP_PAGE_URL_PATTERN) || uriMatcher.match(constants.APP_TENANT_PAGE_URL_PATTERN);
+        options = uriMatcher.match(constants.APP_PAGE_URL_PATTERN) || uriMatcher.match(constants.APP_TENANT_PAGE_URL_PATTERN) || {};
         if (options.suffix) {
             pageDetails.currentPage = options.pageName;
             pageDetails.pageName = processPageName(options.suffix);
@@ -186,6 +186,10 @@ var ui = {};
         return page;
     };
     var getTenantIdFromUrl = function(request) {
+//        var matcher = new URIMatcher(request.getRequestURI());
+//        if(matcher.match('/{context}/t/{domain}/{+any}')){
+//            return matcher.elements().domain;
+//        }
         return constants.DEFAULT_TENANT;
     };
 }(ui, core, asset, app, constants));

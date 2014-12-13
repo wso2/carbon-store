@@ -1,3 +1,19 @@
+<!--
+  ~ Copyright (c) 2014, WSO2 Inc. (http://wso2.com) All Rights Reserved.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
 <div class="row">
     <div class="span3">
            <h4><i class="icon-time"></i>{{t "Recently Added"}}</h4>
@@ -7,10 +23,11 @@
                 <div class="row-fluid recently-added">
                     {{#attributes}}
                         <div class="span3">
-                            <a href="{{url "/asts"}}/{{../type}}/details/{{../id}}"><img src="{{#if ../thumbnail}}{{url ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}"></a>
+                            <a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}"><img
+                                src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}"></a>
                         </div>
                         <div class="span9">
-                            <strong><a href="{{url "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a></strong>
+                            <strong><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a></strong>
                             <small>by <a href="#">{{overview_provider}}</a></small>
                             <span class="star-rating">
                             	<div class="asset-rating">

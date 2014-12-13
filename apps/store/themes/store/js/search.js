@@ -141,7 +141,14 @@ $(function () {
         //var url, searchVal = test($('#search').val());
         currentPage = 1;
         if (store.asset) {
-            url = caramel.url('/asts/' + store.asset.type + '/list?' + buildParams(searchVal));
+            var path = window.location.href;//current page path
+            if(path.match('/t/')){
+                var regex = '/t/{1}([0-9A-Za-z-\\.@:%_\+~#=]+)';
+                var domain = path.match(regex)[1];
+                url = caramel.url('/t/'+ domain +'/asts/' + store.asset.type + '/list?' + buildParams(searchVal));
+            }else{
+                url = caramel.url('/asts/' + store.asset.type + '/list?' + buildParams(searchVal));
+            }
             caramel.data({
                 title: null,
                 header: ['header'],

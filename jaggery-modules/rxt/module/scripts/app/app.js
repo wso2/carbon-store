@@ -471,7 +471,7 @@ var app = {};
      * @throws Unable to locate configuration of tenant.Cannot locate api endpoint
      * @throws The app configuration details could not be loaded for tenant
      */
-    app.getAppResources = function(tenantId) {
+    app.getAppResources = function (tenantId) {
         var configs = core.configs(tenantId);
         if (!configs) {
             log.warn('Unable to locate configuration of tenant ' + tenantId + '.Cannot locate api endpoint');
@@ -479,7 +479,7 @@ var app = {};
         }
         var appResources = configs.appResources;
         if (!appResources) {
-            log.warn('The app configuration details could not be loaded for tenant: ' + tenantId);
+            log.error('The app configuration details could not be loaded for tenant: ' + tenantId);
             throw 'The app configuration details could not be loaded for tenant: ' + tenantId;
         }
         return appResources;
@@ -921,9 +921,11 @@ var app = {};
         var uriMatcher = new URIMatcher(request.getRequestURI());
         var extensionMatcher = new URIMatcher(path);
         var extensionPattern = '/{root}/extensions/app/{name}/{+suffix}';
-        var uriPattern = '/{context}/pages/{+suffix}';
+        var uriPattern = constants.APP_PAGE_URL_PATTERN;// '/{context}/pages/{+suffix}';
+        var tenantedUriPattern = constants.APP_TENANT_PAGE_URL_PATTERN;//'/{context}/t/{domain}/pages/{+suffix}';
+
         extensionMatcher.match(extensionPattern);
-        uriMatcher.match(uriPattern);
+        uriMatcher.match(uriPattern) ||uriMatcher.match(tenantedUriPattern);
         var extensionOptions = extensionMatcher.elements() || {};
         var uriOptions = uriMatcher.elements() || {};
         //Determine if the path does not reference an app extension
@@ -933,7 +935,7 @@ var app = {};
             var pageName = getPage(uriOptions.suffix || '');
             var server = require('store').server;
             var user = server.current(session);
-            var tenantId = -1234; //TODO: Replace this with constants.DEFAULT_TENANT
+            var tenantId = constants.DEFAULT_TENANT; //TODO: Replace this with constants.DEFAULT_TENANT
             if (user) {
                 tenantId = user.tenantId;
             }

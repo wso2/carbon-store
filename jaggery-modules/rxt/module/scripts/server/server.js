@@ -42,7 +42,7 @@ var server = {};
             for (var index in rxts) {
                 type = rxts[index];
                 assetResources = core.assetResources(tenantId, type);
-                context = core.createAssetContext(tenantId, session);
+                context = core.createAssetContext(session, type, tenantId);
                 assetResources.server(context).onUserLogin();
             }
         });

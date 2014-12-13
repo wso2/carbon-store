@@ -16,21 +16,28 @@
  */
 var caramel;
 var PAGING = {};
+var log = new Log();
 require('/modules/store.js').exec(function (ctx) {
     caramel = require('caramel');
     var asset = require('rxt').asset;
     var core = require('rxt').core;
     var ui = require('rxt').ui;
     var constants = require('rxt').constants;
-    var log = ctx.log;
     var query = ctx.params.query;
     var store = ctx.store;
     var user = ctx.user;
     var am;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
-    var options = uriMatcher.match('/{context}/asts/{type}/{pageName}');
+    var assetPageUrl = constants.ASSET_PAGE_URL_PATTERN;
+                    //= '/{context}/asts/{type}/{+suffix}';
+    var tenantedAssetPageUrl = constants.ASSET_TENANT_PAGE_URL_PATTERN;
+                    //='/{context}/asts/{type}/{+suffix}';
+    var options = uriMatcher.match(assetPageUrl) || uriMatcher.match(tenantedAssetPageUrl) ;
+    //var options = uriMatcher.match('/{context}/asts/{type}/{pageName}')
+        //  || uriMatcher.match('/{context}/t/{domain}/asts/{type}/{pageName}') ;
     var type = options.type;
     var assets = [];
+    var tenantId = ctx.tenant.tenantId;
     var q = ctx.request.getParameter('q');
     var sortBy = ctx.request.getParameter('sortBy');
     var sortOrder = ctx.request.getParameter('sort');
@@ -49,10 +56,10 @@ require('/modules/store.js').exec(function (ctx) {
     PAGING.start = (start || constants.DEFAULT_ASSET_PAGIN.start);
     PAGING.count = (count || constants.DEFAULT_ASSET_PAGIN.count);
 
-    var context = core.createAssetContext(ctx.session, type);
+    var context = core.createAssetContext(ctx.session, type, tenantId);
     //Determine the type of asset manager to be created
     if (!user) {
-        am = asset.createAnonAssetManager(ctx.session, type, -1234);
+        am = asset.createAnonAssetManager(ctx.session, type, tenantId);
     } else {
         am = asset.createUserAssetManager(ctx.session, type);
     }
@@ -65,6 +72,7 @@ require('/modules/store.js').exec(function (ctx) {
     } else {
         assets = am.search(null, PAGING);
     }
+
     //Add subscription details to the assets
     subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);
     ratingApi.addRatings(assets, am, context.tenantId, context.username);

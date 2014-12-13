@@ -123,10 +123,7 @@ var server = {};
     server.tenant = function (request, session) {
         var obj, domain, user,
             carbon = require('carbon');
-        /*matcher = new URIMatcher(request.getRequestURI());
-         if (matcher.match('/{context}/' + opts.tenantPrefix + '/{domain}') ||
-         matcher.match('/{context}/' + opts.tenantPrefix + '/{domain}/{+any}')) {
-         domain = matcher.elements().domain; */
+
         user = server.current(session);
         if (user) {
             obj = {
@@ -138,8 +135,13 @@ var server = {};
                 secured: true
             };
         } else {
-            carbon = require('carbon');
-            domain = request.getParameter('domain') || carbon.server.superTenant.domain;
+            var constants = require('rxt').constants;
+            matcher = new URIMatcher(request.getRequestURI());
+            if (matcher.match(constants.TENANT_URL_PATTERN)) { //'/{context}/t/{domain}/{+any}'
+                domain = matcher.elements().domain;
+            }else{
+                domain = request.getParameter('domain') || carbon.server.superTenant.domain;
+            }
             obj = {
                 tenantId: carbon.server.tenantId({
                     domain: domain
