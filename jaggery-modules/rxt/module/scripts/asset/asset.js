@@ -1222,7 +1222,7 @@ var asset = {};
         var rxtManager = core.rxtManager(tenantId);
         var assetManager = new AssetManager(registry, type, rxtManager);
         var assetResourcesTemplate = core.assetResources(tenantId, type);
-        var context = core.createAssetContext(session, type);
+        var context = core.createAssetContext(session, type, tenantId);
         var assetResources = {}; //Assume there will not be any asset managers to override the default implementations
         //Check if there are any asset managers defined at the type level
         if (!assetResourcesTemplate.manager) {

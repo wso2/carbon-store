@@ -514,7 +514,7 @@ var app = {};
         var user = server.current(session); //TODO: Replace this as it is not required
         //TODO: Check if the tenant ID is provided
         var appResources = this.getAppResources(tenantId);
-        var ctx = core.createAppContext(session);
+        var ctx = core.createAppContext(session, tenantId);
         return new AppManager(appResources, ctx);
     };
     /**
