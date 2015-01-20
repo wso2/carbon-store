@@ -22,9 +22,9 @@
     <artifactId>carbon-store</artifactId>
     <packaging>pom</packaging>
     <version>2.0.0-SNAPSHOT</version>
-    <name>WSO2 Enterprise Store</name>
+    <name>WSO2 Carbon - Enterprise Store</name>
     <url>http://wso2.com/products/enterprise-store</url>
-    <description>WSO2 Enterprise Store</description>
+    <description>WSO2 Enterprise Store apps, features, components and jaggery-modules</description>
     <licenses>
         <license>
             <name>Apache License Version 2.0</name>
