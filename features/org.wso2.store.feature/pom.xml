@@ -330,13 +330,13 @@
                                 <resource>
                                     <directory>../../</directory>
                                     <includes>
-                                        <include>distribution/src/repository/**</include>
+                                        <include>resources/repository/**</include>
                                     </includes>
                                 </resource>
                                 <resource>
                                     <directory>../../</directory>
                                     <includes>
-                                        <include>distribution/src/dbscripts/**</include>
+                                        <include>resources/dbscripts/**</include>
                                     </includes>
                                 </resource>
                             </resources>
