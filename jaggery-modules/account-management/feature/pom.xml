@@ -48,6 +48,7 @@
                                     <directory>resources</directory>
                                     <includes>
                                         <include>p2.inf</include>
+                                        <include>email-admin-config.xml</include>
                                     </includes>
                                 </resource>
                             </resources>
