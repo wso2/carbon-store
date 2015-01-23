@@ -1,0 +1,61 @@
+<%
+/*
+ *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ *
+ */
+
+//var log = new Log('assets');
+var matcher = new URIMatcher(request.getRequestURI());
+var rxt = require('rxt');
+var constants = rxt.constants;
+var core = rxt.core;
+var carbon = require('carbon');
+
+var apiEndpoint = '/{context}/t/{domain}/asts/{type}/api/{+suffix}';
+var assetEndpoint = '/{context}/t/{domain}/asts/{type}/{+suffix}';
+var pageEndpoint = '/{context}/t/{domain}/pages/{+suffix}';
+var storageEndpoint = '/{context}/t/{domain}/storage/{+suffix}';
+
+if (matcher.match(apiEndpoint)) {
+    loadTenant(matcher.elements().domain);
+    include('ref_apis_router.jag');
+} else if (matcher.match(pageEndpoint)) {
+    loadTenant(matcher.elements().domain);
+    include('ref_pages_router.jag');
+} else if (matcher.match(assetEndpoint)) {
+    loadTenant(matcher.elements().domain);
+    include('ref_assets_router.jag');
+} else if (matcher.match(storageEndpoint)) {
+    loadTenant(matcher.elements().domain);
+    include('routers/storage_router.jag');
+}
+else {
+    include('index.jag');
+   // response.sendError(404, 'Unable to route the request to an appropriate endpoint');
+}
+
+function loadTenant(domain) {
+    var tenantId =  carbon.server.tenantId({domain: domain});
+    var configs = core.configs(tenantId);
+    if (!configs.appResources) {
+        var event = require('event');
+        event.emit('tenantLoad', tenantId);
+    }
+};
+
+
+%>

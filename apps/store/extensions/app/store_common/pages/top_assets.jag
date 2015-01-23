@@ -1,6 +1,6 @@
 <%
 /*
- *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -18,7 +18,7 @@
  *
  */
 var caramel;
-require('/modules/store.js').exec(function(ctx) {
+require('/modules/store.js').exec(function (ctx) {
     caramel = require('caramel');
     var app = require('rxt').app;
     var constants = require('rxt').constants;
@@ -28,15 +28,17 @@ require('/modules/store.js').exec(function(ctx) {
     var page = ui.buildPage(ctx.session, ctx.request);
     var appManager;
     var log = new Log();
+
+    var tenantId = ctx.tenant.tenantId || constants.DEFAULT_TENANT;
     var q = ctx.request.getParameter('q');
     if (user) {
         appManager = app.createUserAppManager(ctx.session);
     } else {
-        appManager = app.createAnonAppManager(ctx.session, constants.DEFAULT_TENANT);
+        appManager = app.createAnonAppManager(ctx.session, tenantId);
     }
-    page.assetMeta.q=q;
+    page.assetMeta.q = q;
     var output = appManager.render([], page);
     caramel.render(output);
     //print(page);
-}, request, response, session); 
+}, request, response, session);
 %>

@@ -1,6 +1,6 @@
 <%
 /*
- *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -46,25 +46,28 @@ var caramel;
     var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
     var target = request.getParameter('target');
     var obj, reviewsJSON;
+
+    var uriMatcher = new URIMatcher(request.getRequestURI());
+    var elements = uriMatcher.match('/{context}/t/{domain}');
+    var domain = elements ? elements.domain : "carbon.super";
+
     if (target) {
         try {
-            var tenantDomain = logged ? logged.tenantDomain : "carbon.super";
+            var tenantDomain = logged ? logged.tenantDomain : domain;
             obj = JSON.parse(String(social.getSocialObjectJson(target, tenantDomain, "POPULAR")));
             reviewsJSON = obj.attachments;
         } catch (e) {
             log.error(e);
         }
         var username = logged ? String(logged.username) + '@' + logged.tenantDomain : "anonymous";
-
-
         if (reviewsJSON) {
             for (var i = 0; i < reviewsJSON.length; i++) {
-            //Remove carbon.super tenant domain from username
-            var user = reviewsJSON[i].actor.id;
-            var pieces = user.split(/[\s@]+/);
-            	if(pieces[pieces.length-1] == 'carbon.super'){
-            		reviewsJSON[i].actor.id= pieces[pieces.length-2];
-            	}
+                //Remove carbon.super tenant domain from username
+                var user = reviewsJSON[i].actor.id;
+                var pieces = user.split(/[\s@]+/);
+                if (pieces[pieces.length - 1] == 'carbon.super') {
+                    reviewsJSON[i].actor.id = pieces[pieces.length - 2];
+                }
                 var review = reviewsJSON[i];
                 review.iLike = isUserInList(review.likes && review.likes.items, username);
                 review.iDislike = isUserInList(review.dislikes && review.dislikes.items, username);

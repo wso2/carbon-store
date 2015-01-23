@@ -736,9 +736,9 @@ var LOGGED_IN_USER = 'LOGGED_IN_USER';
  @session: The current session
  @return: An instance of the StoreMasterManager object containing all of the managers used by the Store
  */
-var storeManagers = function (o, session) {
+var storeManagers = function (o, session, tenantId) {
     var storeMasterManager;
-    var tenantId;
+//    var tenantId;
     var server = require('store').server;
 
     //We check if there is a valid session
@@ -747,7 +747,7 @@ var storeManagers = function (o, session) {
     }
     else {
         //No session,anonymous access
-        return handleAnonUser();
+        return handleAnonUser(tenantId);
     }
 
 
@@ -777,19 +777,15 @@ function handleLoggedInUser(o, session) {
 /*
  The function handles the initialization of managers when a user is not logged in (annoymous accesS)
  */
-function handleAnonUser() {
-    var anonMasterManager = application.get(APP_MANAGERS);
-
-
+function handleAnonUser(tenantId) {
+    var appManagerName  = APP_MANAGERS + '.' + tenantId
+    var anonMasterManager = application.get(appManagerName);
     //Check if it is cached
     if (anonMasterManager) {
-
         return anonMasterManager;
-
     }
-    anonMasterManager = new AnonStoreMasterManager();
-    application.put(APP_MANAGERS, anonMasterManager);
-
+    var anonMasterManager = new AnonStoreMasterManager(tenantId);
+    application.put(appManagerName, anonMasterManager);
     return anonMasterManager;
 }
 
@@ -862,16 +858,16 @@ function PaginationFormBuilder(pagin) {
  The class is used to encapsulate managers when a user is not logged in
  All managers user the system registry
  */
-function AnonStoreMasterManager() {
+function AnonStoreMasterManager(tenantID) {
     var store = require('store');
-    var registry = store.server.systemRegistry(SUPER_TENANT);
+    var registry = store.server.systemRegistry(tenantID);
 
-    var managers = buildManagers(registry, SUPER_TENANT);
+    var managers = buildManagers(registry, tenantID);
 
     this.modelManager = managers.modelManager;
     this.rxtManager = managers.rxtManager;
     this.storageSecurityProvider = managers.storageSecurityProvider;
-    this.tenantId = SUPER_TENANT;
+    this.tenantId = tenantID;
 }
 
 /*

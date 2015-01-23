@@ -179,6 +179,23 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return output;
             });
+            Handlebars.registerHelper('tenantedUrl', function (path) {
+                var constants = require('rxt').constants;
+                var uriPattern = '/{context}/{+suffix}';
+                var tenantedUriPattern = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
+
+                var uriOptions, output;
+                var uriMatcher = new URIMatcher(request.getRequestURI());
+                if (uriMatcher.match(tenantedUriPattern)) {
+                    uriOptions = uriMatcher.elements();
+                    output = '/' + uriOptions.context + '/t/' + uriOptions.domain;
+                } else if (uriMatcher.match(uriPattern)) {
+                    uriOptions = uriMatcher.elements();
+                    output = '/' + uriOptions.context;
+                }
+                return output + path;
+            });
+
         },
         render: function(data, meta) {
             if (request.getParameter('debug') == '1') {
@@ -207,17 +224,5 @@ var resolve = function(path) {
     } else {
         path = appPath;
     }
-    //log.info('Final path: '+path);
-    //path=app.resolve(request,path,this.name,this,themeResolver,session);
-    // var p,
-    //     store = require('/modules/store.js'),
-    //     asset = store.currentAsset();
-    // if (asset) {
-    //     p = store.ASSETS_EXT_PATH + asset + '/themes/' + this.name + '/' + path;
-    //     if (new File(p).isExists()) {
-    //         return p;
-    //     }
-    // }
-    // return this.__proto__.resolve.call(this, path);
     return path;
 };

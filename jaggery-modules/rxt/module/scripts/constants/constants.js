@@ -57,6 +57,16 @@ var constants = {};
     constants.APP_PAGE_URL_PATTERN = '/{context}/pages/{+suffix}';
     constants.ASSET_PAGE_URL_PATTERN = '/{context}/asts/{type}/{+suffix}';
     constants.ASSET_API_URL_PATTERN = '/{context}/asts/{type}/apis/{+suffix}';
+    constants.STORAGE_URL_PATTERN = '/{context}/storage/{type}/{id}/{uuid}/{fileName}';
+    constants.ASSET_DETAIL_URL_PATTERN = '/{context}/asts/{type}/{pageName}/{+id}';
+
+    constants.APP_TENANT_PAGE_URL_PATTERN = '/{context}/t/{domain}/pages/{+suffix}';
+    constants.ASSET_TENANT_PAGE_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/{+suffix}';
+    constants.ASSET_TENANT_API_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/apis/{+suffix}';
+    constants.STORAGE_TENANT_URL_PATTERN = '/{context}/t/{domain}/storage/{type}/{id}/{uuid}/{fileName}';
+    constants.ASSET_DETAIL_TENANT_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/{pageName}/{+id}';
+    constants.TENANT_URL_PATTERN = '/{context}/t/{domain}/{+any}';
+
     /**
      * URLs
      */

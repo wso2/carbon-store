@@ -25,17 +25,23 @@ require('/modules/store.js').exec(function (ctx) {
     var ui = rxt.ui;
     var core = rxt.core;
     var user = ctx.user;
+    var constants = rxt.constants;
+    var log = ctx.log;
+
+    var pageEndpoint = constants.ASSET_DETAIL_URL_PATTERN;
+    //'/{context}/asts/{type}/{pageName}/{+id}';
+    var tenantedPageEndpoint = constants.ASSET_DETAIL_TENANT_URL_PATTERN;
+    //'/{context}/t/{domain}/asts/{type}/{pageName}/{+id}';
 
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
-    var log = ctx.log;
-    var options = uriMatcher.match('/{context}/asts/{type}/{pageName}/{+id}') || uriMatcher.match('/{context}/asts/{type}/{pageName}');
+    var options = uriMatcher.match(pageEndpoint) || uriMatcher.match(tenantedPageEndpoint);
     if (!options) {
         response.sendError(400, 'Could not locate an endpoint for your request.Make sure that you provide an id');
     } else if (!options.id) {
         response.sendError(400, 'An id must be provided when viewing details of a particular asset');
     } else {
         var type = options.type;
-        var context = core.createAssetContext(ctx.session, type);
+        var context = core.createAssetContext(ctx.session, type, ctx.tenant.tenantId);
         var am;
         var username;
         if (user) {
@@ -56,7 +62,7 @@ require('/modules/store.js').exec(function (ctx) {
             assets.isSubscribed = am.isSubscribed(options.id, ctx.session);
         }
         catch (e) {
-            log.warn('Unable to retrieve asset with id: ' + options.id + ' due to ' + e);
+            log.error('Unable to retrieve asset with id: ' + options.id + ' due to ', e);
         }
 
         if (assets == null) {

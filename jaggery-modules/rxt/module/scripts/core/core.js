@@ -759,7 +759,7 @@ var core = {};
         var rxtMap = application.get(RXT_MAP);
         var configs = rxtMap[tenantId];
         if (!configs) {
-            configs = createTenantRxtMap(tenantId, rxtMap); 
+            configs = createTenantRxtMap(tenantId, rxtMap);
         }
         return configs;
     };
@@ -916,14 +916,14 @@ var core = {};
      * @param  {String} type     The type of asset
      * @return {Object}          An object which acts as bag for properties and classes
      */
-    core.createAssetContext = function(session, type) {
+    core.createAssetContext = function(session, type, tenantID) {
         var user = require('store').user;
         var server = require('store').server;
         var userDetails = server.current(session);
         //If there is no user then build an anonymous registry for the super tenant
         if (!userDetails) {
             log.debug('Obtaining anon asset context for ' + type);
-            return this.createAnonAssetContext(session, type);
+            return this.createAnonAssetContext(session, type, tenantID);
         } else {
             return this.createUserAssetContext(session, type);
         }
@@ -936,18 +936,20 @@ var core = {};
      * The context can be used in pages which are type specific such as a listing page for gadgets.
      * @param  {Object} session  Jaggery session object
      * @param  {String} type     The type of asset
+     * @param tenantID
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
+
      */
-    core.createAnonAssetContext = function(session, type) {
+    core.createAnonAssetContext = function(session, type, tenantID) {
         var server = require('store').server;
         var user = require('store').user;
-        var tenantId = DEFAULT_TENANT;
+        var tenantId = tenantID ||DEFAULT_TENANT;
         var sysRegistry = server.anonRegistry(tenantId);
         var userManager = server.userManager(tenantId);
         var tenatConfigs = user.configs(tenantId);
         var serverConfigs = server.configs(tenantId);
         var rxtManager = core.rxtManager(tenantId);
-        var username = "wso2.anonymous";//TODO: Move this to constants
+        var username = "wso2.anonymous.user";//TODO: Move this to constants
         return {
             username: username,
             userManager: userManager,
@@ -1016,13 +1018,13 @@ var core = {};
      * @param  {Object} session Jaggery session object
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
      */
-    core.createAppContext = function(session) {
+    core.createAppContext = function(session, tenantID) {
         var server = require('store').server;
         var user = require('store').user;
         var userDetails = server.current(session);
         if (!userDetails) {
             log.debug('Obtaining anon app context ');
-            return this.createAnonAppContext(session);
+            return this.createAnonAppContext(session, tenantID);
         } else {
             return this.createUserAppContext(session);
         }
@@ -1037,16 +1039,16 @@ var core = {};
      * @param  {String} type     The type of asset
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
      */
-    core.createAnonAppContext = function(session) {
+    core.createAnonAppContext = function(session, tenantID) {
         var server = require('store').server;
         var user = require('store').user;
-        var tenantId = DEFAULT_TENANT;
+        var tenantId = tenantID || DEFAULT_TENANT;
         var sysRegistry = server.anonRegistry(tenantId);
         var userManager = server.userManager(tenantId);
         var tenatConfigs = user.configs(tenantId);
         var serverConfigs = server.configs(tenantId);
         var rxtManager = core.rxtManager(tenantId);
-        var username = "wso2.anonymous";
+        var username = "wso2.anonymous.user";
         return {
             username: username,
             userManager: userManager,

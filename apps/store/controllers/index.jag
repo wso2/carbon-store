@@ -1,6 +1,6 @@
 <%
 /*
- *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -26,12 +26,20 @@ var tenantId = constants.DEFAULT_TENANT; //Assume the user is not logged in
 if (user) {
     tenantId = user.tenantId;
 }
-var redirectUrl = app.getContext() + app.getLandingPage(tenantId);
+var redirectUrl = app.getContext();
 var queryString = request.getQueryString();
+var tenantedUrlPatern = '/{context}/t/{domain}';
+var uriMater = new URIMatcher(request.getRequestURI());
+var elements = uriMater.match(tenantedUrlPatern) || uriMater.match(constants.TENANT_URL_PATTERN);
+
+if (elements) {
+    redirectUrl = redirectUrl + '/t/' + elements.domain + app.getLandingPage(tenantId);
+} else {
+    redirectUrl = redirectUrl + app.getLandingPage(tenantId);
+}
 //Check if the query string exists
 if (queryString !== '') {
     redirectUrl = redirectUrl + '?' + queryString;
 }
-//log.info('Query string' + queryString);
 log.info('Redirecting to the landing page: ' + redirectUrl);
 response.sendRedirect(redirectUrl); %>
