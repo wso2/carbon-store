@@ -57,13 +57,13 @@ if (idDTO) {
             var questionKey = questionDTO.getKey();
             session.put('confirmation', questionKey);
         } else {
-            if(log.isDebugEnabeld()) {
+            if(log.isDebugEnabled()) {
                 log.debug(backendMessage + userName);
             }
             response.sendRedirect('recovery-failed');
         }
     } else {
-        if(log.isDebugEnabeld()) {
+        if(log.isDebugEnabled()) {
             log.debug(backendMessage + userName);
         }
         response.sendRedirect('recovery-failed');

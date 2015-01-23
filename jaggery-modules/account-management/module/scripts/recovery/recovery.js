@@ -234,6 +234,23 @@ var recovery = {};
                      throw(e);
               }
        };
+
+       /**
+        * Check if password recovery is enabled
+        * @return {boolean} isPasswordRecoveryEnabled
+        */
+       recovery.isPasswordRecoveryEnabled = function () {
+             //TODO currently no method to check UserAccount.Recovery.Enable property
+             //TODO update when implemented
+             var identityMgtConfig = Packages.org.wso2.carbon.identity.mgt.IdentityMgtConfig;
+             var identityMgtConfigInstance = identityMgtConfig.getInstance();
+             var expirationTime = identityMgtConfigInstance.getNotificationExpireTime();
+             var isEnabled = false;
+             if(expirationTime > 0){
+                  isEnabled = true;
+             }
+             return isEnabled;
+       }
 })(recovery);
 
 

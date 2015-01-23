@@ -22,6 +22,7 @@ var e = request.getParameter('authFailure');
 
 var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();
+var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
 
 %>
 <!DOCTYPE html>
@@ -91,7 +92,11 @@ var challengeSet = recoveryModule.getChallengeQuestionSet();
                                         </label>
                                         <input type="hidden" name="sessionDataKey"
                                                value="<%=request.getParameter("sessionDataKey")%>">
-                                        <a href="recovery-option">Forgot your password?</a>
+                                        <% if(isPasswordRecoveryEnabled){ %>
+                                            <a href="recovery-option">Forgot your password?</a>
+                                        <%
+
+                                        }%>
                                         <button class="btn btn-large pull-right" type="submit">Sign in</button>
                                     </form>
                                 </div>
