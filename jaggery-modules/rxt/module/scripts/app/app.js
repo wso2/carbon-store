@@ -86,7 +86,9 @@ var app = {};
     Endpoints.prototype.addMultiple = function(endpoints) {
         for (var index in endpoints) {
             this.add(endpoints[index]);
-            log.info('Registered endpoint: /' + endpoints[index].url + ' (secured: ' + (endpoints[index].secured || false) + ')');
+            if(log.isDebugEnabled()){
+                log.debug('Registered endpoint: /' + endpoints[index].url + ' (secured: ' + (endpoints[index].secured || false) + ')');
+            }
         }
     };
     /**
@@ -264,7 +266,9 @@ var app = {};
         var disabledAssets = configs.disabledAssets || [];
         if (serverConfigs.landingPage) {
             configs.application.landingPage = serverConfigs.landingPage;
-            log.info('Landing page changed to : ' + configs.application.landingPage);
+            if(log.isDebugEnabled()){
+                log.debug('Landing page changed to : ' + configs.application.landingPage);
+            }
         }
         if ((serverConfigs.disabledAssets) && (serverConfigs.disabledAssets.length > 0)) {
             //Overriding extensions will completely replace the disabled assets list, this is required
@@ -310,7 +314,9 @@ var app = {};
         loadAppExtensionArtifacts(extName);
         //Load the server configurations
         loadServerConfigs(tenantId, serverCbResult.configs || {},serverCbResult);
-        log.info('Finished processing app extension: ' + extName);
+        if(log.isDebugEnabled()){
+            log.debug('Finished processing app extension: ' + extName);
+        }
     };
     var processAppExtensions = function(appExtensions, tenantId) {
         var appExtension;
@@ -318,9 +324,13 @@ var app = {};
         var stack;
         var endpoints;
         var app = new App();
-        log.info('Starting to process the app extensions');
+        if(log.isDebugEnabled()){
+            log.debug('Starting to process the app extensions');
+        }
         for (var key in appExtensions) {
-            log.info('Processing app extension: ' + key);
+            if(log.isDebugEnabled()){
+                log.debug('Processing app extension: ' + key);
+            }
             //Look for the dependencies
             appExtension = appExtensions[key];
             if (!appExtension.dependencies) {
@@ -336,7 +346,9 @@ var app = {};
                 }
             }
         }
-        log.info('Finished processing the app extensions');
+        if(log.isDebugEnabled()){
+            log.debug('Finished processing the app extensions');
+        }
         return app;
     };
     var recursiveProcess = function(extName, map, stack) {
@@ -420,11 +432,15 @@ var app = {};
             return;
         }
         if (app.ignoreExtension) {
-            log.warn('Successfully loaded app extension: ' + appExtensionName + ' but ignoring extension due to ignoreExtension property been true.');
+            if(log.isDebugEnabled()){
+                log.debug('Successfully loaded app extension: ' + appExtensionName + ' but ignoring extension due to ignoreExtension property been true.');
+            }
             return;
         }
         extensionMap[appExtensionName] = app;
-        log.info('Successfully loaded app extension: ' + appExtensionName);
+        if(log.isDebugEnabled()){
+            log.debug('Successfully loaded app extension: ' + appExtensionName);
+        }
     };
     var init = function(tenantId, context) {
         application.put(constants.APP_CONTEXT, context)

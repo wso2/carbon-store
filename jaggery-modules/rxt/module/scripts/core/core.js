@@ -160,7 +160,9 @@ var core = {};
         var rxtPaths = GovernanceUtils.findGovernanceArtifacts(DEFAULT_MEDIA_TYPE, this.registry.registry);
         var content;
         var rxtDefinition;
-        log.info('RXT paths: ' + stringify(rxtPaths));
+        if(log.isDebugEnabled()){
+            log.debug('RXT paths: ' + stringify(rxtPaths));
+        }
         for (var index in rxtPaths) {
             try {
                 content = this.registry.get(rxtPaths[index]);
@@ -596,7 +598,9 @@ var core = {};
             return categoryField;
         }
         if (!rxtDefinition.meta.categories) {
-            log.warn('Unable to locate category information in the rxt definition for type: ' + type + '.Cannot fetch category field');
+            if(log.isDebugEnabled()){
+                log.debug('Unable to locate category information in the rxt definition for type: ' + type + '.Cannot fetch category field');
+            }
             return categoryField;
         }
         if (!rxtDefinition.meta.categories.categoryField) {
@@ -626,7 +630,9 @@ var core = {};
             return searchableFields;
         }
         if (!rxtDefinition.meta.search) {
-            log.warn('Unable to locate search information in the rxt definition for type: ' + type + '.Cannot fetch searchable fields');
+            if(log.isDebugEnabled()){
+                log.debug('Unable to locate search information in the rxt definition for type: ' + type + '.Cannot fetch searchable fields');
+            }
             return searchableFields;
         }
         if (!rxtDefinition.meta.search.searchableFields) {

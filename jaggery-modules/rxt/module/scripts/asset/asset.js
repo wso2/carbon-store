@@ -828,7 +828,9 @@ var asset = {};
         if (asset.attributes) {
             var thumb = asset.attributes[thumbnailAttribute];
             if (!thumb) {
-                log.warn('Unable to locate thumbnailAttribute ' + thumbnailAttribute + ' in asset ' + asset.id);
+                if(log.isDebugEnabled()){
+                    log.debug('Unable to locate thumbnailAttribute ' + thumbnailAttribute + ' in asset ' + asset.id);
+                }
                 return '';
             }
             return asset.attributes[thumbnailAttribute];
@@ -840,7 +842,9 @@ var asset = {};
         if (asset.attributes) {
             var banner = asset.attributes[bannerAttribute];
             if (!banner) {
-                log.warn('Unable to locate bannerAttribute ' + bannerAttribute + ' in asset ' + asset.id);
+                if(log.isDebugEnabled()){
+                    log.debug('Unable to locate bannerAttribute ' + bannerAttribute + ' in asset ' + asset.id);
+                }
                 return '';
             }
             return asset.attributes[bannerAttribute];
@@ -1098,7 +1102,9 @@ var asset = {};
         var categoryField = this.rxtManager.getCategoryField(this.type);
         var categories = [];
         if (!categoryField) {
-            log.warn('Unable to locate a categories field.Make sure a categories section has been provided in configuration callback ');
+            if(log.isDebugEnabled()){
+                log.debug('Unable to locate a categories field.Make sure a categories section has been provided in configuration callback ');
+            }
             return categories;
         }
         categories = this.rxtManager.getRxtFieldValue(this.type, categoryField);

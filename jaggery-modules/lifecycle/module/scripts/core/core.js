@@ -106,7 +106,9 @@ var core = {};
             jsonLifecycle = transformJSONLifecycle(jsonLifecycle);
             //Store the json lifecycle definition
             addJsonLifecycle(lifecycle, jsonLifecycle, tenantId);
-            log.info('Found lifecycle: ' + jsonLifecycle.name + ' tenant: ' + tenantId);
+            if(log.isDebugEnabled()){
+                log.debug('Found lifecycle: ' + jsonLifecycle.name + ' tenant: ' + tenantId);
+            }
         }
     };
     var init = function(tenantId) {

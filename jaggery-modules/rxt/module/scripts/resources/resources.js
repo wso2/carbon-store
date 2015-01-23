@@ -55,7 +55,9 @@ var resources = {};
         var file = new File(path);
         var content = '';
         if (!file.isExists()) {
-            log.warn('Unable to locate default asset script at path ' + path);
+            if(log.isDebugEnabled()){
+                log.debug('Unable to locate default asset script at path ' + path);
+            }
             return content;
         }
         try {

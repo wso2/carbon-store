@@ -224,7 +224,9 @@ var artifacts = {};
                     extension: artifactFileExtension
                 });
                 artifactMap.register(artifact, rootDir.getName(), tenantId, assetType);
-                log.info('Registered artifact '+artifactName+' group: '+dirName);
+                if(log.isDebugEnabled()){
+                    log.debug('Registered artifact '+artifactName+' group: '+dirName);
+                }
             }
         }
     };
@@ -242,7 +244,9 @@ var artifacts = {};
         //Do not process the directory further  if the directory does not exist
         //or not a directory
         if ((!dir.isExists()) || (!dir.isDirectory())) {
-            log.warn('Location ' + path + 'does not exist.Stopped loading artifacts for type: ' + assetType);
+            if(log.isDebugEnabled()){
+                log.debug('Location ' + path + 'does not exist.Stopped loading artifacts for type: ' + assetType);
+            }
             return;
         }
         //Go through each sub directory
