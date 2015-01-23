@@ -265,6 +265,9 @@
                                 <importFeatureDef>
                                     org.wso2.carbon.claim.mgt.server:${carbon.platform.version}
                                 </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.identity.mgt:${carbon.platform.version}
+                                </importFeatureDef>
                                 <!--importFeatureDef>
                                     org.wso2.carbon.bam.toolbox.deployer:${carbon.platform.version}
                                 </importFeatureDef-->
