@@ -22,7 +22,7 @@ app.server = function(ctx) {
             apis: [{
                 url: 'assets',
                 path: 'assets.jag',
-                secured:true
+                secured:false
             }, {
                 url: 'lifecycles',
                 path: 'lifecycles.jag',

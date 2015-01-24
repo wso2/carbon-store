@@ -69,21 +69,14 @@
 
 	var server=require('store').server;
 	var user=server.current(session);
+    //Check if options have been provided
+    if (matcher.match(apiEndpoint)) {
+        handleApiEndpoint(request, session, matcher.elements());
+    }
 
-	if(!user){//unless user is authenticated		
-		 //print(responseProcessor.buildErrorResponse(response, 400, "Authorization Error"));
-		response = responseProcessor.buildErrorResponse(response, 400, "Authorization Error");
-	}
- 	else{//for authenticated users
- 		//Check if options have been provided
-		if(matcher.match(apiEndpoint)){
-			handleApiEndpoint(request,session,matcher.elements());	
-		}
-		
-		else{
-			//response.sendError();
-			//print(responseProcessor.buildErrorResponse(404,'Unable to route the request to an appropriate endpoint'));
-			response = responseProcessor.buildErrorResponse(response,404,'Unable to route the request to an appropriate endpoint');
-		}
- 	}
+    else {
+        //response.sendError();
+        //print(responseProcessor.buildErrorResponse(404,'Unable to route the request to an appropriate endpoint'));
+        response = responseProcessor.buildErrorResponse(response, 404, 'Unable to route the request to an appropriate endpoint');
+    }
  %>

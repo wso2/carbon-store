@@ -15,10 +15,10 @@
  */
 
 /*
-    Descripiton:The apis-asset-manager is used to retriew assets for api calls
-    Filename: asset_api.js
-    Created Date: 7/24/2014
-*/
+ Descripiton:The apis-asset-manager is used to retriew assets for api calls
+ Filename: asset_api.js
+ Created Date: 7/24/2014
+ */
 var api = {};
 var responseProcessor = require('utils').response;
 (function(api) {
@@ -37,7 +37,7 @@ var responseProcessor = require('utils').response;
             var artifactObject = parse(newArtifactTemplateString);
             for (var i in extendedAssetTemplate) {
                 if (artifacts[j][i]) {
-                     artifactObject[i] = artifacts[j][i];
+                    artifactObject[i] = artifacts[j][i];
                 } else {
                     artifactObject[i] = artifacts[j].attributes[i];
                 }
@@ -160,7 +160,20 @@ var responseProcessor = require('utils').response;
     };
     api.search = function(options, req, res, session) {
         var asset = require('rxt').asset;
-        var assetManager = asset.createUserAssetManager(session, options.type);
+
+        var server = require('store').server;
+        var userDetails = server.current(session);
+        var assetManager = null;
+        var domain = options.domain || "carbon.super";
+        var tenantId =  carbon.server.tenantId({domain: domain});
+
+        if(!userDetails){
+            assetManager = asset.createAnonAssetManager(session, options.type, tenantId);
+        }
+        else {
+            assetManager = asset.createUserAssetManager(session, options.type);
+        }
+
         var sort = (request.getParameter("sort") || '');
         var sortOrder = DEFAULT_PAGIN.sortOrder;
         if (sort) {
@@ -180,21 +193,21 @@ var responseProcessor = require('utils').response;
         var start = (request.getParameter("start") || DEFAULT_PAGIN.start);
         var paginationLimit = (request.getParameter("paginationLimit") || DEFAULT_PAGIN.paginationLimit);
         var paging = {
-                'start': start,
-                'count': count,
-                'sortOrder': sortOrder,
-                'sortBy': sortBy,
-                'paginationLimit': paginationLimit
-            };
+            'start': start,
+            'count': count,
+            'sortOrder': sortOrder,
+            'sortBy': sortBy,
+            'paginationLimit': paginationLimit
+        };
         var q = (request.getParameter("q") || '');
         try {
             if (q) {
                 var qString = '{' + q + '}';
                 var query = parse(qString);
-                
+
                 var assets = assetManager.search(query, paging); //doesnt work properly
             } else {
-                
+
                 var assets = assetManager.list(paging);
             }
             var expansionFields = (request.getParameter('fields') || '');
@@ -203,10 +216,10 @@ var responseProcessor = require('utils').response;
                 options.assets = assets;
                 result =fieldExpansion(options, req, res, session);
                 //return;                    
-            } else {                
+            } else {
                 result = assets;
-                
-            }            
+
+            }
             //res = responseProcessor.buildSuccessResponse(res,200,result);
         } catch (e) {
             //res = responseProcessor.buildErrorResponse(400, "Your request is malformed");
@@ -218,11 +231,21 @@ var responseProcessor = require('utils').response;
     };
     api.get = function(options, req, res, session) {
         var asset = require('rxt').asset;
-        var assetManager = asset.createUserAssetManager(session, options.type);
+        var server = require('store').server;
+        var userDetails = server.current(session);
+        var assetManager = null;
+        var domain = options.domain || "carbon.super";
+        var tenantId =  carbon.server.tenantId({domain: domain});
+        if(!userDetails){
+            assetManager = asset.createAnonAssetManager(session, options.type, tenantId);
+        }
+        else {
+            assetManager = asset.createUserAssetManager(session, options.type);
+        }
         try {
             var retrievedAsset = assetManager.get(options.id);
             if (!retrievedAsset) {
-               // print(responseProcessor.buildSuccessResponse(200, 'No matching asset found by' + options.id, []));
+                // print(responseProcessor.buildSuccessResponse(200, 'No matching asset found by' + options.id, []));
                 return null;
             } else {
                 var expansionFields = (request.getParameter('fields') || '');
@@ -235,13 +258,13 @@ var responseProcessor = require('utils').response;
                 } else {
                     result = retrievedAsset;
                 }
-               // print(responseProcessor.buildSuccessResponse(200, 'Request Served Sucessfully', result));
+                // print(responseProcessor.buildSuccessResponse(200, 'Request Served Sucessfully', result));
             }
         } catch (e) {
-        //res.sendError(400, "No matching asset found");
-         //   print(responseProcessor.buildErrorResponse(400, "No matching asset found"));
+            //res.sendError(400, "No matching asset found");
+            //   print(responseProcessor.buildErrorResponse(400, "No matching asset found"));
             log.error(e);
-            result = null;       
+            result = null;
         }
         return result;
     };
