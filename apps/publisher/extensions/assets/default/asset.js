@@ -221,7 +221,9 @@ asset.renderer = function (ctx) {
         },
         pageDecorators: {
             leftNav: function (page) {
-                log.info('Using default leftNav');
+                if(log.isDebugEnabled()){
+                    log.debug('Using default leftNav');
+                }
                 switch (page.meta.pageName) {
                     case 'list':
                         page.leftNav = buildListLeftNav(page, this);

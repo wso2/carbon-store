@@ -408,7 +408,9 @@ var core = {};
         if ((rxtDefinition.meta) && (rxtDefinition.meta.timestamp)) {
             return rxtDefinition.meta.timestamp;
         }
-        log.warn('Unable to locate timestamp attribute for type: ' + type + '.Check if a timestamp property is defined in the rxt configuration.');
+        if(log.isDebugEnabled()) {
+            log.debug('Unable to locate timestamp attribute for type: ' + type + '.Check if a timestamp property is defined in the rxt configuration.');
+        }
         return null;
     };
     /**
@@ -691,7 +693,9 @@ var core = {};
         var field = this.getRxtField(type, name);
         var values = [];
         if (!field) {
-            log.warn('Unable to locate values for field ' + name + ' as the field was not located in the rxt definition');
+            if(log.isDebugEnabled()) {
+                log.debug('Unable to locate values for field ' + name + ' as the field was not located in the rxt definition');
+            }
             return values;
         }
         var fieldValuesObject = field.values || {};

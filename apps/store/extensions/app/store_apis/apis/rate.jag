@@ -47,9 +47,13 @@ var handleApiEndpoint = function(request, session, uriParams) {
         var endpoint;
         for (var index in endPoints) {
             if (endPoints[index].url == page) {
-                log.info('Match '+endPoints[index].path);
+                if(log.isDebugEnabled()){
+                    log.debug('Match '+endPoints[index].path);
+                }
                 endpoint = asset.getAssetApiEndpoint(type, endPoints[index].path);
-                log.info(endpoint);
+                if(log.isDebugEnabled()){
+                    log.debug(endpoint);
+                }
             }
         }
         if (endpoint) {

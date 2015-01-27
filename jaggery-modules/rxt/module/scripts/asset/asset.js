@@ -344,7 +344,9 @@ var asset = {};
         var items = [];
         var timeStampField = this.rxtManager.getTimeStampAttribute(this.type);
         if (!timeStampField) {
-            log.warn('There is no time stamp field defined for type: ' + this.type + '.A default time stamp field : ' + constants.DEFAULT_TIME_STAMP_FIELD + ' will be used.Add a timestampField property to the configuration to change this.');
+            if(log.isDebugEnabled()){
+                log.debug('There is no time stamp field defined for type: ' + this.type + '.A default time stamp field : ' + constants.DEFAULT_TIME_STAMP_FIELD + ' will be used.Add a timestampField property to the configuration to change this.');
+            }
             timeStampField = constants.DEFAULT_TIME_STAMP_FIELD;
         }
         var paging = constants.DEFAULT_RECENT_ASSET_PAGIN;
@@ -656,7 +658,9 @@ var asset = {};
         var modUser = require('store').user;
         var user = server.current(session);
         if (!user) {
-            log.warn('Unable to obtain user space as there is no logged in user.Cannot retrieve the subscription space');
+            if(log.isDebugEnabled()){
+                log.debug('Unable to obtain user space as there is no logged in user.Cannot retrieve the subscription space');
+            }
             return null;
         }
         var space = modUser.userSpace(user);
