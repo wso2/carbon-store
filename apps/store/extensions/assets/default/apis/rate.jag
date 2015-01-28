@@ -59,7 +59,9 @@ require('/modules/store.js').exec(function(ctx) {
     } else {
         switch (method) {
             case 'GET':
-                log.info('Get request to rating endpoint');
+                if(log.isDebugEnabled()) {
+                    log.debug('Get request to rating endpoint');
+                }
                 handleRating(ctx.session,id, type, value, ctx.response);
                 break;
             case 'DELETE':
