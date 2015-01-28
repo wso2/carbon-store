@@ -41,5 +41,7 @@ if (elements) {
 if (queryString !== '') {
     redirectUrl = redirectUrl + '?' + queryString;
 }
-log.info('Redirecting to the landing page: ' + redirectUrl);
+if(log.isDebugEnabled()) {
+    log.debug('Redirecting to the landing page: ' + redirectUrl);
+}
 response.sendRedirect(redirectUrl); %>

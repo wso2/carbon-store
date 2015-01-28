@@ -31,7 +31,9 @@
             var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(opts.issuer);
             var log = new Log();
             var postUrl = opts.identityProviderURL;
-            log.info('Login URL: '+postUrl);
+            if(log.isDebugEnabled()) {
+                log.debug('Login URL: '+postUrl);
+            }
 
     if (!session.get("Loged")) {
         %>
