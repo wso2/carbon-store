@@ -137,6 +137,7 @@ asset.configure = function() {
 };
 asset.renderer = function(ctx) {
     var decoratorApi = require('/modules/page_decorators.js').pageDecorators;
+
     return {
         pageDecorators: {
             navigationBar: function(page) {
@@ -162,6 +163,12 @@ asset.renderer = function(ctx) {
             },
             socialFeature: function(page) {
                 return decoratorApi.socialFeature(ctx, page);
+            },
+            socialSites: function(page, meta) {
+                return decoratorApi.socialSites(page, meta, this);
+            },
+            embedLinks: function(page, meta) {
+                return decoratorApi.embedLinks(page, meta);
             }
         }
     };

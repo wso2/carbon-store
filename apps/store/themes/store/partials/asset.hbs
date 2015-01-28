@@ -40,12 +40,20 @@
                     <li>
                         <a href="#tab-reviews" data-toggle="tab" data-type="comments">{{t "User Reviews"}}</a>
                     </li>
+                    <li>
+                        <a href="#tab-share" data-toggle="tab" data-type="basic">{{t "Share"}}</a>
+                    </li>
                 </ul>
 
                 <div class="tab-content">
                     <div class="tab-pane active" id="tab-properties">
                         <div class="content">
                             {{>overview .}}
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab-share">
+                        <div class="content">
+                            {{>share ../..}}
                         </div>
                     </div>
                     <div class="tab-pane" id="tab-reviews">
@@ -60,7 +68,6 @@
                             <div id="comment-content" class="content user-review"></div>
                         {{/if}}
                     </div>
-
                 </div>
 
             </div>

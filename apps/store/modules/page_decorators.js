@@ -18,6 +18,8 @@
  */
 var pageDecorators = {};
 (function() {
+    var storeConstants = require('store').storeConstants;
+
     pageDecorators.navigationBar = function(ctx, page, utils) {
         var rxtManager = ctx.rxtManager;
         var app = require('rxt').app;
@@ -209,6 +211,41 @@ var pageDecorators = {};
         page.features[constants.SOCIAL_FEATURE] = socialFeatureDetails;
         return page;
     };
+    pageDecorators.socialSites = function(page, meta, util) {
+        var utils = require('utils');
+        if (!utils.reflection.isArray(page.assets || [])) {
+            var asset = page.assets;
+            var assetUrl = util.buildAssetPageUrl(asset.type, '/details/' + asset.id);
+            var process = require('process');
+            var host = process.getProperty('server.host');
+            var port = process.getProperty('http.port');
+            var app = require('rxt').app;
+            var context = app.getContext();
+            var completeAssetUrl = ('http://' + host + ':' + port + context + assetUrl);
+
+            page.socialSites = {};
+            var facebook = page.socialSites.facebook = {};
+            var gplus = page.socialSites.gplus = {};
+            var twitter = page.socialSites.twitter = {};
+            var diggit = page.socialSites.diggit = {};
+            facebook.href = facebookLink(completeAssetUrl, asset);
+            gplus.href = gplusLink(completeAssetUrl, asset);
+            twitter.href = twitterLink(completeAssetUrl, asset);
+            diggit.href = diggitLink(completeAssetUrl, asset);
+        }
+        return page;
+    };
+    pageDecorators.embedLinks = function(page, meta) {
+        var utils = require('utils');
+        if (!utils.reflection.isArray(page.assets || [])) {
+            var asset = page.assets;
+            var attributes = asset.attributes || {};
+            var widgetLink = '/' + asset.type + 's/widget';
+            var assetUrl = widgetLink+'?name=' + asset.name + '&version=' + attributes.overview_version + '&provider=' + attributes.overview_provider;
+            page.embedLinks = '<iframe width="450" height="120" src="' + assetUrl + '" frameborder="0" allowfullscreen></iframe>';
+        }
+        return page;
+    };
     var getAssetManager = function(ctx) {
         var asset = require('rxt').asset;
         var am;
@@ -226,5 +263,19 @@ var pageDecorators = {};
             }
         }
         return null;
+    };
+    var twitterLink = function(assetUrl, asset) {
+        var attr = asset.attributes || {};
+        var description = attr.overview_description ? attr.overview_description : 'No description';
+        return storeConstants.TWITTER_SHARE_LINK + description + '&url=' + assetUrl;
+    };
+    var facebookLink = function(assetUrl, asset) {
+        return storeConstants.FACEBOOK_SHARE_LINK + assetUrl;
+    };
+    var gplusLink = function(assetUrl, asset) {
+        return storeConstants.GPLUS_SHARE_LINK + assetUrl;
+    };
+    var diggitLink = function(assetUrl, asset) {
+        return storeConstants.DIGG_SHARE_LINK + assetUrl;
     };
 }());
