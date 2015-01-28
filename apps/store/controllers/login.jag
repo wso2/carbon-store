@@ -24,13 +24,23 @@
             sessionId = session.getId(),
             requestURI,
             requestedPage = request.getParameter("requestedPage"),
-            referer = request.getHeader("referer"),
-            relayState = (referer ? referer : '/store');
+            referer = request.getHeader("referer");
+
+    if (referer)
+    {
+        //var host = request.getHeader("Host");
+        var host = referer.split('/')[2];
+        referer = referer.split(host)[1];
+    }
+
+    var relayState = (referer ? referer : '/store');
+    //TODO: need to parameterize default value in order to support app renaming
+
             var app=require('rxt').app;
             var opts=app.getAuthenticationDetails(-1234);
             var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(opts.issuer);
             var log = new Log();
-            var postUrl =opts.identityProviderURL; 
+            var postUrl =opts.identityProviderURL;
             log.info('Login URL: '+postUrl);
     if (!session.get("Loged")) {
         %>
