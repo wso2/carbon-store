@@ -62,7 +62,6 @@
             <artifactId>org.wso2.store.util</artifactId>
             <version>${project.version}</version>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
@@ -91,9 +90,7 @@
                                 <bundleDef>slf4j.wso2:slf4j:${slf4j.wso2.version}</bundleDef>
                                 <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.hostobjects.sso</bundleDef>-->
                                 <bundleDef>org.wso2.store:org.wso2.store.sso.common</bundleDef>
-
                                 <bundleDef>org.wso2.store:org.wso2.store.bamclient</bundleDef>
-
                                 <bundleDef>org.wso2.store:org.wso2.store.admin.styles</bundleDef>
                                 <!--bundleDef>org.wso2.store:org.wso2.carbon.social:${project.version}</bundleDef-->
                                 <!--bundleDef>org.wso2.carbon:org.wso2.carbon.databridge.datasink.cassandra:${carbon.platform.version}</bundleDef-->
@@ -340,6 +337,12 @@
                                     <directory>../../</directory>
                                     <includes>
                                         <include>resources/dbscripts/**</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>../../components/asset-client</directory>
+                                    <includes>
+                                        <include>client/*.jar</include>
                                     </includes>
                                 </resource>
                             </resources>
