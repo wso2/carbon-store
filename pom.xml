@@ -606,7 +606,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         
-        <carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>
+        <!--<carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>-->
         <carbon.kernel.version>4.3.0</carbon.kernel.version>
         <carbon.social.version>1.2.0-SNAPSHOT</carbon.social.version>
 
@@ -662,6 +662,21 @@
         <uuid.feature.version>1.0.0</uuid.feature.version>
         <jaggery-test.feature.version>1.1.0</jaggery-test.feature.version>
         <slf4j.wso2.version>1.5.10.wso2v1</slf4j.wso2.version>
+
+        <!-- jaggery modules -->
+        <!--<caramel.module.version>1.0.1</caramel.module.version>-->
+        <!--<carbon.module.version>1.2.0-SNAPSHOT</carbon.module.version>-->
+        <!--<email.module.version>1.1.0-SNAPSHOT</email.module.version>-->
+        <!--<handlebars.module.version>1.0.0</handlebars.module.version>-->
+        <!--<markdown.module.version>1.0.0</markdown.module.version>-->
+        <!--<gadget.module.version>1.1.0-SNAPSHOT</gadget.module.version>-->
+        <!--<i18n.module.version>1.1.0-SNAPSHOT</i18n.module.version>-->
+        <!--<oauth.module.version>1.1.0-SNAPSHOT</oauth.module.version>-->
+        <!--<process.module.version>1.1.0-SNAPSHOT</process.module.version>-->
+        <!--<uuid.module.version>1.1.0-SNAPSHOT</uuid.module.version>-->
+        <!--<ws.module.version>1.2.0-SNAPSHOT</ws.module.version>-->
+        <!--<jaggery-tests.module.version>1.2.0-SNAPSHOT</jaggery-tests.module.version>-->
+        <!--<sso.module.version>1.0.0-SNAPSHOT</sso.module.version>-->
 
         <sso.hostobjects.version>1.0.1</sso.hostobjects.version>
         <httpcomponents-httpclient.wso2.version>4.1.1-wso2v1</httpcomponents-httpclient.wso2.version>
