@@ -31,7 +31,7 @@
         <module>login</module>
         <module>permission</module>
         <module>registration</module>
-        <module>sso</module>
+        <!--<module>sso</module>-->
         <module>store</module>
         <module>ues</module>
         <module>account-management</module>
