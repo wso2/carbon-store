@@ -41,15 +41,27 @@ require('/modules/store.js').exec(function (ctx) {
         response.sendError(400, 'An id must be provided when viewing details of a particular asset');
     } else {
         var type = options.type;
-        var context = core.createAssetContext(ctx.session, type, ctx.tenant.tenantId);
+        //var context = core.createAssetContext(ctx.session, type, ctx.tenant.tenantId);
         var am;
         var username;
-        if (user) {
+
+        var carbon = require('carbon');
+        var URLTenantId = carbon.server.tenantId({domain: options.domain ||
+                constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME});
+        var context = core.createAssetContext(ctx.session, type, ctx.tenant.tenantId);
+        //Determine the type of asset manager to be created
+        if (!user || ctx.tenant.tenantId != URLTenantId) {
+            am = asset.createAnonAssetManager(ctx.session, type, URLTenantId);
+        }else {
             am = asset.createUserAssetManager(ctx.session, type);
         }
-        else {
-            am = asset.createAnonAssetManager(ctx.session, type, context.tenantId);
-        }
+
+        //if (user) {
+        //    am = asset.createUserAssetManager(ctx.session, type);
+        //}
+        //else {
+         //   am = asset.createAnonAssetManager(ctx.session, type, context.tenantId);
+        //}
         var page = ui.buildPage(ctx.session, ctx.request);
         var assets = null;
 

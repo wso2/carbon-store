@@ -249,11 +249,27 @@ var pageDecorators = {};
     var getAssetManager = function(ctx) {
         var asset = require('rxt').asset;
         var am;
-        if (ctx.isAnonContext) {
-            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, ctx.tenantId);
-        } else {
+
+        var uriMatcher = new URIMatcher(request.getRequestURI());
+        var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
+        var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
+        var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
+
+        var carbon = require('carbon');
+        var URLTenantId = carbon.server.tenantId({domain: opts.domain ||
+            constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME});
+
+        if (ctx.isAnonContext || !ctx.user || ctx.tenantId != URLTenantId) {
+            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, URLTenantId);
+        }else {
             am = asset.createUserAssetManager(ctx.session, ctx.assetType);
         }
+
+//        if (ctx.isAnonContext) {
+//            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, ctx.tenantId);
+//        } else {
+//            am = asset.createUserAssetManager(ctx.session, ctx.assetType);
+//        }
         return am;
     };
     var fetchActiveAuthDetails = function(method, methods) {

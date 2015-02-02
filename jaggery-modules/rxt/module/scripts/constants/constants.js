@@ -65,7 +65,9 @@ var constants = {};
     constants.ASSET_TENANT_API_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/apis/{+suffix}';
     constants.STORAGE_TENANT_URL_PATTERN = '/{context}/t/{domain}/storage/{type}/{id}/{uuid}/{fileName}';
     constants.ASSET_DETAIL_TENANT_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/{pageName}/{+id}';
+
     constants.TENANT_URL_PATTERN = '/{context}/t/{domain}/{+any}';
+    constants.DEFAULT_SUPER_TENANT_URL_PATTERN = '/{context}/{+any}';
 
     /**
      * URLs
@@ -133,4 +135,7 @@ var constants = {};
         sortOrder: 'DESC',
         paginationLimit: 100
     };
+
+    constants.MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+
 }(constants));

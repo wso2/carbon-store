@@ -37,6 +37,8 @@ var server = {};
 
     var log = new Log();
 
+    var constants = require('rxt').constants;
+
     /**
      * Initializes the server for the first time. This should be called when app is being deployed.
      * @param options
@@ -135,7 +137,6 @@ var server = {};
                 secured: true
             };
         } else {
-            var constants = require('rxt').constants;
             matcher = new URIMatcher(request.getRequestURI());
             if (matcher.match(constants.TENANT_URL_PATTERN)) { //'/{context}/t/{domain}/{+any}'
                 domain = matcher.elements().domain;
@@ -274,13 +275,39 @@ var server = {};
         }, fn);
     };
 
+    var modify = function(options) {
+        var domain;
+        if(options.request){
+            var uriMatcher = new URIMatcher(options.request.getRequestURI());
+            var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
+            var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
+            var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
+
+            domain = opts.domain || constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+
+            var carbon = require('carbon');
+
+            var urlTenantId =  carbon.server.tenantId({domain: domain});
+            if((urlTenantId != options.tenantId && opts.context =="store")) {//TODO refactor this to parametrize
+                //TODO change this logic once tenanted URLs are introduced to publisher as well
+                options.tenantId = urlTenantId;
+            }
+        }
+    };
+
     server.sandbox = function (options, fn) {
         var context,
             log = new Log(),
             carbon = require('carbon'),
             PrivilegedCarbonContext = org.wso2.carbon.context.PrivilegedCarbonContext;
         PrivilegedCarbonContext.startTenantFlow();
-        log.debug('startTenantFlow');
+
+        if (log.isDebugEnabled()) {
+            log.debug('startTenantFlow');
+        }
+
+        modify(options);
+
         try {
             context = PrivilegedCarbonContext.getThreadLocalCarbonContext();
             context.setTenantDomain(carbon.server.tenantDomain({
@@ -291,7 +318,9 @@ var server = {};
             return fn();
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
-            log.debug('endTenantFlow');
+            if (log.isDebugEnabled()) {
+                log.debug('endTenantFlow');
+            }
         }
     };
 }(server));

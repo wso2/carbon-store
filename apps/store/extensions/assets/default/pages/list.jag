@@ -29,12 +29,9 @@ require('/modules/store.js').exec(function (ctx) {
     var am;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var assetPageUrl = constants.ASSET_PAGE_URL_PATTERN;
-                    //= '/{context}/asts/{type}/{+suffix}';
     var tenantedAssetPageUrl = constants.ASSET_TENANT_PAGE_URL_PATTERN;
-                    //='/{context}/asts/{type}/{+suffix}';
     var options = uriMatcher.match(assetPageUrl) || uriMatcher.match(tenantedAssetPageUrl) ;
-    //var options = uriMatcher.match('/{context}/asts/{type}/{pageName}')
-        //  || uriMatcher.match('/{context}/t/{domain}/asts/{type}/{pageName}') ;
+
     var type = options.type;
     var assets = [];
     var tenantId = ctx.tenant.tenantId;
@@ -56,11 +53,17 @@ require('/modules/store.js').exec(function (ctx) {
     PAGING.start = (start || constants.DEFAULT_ASSET_PAGIN.start);
     PAGING.count = (count || constants.DEFAULT_ASSET_PAGIN.count);
 
-    var context = core.createAssetContext(ctx.session, type, tenantId);
+    var carbon = require('carbon');
+    var URLTenantId = carbon.server.tenantId({domain: options.domain ||
+            constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME});
+
+    var context ;
     //Determine the type of asset manager to be created
-    if (!user) {
-        am = asset.createAnonAssetManager(ctx.session, type, tenantId);
-    } else {
+    if (!user || tenantId != URLTenantId) {
+        context = core.createAnonAssetContext(ctx.session, type, URLTenantId);
+        am = asset.createAnonAssetManager(ctx.session, type, URLTenantId);
+    }else {
+        context = core.createAssetContext(ctx.session, type, URLTenantId);
         am = asset.createUserAssetManager(ctx.session, type);
     }
     if (tag) {
