@@ -308,7 +308,7 @@
             <dependency>
                 <groupId>org.wso2.carbon.governance</groupId>
                 <artifactId>org.wso2.carbon.governance.registry.extensions</artifactId>
-                <version>${carbon.governance.version.version}</version>
+                <version>${carbon.governance.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.governance</groupId>
@@ -316,9 +316,9 @@
                 <version>${carbon.governance.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.governance</groupId>
+                <groupId>org.wso2.carbon.registry</groupId>
                 <artifactId>org.wso2.carbon.registry.eventing</artifactId>
-                <version>${carbon.governance.version}</version>
+                <version>${carbon.registry.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.shindig</groupId>

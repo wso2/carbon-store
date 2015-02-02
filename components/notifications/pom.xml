@@ -56,11 +56,11 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.governance</groupId>
             <artifactId>org.wso2.carbon.governance.registry.eventing</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.registry</groupId>
             <artifactId>org.wso2.carbon.registry.eventing</artifactId>
         </dependency>
     </dependencies>
