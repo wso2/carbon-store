@@ -107,9 +107,6 @@
                                 <importFeatureDef>
                                     org.wso2.store.modules.registration:${carbon.store.version}
                                 </importFeatureDef>
-                                <!--<importFeatureDef>
-                                    org.wso2.store.modules.sso:${carbon.store.version}
-                                </importFeatureDef>-->
                                 <importFeatureDef>
                                     org.wso2.store.modules.store:${carbon.store.version}
                                 </importFeatureDef>
