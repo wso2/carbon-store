@@ -152,7 +152,7 @@
                                     org.wso2.carbon.registry.community.features.server:${carbon.registry.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.registry.extensions.server:${carbon.registry.version}
+                                    org.wso2.carbon.registry.extensions.server:${carbon.governance.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.core.server:${carbon.registry.version}
