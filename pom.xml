@@ -26,7 +26,7 @@
     <groupId>org.wso2.carbon.store</groupId>
     <artifactId>carbon-store</artifactId>
     <packaging>pom</packaging>
-    <version>2.0.0</version>
+    <version>2.0.1-SNAPSHOT</version>
     <name>WSO2 Carbon - Enterprise Store</name>
     <url>http://wso2.com/products/enterprise-store</url>
     <description>WSO2 Enterprise Store apps, features, components and jaggery-modules</description>
@@ -511,7 +511,7 @@
     <scm>
         <connection>scm:git:https://github.com/wso2/carbon-store.git</connection>
         <developerConnection>scm:git:https://github.com/wso2/carbon-store.git</developerConnection>
-        <tag>2.0.0</tag>
+        <tag>HEAD</tag>
     </scm>
     <repositories>
         <repository>
@@ -635,9 +635,9 @@
 
         <!--<carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>-->
         <carbon.kernel.version>4.3.0</carbon.kernel.version>
-        <carbon.social.version>1.2.0</carbon.social.version>
+        <carbon.social.version>1.2.1-SNAPSHOT</carbon.social.version>
 
-        <carbon.store.version>2.0.0</carbon.store.version>
+        <carbon.store.version>2.0.1-SNAPSHOT</carbon.store.version>
         <!--repo versions-->
         <carbon.commons.version>4.3.3</carbon.commons.version>
         <carbon.registry.version>4.3.0</carbon.registry.version>
