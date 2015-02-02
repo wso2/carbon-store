@@ -82,7 +82,7 @@
                             <id>org.wso2.store.modules.utils</id>
                             <propertiesFile>etc/feature.properties</propertiesFile>
                             <importFeatures>
-                                <importFeatureDef>org.wso2.store.modules.event:${project.version}</importFeatureDef>
+                                <importFeatureDef>org.wso2.store.modules.event:${event.module.version}</importFeatureDef>
                             </importFeatures>
                         </configuration>
                     </execution>

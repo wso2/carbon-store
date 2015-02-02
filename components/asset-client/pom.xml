@@ -19,13 +19,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>org.wso2.carbon.store</groupId>
-    <artifactId>org.wso2.store.client</artifactId>
-    <packaging>jar</packaging>
-    <name>asset-client</name>
-    <url>http://maven.apache.org</url>
-
     <parent>
         <groupId>org.wso2.carbon.store</groupId>
         <artifactId>carbon-store</artifactId>
@@ -33,12 +26,17 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.wso2.store.client</artifactId>
+    <packaging>jar</packaging>
+    <name>asset-client</name>
+    <url>http://maven.apache.org</url>
+
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
                 <configuration>
                     <archive>
                         <manifest>

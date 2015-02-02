@@ -10,7 +10,6 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.social.core</artifactId>
     <packaging>bundle</packaging>
-    <version>1.2.0-SNAPSHOT</version>
     <name>WSO2 Carbon - Social - Core</name>
     <build>
         <plugins>
@@ -34,7 +33,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Axis2Module>${project.artifactId}-${project.version}</Axis2Module>
+                        <Axis2Module>${project.artifactId}-${carbon.social.version}</Axis2Module>
                         <Export-Package>
                             org.wso2.carbon.social.core.*
                         </Export-Package>

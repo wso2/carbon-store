@@ -14,19 +14,19 @@
     <name>WSO2 Carbon - Social - Cassandra Based Implementation</name>
     <dependencies>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.store</groupId>
             <artifactId>org.wso2.carbon.social.core</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.commons</groupId>
             <artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.commons</groupId>
             <artifactId>org.wso2.carbon.databridge.commons</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.commons</groupId>
             <artifactId>org.wso2.carbon.databridge.commons.thrift</artifactId>
         </dependency>
     </dependencies>
@@ -52,7 +52,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Axis2Module>${project.artifactId}-${project.version}</Axis2Module>
+                        <Axis2Module>${project.artifactId}-${carbon.social.version}</Axis2Module>
                         <Export-Package>
                             org.wso2.carbon.social.cassandra.*
                         </Export-Package>
