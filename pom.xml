@@ -511,8 +511,9 @@
         </dependencies>
     </dependencyManagement>
     <scm>
-        <connection>scm:git:https://github.com/wso2/enterprise-store.git</connection>
-        <developerConnection>scm:git:https://github.com/wso2/enterprise-store.git</developerConnection>
+        <connection>scm:git:https://github.com/wso2/carbon-store.git</connection>
+        <developerConnection>scm:git:https://github.com/wso2/carbon-store.git</developerConnection>
+        <tag>HEAD</tag>
     </scm>
     <repositories>
         <repository>
