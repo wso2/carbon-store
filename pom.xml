@@ -631,6 +631,7 @@
         <url>http://wso2.org/jira/browse/STORE</url>
     </issueManagement>
     <properties>
+        <project.scm.id>github-scm</project.scm.id>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--<carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>-->
