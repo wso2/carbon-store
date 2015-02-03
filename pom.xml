@@ -213,7 +213,7 @@
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>${maven.antrunplugin.version}</version>
                 </plugin>
-                <plugin>
+                <!--<plugin>
                     <artifactId>maven-clean-plugin</artifactId>
                     <version>${maven.cleanplugin.version}</version>
                     <executions>
@@ -225,7 +225,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin>-->
             </plugins>
         </pluginManagement>
     </build>
