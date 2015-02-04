@@ -45,9 +45,11 @@
                             <mainClass>org.wso2.store.client.util.ArtifactPublisherTool</mainClass>
                         </manifest>
                     </archive>
+
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                     </descriptorRefs>
+                    <finalName>aset-client</finalName>
                 </configuration>
                 <executions>
                     <execution>
