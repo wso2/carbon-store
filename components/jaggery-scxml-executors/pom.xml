@@ -26,7 +26,6 @@
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Service-Component>OSGI-INF/serviceComponents.xml</Service-Component>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Bundle-Version>1.0.0</Bundle-Version>
                         <Private-Package>org.wso2.jaggery.scxml</Private-Package>
                         <Bundle-Activator>org.wso2.jaggery.scxml.Activator</Bundle-Activator>
                         <Import-Package>
