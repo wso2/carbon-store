@@ -72,7 +72,7 @@
 
         } else {
             session.invalidate();
-            response.sendRedirect('/store');
+            response.sendRedirect(relayState);
         }
     }
 
