@@ -1491,7 +1491,7 @@ var asset = {};
         //TODO: Use the constants
         var uriPattern = '/{context}/asts/{type}/{+options}';
         var extensionPattern = '/{root}/extensions/assets/{type}/{+suffix}';
-        var tenantedUriPattern = '/{context}/t/{domain}/pages/{+suffix}';
+        var tenantedUriPattern = '/{context}/t/{domain}/asts/{type}/{+suffix}';
 
         uriMatcher.match(uriPattern) || uriMatcher.match(tenantedUriPattern);//TODO check with samples
         extensionMatcher.match(extensionPattern);
