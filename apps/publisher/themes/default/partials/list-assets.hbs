@@ -13,34 +13,69 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<div class="asset-being-added">
-</div>
-<div class="asset-thumb-container">
-    {{#if assets}}
-        <div class="row-fluid">
-            <table class="table table-striped list-asset-table">
-                <thead>
-                <th colspan="2"><a href="?sortby=overview_name&sort=ASC">Name <i class="icon-caret-down"></i></a></th>
-                <th><a href="?sortby=overview_version&sort=ASC">Version <i class="icon-caret-down"></i></a></th>
-                <th><a href="?sortby=overview_provider&sort=ASC">Owner <i class="icon-caret-down"></i></a></th>
-                <th><a href="#">Status</i></a></th>
-                <th><a href="?sortby=overview_createdtime&sort=DESC">Created <i class="icon-caret-down"></i></a></th>
-                <th></th>
-                </thead>
-                <tbody id='list-asset-table-body'>
-                    
-                    {{> list_assets_table_body assets}}
-                 
-                </tbody>
-            </table>
-        </div>
-        <div class="loading-inf-scroll"></div>
-    {{else}}
-            <div class="emptyAssets-MsgDiv">
-                <i class="icon-frown largeMsgIcon"></i>
-                
-                 <p class="emptyAssets">Sorry. I couldn't find anything for you</p>
-                
+
+<div class="row">
+    <div class="col-lg-6 col-md-12 col-sm-9 col-xs-12 wr-filters">
+        <div class="wr-search">
+            <div class="form-inline">
+                <div class="form-group">
+                    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select Category ... <span class="glyphicon glyphicon-chevron-down"></span></a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <li><a tabindex="-1" href="#">Tools and Utilities</a></li>
+                        <li><a tabindex="-1" href="#">Entertainment</a></li>
+                        <li><a tabindex="-1" href="#">Gaming</a></li>
+                        <li><a tabindex="-1" href="#">Disk Utilities</a></li>
+                        <li><a tabindex="-1" href="#">Tools and Utilities</a></li>
+                        <li><a tabindex="-1" href="#">Entertainment</a></li>
+                        <li><a tabindex="-1" href="#">Gaming</a></li>
+                        <li><a tabindex="-1" href="#">Disk Utilities</a></li>
+                        <li><a tabindex="-1" href="#">Tools and Utilities</a></li>
+                        <li><a tabindex="-1" href="#">Entertainment</a></li>
+                        <li><a tabindex="-1" href="#">Gaming</a></li>
+                        <li><a tabindex="-1" href="#">Disk Utilities</a></li>
+                    </ul>
+                </div>
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{query}}"  />
+                    <input type="hidden" id="search-prefix" value="{{shortName}}"/>
+                </div>
+                <button type="button" class="btn btn-search" id="search-button"><span class="glyphicon glyphicon-search"></span></button>
             </div>
-    {{/if}}
+        </div>
+    </div>
+    <div class="col-lg-6 col-md-4 col-sm-3 col-xs-12  wr-filters">
+        <div class="wr-filter-sort pull-right">
+            <a href="#" class="ico-filter ctrl-filter-grid"><img src="{{url "/themes/default/img/icons/ico-grid.png"}}" /></a>
+            <a href="#" class="ico-filter ctrl-filter-list"><img src="{{url "/themes/default/img/icons/ico-list.png"}}" /></a>
+            <a href="#" class="ico-filter ctrl-filter-sort dropdown-toggle" data-toggle="dropdown"><img src="{{url "/themes/default/img/icons/ico-sort.png"}}" /></a>
+            <div class="dropdown-menu">
+                <div class="cu-arrow"></div>
+                <div class="dropdown-menu-content">
+                    <a class="filter-item" href="?sortby=overview_name&sort=ASC">Name</a>
+                    <a class="filter-item"  href="?sortby=overview_version&sort=ASC">Version</a>
+                    <a class="filter-item" href="?sortby=overview_provider&sort=ASC">Status</a>
+                    <a class="filter-item" href="?sortby=overview_createdtime&sort=DESC">Date/Time Created</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<div class="row">
+    <div class="col-md-12">
+        <!-- content -->
+        <div class="ast-container">
+            {{#if assets}}
+                {{> list_assets_table_body assets}}
+            {{else}}
+                <div class="emptyAssets-MsgDiv">
+                    <i class="icon-frown largeMsgIcon"></i>
+
+                    <p class="emptyAssets">Sorry. I couldn't find anything for you</p>
+
+                </div>
+            {{/if}}
+        </div>
+</div>
+</div>
+
+
