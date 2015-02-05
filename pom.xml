@@ -42,14 +42,12 @@
         <module>components/jaggery-scxml-executors</module>
         <module>components/notifications</module>
         <module>components/social</module>
-        <!--<module>components/sso-common</module>-->
         <module>jaggery-modules</module>
         <module>components/asset-client</module>
         <module>components/store-util</module>
         <module>components/bam-client</module>
         <module>features/org.wso2.es.feature</module>
         <module>features/org.wso2.store.feature</module>
-        <!--<module>features/org.wso2.store.styles.feature</module>-->
         <module>features/social</module>
 
     </modules>
