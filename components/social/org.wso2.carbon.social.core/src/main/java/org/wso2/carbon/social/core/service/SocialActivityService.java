@@ -1,6 +1,5 @@
 package org.wso2.carbon.social.core.service;
 
-
 import com.google.gson.JsonObject;
 import org.mozilla.javascript.NativeObject;
 import org.wso2.carbon.social.core.Activity;
@@ -12,48 +11,51 @@ import java.util.List;
 
 public abstract class SocialActivityService {
 
-    public String publish(NativeObject activity) {
-        return getActivityPublisher().publish(activity);
-    }
+	public String publish(NativeObject activity) {
+		return getActivityPublisher().publish(activity);
+	}
 
-    public String[] listActivities(String contextId, String tenant) {
-        List<Activity> activities = getActivityBrowser().listActivitiesChronologically(contextId, tenant);
-        String[] serializedActivities = new String[activities.size()];
-        for (int i = 0; i < activities.size(); i++) {
-            serializedActivities[i] = activities.get(i).toString();
-        }
-        return serializedActivities;
-    }
+	public String[] listActivities(String contextId, String tenantDomain) {
+		List<Activity> activities = getActivityBrowser()
+				.listActivitiesChronologically(contextId, tenantDomain);
+		String[] serializedActivities = new String[activities.size()];
+		for (int i = 0; i < activities.size(); i++) {
+			serializedActivities[i] = activities.get(i).toString();
+		}
+		return serializedActivities;
+	}
 
-    public double getRating(String targetId, String tenant) {
-        return getActivityBrowser().getRating(targetId, tenant);
-    }
+	public double getRating(String targetId, String tenantDomain) {
+		return getActivityBrowser().getRating(targetId, tenantDomain);
+	}
 
-    public String getSocialObjectJson(String targetId, String tenant, String sortOrder) {
-        SortOrder order;
-        try {
-            order = SortOrder.valueOf(sortOrder);
-        } catch (IllegalArgumentException e) {
-            order = SortOrder.NEWEST;
-        }
-        JsonObject socialObject = getActivityBrowser().getSocialObject(targetId, tenant, order);
+	public String getSocialObjectJson(String targetId, String tenantDomain,
+			String sortOrder) {
+		SortOrder order;
+		try {
+			order = SortOrder.valueOf(sortOrder);
+		} catch (IllegalArgumentException e) {
+			order = SortOrder.NEWEST;
+		}
+		JsonObject socialObject = getActivityBrowser().getSocialObject(
+				targetId, tenantDomain, order);
 
-        if (socialObject != null) {
-            return socialObject.toString();
-        } else {
-            return "{}";
-        }
-    }
+		if (socialObject != null) {
+			return socialObject.toString();
+		} else {
+			return "{}";
+		}
+	}
 
-    public abstract ActivityBrowser getActivityBrowser();
+	public abstract ActivityBrowser getActivityBrowser();
 
-    public abstract ActivityPublisher getActivityPublisher();
+	public abstract ActivityPublisher getActivityPublisher();
 
-    /**
-     * Allows an external configuration object to be passed into the Service
-     * //TODO: remove this. config should happen independent of the service
-     *
-     * @param configObject
-     */
-    public abstract void configPublisher(NativeObject configObject);
+	/**
+	 * Allows an external configuration object to be passed into the Service
+	 * //TODO: remove this. config should happen independent of the service
+	 *
+	 * @param configObject
+	 */
+	public abstract void configPublisher(NativeObject configObject);
 }

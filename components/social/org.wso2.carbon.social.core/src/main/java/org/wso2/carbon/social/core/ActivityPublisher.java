@@ -5,10 +5,10 @@ import org.mozilla.javascript.NativeObject;
 import java.util.UUID;
 
 public abstract class ActivityPublisher {
-    public String publish(NativeObject activity) {
-        String id = UUID.randomUUID().toString();
-        return publish(id, activity);
-    }
+	public String publish(NativeObject activity) {
+		String id = UUID.randomUUID().toString();
+		return publish(id, activity);
+	}
 
-    protected abstract String publish(String id, NativeObject activity);
+	protected abstract String publish(String id, NativeObject activity);
 }

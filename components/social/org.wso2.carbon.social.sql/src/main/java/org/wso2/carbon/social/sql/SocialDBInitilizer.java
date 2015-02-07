@@ -17,7 +17,7 @@ import java.util.StringTokenizer;
 public class SocialDBInitilizer {
 
 	private static Log log = LogFactory.getLog(SocialDBInitilizer.class);
-	private static final String DB_CHECK_SQL = "select * from "+ Constants.ES_SOCIAL;
+	private static final String DB_CHECK_SQL = "select * from "+ Constants.SOCIAL_TABLE_NAME;
 	private DataSource dataSource;
 	private String delimiter = ";";
 	Statement statement;

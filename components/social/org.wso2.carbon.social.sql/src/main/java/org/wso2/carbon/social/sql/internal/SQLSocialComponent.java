@@ -28,18 +28,22 @@ public class SQLSocialComponent {
 		BundleContext bundleContext = context.getBundleContext();
 		bundleContext.registerService(SocialActivityService.class,
 				new SQLActivityService(), null);
-		log.info("Social Activity service is activated  with SQL Implementation");
+		if (log.isDebugEnabled()) {
+			log.debug("Social Activity service is activated  with SQL Implementation");
+		}
 
-		try {
 			String cmd = System.getProperty(Constants.SETUP_CMD);
 			if (cmd != null) {
-				JDBCPersistenceManager jdbcPersistenceManager = JDBCPersistenceManager
-						.getInstance();
-				jdbcPersistenceManager.initializeDatabase();
+				JDBCPersistenceManager jdbcPersistenceManager;
+				try {
+					jdbcPersistenceManager = JDBCPersistenceManager
+							.getInstance();
+					jdbcPersistenceManager.initializeDatabase();
+				} catch (Exception e) {
+					log.error("Failed to initilize database. " + e);
+				}
+				
 			}
-		} catch (Throwable e) {
-			log.error(e.getMessage(), e);
-		}
 	}
 
 	protected void setDataSourceService(DataSourceService dataSourceService) {
