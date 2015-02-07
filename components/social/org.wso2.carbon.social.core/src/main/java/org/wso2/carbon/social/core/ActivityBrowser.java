@@ -23,11 +23,11 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 public interface ActivityBrowser {
-    double getRating(String targetId, String tenant);
+    double getRating(String targetId);
 
-    JsonObject getSocialObject(String targetId, String tenant, SortOrder order);
+    JsonObject getSocialObject(String targetId, SortOrder order);
 
-    List<Activity> listActivities(String contextId, String tenantDomain);
+    List<Activity> listActivities(String contextId);
 
-    List<Activity> listActivitiesChronologically(String contextId, String tenantDomain);
+    List<Activity> listActivitiesChronologically(String contextId);
 }

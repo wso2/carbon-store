@@ -1,20 +1,20 @@
 /*
-* Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-*
-* WSO2 Inc. licenses this file to you under the Apache License,
-* Version 2.0 (the "License"); you may not use this file except
-* in compliance with the License.
-* You may obtain a copy of the License at
-*
-* http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing,
-* software distributed under the License is distributed on an
-* "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-* KIND, either express or implied. See the License for the
-* specific language governing permissions and limitations
-* under the License.
-*/
+ * Copyright (c) 2005-2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 
 package org.wso2.carbon.social.sql;
 
@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.mozilla.javascript.NativeObject;
 import org.wso2.carbon.social.sql.Constants;
+import org.wso2.carbon.social.sql.SocialUtil;
 import org.wso2.carbon.social.core.ActivityPublisher;
 import org.wso2.carbon.social.core.JSONUtil;
 
@@ -34,8 +35,9 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 	private static Log log = LogFactory.getLog(SQLActivityPublisher.class);
 	public static final String INSERT_SQL = "INSERT INTO "
-			+ Constants.SOCIAL_TABLE_NAME
-			+ "(id, payload_context_id, body) VALUES(?, ?, ?)";
+			+ Constants.SOCIAL_TABLE_NAME + "(" + Constants.ID_COLUMN + ","
+			+ Constants.CONTEXT_ID_COLUMN + "," + Constants.BODY_COLUMN + ", "
+			+ Constants.TENANT_DOMAIN_COLUMN + ") VALUES(?, ?, ?, ?)";
 	public static final String ErrorStr = "Failed to publish the social event.";
 
 	@Override
@@ -63,10 +65,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(INSERT_SQL);
-			// TODO set tenantDomain separately
+			String tenantDomain = SocialUtil.getTenantDomain();
 			statement.setString(1, id);
 			statement.setString(2, contextId);
 			statement.setString(3, json);
+			statement.setString(4, tenantDomain);
 			ret = statement.executeUpdate();
 			connection.commit();
 
