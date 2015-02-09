@@ -630,7 +630,7 @@
         <carbon.governance.version>4.3.0</carbon.governance.version>
         <carbon.deployment.version>4.3.1</carbon.deployment.version>
         <carbon.identity.version>4.3.2</carbon.identity.version>
-        <carbon.multitenancy.version>4.3.3</carbon.multitenancy.version>
+        <carbon.multitenancy.version>4.3.4</carbon.multitenancy.version>
 
         <!--<test.framework.version>4.3.1</test.framework.version>-->
         <!--<automation.utils.version>4.3.0-SNAPSHOT</automation.utils.version>-->
