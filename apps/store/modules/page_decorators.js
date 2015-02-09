@@ -207,10 +207,23 @@ var pageDecorators = {};
         var domain = carbon.server.tenantDomain({
             tenantId: ctx.tenantId
         });
-        socialFeatureDetails.keys.tenantedSocialAppUrl = socialFeatureDetails.keys.socialAppUrl + '/t/' + domain;
+        socialFeatureDetails.keys.urlDomain = getDomainFromURL(request);
         page.features[constants.SOCIAL_FEATURE] = socialFeatureDetails;
         return page;
     };
+
+   var getDomainFromURL = function(request){
+        var uriMatcher = new URIMatcher(request.getRequestURI());
+        var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
+        var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
+        var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
+
+        var carbon = require('carbon');
+        var urlTenantDomain =  opts.domain ? opts.domain : constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+
+        return urlTenantDomain;
+    };
+
     pageDecorators.socialSites = function(page, meta, util) {
         var utils = require('utils');
         if (!utils.reflection.isArray(page.assets || [])) {
@@ -246,18 +259,18 @@ var pageDecorators = {};
         }
         return page;
     };
+
     var getAssetManager = function(ctx) {
         var asset = require('rxt').asset;
         var am;
 
-        var uriMatcher = new URIMatcher(request.getRequestURI());
-        var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
-        var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
-        var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
+//        var uriMatcher = new URIMatcher(request.getRequestURI());
+//        var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
+//        var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
+//        var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
 
         var carbon = require('carbon');
-        var URLTenantId = carbon.server.tenantId({domain: opts.domain ||
-            constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME});
+        var URLTenantId = carbon.server.tenantId({domain: getDomainFromURL(request)});
 
         if (ctx.isAnonContext || !ctx.user || ctx.tenantId != URLTenantId) {
             am = asset.createAnonAssetManager(ctx.session, ctx.assetType, URLTenantId);

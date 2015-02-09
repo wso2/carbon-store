@@ -18,7 +18,9 @@
  */
 var render = function (theme, data, meta, require) {
     data.stream.isLogged = data.isLogged;
-    if (data.isLogged) {
+    data.stream.isAuthorized = data.isAuthorized;
+    data.stream.urlDomain = data.urlDomain;
+    if (data.isLogged && data.isAuthorized) {
         theme('simple', {
             body: [
                 { partial: 'comment-input', context: data.input_param},
