@@ -31,9 +31,9 @@
                 postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
 
         var log = new Log();
-
-        log.debug("store session index : " + sso_sessions[session.getId()]);
-
+	if(log.isDebugEnabled()){
+        	log.debug("store session index : " + sso_sessions[session.getId()]);
+	}
 
         %>
         <div>
