@@ -736,21 +736,33 @@ var LOGGED_IN_USER = 'LOGGED_IN_USER';
  @session: The current session
  @return: An instance of the StoreMasterManager object containing all of the managers used by the Store
  */
-var storeManagers = function (o, session, tenantId) {
+var storeManagers = function (request, session, tenantId) {
     var storeMasterManager;
-//    var tenantId;
-    var server = require('store').server;
 
-    //We check if there is a valid session
-    if (server.current(session) != null) {
-        return handleLoggedInUser(o, session);
+    var server = require('store').server;
+    var userInstance = server.current(session);
+
+    var log = new Log("modules/store.js");
+
+    // //////////////////////////////////////////////////
+    var uriMatcher = new URIMatcher(request.getRequestURI());
+    var constants = require("rxt").constants;
+    var assetPageUrl = '/{context}/storage/{type}/{id}/{+name}';
+    var tenantedAssetPageUrl = '/{context}/t/{domain}/storage/{type}/{id}/{+name}';
+
+    var opts = uriMatcher.match(assetPageUrl) || uriMatcher.match(tenantedAssetPageUrl);
+
+    var urlDomain = opts.domain || constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+    var urlTenantId =  carbon.server.tenantId({domain: urlDomain});
+
+    //We check if there is a valid session, if so requested URL matched the userDomain
+    if (server.current(session) != null && userInstance.tenantId == urlTenantId) {
+        return handleLoggedInUser(request, session);
     }
     else {
         //No session,anonymous access
         return handleAnonUser(tenantId);
     }
-
-
 }
 /*
  The function handles the initialization and caching of managers when a user is logged in
@@ -936,7 +948,8 @@ var exec = function (fn, request, response, session) {
 
     es.server.sandbox({
         tenantId: tenant.tenantId,
-        username: user ? user.username : carbon.user.anonUser
+        username: user ? user.username : carbon.user.anonUser,
+        request: request
     }, function () {
         var configs = require('/config/store.js').config();
         return fn.call(null, {

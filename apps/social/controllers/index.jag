@@ -47,9 +47,7 @@ var caramel;
     var target = request.getParameter('target');
     var obj, reviewsJSON;
 
-    var uriMatcher = new URIMatcher(request.getRequestURI());
-    var elements = uriMatcher.match('/{context}/t/{domain}');
-    var domain = elements ? elements.domain : "carbon.super";
+    var urlDomain = request.getParameter('urlDomain') || "carbon.super";
 
     if (target) {
         try {
@@ -76,6 +74,8 @@ var caramel;
 
         caramel.render({
             isLogged: Boolean(logged),
+            isAuthorized: Boolean(logged && (urlDomain == logged.tenantDomain)),
+            urlDomain: urlDomain,
             input_param: {
                 user: username
             },

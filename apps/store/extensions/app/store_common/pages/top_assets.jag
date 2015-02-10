@@ -31,11 +31,28 @@ require('/modules/store.js').exec(function (ctx) {
 
     var tenantId = ctx.tenant.tenantId || constants.DEFAULT_TENANT;
     var q = ctx.request.getParameter('q');
-    if (user) {
+
+    var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
+
+    var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
+    var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
+    var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
+
+    var carbon = require('carbon');
+    var URLTenantId = carbon.server.tenantId({domain: opts.domain ||
+            constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME});
+
+    //Determine the type of asset manager to be created
+    if (!user || ctx.tenant.tenantId != URLTenantId) {
+        appManager = app.createAnonAppManager(ctx.session, URLTenantId);
+    }else {
+        appManager = app.createUserAppManager(ctx.session);
+    }
+    /*if (user) {
         appManager = app.createUserAppManager(ctx.session);
     } else {
         appManager = app.createAnonAppManager(ctx.session, tenantId);
-    }
+    }*/
     page.assetMeta.q = q;
     var output = appManager.render([], page);
     caramel.render(output);
