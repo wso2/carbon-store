@@ -17,7 +17,6 @@
  *
  */
 var render = function(theme, data, meta, require) {
-    new Log().info(data);
 
     theme('single-col-fluid', {
         title: 'Asset',

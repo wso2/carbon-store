@@ -259,7 +259,6 @@ a.ast-type-item:hover {
 /* assets */
 .ast-container {
 	padding-top:20px;
-	padding-left:20px;
 }
 
 .ast-container .itm-ast {
@@ -358,7 +357,7 @@ a.cu-btn {
 	color:#fff;
 	text-decoration: none;
 	border:0px solid #ff0000;
-	padding:17px 10px 16px 45px;
+	padding:8px 10px 9px 10px;
 	margin:0 0 0 5px;
 	font-weight:100;
 	display:inline-block;	
@@ -378,7 +377,7 @@ a.cu-ico-right-button {
 	display:inline-block;
 	color:#fff;
 	font-size:13px;
-	padding:5px 36px 5px 0px;
+	padding-right:36px;
 }
 
 a.cu-ico-button-user {

@@ -70,32 +70,32 @@
 
 /* sorting */
 .dropdown-menu {
-	position: absolute;
-	top: 50px;
-	left: 0;
-	z-index: 1000;
-	display: none;
-	float: left;
-	min-width: 160px;
-	padding: 5px 0;
-	margin: 2px 0 0;
-	font-size: 14px;
-	text-align: left;
-	list-style: none;
-	background-color: transparent;
-	-webkit-background-clip: padding-box;
-	background-clip: padding-box;
-	border: 0px solid #ccc;
-	border: 0px solid rgba(0,0,0,.15);
-	border-radius: 0px;
-	-webkit-box-shadow: 0 0px 0px rgba(0,0,0,.175);
-	box-shadow: 0 0px 0px rgba(0,0,0,.175);
+    position: absolute;
+    top: 50px;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 160px;
+    padding: 5px 0;
+    margin: 2px 0 0;
+    font-size: 14px;
+    text-align: left;
+    list-style: none;
+    background-color: transparent;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    border: 0px solid #ccc;
+    border: 0px solid rgba(0,0,0,.15);
+    border-radius: 0px;
+    -webkit-box-shadow: 0 0px 0px rgba(0,0,0,.175);
+    box-shadow: 0 0px 0px rgba(0,0,0,.175);
 
 }
 
 .dropdown-menu-content {
-	background-color: #232323;
-	padding:10px 20px;	
+    background-color: #232323;
+    padding:10px 20px;
 }
 
 .wr-filter-sort .cu-arrow {
@@ -130,26 +130,26 @@ a.ctrl-filter-category:hover {
 }
 
 .wr-filter-category .dropdown-menu {
-	border:0px solid #237bd5;
-	background:#237bd5;
-	top:53px;
-	left:20px;
-	width:230px;
-	padding-top:0;
-	padding-bottom:0;
-	color:#fff;	
-	font-size:17px;
+    border:0px solid #237bd5;
+    background:#237bd5;
+    top:53px;
+    left:20px;
+    width:230px;
+    padding-top:0;
+    padding-bottom:0;
+    color:#fff;
+    font-size:17px;
 }
 
 .wr-filter-category .dropdown-menu li a {
-	padding-top:7px;
-	padding-bottom:7px;
-	font-weight:100;	
-	color:#fff;	
+    padding-top:7px;
+    padding-bottom:7px;
+    font-weight:100;
+    color:#fff;
 }
 
 .wr-filter-category .dropdown-menu li a:hover {
-	background:#61a3e6;
+    background:#61a3e6;
 }
 
 .ctrl-filter-category .glyphicon {

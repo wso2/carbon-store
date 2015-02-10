@@ -13,13 +13,12 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <div class="row">
     <div class="col-lg-6 col-md-12 col-sm-9 col-xs-12 wr-filters">
         <div class="wr-search">
             <div class="form-inline">
-                <div class="form-group">
-                    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select Category ... <span class="glyphicon glyphicon-chevron-down"></span></a>
+                <div class="form-group wr-filter-category">
+                    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select Category ... <span class="fa fa-angle-down pull-right"></span></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                         <li><a tabindex="-1" href="#">Tools and Utilities</a></li>
                         <li><a tabindex="-1" href="#">Entertainment</a></li>
@@ -39,7 +38,7 @@
                     <input type="text" class="form-control" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{query}}"  />
                     <input type="hidden" id="search-prefix" value="{{shortName}}"/>
                 </div>
-                <button type="button" class="btn btn-search" id="search-button"><span class="glyphicon glyphicon-search"></span></button>
+                <button type="button" class="btn btn-search" id="search-button"><span class="fa fa-search"></span></button>
             </div>
         </div>
     </div>

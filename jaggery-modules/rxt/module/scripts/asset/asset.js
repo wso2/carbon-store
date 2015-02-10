@@ -1147,6 +1147,23 @@ var asset = {};
     NavList.prototype.list = function () {
         return this.items;
     };
+
+
+    function NavListComplex() {
+        this.items = [];
+    }
+
+    NavListComplex.prototype.push = function (label, iconOut, iconIn, url) {
+        this.items.push({
+            name: label,
+            iconClassOut: iconOut,
+            iconClassIn: iconIn,
+            url: url
+        });
+    };
+    NavListComplex.prototype.list = function () {
+        return this.items;
+    };
     /**
      * Represents the rendering interface of an asset
      * @class
@@ -1180,6 +1197,9 @@ var asset = {};
     };
     AssetRenderer.prototype.navList = function () {
         return new NavList();
+    };
+    AssetRenderer.prototype.navListComplex = function () {
+        return new NavListComplex();
     };
     AssetRenderer.prototype.create = function (page) {
     };

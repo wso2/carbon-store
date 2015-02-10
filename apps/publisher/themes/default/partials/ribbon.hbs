@@ -1,8 +1,6 @@
-{{#with ribbon}}
-
 <!-- secondary header - app bar -->
 <div id="nav" class="row wr-app-bar">
-    <div class="col-md-9 wr-action-container">
+    <div class="col-lg-12 wr-action-container">
 
         <div class="wr-asset-type-switcher">
             <a data-trigger="focus" data-placement="bottom" class="ctrl-asset-type-switcher" href="#" data-original-title="" title="">
@@ -11,19 +9,24 @@
         </div>
 
         <div class="wr-action-btn-bar">
-            <a class="cu-btn btn-add-new" href='{{url ""}}{{currentUrl}}'>{{currentTitle}}</a>
-            <a href="#" class="cu-btn btn-add-new">Add Gadget</a>
-            <a href="#" class="cu-btn btn-add-new">Manage Lifecycle</a>
-            <a href="#" class="cu-btn btn-add-new">Delete</a>
+            <a class="cu-btn" href='{{url ""}}{{currentUrl}}'>{{rxt.pluralLabel}}</a>
+            {{#each leftNav}}
+                <a href='{{url ""}}{{this.url}}' class="cu-btn {{this.iconClassOut}}">
+                    <span class="fa-stack fa-lg">
+                      <i class="fa {{this.iconClassIn}} fa-stack-1x"></i>
+                      <i class="fa fa-circle-thin fa-stack-2x"></i>
+                    </span>
+                    {{this.name}}
+                </a>
+            {{/each}}
+
+
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="wr-secondary-links pull-right">
-            <a href="#" class="cu-ico-right-button cu-ico-button-stats">Statistics</a>
-        </div>
-    </div>
+
 </div>
+
 
 
 
@@ -49,17 +52,4 @@
         </button>
     </div>
 </div>
-{{rxt.pluralLabel}}
-{{#each leftNav}}
-<div class="{{this.additionalClasses}}">
-    <a href='{{url ""}}{{this.url}}'>
-        {{#if this.iconClass}}
-            <i class="{{this.iconClass}}"></i>
-        {{/if}}
-        {{this.name}}
-    </a>
-</div>
-{{/each}}
 
-
-{{/with}}
