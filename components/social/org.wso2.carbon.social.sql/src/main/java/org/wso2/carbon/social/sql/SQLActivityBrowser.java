@@ -41,10 +41,19 @@ import org.wso2.carbon.social.sql.SocialUtil;
 
 public class SQLActivityBrowser implements ActivityBrowser {
 	private static final Log log = LogFactory.getLog(SQLActivityBrowser.class);
-	public static final String SELECT_SQL = "SELECT * FROM "
+	public static final String PAGIN_SELECT_SQL = "SELECT * FROM "
 			+ Constants.SOCIAL_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + "=? AND "
-			+ Constants.TENANT_DOMAIN_COLUMN + "=?";
+			+ Constants.TENANT_DOMAIN_COLUMN + "=? AND " + Constants.TIMESTAMP
+			+ " < (SELECT " + Constants.TIMESTAMP + " FROM "
+			+ Constants.SOCIAL_TABLE_NAME + " WHERE " + Constants.ID_COLUMN
+			+ " =?) ORDER BY " + Constants.TIMESTAMP + " DESC LIMIT ?";
+
+	public static final String INIT_SELECT_SQL = "SELECT * FROM "
+			+ Constants.SOCIAL_TABLE_NAME + " WHERE "
+			+ Constants.CONTEXT_ID_COLUMN + "=? AND "
+			+ Constants.TENANT_DOMAIN_COLUMN + "=? "
+			+ "ORDER BY " + Constants.TIMESTAMP + " DESC LIMIT ?";
 
 	private JsonParser parser = new JsonParser();
 
@@ -54,9 +63,11 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	}
 
 	@Override
-	public JsonObject getSocialObject(String targetId, SortOrder order) {
+	public JsonObject getSocialObject(String targetId, SortOrder order,
+			String PreviousActivityID, int limit) {
 
-		List<Activity> activities = listActivities(targetId);
+		List<Activity> activities = listActivities(targetId,
+				PreviousActivityID, limit);
 
 		JsonArray attachments = new JsonArray();
 		JsonObject jsonObj = new JsonObject();
@@ -72,7 +83,8 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	}
 
 	@Override
-	public List<Activity> listActivities(String contextId) {
+	public List<Activity> listActivities(String targetId,
+			String PreviousActivityID, int limit) {
 		List<Activity> activities = null;
 		DSConnection con = new DSConnection();
 		Connection connection = con.getConnection();
@@ -80,11 +92,30 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			PreparedStatement statement = null;
 			ResultSet resultSet = null;
 			String tenantDomain = SocialUtil.getTenantDomain();
+			limit = SocialUtil.getActivityLimit(limit);
+			PreviousActivityID = SocialUtil
+					.getPreviousActivityID(PreviousActivityID);
+			String SELECT_SQL;
+
+			if (PreviousActivityID != null) {
+				SELECT_SQL = PAGIN_SELECT_SQL;
+			} else {
+				SELECT_SQL = INIT_SELECT_SQL;
+			}
+
 			try {
 				statement = connection.prepareStatement(SELECT_SQL);
 
-				statement.setString(1, contextId);
+				statement.setString(1, targetId);
 				statement.setString(2, tenantDomain);
+
+				if (PreviousActivityID != null) {
+					statement.setString(3, PreviousActivityID);
+					statement.setInt(4, limit);
+				} else {
+					statement.setInt(3, limit);
+				}
+
 				resultSet = statement.executeQuery();
 				activities = new ArrayList<Activity>();
 				while (resultSet.next()) {
@@ -110,8 +141,10 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	}
 
 	@Override
-	public List<Activity> listActivitiesChronologically(String contextId) {
-		List<Activity> activities = listActivities(contextId);
+	public List<Activity> listActivitiesChronologically(String targetId,
+			String PreviousActivityID, int limit) {
+		List<Activity> activities = listActivities(targetId,
+				PreviousActivityID, limit);
 		return activities;
 	}
 

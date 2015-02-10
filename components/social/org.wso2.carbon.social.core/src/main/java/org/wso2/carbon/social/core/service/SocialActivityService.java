@@ -19,6 +19,7 @@
 package org.wso2.carbon.social.core.service;
 
 import com.google.gson.JsonObject;
+
 import org.mozilla.javascript.NativeObject;
 import org.wso2.carbon.social.core.Activity;
 import org.wso2.carbon.social.core.ActivityBrowser;
@@ -33,9 +34,9 @@ public abstract class SocialActivityService {
 		return getActivityPublisher().publish(activity);
 	}
 
-	public String[] listActivities(String contextId) {
+	public String[] listActivities(String targetId, String PreviousActivityID, int limit) {
 		List<Activity> activities = getActivityBrowser()
-				.listActivitiesChronologically(contextId);
+				.listActivitiesChronologically(targetId, PreviousActivityID, limit);
 		String[] serializedActivities = new String[activities.size()];
 		for (int i = 0; i < activities.size(); i++) {
 			serializedActivities[i] = activities.get(i).toString();
@@ -47,7 +48,7 @@ public abstract class SocialActivityService {
 		return getActivityBrowser().getRating(targetId);
 	}
 
-	public String getSocialObjectJson(String targetId, String sortOrder) {
+	public String getSocialObjectJson(String targetId, String sortOrder, String PreviousActivityID, int limit) {
 		SortOrder order;
 		try {
 			order = SortOrder.valueOf(sortOrder);
@@ -55,7 +56,7 @@ public abstract class SocialActivityService {
 			order = SortOrder.NEWEST;
 		}
 		JsonObject socialObject = getActivityBrowser().getSocialObject(
-				targetId, order);
+				targetId, order, PreviousActivityID, limit);
 
 		if (socialObject != null) {
 			return socialObject.toString();

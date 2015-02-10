@@ -37,7 +37,8 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	public static final String INSERT_SQL = "INSERT INTO "
 			+ Constants.SOCIAL_TABLE_NAME + "(" + Constants.ID_COLUMN + ","
 			+ Constants.CONTEXT_ID_COLUMN + "," + Constants.BODY_COLUMN + ", "
-			+ Constants.TENANT_DOMAIN_COLUMN + ") VALUES(?, ?, ?, ?)";
+			+ Constants.TENANT_DOMAIN_COLUMN + ", " + Constants.TIMESTAMP
+			+ ") VALUES(?, ?, ?, ?, ?)";
 	public static final String ErrorStr = "Failed to publish the social event.";
 
 	@Override
@@ -56,20 +57,24 @@ public class SQLActivityPublisher extends ActivityPublisher {
 		try {
 			json = JSONUtil.SimpleNativeObjectToJson(activity);
 
-			String contextId = JSONUtil.getNullableProperty(activity,
+			String targetId = JSONUtil.getNullableProperty(activity,
 					Constants.CONTEXT_JSON_PROP, Constants.ID_JSON_PROP);
-			if (contextId == null) {
-				contextId = JSONUtil.getProperty(activity,
+			if (targetId == null) {
+				targetId = JSONUtil.getProperty(activity,
 						Constants.TARGET_JSON_PROP, Constants.ID_JSON_PROP);
 			}
+
+			String timeStamp = JSONUtil.getProperty(activity,
+					Constants.TIMESTAMP);
 
 			connection.setAutoCommit(false);
 			statement = connection.prepareStatement(INSERT_SQL);
 			String tenantDomain = SocialUtil.getTenantDomain();
 			statement.setString(1, id);
-			statement.setString(2, contextId);
+			statement.setString(2, targetId);
 			statement.setString(3, json);
 			statement.setString(4, tenantDomain);
+			statement.setString(5, timeStamp);
 			ret = statement.executeUpdate();
 			connection.commit();
 
@@ -80,11 +85,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			if (log.isDebugEnabled()) {
 				if (ret > 0) {
 					log.debug("Activity published successfully. "
-							+ " Activity ID: " + id + " ContextID: "
-							+ contextId + " JSON: " + json);
+							+ " Activity ID: " + id + " TargetID: " + targetId
+							+ " JSON: " + json);
 				} else {
-					log.debug(ErrorStr + " Activity ID: " + id + " ContextID: "
-							+ contextId + " JSON: " + json);
+					log.debug(ErrorStr + " Activity ID: " + id + " TargetID: "
+							+ targetId + " JSON: " + json);
 				}
 			}
 

@@ -24,6 +24,7 @@ public class Constants {
 	public static final String CONTEXT_ID_COLUMN = "payload_context_id";
 	public static final String TENANT_DOMAIN_COLUMN = "tenant_domain";
 	public static final String ATTACHMENTS = "attachments";
+	public static final String TIMESTAMP = "timestamp";
 
 	public static final String TARGET_JSON_PROP = "target";
 	public static final String CONTEXT_JSON_PROP = "context";
@@ -33,5 +34,7 @@ public class Constants {
 	public static final String SETUP_CMD = "setup";
 	public static final String SOCIAL_DB_NAME = "WSO2_SOCIAL_DB";
 	public static final String SOCIAL_TABLE_NAME = "ES_SOCIAL";
+
+	public static final int MAXIMUM_ACTIVITY_SELECT_COUNT = 100;
 
 }

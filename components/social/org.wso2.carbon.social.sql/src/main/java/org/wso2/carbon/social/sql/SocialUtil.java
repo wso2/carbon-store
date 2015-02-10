@@ -18,15 +18,40 @@
 
 package org.wso2.carbon.social.sql;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 
 public class SocialUtil {
+	private static final Log log = LogFactory.getLog(SocialUtil.class);
 
 	public static String getTenantDomain() {
 		String tenantDomainName = CarbonContext.getThreadLocalCarbonContext()
 				.getTenantDomain();
 		return tenantDomainName;
 
+	}
+
+	public static int getActivityLimit(int limit) {
+
+		if (limit > Constants.MAXIMUM_ACTIVITY_SELECT_COUNT || limit == 0) {
+			if (log.isDebugEnabled()) {
+				log.debug("Provided limit: " + limit
+						+ " exceeds default max limit: "
+						+ Constants.MAXIMUM_ACTIVITY_SELECT_COUNT);
+			}
+			return Constants.MAXIMUM_ACTIVITY_SELECT_COUNT;
+		} else {
+			return limit;
+		}
+	}
+
+	public static String getPreviousActivityID(String PreviousActivityID) {
+		if (PreviousActivityID != null && PreviousActivityID != "") {
+			return PreviousActivityID;
+		} else {
+			return null;
+		}
 	}
 
 }

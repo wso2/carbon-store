@@ -25,9 +25,9 @@ import java.util.List;
 public interface ActivityBrowser {
     double getRating(String targetId);
 
-    JsonObject getSocialObject(String targetId, SortOrder order);
+    JsonObject getSocialObject(String targetId, SortOrder order, String PreviousActivityID, int limit);
 
-    List<Activity> listActivities(String contextId);
+    List<Activity> listActivities(String targetId, String PreviousActivityID, int limit);
 
-    List<Activity> listActivitiesChronologically(String contextId);
+    List<Activity> listActivitiesChronologically(String targetId, String PreviousActivityID, int limit);
 }
