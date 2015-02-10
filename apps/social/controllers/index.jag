@@ -53,7 +53,7 @@ var caramel;
 
     if (target) {
         try {
-            obj = JSON.parse(String(social.getSocialObjectJson(target, "POPULAR")));
+            obj = JSON.parse(String(social.getSocialObjectJson(target, "POPULAR", "", 10)));
             reviewsJSON = obj.attachments;
         } catch (e) {
             log.error(e);
@@ -70,6 +70,7 @@ var caramel;
                 var review = reviewsJSON[i];
                 review.iLike = isUserInList(review.likes && review.likes.items, username);
                 review.iDislike = isUserInList(review.dislikes && review.dislikes.items, username);
+                var lastReviewID = review.id;
             }
         }
 
@@ -78,7 +79,7 @@ var caramel;
             input_param: {
                 user: username
             },
-            stream: {reviews: reviewsJSON, id: target, user: username}
+            stream: {reviews: reviewsJSON, id: target, user: username, lastReviewID: lastReviewID}
         });
     } else {
         print('please use the target URL parameter as the asset id, eg: http://localhost:9763/social/?target=33530252-rer-w345325');

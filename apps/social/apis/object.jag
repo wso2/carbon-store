@@ -24,7 +24,9 @@ response.addHeader("Content-Type", "application/json");
     var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
     var target = request.getParameter('target');
     var sortBy = request.getParameter('sortBy') || "NEWEST";
-    var obj = social.getSocialObjectJson(target, sortBy.toUpperCase());
+    var limit = 10;
+    var PreviousActivityID = request.getParameter('PreviousActivityID') || "";
+    var obj = social.getSocialObjectJson(target, sortBy.toUpperCase(), PreviousActivityID, limit);
     print(obj);
 })();
 %>

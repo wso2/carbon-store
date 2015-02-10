@@ -41,7 +41,9 @@ var redrawReviews = function (sortBy, callback) {
     $('.com-sort .selected').removeClass('selected');
     $.get('apis/object.jag', {
         target: target,
-        sortBy: sortBy
+        sortBy: sortBy,
+        PreviousActivityID: "",
+        limit: 10
     }, function (obj) {
         var reviews = obj.attachments || [];
         usingTemplate(function (template) {
@@ -58,9 +60,11 @@ var redrawReviews = function (sortBy, callback) {
                 review.iLike = iLike;
                 console.log(iLike);
                 str += template(review);
+                var lastReviewID = review.id;
             }
             $stream.html(str);
-            callback && callback();
+            $('.load-more').attr("value", lastReviewID);
+            //callback && callback();
             adjustHeight();
         });
     })

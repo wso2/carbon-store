@@ -23,6 +23,9 @@ var $stream = $('#stream');
 var $firstReview = $('.com-first-review');
 var $alert = $('.com-alert');
 var $sort = $('.com-sort');
+var $lastReview = $('.load-more');
+var $more = $('#more');
+var $empty_list = $('#empty_list');
 var windowProxy;
 
 
@@ -171,3 +174,43 @@ $stream.on('click', '.icon-thumbs-up', function (e) {
 
 });
 
+$more.on('click', '.load-more', function (e) {
+    e.preventDefault();
+
+    $('.com-sort .selected').removeClass('selected');
+        $.get('apis/object.jag', {
+            target: target,
+            PreviousActivityID: $('.load-more').attr("value"),
+            limit: 10
+        }, function (obj) {
+            var reviews = obj.attachments || [];
+
+            if(jQuery.isEmptyObject(reviews) || reviews.length < 10){
+                $more.remove();
+                $empty_list.text("No more activities to retrieve.");
+            }
+
+            usingTemplate(function (template) {
+                var str = "";
+                for (var i = 0; i < reviews.length; i++) {
+                    //Remove carbon.super tenant domain from username
+                    var user = reviews[i].actor.id;
+                    var pieces = user.split(/[\s@]+/);
+                    if(pieces[pieces.length-1] == 'carbon.super'){
+                        reviews[i].actor.id= pieces[pieces.length-2];
+                    }
+                    var review = reviews[i];
+                    var iLike = didILike(review, user);
+                    review.iLike = iLike;
+                    console.log(iLike);
+                    str += template(review);
+                    var lastReviewID = review.id;
+                }
+                $stream.append(str);
+                //callback && callback();
+                adjustHeight();
+                $('.load-more').attr("value", lastReviewID);
+            });
+        })
+
+});
