@@ -1,0 +1,545 @@
+{"rxt": {
+    "hasNamespace": "false",
+    "iconSet": "10",
+    "pluralLabel": "Gadgets",
+    "shortName": "gadget",
+    "singularLabel": "Gadget",
+    "type": "application/vnd.wso2-gadget+xml",
+    "storagePath": "/gadgets/@{overview_provider}/@{overview_name}/@{overview_version}",
+    "nameAttribute": [
+        {
+            "nameAttribute": "overview_name"
+        }
+    ],
+    "ui": [
+        {
+            "list": [
+                {
+                    "column": [
+                        {
+                            "name": "Provider",
+                            "data": [
+                                {
+                                    "href": "@{storagePath}",
+                                    "type": "path",
+                                    "value": "overview_provider"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Name",
+                            "data": [
+                                {
+                                    "href": "@{storagePath}",
+                                    "type": "path",
+                                    "value": "overview_name"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "Version",
+                            "data": [
+                                {
+                                    "href": "@{storagePath}",
+                                    "type": "path",
+                                    "value": "overview_version"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "content": {
+        "table": {
+            "overview": {
+                "name": "Overview",
+                "fields": {
+                    "provider": {
+                        "required": "true",
+                        "type": "text",
+                        "name": {
+                            "name": "provider",
+                            "label": "Provider",
+                            "fullName": "overview_provider"
+                        },
+                        "validations": [],
+                        "readonly": true
+                    },
+                    "name": {
+                        "required": "true",
+                        "type": "text",
+                        "name": {
+                            "name": "name",
+                            "label": "Name"
+                        },
+                        "validations": [
+                            {}
+                        ]
+                    },
+                    "version": {
+                        "required": "true",
+                        "type": "text",
+                        "name": {
+                            "label": "Version"
+                        },
+                        "validations": []
+                    },
+                    "createdtime": {
+                        "type": "text",
+                        "name": {
+                            "name": "createdtime",
+                            "label": "Createdtime",
+                            "fullName": "overview_createdtime"
+                        }
+                    },
+                    "category": {
+                        "type": "options",
+                        "name": {
+                            "label": "Category",
+                            "name": "category",
+                            "fullName": "overview_category"
+                        },
+                        "values": [
+                            {
+                                "value": [
+                                    {
+                                        "value": "Google"
+                                    },
+                                    {
+                                        "value": "WSO2"
+                                    },
+                                    {
+                                        "value": "Templates"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "url": {
+                        "type": "text",
+                        "url": "true",
+                        "name": {
+                            "name": "url",
+                            "label": "URL",
+                            "fullName": "overview_url"
+                        }
+                    },
+                    "description": {
+                        "type": "text-area",
+                        "name": {
+                            "name": "description",
+                            "label": "Description",
+                            "fullName": "overview_description"
+                        }
+                    }
+                }
+            },
+            "images": {
+                "name": "Images",
+                "fields": {
+                    "thumbnail": {
+                        "required": "true",
+                        "type": "file",
+                        "name": {
+                            "name": "thumbnail",
+                            "label": "Thumbnail",
+                            "fullName": "images_thumbnail"
+                        },
+                        "validations": []
+                    },
+                    "banner": {
+                        "required": "true",
+                        "type": "file",
+                        "name": {
+                            "name": "banner",
+                            "label": "Banner",
+                            "fullName": "images_banner"
+                        },
+                        "validations": []
+                    }
+                }
+            }
+        }
+    },
+    "meta": {
+        "lifecycle": {
+            "name": "SampleLifeCycle2",
+            "commentRequired": false,
+            "defaultAction": "Promote",
+            "deletableStates": [],
+            "publishedStates": ["Published"]
+        },
+        "ui": {
+            "icon": "icon-cog"
+        },
+        "thumbnail": "images_thumbnail",
+        "banner": "images_banner"
+    }
+}, "cuser": {
+    "username": "admin",
+    "isAnon": false
+}, "assets": [
+    {
+        "id": "580e7f2d-48fa-4472-860a-4a606fd3274d",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/WSO2 Jira/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/wso2-jira",
+            "overview_description": "This is a sample gadget that is shipped with the store. This gadget visualizes the frequency of issues created and popular engineers working on issues in WSO2 Carbon Platform",
+            "overview_dataformat": "/config/defaults/gadgets/wso2-jira/datasource/data-format.json",
+            "overview_name": "WSO2 Jira",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//wso2-jira/wso2-jira.xml",
+            "overview_provider": "admin",
+            "images_banner": "28ed623a-325e-47fb-aa8c-b7ec77c5fe63/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/wso2-jira/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:37 GMT",
+            "overview_category": "WSO2",
+            "images_thumbnail": "fbbc7d8c-aaeb-43f5-b6b5-8a25b5ecf976/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "WSO2 Jira",
+        "thumbnail": "fbbc7d8c-aaeb-43f5-b6b5-8a25b5ecf976/thumbnail.jpg",
+        "banner": "28ed623a-325e-47fb-aa8c-b7ec77c5fe63/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "2ab6d97b-a25f-4e38-9e0a-c936dd938a70",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/WSO2 Dev List Discussion/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/wso2-dev",
+            "overview_description": "This is a sample gadget that is shipped with the store. This gadget visualizes the frequency of mails and popular mail senders in WSO2 Developer mailing list.",
+            "overview_dataformat": "/config/defaults/gadgets/wso2-dev/datasource/data-format.json",
+            "overview_name": "WSO2 Dev List Discussion",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//wso2-dev/wso2-dev.xml",
+            "overview_provider": "admin",
+            "images_banner": "27b4b719-996a-4b66-8cc5-5d680bcaa03c/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/wso2-dev/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:37 GMT",
+            "overview_category": "WSO2",
+            "images_thumbnail": "f4823ec8-5418-4cbf-931f-9501c1375758/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "WSO2 Dev List Discussion",
+        "thumbnail": "f4823ec8-5418-4cbf-931f-9501c1375758/thumbnail.jpg",
+        "banner": "27b4b719-996a-4b66-8cc5-5d680bcaa03c/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "e420b4e8-d7b4-4d7a-a8b0-130ade5b1977",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/WSO2 Carbon Div List Discussion/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/wso2-carbon-dev",
+            "overview_description": "WSO2 Carbon Div mial list ",
+            "overview_dataformat": "/config/defaults/gadgets/wso2-carbon-dev/datasource/data-format.json",
+            "overview_name": "WSO2 Carbon Div List Discussion",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//wso2-carbon-dev/wso2-carbon-dev.xml",
+            "overview_provider": "admin",
+            "images_banner": "9fd349cf-3b8c-4ab9-b10e-77674671ae16/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/wso2-carbon-dev/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:37 GMT",
+            "overview_category": "WSO2",
+            "images_thumbnail": "82887e1e-1582-4d5c-98c1-86e9c95cc6e6/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "WSO2 Carbon Div List Discussion",
+        "thumbnail": "82887e1e-1582-4d5c-98c1-86e9c95cc6e6/thumbnail.jpg",
+        "banner": "9fd349cf-3b8c-4ab9-b10e-77674671ae16/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "e703d5fd-8aa7-40be-a9f9-873988a14388",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/WSO2 Carbon Commits List Discussion/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/wso2-carbon-commits",
+            "overview_description": "This is a sample gadget that is shipped with the store. This gadget visualizes the frequency of commit mails and popular commiters in WSO2 Carbon Platform",
+            "overview_dataformat": "/config/defaults/gadgets/wso2-carbon-commits/datasource/data-format.json",
+            "overview_name": "WSO2 Carbon Commits List Discussion",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//wso2-carbon-commits/wso2-carbon-commits.xml",
+            "overview_provider": "admin",
+            "images_banner": "076b6d44-ef25-4759-b070-10e98a7a110b/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/wso2-carbon-commits/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:37 GMT",
+            "overview_category": "WSO2",
+            "images_thumbnail": "8337fa71-0449-49b8-b96f-6d24eafec482/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "WSO2 Carbon Commits List Discussion",
+        "thumbnail": "8337fa71-0449-49b8-b96f-6d24eafec482/thumbnail.jpg",
+        "banner": "076b6d44-ef25-4759-b070-10e98a7a110b/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "5e1eb79f-cf61-4451-a3c0-aee7bcfcf21f",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/WSO2 Architecture List Discussion/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/wso2-architecture",
+            "overview_description": "This is a sample gadget that is shipped with the store. This gadget visualizes the frequency of mails and popular mail senders in WSO2 Architecture mailing list",
+            "overview_dataformat": "/config/defaults/gadgets/wso2-architecture/datasource/data-format.json",
+            "overview_name": "WSO2 Architecture List Discussion",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//wso2-architecture/wso2-architecture.xml",
+            "overview_provider": "admin",
+            "images_banner": "9a56d125-0ac2-42b1-84fa-20240351944c/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/wso2-architecture/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:37 GMT",
+            "overview_category": "WSO2",
+            "images_thumbnail": "228bfc1e-021c-448c-b603-a7680741a551/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "WSO2 Architecture List Discussion",
+        "thumbnail": "228bfc1e-021c-448c-b603-a7680741a551/thumbnail.jpg",
+        "banner": "9a56d125-0ac2-42b1-84fa-20240351944c/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "bd2702d5-79d0-427f-8bca-c5eafc56ce3d",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/Stacked Line Chart/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/stacked-line-chart",
+            "overview_description": "A generic Stacked Chart gadget, takes a json datasource as an input. It can be be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained",
+            "overview_dataformat": "/config/defaults/gadgets/stacked-line-chart/datasource/data-format.json",
+            "overview_name": "Stacked Line Chart",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//stacked-line-chart/stacked-line-chart.xml",
+            "overview_provider": "admin",
+            "images_banner": "c3c86d2e-d934-45ac-9d08-78135944f6ce/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/stacked-line-chart/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:37 GMT",
+            "overview_category": "Templates",
+            "images_thumbnail": "556dc476-23eb-48a0-81db-61f78ea28d7d/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "Stacked Line Chart",
+        "thumbnail": "556dc476-23eb-48a0-81db-61f78ea28d7d/thumbnail.jpg",
+        "banner": "c3c86d2e-d934-45ac-9d08-78135944f6ce/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "c080912f-7cab-4716-b281-c8674ca7fb26",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/Stacked Bar Chart/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/stacked-bar-chart",
+            "overview_description": "A generic Stacked Bar Chart gadget, takes a json datasource as an input. It can be be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained",
+            "overview_dataformat": "/config/defaults/gadgets/stacked-bar-chart/datasource/data-format.json",
+            "overview_name": "Stacked Bar Chart",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//stacked-bar-chart/stacked-bar-chart.xml",
+            "overview_provider": "admin",
+            "images_banner": "0b832f00-d386-40d8-9bf8-75035725dcd7/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/stacked-bar-chart/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:37 GMT",
+            "overview_category": "Templates",
+            "images_thumbnail": "3eb56513-0173-4d0e-801b-830181233a06/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "Stacked Bar Chart",
+        "thumbnail": "3eb56513-0173-4d0e-801b-830181233a06/thumbnail.jpg",
+        "banner": "0b832f00-d386-40d8-9bf8-75035725dcd7/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "b912674b-2b5c-4bea-b3cf-f570daf3cff0",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/Pie Chart/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/pie-chart",
+            "overview_description": "A generic Pie Chart gadget, that takes a json datasource as an input. It can be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained",
+            "overview_dataformat": "/config/defaults/gadgets/pie-chart/datasource/data-format.json",
+            "overview_name": "Pie Chart",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//pie-chart/pie-chart.xml",
+            "overview_provider": "admin",
+            "images_banner": "952cc007-5674-457c-bec0-b056d6b41116/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/pie-chart/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:36 GMT",
+            "overview_category": "Templates",
+            "images_thumbnail": "db402371-1bf8-463b-b709-e8a64fe773ea/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "Pie Chart",
+        "thumbnail": "db402371-1bf8-463b-b709-e8a64fe773ea/thumbnail.jpg",
+        "banner": "952cc007-5674-457c-bec0-b056d6b41116/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "37612151-b4d5-424c-b40e-73338f1e17c4",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/Line Plus Bar Chart/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/line-plus-bar-chart",
+            "overview_description": "A generic Line + Bar Chart gadget, that takes a json data source as an input. It can be be configured to fetch data                   in defined intervals. This gadget can be used to create dashboards with statistical data. Gadget can be reused as an iframe in any web page                   as it is sef contained",
+            "overview_dataformat": "/config/defaults/gadgets/line-plus-bar-chart/datasource/data-format.json",
+            "overview_name": "Line Plus Bar Chart",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//line-plus-bar-chart/line-plus-bar-chart.xml",
+            "overview_provider": "admin",
+            "images_banner": "5864951e-b9b7-4286-94b8-973018d9dbb2/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/line-plus-bar-chart/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:36 GMT",
+            "overview_category": "Templates",
+            "images_thumbnail": "bd743ce3-0f22-46ff-bcd2-4939d38cd499/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "Line Plus Bar Chart",
+        "thumbnail": "bd743ce3-0f22-46ff-bcd2-4939d38cd499/thumbnail.jpg",
+        "banner": "5864951e-b9b7-4286-94b8-973018d9dbb2/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "9006de39-8a4d-493f-b1da-d7deb3e97279",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/Line Chart/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/line-chart",
+            "overview_description": "A generic Line Chart gadget, that takes a json datasource as an input. It can be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained",
+            "overview_dataformat": "/config/defaults/gadgets/line-chart/datasource/data-format.json",
+            "overview_name": "Line Chart",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//line-chart/line-chart.xml",
+            "overview_provider": "admin",
+            "images_banner": "c93f96d8-7b60-4885-bd6d-ec36431e68f7/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/line-chart/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:36 GMT",
+            "overview_category": "Templates",
+            "images_thumbnail": "d416a3c5-9b1f-403f-9e59-305cfe15f2da/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "Line Chart",
+        "thumbnail": "d416a3c5-9b1f-403f-9e59-305cfe15f2da/thumbnail.jpg",
+        "banner": "c93f96d8-7b60-4885-bd6d-ec36431e68f7/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "ea69d492-a6b3-4da3-b1c2-48e449a41165",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/Horizontal Bar Chart/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/horizontal-bar-chart",
+            "overview_description": "A generic Horizontal Bar Chart gadget, that takes a json datasource as an input. It can be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained",
+            "overview_dataformat": "/config/defaults/gadgets/horizontal-bar-chart/datasource/data-format.json",
+            "overview_name": "Horizontal Bar Chart",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//horizontal-bar-chart/horizontal-bar-chart.xml",
+            "overview_provider": "admin",
+            "images_banner": "87d469a3-047b-4d34-8642-d854dab59ae8/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/horizontal-bar-chart/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:36 GMT",
+            "overview_category": "Templates",
+            "images_thumbnail": "3c1eebbd-498f-4106-b626-cf608867087e/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "Horizontal Bar Chart",
+        "thumbnail": "3c1eebbd-498f-4106-b626-cf608867087e/thumbnail.jpg",
+        "banner": "87d469a3-047b-4d34-8642-d854dab59ae8/banner.jpg",
+        "rating": 0.0
+    },
+    {
+        "id": "fa715cac-b580-47ee-9ecf-3112f249807f",
+        "type": "gadget",
+        "path": "/_system/governance/gadgets/admin/Bubble Chart/1.0.0",
+        "lifecycle": "SampleLifeCycle2",
+        "lifecycleState": "Published",
+        "mediaType": "application/vnd.wso2-gadget+xml",
+        "attributes": {
+            "overview_location": "/config/defaults/gadgets/bubble-chart",
+            "overview_description": "A generic Bubble Chart gadget, that takes a json datasource as an input. It can be configured to fetch data in defined intervals. This gadget can be used to create dashboards with statistical data. This gadget can be reused as an iframe in any web page as it is self contained",
+            "overview_dataformat": "/config/defaults/gadgets/bubble-chart/datasource/data-format.json",
+            "overview_name": "Bubble Chart",
+            "overview_version": "1.0.0",
+            "overview_url": "http://localhost:9763/publisher/config/defaults/gadgets//bubble-chart/bubble-chart.xml",
+            "overview_provider": "admin",
+            "images_banner": "ff242bd1-07f0-4f8f-a9cd-2023b6ea51f9/banner.jpg",
+            "overview_chartoptions": "/config/defaults/gadgets/bubble-chart/config/chart-options.json",
+            "overview_createdtime": "Mon, 26 Jan 2015 06:16:36 GMT",
+            "overview_category": "Google",
+            "images_thumbnail": "64e13658-ad6f-40c5-b79d-da394c43c591/thumbnail.jpg"
+        },
+        "content": {},
+        "name": "Bubble Chart",
+        "thumbnail": "64e13658-ad6f-40c5-b79d-da394c43c591/thumbnail.jpg",
+        "banner": "ff242bd1-07f0-4f8f-a9cd-2023b6ea51f9/banner.jpg",
+        "rating": 0.0
+    }
+], "leftNav": [
+    {
+        "name": "Add",
+        "iconClass": "icon-plus-sign-alt",
+        "url": "/asts/gadget/create"
+    },
+    {
+        "name": "Statistics",
+        "iconClass": "icon-dashboard",
+        "url": "/assets/statistics/gadget/"
+    }
+], "ribbon": {
+    "currentType": "Gadget",
+    "currentTitle": "Gadget",
+    "currentUrl": "/asts/gadget/list",
+    "shortName": "Gadget",
+    "query": "Query",
+    "breadcrumb": [
+        {
+            "url": "/asts/gadget/list",
+            "assetIcon": "icon-cog",
+            "assetTitle": "Gadget"
+        },
+        {
+            "url": "/asts/site/list",
+            "assetIcon": "icon-cog",
+            "assetTitle": "Site"
+        }
+    ]
+}, "assetMeta": {
+    "categories": [],
+    "searchFields": []
+}, "security": {}, "features": {}, "meta": {
+    "pageName": "list",
+    "currentPage": null,
+    "title": "List undefined",
+    "landingPage": "/asts/gadget/list"
+}}

@@ -23,7 +23,6 @@ var deploymentManager=deploymentManagement.cached();
 breadcrumbItems = deploymentManager.getAssetData()
 
 var generateLeftNavJson = function(data, listPartial) {
-	
 	var currentTypeObj = getTypeObj(data.shortName);
 	
     var leftNavItems = { leftNavLinks :
