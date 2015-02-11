@@ -192,7 +192,8 @@ describe('Assets GET - Publisher API', function () {
      * test: asset name
      */
     it('Test get asset by id', function () {
-        var assetID = getAssetID();
+        var name = 'WSO2 Test Gadget';
+        var assetID = getAssetID(name);
         var url = server_url + '/assets/' + assetId + '?type=gadget';
         url = encodeURI(url);
         var header = obtainAuthorizedHeaderForAPICall();
@@ -204,7 +205,7 @@ describe('Assets GET - Publisher API', function () {
             deleteAssetWithID(assetId);
             logoutAuthorizedUser(header);
             expect(response.data.data).not.toBe(undefined);
-            expect(response.data.data.attributes.overview_name).toEqual('WSO2 Test Gadget');
+            expect(response.data.data.attributes.overview_name).toEqual(name);
         }
     });
 
@@ -514,9 +515,13 @@ describe('Assets DELETE - Publisher API', function () {
  * To add a asset and return the retrieved id of newly added asset
  * @return uuid
  */
-var getAssetID = function () {
+var getAssetID = function (asset_name) {
+    if(!asset_name){
+        var uuid = require('uuid');
+        asset_name = uuid.generate();
+    }
     var url = server_url + '/assets?type=gadget';
-    var asset = {'overview_name': 'WSO2 Test Gadget',
+    var asset = {'overview_name': asset_name,
         'overview_version': '1.2.3',
         'overview_provider': 'admin',
         'overview_description': 'initial description',
