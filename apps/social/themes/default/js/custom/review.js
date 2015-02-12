@@ -71,7 +71,8 @@ $btn.click(function (e) {
         showAlert("Please add your Rating");
     } else {
         var activity = {"verb": "post",
-            "object": {"objectType": "review", "content": review, rating: rating}
+            "object": {"objectType": "review", "content": review, rating: rating},
+            "likes" : {"totalItems": 0}, "dislikes" : {"totalItems": 0}
         };
 
         $btn.attr('disabled', 'disabled');

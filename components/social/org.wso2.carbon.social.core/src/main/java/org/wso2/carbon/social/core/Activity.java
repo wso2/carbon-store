@@ -40,4 +40,8 @@ public interface Activity {
     String getVerb();
 
     int getRating();
+
+	void setLikeCount(int likeCount);
+
+	void setDislikeCount(int dislikeCount);
 }

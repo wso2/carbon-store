@@ -27,6 +27,7 @@ public class Constants {
 	public static final String TIMESTAMP = "timestamp";
 
 	public static final String TARGET_JSON_PROP = "target";
+	public static final String VERB_JSON_PROP = "verb";
 	public static final String OBJECT_JSON_PROP = "object";
 	public static final String CONTEXT_JSON_PROP = "context";
 	public static final String ID_JSON_PROP = "id";
@@ -38,9 +39,13 @@ public class Constants {
 	public static final String SOCIAL_RATING_TABLE_NAME = "ES_SOCIAL_RATING";
 	public static final String SOCIAL_RATING_CACHE_TABLE_NAME = "ES_SOCIAL_RATING_CACHE";
 	public static final int MAXIMUM_ACTIVITY_SELECT_COUNT = 100;
-	public static final String RATING = "rating";	
-	public static final String RATING_COLUMN = "rating";	
+	public static final String RATING = "rating";
+	public static final String RATING_COLUMN = "rating";
 	public static final String RATING_TOTAL = "rating_total";
 	public static final String RATING_COUNT = "rating_count";
+
+	public static enum VERB {
+		like, dislike, unlike, undislike;
+	}
 
 }

@@ -66,4 +66,10 @@ public class SocialUtil {
 		}
 	}
 
+	public static String getVerb(NativeObject activity) {
+
+		return JSONUtil.getProperty(activity, Constants.VERB_JSON_PROP);
+
+	}
+
 }
