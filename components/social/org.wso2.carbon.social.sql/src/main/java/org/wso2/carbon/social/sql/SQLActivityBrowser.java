@@ -52,13 +52,42 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	public static final String INIT_SELECT_SQL = "SELECT * FROM "
 			+ Constants.SOCIAL_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + "=? AND "
-			+ Constants.TENANT_DOMAIN_COLUMN + "=? "
-			+ "ORDER BY " + Constants.TIMESTAMP + " DESC LIMIT ?";
+			+ Constants.TENANT_DOMAIN_COLUMN + "=? " + "ORDER BY "
+			+ Constants.TIMESTAMP + " DESC LIMIT ?";
+
+	public static final String SELECT_CACHE_SQL = "SELECT * FROM "
+			+ Constants.SOCIAL_RATING_CACHE_TABLE_NAME + " WHERE "
+			+ Constants.CONTEXT_ID_COLUMN + "=?";
 
 	private JsonParser parser = new JsonParser();
 
 	@Override
 	public double getRating(String targetId) {
+		DSConnection con = new DSConnection();
+		Connection connection = con.getConnection();
+
+		PreparedStatement statement;
+		try {
+			statement = connection.prepareStatement(SELECT_CACHE_SQL);
+
+			statement.setString(1, targetId);
+			ResultSet resultSet = statement.executeQuery();
+
+			if (resultSet.next()) {
+				int total, count;
+				total = Integer.parseInt(resultSet
+						.getString(Constants.RATING_TOTAL));
+				count = Integer.parseInt(resultSet
+						.getString(Constants.RATING_COUNT));
+				return (double)total/count;
+			} else {
+				return 0;
+			}
+
+		} catch (SQLException e) {
+			log.error("Unable to retrieve rating for target: " + targetId + e);
+		}
+
 		return 0;
 	}
 
