@@ -94,7 +94,7 @@ var configs = function(tenantId) {
 };
 var addLifecycles = function(registry) {
     var lc,
-        files = new File('/config/lifecycles'),
+        files = new File('/extensions/lifecycles'),
         rootReg = registry.registry,
         configReg = rootReg.getChrootedRegistry('/_system/config'),
         CommonUtil = Packages.org.wso2.carbon.governance.lcm.util.CommonUtil;
