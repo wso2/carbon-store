@@ -135,7 +135,7 @@ require('/modules/publisher.js').exec(function(ctx) {
         var server = require('store').server;
         var user = server.current(session);
         var um = server.userManager(user.tenantId);
-        var permissions = require('/modules/permissions.js').permissions;
+        var permissions = require('/modules/lifecycle/permissions.js').permissions;
         var type = shortName;
         var artifactManager = buildArtifactManager(session, type);
         //var artifactManager = rxtManager.getSystemArtifactManager(shortName,session);//rxtManager.getArtifactManager(shortName);
@@ -155,7 +155,7 @@ require('/modules/publisher.js').exec(function(ctx) {
                         var lcHistoryXML = new XML(lcHistory.content);
                         lcHistoryJSON = utility.xml.convertE4XtoJSON(lcHistoryXML);
                         var newChangeOrder = lcHistoryJSON.item[0].order;
-                        require('/modules/comment.js').addLifecycleComment(artifactManager, id, comment, newChangeOrder);
+                        require('/modules/lifecycle/comment.js').addLifecycleComment(artifactManager, id, comment, newChangeOrder);
                     }
                     msg['status'] = 'ok';
                     log.info('Has permission to perform the action');
@@ -332,7 +332,7 @@ require('/modules/publisher.js').exec(function(ctx) {
             //var artifactManager = rxtManager.getArtifactManager(shortName);
             var artifact = artifactManager.get(id);
             var historyRes = artifactManager.getLifecycleHistory(artifact);
-            var historyComments = require('/modules/comment.js').getLifecycleComments(artifactManager, artifact);
+            var historyComments = require('/modules/lifecycle/comment.js').getLifecycleComments(artifactManager, artifact);
             var json = {};
             if (historyRes != undefined) {
                 var xml = new XML(historyRes.content);

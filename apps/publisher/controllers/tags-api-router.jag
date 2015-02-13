@@ -165,7 +165,7 @@ if (passed) {
 
     var rxtManager = publisher.rxtManager;
     var modelManager = publisher.modelManager;
-    var tagModule = require('/modules/tag.management.js').tagModule();
+    var tagModule = require('/modules/tag-management.js').tagModule();
     routeManager.handle(request, response);
 }
 

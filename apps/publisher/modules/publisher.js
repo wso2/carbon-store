@@ -71,7 +71,7 @@ var init = function(options) {
             um.authorizeRole(carbon.user.anonRole, GovernanceConstants.RXT_CONFIGS_PATH, carbon.registry.actions.GET);
             log.debug('finished loading rxt templates to the registry.');
             //Attempt to load the default assets
-            var deployer = require('/modules/asset.deployment.js').deployment_logic();
+            var deployer = require('/modules/deployment/asset.deployment.js').deployment_logic();
             log.debug('starting auto deployment of default assets.');
             //Create a deployment manager instance
             var deploymentManager = new deployer.Deployer({

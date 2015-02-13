@@ -27,7 +27,7 @@ require('/modules/publisher.js').exec(function (ctx) {
     var utils = require('utils');
     var rxt = require('rxt');
     var lcCore = require('lifecycle').core;
-    var lcApi = require('/modules/lifecycle-api.js').api;
+    var lcApi = require('/modules/lifecycle/lifecycle-api.js').api;
     var server = require('store').server;
     var assetApi = require('/modules/asset-api.js').api;
 
