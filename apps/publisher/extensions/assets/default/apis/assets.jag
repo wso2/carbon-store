@@ -46,8 +46,8 @@ require('/modules/publisher.js').exec(function (ctx) {
 
     var uriMatcher = new URIMatcher(req.getRequestURI());
 
-    var assetApi = require('/modules/asset_api.js').api;
-    var lcApi = require('/modules/lifecycle_api.js').api;
+    var assetApi = require('/modules/asset-api.js').api;
+    var lcApi = require('/modules/lifecycle-api.js').api;
 
     var CREATE_URL = '/{context}/apis/assets/';
     var UPDATE_URL = '/{context}/apis/assets/{id}';

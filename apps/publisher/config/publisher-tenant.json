@@ -64,7 +64,7 @@
         "ASSETS": "/assets"
     },
     "defaultAssets": {
-        "root": "/config/defaults",
+        "root": "/samples/assets",
         "assetData": [{
             "type": "gadgets",
             "ignore": ["agricultural-land", "intro-gadget-1", "intro-gadget-2", "gadget-template-explorer", "gadget-explorer", "co2-emission", "electric-power", "energy-use", "greenhouse-gas"]
