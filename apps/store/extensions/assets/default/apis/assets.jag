@@ -36,8 +36,8 @@ require('/modules/store.js').exec(function(ctx) {
     var req = ctx.request;
     var session = ctx.session;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
-    var assetApi = require('/modules/asset_api.js').api;
-    var lcApi = require('/modules/lifecycle_api.js').api;
+    var assetApi = require('/modules/asset-api.js').api;
+    var lcApi = require('/modules/lifecycle-api.js').api;
     var CREATE_URL = '/{context}/apis/assets/';
     var UPDATE_URL = '/{context}/apis/assets/{id}';
     var CHANGE_STATE_URL = '/{context}/apis/assets/{id}/{nextState}';
