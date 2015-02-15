@@ -13,7 +13,7 @@
                        data-aid="{{thisAsset.id}}"
                        data-type="{{thisAsset.type}}"> {{>process-asset-text }}</a>
     {{else}}
-    <a id="btn-add-gadget" class="btn btn-primary" href='{{url ""}}/asts/{{thisAsset.type}}/details/{{thisAsset.id}}'
+    <a id="btn-add-gadget" class="btn btn-primary" href='{{tenantedUrl ""}}/asts/{{thisAsset.type}}/details/{{thisAsset.id}}'
                    data-toggle="modal"
                    data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"> {{>process-asset-text }}</a>
     {{/if}}
