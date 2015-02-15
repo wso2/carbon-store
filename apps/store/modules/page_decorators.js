@@ -272,7 +272,7 @@ var pageDecorators = {};
         var carbon = require('carbon');
         var URLTenantId = carbon.server.tenantId({domain: getDomainFromURL(request)});
 
-        if (ctx.isAnonContext || !ctx.user || ctx.tenantId != URLTenantId) {
+        if (ctx.isAnonContext || ctx.tenantId != URLTenantId) {
             am = asset.createAnonAssetManager(ctx.session, ctx.assetType, URLTenantId);
         }else {
             am = asset.createUserAssetManager(ctx.session, ctx.assetType);
