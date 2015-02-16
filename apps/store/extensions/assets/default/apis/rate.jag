@@ -32,7 +32,7 @@ require('/modules/store.js').exec(function(ctx) {
     var SUBSCRIBE_URL = '/{context}/apis/rate';
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var options = uriMatcher.match(SUBSCRIBE_URL);
-    var ratingApi = require('/modules/rating_api.js').api;
+    var ratingApi = require('/modules/rating-api.js').api;
     var handleRating = function(session,id, type,value,response) {
         var success =ratingApi.rate(session,{
                 id:id,

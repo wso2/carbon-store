@@ -136,7 +136,7 @@ asset.configure = function() {
     };
 };
 asset.renderer = function(ctx) {
-    var decoratorApi = require('/modules/page_decorators.js').pageDecorators;
+    var decoratorApi = require('/modules/page-decorators.js').pageDecorators;
 
     return {
         pageDecorators: {

@@ -44,10 +44,10 @@ require('/modules/store.js').exec(function (ctx) {
     var page = ui.buildPage(ctx.session, ctx.request);
     var output = {};
     var tag = ctx.request.getParameter('tag');
-    var assetApi = require('/modules/asset_api.js').api;
-    var subscriptionApi = require('/modules/subscriptions_api.js').api;
+    var assetApi = require('/modules/asset-api.js').api;
+    var subscriptionApi = require('/modules/subscriptions-api.js').api;
 
-    var ratingApi = require('/modules/rating_api.js').api;
+    var ratingApi = require('/modules/rating-api.js').api;
     PAGING.sortBy = (sortBy || constants.DEFAULT_ASSET_PAGIN.sortBy);
     PAGING.sortOrder = (sortOrder || constants.DEFAULT_ASSET_PAGIN.sortOrder);
     PAGING.start = (start || constants.DEFAULT_ASSET_PAGIN.start);

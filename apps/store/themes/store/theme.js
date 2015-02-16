@@ -97,10 +97,10 @@ var engine = caramel.engine('handlebars', (function() {
                 //Determine the authentication method
                 switch (security.method) {
                     case 'sso':
-                        output = "{{> sso_auth .}}";
+                        output = "{{> sso-auth .}}";
                         break;
                     case 'basic':
-                        output = "{{> basic_auth .}}";
+                        output = "{{> basic-auth .}}";
                         break;
                     default:
                         break;
@@ -119,10 +119,10 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 switch(security.method){
                     case 'sso':
-                        output='{{> sso_signout .}}';
+                        output='{{> sso-signout .}}';
                         break;
                     case 'basic':
-                        output='{{> basic_signout .}}';
+                        output='{{> basic-signout .}}';
                         break;
                     default:
                         break;

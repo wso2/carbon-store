@@ -129,7 +129,7 @@ var robot = function () {
      The function loads a lifecycle from the lifecycle directory
      */
     function loadLifeCycle(lifecycleName, map) {
-        var file = new File('/config/lifecycles/' + lifecycleName + '.xml');
+        var file = new File('/extensions/lifecycles/' + lifecycleName + '.xml');
         file.open('r');
         var data = file.readAll();
         file.close();

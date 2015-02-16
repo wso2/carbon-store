@@ -19,7 +19,7 @@ var caramel;
 require('/modules/store.js').exec(function (ctx) {
     caramel = require('caramel');
     var rxt = require('rxt');
-    var ratingApi = require('/modules/rating_api.js').api;
+    var ratingApi = require('/modules/rating-api.js').api;
 
     var asset = rxt.asset;
     var ui = rxt.ui;

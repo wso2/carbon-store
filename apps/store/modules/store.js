@@ -890,15 +890,15 @@ function AnonStoreMasterManager(tenantID) {
  */
 var buildManagers = function (registry, tenantId) {
 
-    var rxt_management = require('/modules/rxt/rxt.manager.js').rxt_management();
-    var ext_parser = require('/modules/rxt/ext/core/extension.parser.js').extension_parser();
-    var ext_core = require('/modules/rxt/ext/core/extension.core.js').extension_core();
-    var ext_mng = require('/modules/rxt/ext/core/extension.management.js').extension_management();
+    //var rxt_management = require('/modules/rxt/rxt.manager.js').rxt_management();
+    //var ext_parser = require('/modules/rxt/ext/core/extension.parser.js').extension_parser();
+    //var ext_core = require('/modules/rxt/ext/core/extension.core.js').extension_core();
+    //var ext_mng = require('/modules/rxt/ext/core/extension.management.js').extension_management();
     //TODO: sameera need to get store.json from registry
     var config = require('/config/store-tenant.json');
     var server = require('store').server;
     var um = server.userManager(tenantId);
-    var rxtManager = new rxt_management.RxtManager(registry);
+    //var rxtManager = new rxt_management.RxtManager(registry);
     var securityProviderModule = require('/modules/security/storage.security.provider.js').securityModule();
 
 
@@ -910,32 +910,32 @@ var buildManagers = function (registry, tenantId) {
 
     //All of the rxt xml files are read and converted to a JSON object called
     //a RxtTemplate(Refer rxt.domain.js)
-    rxtManager.loadAssets();
+    //rxtManager.loadAssets();
 
-    var parser = new ext_parser.Parser();
+    //var parser = new ext_parser.Parser();
 
     //Go through each rxt template
-    for (var index in rxtManager.rxtTemplates) {
-        var rxtTemplate = rxtManager.rxtTemplates[index];
-        parser.registerRxt(rxtTemplate);
-    }
+    // for (var index in rxtManager.rxtTemplates) {
+    //     var rxtTemplate = rxtManager.rxtTemplates[index];
+    //     parser.registerRxt(rxtTemplate);
+    // }
 
-    parser.load(config.paths.RXT_EXTENSION_PATH);
+    // parser.load(config.paths.RXT_EXTENSION_PATH);
 
-    var adapterManager = new ext_core.AdapterManager({parser: parser});
-    adapterManager.init();
+    // var adapterManager = new ext_core.AdapterManager({parser: parser});
+    // adapterManager.init();
 
-    var fpManager = new ext_core.FieldManager({parser: parser});
-    fpManager.init();
+    // var fpManager = new ext_core.FieldManager({parser: parser});
+    // fpManager.init();
 
-    var ruleParser = new ext_parser.RuleParser({parser: parser});
-    ruleParser.init();
+    // var ruleParser = new ext_parser.RuleParser({parser: parser});
+    // ruleParser.init();
 
-    var modelManager = new ext_mng.ModelManager({parser: parser, adapterManager: adapterManager});
+    // var modelManager = new ext_mng.ModelManager({parser: parser, adapterManager: adapterManager});
 
     return{
-        modelManager: modelManager,
-        rxtManager: rxtManager,
+//        modelManager: modelManager,
+//        rxtManager: rxtManager,
         storageSecurityProvider: securityProvider
     }
 };
