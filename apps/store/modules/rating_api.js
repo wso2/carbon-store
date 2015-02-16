@@ -50,20 +50,22 @@ var api = {};
      * @param {[type]} username [description]
      */
     api.addRatings = function(assets,am,tenantId, username) {
+        var carbon = require('carbon');
+        var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
         var utils=require('utils').reflection;
         var tenantId = tenantId;
         var id;
         var rating;
         var average;
+
         //Determine if a single asset has been provided
         if(!utils.isArray(assets)){
             assets=[assets];
         }
         for (var index in assets) {
-            rating = am.rating(assets[index].path, username);
-
-            average = rating ? rating.average : 0;
-            assets[index].rating = rating ? rating.user : 0;
+            var aid = assets[index].type + ":" + assets[index].id;
+            var average = social.getRating(aid);
+            assets[index].rating = rating ? average : 0;
             assets[index].avgRating = average;
             assets[index].ratingPx = calculateRatingPixel(average);
         }
