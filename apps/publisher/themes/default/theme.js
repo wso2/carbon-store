@@ -204,7 +204,7 @@ var engine = caramel.engine('handlebars', (function() {
                 return meta;
             };
             var renderFieldLabel = function(field) {
-                return '<b><label class="control-label">' + (field.name.label || field.name.name) + '</label></b>';
+                return '<label class="control-label col-sm-2">' + (field.name.label || field.name.name) + '</label>';
             };
             var renderOptions = function(value, values, field,count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
@@ -263,19 +263,19 @@ var engine = caramel.engine('handlebars', (function() {
                 var value = field.value || '';
                 switch (field.type) {
                     case 'options':
-                        out = '<td>' + renderOptions(field.value, field.values[0].value, field) + '</td>';
+                        out = '<div class="col-sm-10">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
                         break;
                     case 'text':
-                        out = '<td><input type="text" value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></td>';
+                        out = '<div class="col-sm-10"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></div>';
                         break;
                     case 'text-area':
-                        out = '<td><textarea row="3" ' + renderFieldMetaData(field) + ' class="span8">'+value+'</textarea></td>';
+                        out = '<div class="col-sm-10"><textarea row="3" ' + renderFieldMetaData(field) + ' class="width-full">'+value+'</textarea></div>';
                         break;
                     case 'file':
-                        out = '<td><input type="file" value="' + value + '" ' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<div class="col-sm-10"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field) + ' ></div>';
                         break;
                     default:
-                        out = '<td>Normal Field' + field.type + '</td>';
+                        out = '<div class="col-sm-10">Normal Field' + field.type + '</div>';
                         break;
                 }
                 return out;
@@ -321,12 +321,12 @@ var engine = caramel.engine('handlebars', (function() {
                 var field;
                 for (var key in fields) {
                     field = fields[key];
-                    out += rendeLabel(field) + renderField(field);
+                    out += renderField(field);
                 }
                 return new Handlebars.SafeString(out);
             });
             Handlebars.registerHelper('renderEditableField', function(field) {
-                var label = '<td>' + renderFieldLabel(field) + '</td>';
+                var label = renderFieldLabel(field);
                 return new Handlebars.SafeString(label + renderField(field));
             });
             Handlebars.registerHelper('renderEditableHeadingTable', function(table) {

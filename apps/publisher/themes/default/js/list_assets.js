@@ -139,7 +139,7 @@ var scroll = function () {
     var startInitItems = store.publisher.itemsPerPage;// items-per-page by global store object
 
     if (infiniteScroll && startInitItems > 1) { //if scroll enabled
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height() * .001) {
             var start = startInitItems * (currentPage++);
             var path = window.location.href;//current page path
             var param = '&&start=' + start + '&&count=' + startInitItems + setSortingParams(path);

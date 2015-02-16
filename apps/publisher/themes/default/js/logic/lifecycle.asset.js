@@ -163,6 +163,7 @@ $(function() {
             success: function (response) {
                 var element = $('#canvas');
                 if (element) {
+                    if($('svg',element).length > 0 ){$('svg',element).remove()}
                     var paper = new Raphael('canvas', 600, 500);
 
                     //element.html(response);
@@ -245,9 +246,9 @@ $(function() {
             },
             error: function (response) {
                 if (response.status === 400) {
-                    showAlert('You need to insert a comment for this change.', 'error');
+                    showAlert('You need to insert a comment for this change.', 'danger');
                 } else {
-                    showAlert(action + ' operation failed', 'error');
+                    showAlert(action + ' operation failed', 'danger');
                 }
             }
         });
@@ -307,7 +308,7 @@ $(function() {
                     }
                 });
             } else {
-                showAlert('Invalid operation', 'error');
+                showAlert('Invalid operation', 'danger');
             }
         }
     }
@@ -470,9 +471,9 @@ $(function() {
     }
 
     function showAlert(msg, type) {
-        var alert = $('.widget-content .alert');
-        alert.removeClass().addClass('info-div alert alert-' + type).find('span').text(msg);
-        alert.delay(500).fadeIn("fast").delay(2000).fadeOut("fast");
+        var lifeCycleAlert = $('#lifecycleMsg');
+        lifeCycleAlert.removeClass("alert-danger").removeClass("alert-success").addClass("alert-"+type).text(msg);
+        lifeCycleAlert.delay(100).fadeIn("fast").delay(2000).fadeOut("fast");
     }
 
     function highlightTransition(state) {

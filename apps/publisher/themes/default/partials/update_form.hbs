@@ -1,15 +1,19 @@
  <form class="form-horizontal" id='form-asset-update' method='post' action='{{url ""}}/apis/assets/{{assets.id}}?type={{rxt.shortName}}' >
     <div class="control-group">
-             {{#each assets.tables}}                                             
-                <tr>
-                        {{renderTable .}}
-                </tr>                                    
-            {{/each}}  
-    </div> 
+             {{#each assets.tables}}
+                    {{renderTable .}}
+            {{/each}}
+    </div>
+     <div class="form-group">
+         <div class="col-sm-offset-2 col-sm-10">
+             <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
+             <input type="reset" value="Reset" class="btn btn-default">
+             <input type="hidden" value="{{rxt.shortName}}" name="{{rxt.shortName}}" id="meta-asset-type">
+         </div>
+     </div>
+
+
     <div id="saveButtons" class="form-actions">
-                            <input type="submit" value="Update" class="btn btn-primary"
-                                   name="editAssetButton" id="editAssetButton">
-                            <input type="reset" value="Reset" class="btn">
-                            <input type="hidden" value="{{rxt.shortName}}" name="{{rxt.shortName}}" id="meta-asset-type">
+
     </div>   
 </form>

@@ -150,6 +150,24 @@ body {
 }
 
 /* application top level header */
+h1 {
+    color: #222222;
+    font-size: 38px;
+    font-weight: 200;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+a.collapsing-h2 h2 {
+    margin:0 0 20px 0;
+    color: #222222;
+    font-size: 28px;
+    font-weight: 200;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    border-bottom:solid 1px #ccc;
+    padding-bottom:10px;
+}
+a.collapsing-h2{
+    text-decoration: none;
+}
 h2.app-title {
 	font-weight:100;
 	font-size:20px;
@@ -493,5 +511,89 @@ a.cu-ico-button-stats {
     background: #767676;
     color: #fff;
 }
+.modal-comment{
+    width:100%;
+    height: 150px;
+}
+.lifecycle-help-wrapper{
+    background: #efefef;
+    padding:20px;
+}
+.lifecycle-help{
+    text-indent: 20px;
+    color: #444;
+}
+.canvas-wrapper{
+    border-top:solid 1px #ccc;
+    padding:0;
+}
+.lifecycle-message-wrapper{
+    background-color: #efefef;
+}
+.asset-well{
+    padding:0;
+    margin-top:20px;
+    border-radius: 0;
+    border:none;
+}
+.asset-well [class^="col-lg-"]{
+    padding:0;
+}
+.well-description{
+    padding-top:20px;
+}
+h2 i.fa-stack-1x{
+    font-size: 29px;
+    line-height: 33px;
+}
+h2 i.fa-stack-2x{
+    font-size: 35px;
+}
 
- 
+h2 span.fa-stack{
+    line-height: 35px;
+    height: 35px;
+    width: 30px;
+}
+.padding-bottom-xs{
+    padding-bottom:5px;
+}.padding-bottom-sm{
+    padding-bottom:10px;
+}.padding-bottom-md{
+    padding-bottom:15px;
+}.padding-bottom-lg{
+    padding-bottom:20px;
+}
+
+.padding-left-xs{
+    padding-left:5px;
+}.padding-left-sm{
+    padding-left:10px;
+}.padding-left-md{
+    padding-left:15px;
+}.padding-left-lg{
+    padding-left:20px;
+}
+.padding-right-xs{
+    padding-right:5px;
+}.padding-right-sm{
+    padding-right:10px;
+}.padding-right-md{
+    padding-right:15px;
+}.padding-right-lg{
+    padding-right:20px;
+}
+
+.padding-top-xs{
+    padding-top:5px;
+}.padding-top-sm{
+    padding-top:10px;
+}.padding-top-md{
+    padding-top:15px;
+}.padding-top-lg{
+    padding-top:20px;
+}
+
+.width-full{
+    width:100%;
+}
