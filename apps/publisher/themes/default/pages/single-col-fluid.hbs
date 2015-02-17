@@ -20,6 +20,8 @@
 
     <!-- Token input -->
     <link rel="stylesheet" href="{{url "/themes/default/js/token.input/css/token-input-facebook.css"}}">
+    <!-- Helper css injections -->
+    {{css}}
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -31,26 +33,22 @@
 
 <body>
 
-<div class="container col-lg-12 col-md-12 col-sm-12">
+    <div class="wrapper">
+        <div class="container-fluid">
+            {{ include header}}
+        </div>
+        <div class="container-fluid ribbon-container">
+            {{include ribbon}}
+        </div>
+        <div class="container-fluid">
+            {{include listassets}}
+        </div>
+        {{>footer}}
 
-
-    {{ include header}}
-
-    {{include ribbon}}
-
-
-    {{include listassets}}
+    </div>
 
     <!-- /content/body -->
 
-</div>
-
-
-
-
-
-
-{{>footer}}
 
 
 
@@ -65,8 +63,10 @@
 <script src="{{url "/themes/default/js/graph.js"}}"></script>
 <script src="{{url "/themes/default/js/token.input/jquery.tokeninput.js"}}"></script>
 <script src="{{url "/themes/default/js/handlebars.js"}}"></script>
+<!-- Helper files js injector -->
 {{js}}
 {{code}}
+
 <script src="{{url "/themes/default/js/caramel.handlebars.client.js"}}"></script>
 <script src="{{url "/themes/default/js/caramel-client.js"}}"></script>
 

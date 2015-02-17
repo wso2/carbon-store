@@ -124,7 +124,6 @@ routeMnger.register('GET', 'publisher', '/publisher/assets/{operation}/{type}/',
     }
 });
 
-
 routeMnger.handle(request, response);
 
 }, request, response, session);

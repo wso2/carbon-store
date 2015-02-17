@@ -14,6 +14,7 @@ var render = function (theme, data, meta, require) {
             break;
         case 'statistics':
             listPartial = 'statistics';
+            data = require('/helpers/view-asset.js').format(data);
             break;
         default:
             break;
@@ -28,6 +29,10 @@ var render = function (theme, data, meta, require) {
             }
         ],
         ribbon: [
+            {
+                partial: 'ribbon',
+                context:data
+            }
         ],
         leftnav: [
             {

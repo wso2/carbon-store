@@ -1,34 +1,41 @@
 <!-- secondary header - app bar -->
-<div id="nav" class="row wr-app-bar">
-    <div class="col-lg-12 wr-action-container">
-
+<nav class="navbar navbar-default navbar-themed">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+        </div>
         <div class="wr-asset-type-switcher">
-            <a data-trigger="focus" data-placement="bottom" class="ctrl-asset-type-switcher" href="#" data-original-title="" title="">
+            <a data-trigger="focus" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="#" data-original-title="" title="">
                 <!--a href="#" class="ctrl-asset-type-switcher" data-placement="bottom" data-trigger="focus"-->
                 <span class="btn-asset"></span></a>
+            <a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}'>{{rxt.pluralLabel}}</a>
         </div>
+        <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                {{#each leftNav}}
+                <li>
+                    <a href='{{url ""}}{{this.url}}' >
+                        <span class="fa-stack fa-lg">
+                          <i class="fa {{this.iconClass}} fa-stack-1x"></i>
+                          <i class="fa fa-circle-thin fa-stack-2x"></i>
+                        </span>
+                        {{this.name}}
+                    </a>
+                </li>
+                {{/each}}
+            </ul>
 
-        <div class="wr-action-btn-bar">
-            <a class="cu-btn" href='{{url ""}}{{currentUrl}}'>{{rxt.pluralLabel}}</a>
-            {{#each leftNav}}
-                <a href='{{url ""}}{{this.url}}' class="cu-btn {{this.iconClassOut}}">
-                    <span class="fa-stack fa-lg">
-                      <i class="fa {{this.iconClassIn}} fa-stack-1x"></i>
-                      <i class="fa fa-circle-thin fa-stack-2x"></i>
-                    </span>
-                    {{this.name}}
-                </a>
-            {{/each}}
-
-
-        </div>
+        </div><!--/.nav-collapse -->
     </div>
+</nav>
 
 
-</div>
-
-
-
+<!--Need to delete these sections down-->
 
 <div id="content-asset-types" style="display: none">
     <div>
@@ -52,4 +59,3 @@
         </button>
     </div>
 </div>
-
