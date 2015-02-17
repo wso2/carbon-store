@@ -1,0 +1,14 @@
+<%
+var registryContent = require('/modules/registry.js');
+var filePath;
+var log = new Log();
+
+if(request.getParameter("appName").equals("publisher")){
+    filePath = '/_system/config/publisher/configs/publisher.json';
+} else if (request.getParameter("appName").equals("store")){
+    filePath = '/_system/config/store/configs/store.json';
+}
+
+registryContent.confUpdater('admin',-1234,filePath, "fileContent");
+
+%>

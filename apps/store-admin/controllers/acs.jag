@@ -1,0 +1,82 @@
+<%
+(function () {
+    var log = new Log(),
+        configs = require('/config/store-admin.js').config(),
+        samlResponse = request.getParameter('SAMLResponse'),
+        sessionId = session.getId(),
+        samlRequest = request.getParameter('SAMLRequest'),
+        relayState = request.getParameter('RelayState'),
+        sso = require('sso'),
+        process = require('process'),
+        samlRespObj,
+        keyStoreProps = {
+            KEY_STORE_NAME: process.getProperty('carbon.home') + configs.ssoConfiguration.keyStoreName,
+            KEY_STORE_PASSWORD: configs.ssoConfiguration.keyStorePassword,
+            IDP_ALIAS: configs.ssoConfiguration.identityAlias
+        },
+        sso_sessions = application.get('sso_sessions');
+
+    if (!sso_sessions) {
+        application.put('sso_sessions', {});
+        sso_sessions = application.get('sso_sessions');
+    }
+
+    if (samlResponse != null) {
+        samlRespObj = sso.client.getSamlObject(samlResponse);
+        if (!sso.client.isLogoutResponse(samlRespObj)) {
+
+            // validating the signature
+            if (configs.ssoConfiguration.responseSigningEnabled) {
+
+                if (sso.client.validateSignature(samlRespObj, keyStoreProps)) {
+                    var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
+
+                    if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
+
+                        var server = require('store').server;
+                        server.current(session, sessionObj.loggedInUser);
+
+                        log.debug("session index :: " + sessionObj.sessionIndex);
+                        log.debug("session :: " + sessionObj.sessionId);
+
+                        log.info("real session :: " + session.getId());
+
+                        sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
+
+                        var user = require('store').user;
+
+                        if (user.loginWithSAML(sessionObj.loggedInUser)) {
+                            log.debug('user is set :::' + sessionObj.loggedInUser);
+                            response.sendRedirect('/store-admin/home');
+                        }
+                        else{
+                            session.invalidate();
+                            log.warn('User '+sessionObj.loggedInUser+' does not have permission to access the store-admin application.Make sure the user has the store-admin role.');
+                            response.sendError(401,'You do not have permission to login to this application.Please contact your administrator and request permission.');
+                        }
+
+                    }
+                }
+            }
+
+        } else {
+            session.invalidate();
+            response.sendRedirect('/store-admin');
+        }
+    }
+
+    // if saml request is a log out request, then invalidate session.
+    if (samlRequest != null) {
+        var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
+        log.info('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+
+        var jSessionId = application.get('sso_sessions')[index];
+
+        delete application.get('sso_sessions')[index];
+
+        log.info('portal Session Id :::' + jSessionId);
+
+        session.invalidate();
+    }
+}());
+%>

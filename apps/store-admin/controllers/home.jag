@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<%var user = require('/modules/user.js');%>
+
+    <html>
+        <head lang="en">
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+            <title>Store-Admin</title>
+
+
+            <link href="css/bootstrap.min.css" rel="stylesheet">
+            <!-- Custom styles -->
+            <link href="css/style.css" rel="stylesheet">
+        </head>
+
+        <body>
+            <nav class="navbar navbar-inverse navbar-fixed-top">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <a class="navbar-brand" href="#">Store Admin</a>
+                        </div>
+                        <div class="col-xs-6">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li class="dropdown">
+                                <!-- Show the username and SignOut only if a user is logged in -->
+                                    <%if (user.isLoginVerified()){ %>
+                                    <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle" href="#"><%=user.getLoggedInUser()%><span class="caret"></span></a>
+                                    <ul role="menu" class="dropdown-menu">
+                                        <li><a href="/store-admin/logout"> Sign out </a></li>
+                                    </ul>
+                                    <%}%>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-sm-3 col-md-2 sidebar">
+                        <ul class="nav nav-sidebar">
+                            <li class="active"><a href="/store-admin/publisher-conf">Edit Publisher<span class="sr-only">(current)</span></a></li>
+                            <li><a href="/store-admin/store-conf">Edit Store</a></li>
+                            <li><a href="#"></span> Menu3</a></li>
+                            <li><a href="#"></span> Menu4</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        <script src="js/jquery.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+
+    </body>
+</html>

@@ -1,0 +1,13 @@
+<%
+var log = new Log();
+var server = require('store').server;
+var user = server.current(session);
+
+if(user== null) {
+    response.sendRedirect('/store-admin/login');
+
+} else {
+    response.sendRedirect('/store-admin/home');
+}
+
+%>
