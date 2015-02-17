@@ -160,9 +160,15 @@ var scroll = function () {
     }
 
 };
+var initSearch = function () {
+    $('#searchButton').click(function(){
+        $('#assetSearchForm').submit();
+    });
+}
 // bind to window function
 $(window).bind('scroll', scroll);
 
 $(window).load(function () {
     scroll();
+    initSearch();
 });

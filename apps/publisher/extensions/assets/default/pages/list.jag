@@ -36,6 +36,10 @@ require('/modules/publisher.js').exec(function (ctx) {
 
     PAGING.sortBy = (sortBy || PAGING.sortBy);
     PAGING.sortOrder = (sort || PAGING.sortOrder);
+    new Log().info(q);
+    PAGING.query = (q || '');
+
+    page.paging =PAGING;
 
     if (q) {
         assets = am.search(q, PAGING);
