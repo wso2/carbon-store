@@ -66,6 +66,10 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		DSConnection con = new DSConnection();
 		Connection connection = con.getConnection();
 
+		if (connection == null) {
+			return 0;
+		}
+
 		PreparedStatement statement;
 		try {
 			statement = connection.prepareStatement(SELECT_CACHE_SQL);
@@ -79,13 +83,17 @@ public class SQLActivityBrowser implements ActivityBrowser {
 						.getString(Constants.RATING_TOTAL));
 				count = Integer.parseInt(resultSet
 						.getString(Constants.RATING_COUNT));
-				return (double)total/count;
+				return (double) total / count;
 			} else {
 				return 0;
 			}
 
 		} catch (SQLException e) {
 			log.error("Unable to retrieve rating for target: " + targetId + e);
+		} finally {
+			if (con != null) {
+				con.closeConnection(connection);
+			}
 		}
 
 		return 0;
