@@ -409,19 +409,18 @@ var engine = caramel.engine('handlebars', (function() {
     };
 }()));
 var resolve = function(path) {
-    var themeResolver = this.__proto__.resolve;
+    /*var themeResolver = this.__proto__.resolve;
     var asset = require('rxt').asset;
     path = asset.resolve(request, path, this.name, this, themeResolver);
-    /*var p,
-        publisher = require('/modules/publisher.js'),
-        asset = publisher.currentAsset();
-    if (asset) {
-        p = publisher.ASSETS_EXT_PATH + asset + '/themes/' + this.name + '/' + path;
-        if (new File(p).isExists()) {
-            return p;
-        }
+    return path;*/
+    var themeResolver = this.__proto__.resolve;
+    var asset = require('rxt').asset;
+    var app = require('rxt').app;
+    var appPath = app.resolve(request, path, this.name, this, themeResolver, session);
+    if (!appPath) {
+        path = asset.resolve(request, path, this.name, this, themeResolver);
+    } else {
+        path = appPath;
     }
-    var actualPath=this.__proto__.resolve.call(this, path);
-    log.info('Actual path: '+actualPath);*/
     return path;
 };

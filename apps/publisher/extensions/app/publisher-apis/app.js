@@ -33,6 +33,9 @@ app.server = function(ctx) {
             }, {
                 url: 'logout',
                 path: 'logout.jag'
+            },{
+                url:'statistics',
+                path:'statistics.jag'
             }]
         }
     };
