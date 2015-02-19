@@ -160,7 +160,7 @@ var core = {};
         var rxtPaths = GovernanceUtils.findGovernanceArtifacts(DEFAULT_MEDIA_TYPE, this.registry.registry);
         var content;
         var rxtDefinition;
-        if(log.isDebugEnabled()){
+        if (log.isDebugEnabled()) {
             log.debug('RXT paths: ' + stringify(rxtPaths));
         }
         for (var index in rxtPaths) {
@@ -392,6 +392,18 @@ var core = {};
         log.warn('Unable to locate banner attribute for type: ' + type + '.Check if a banner property is defined in the rxt configuration.');
         return '';
     };
+    RxtManager.prototype.getVersionAttribute = function(type) {
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return version attribute');
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return version attribute';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.versionAttribute)) {
+            return rxtDefinition.meta.versionAttribute;
+        }
+        log.warn('Unable to locate the rxt definition for tyoe: ' + type + '.Check if a versionAttribute property is defined in the rxt configuration.');
+        return '';
+    };
     /**
      * Returns the attribute that is used to track the temporal behaviour of assets of a given RXT type
      * Note: This property is specific to the ES and is defined in the configuration callback
@@ -408,7 +420,7 @@ var core = {};
         if ((rxtDefinition.meta) && (rxtDefinition.meta.timestamp)) {
             return rxtDefinition.meta.timestamp;
         }
-        if(log.isDebugEnabled()) {
+        if (log.isDebugEnabled()) {
             log.debug('Unable to locate timestamp attribute for type: ' + type + '.Check if a timestamp property is defined in the rxt configuration.');
         }
         return null;
@@ -600,7 +612,7 @@ var core = {};
             return categoryField;
         }
         if (!rxtDefinition.meta.categories) {
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
                 log.debug('Unable to locate category information in the rxt definition for type: ' + type + '.Cannot fetch category field');
             }
             return categoryField;
@@ -632,7 +644,7 @@ var core = {};
             return searchableFields;
         }
         if (!rxtDefinition.meta.search) {
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
                 log.debug('Unable to locate search information in the rxt definition for type: ' + type + '.Cannot fetch searchable fields');
             }
             return searchableFields;
@@ -651,7 +663,7 @@ var core = {};
      * @param  {String} type      The RXT type
      * @param {String} [name]     The name of the field to be obtained as a {tableName}_{fieldName}
      * @return {Object}            A JSON object defining the field
-     * @throws Unable to locate the rxt definition for type in order to retrieve field data 
+     * @throws Unable to locate the rxt definition for type in order to retrieve field data
      */
     RxtManager.prototype.getRxtField = function(type, name) {
         var template = this.rxtMap[type];
@@ -683,7 +695,7 @@ var core = {};
     /**
      * Returns the RXT field value for a given field.This method internally invokes the @getRxtField method
      * to retrieve the field definition.If the field is not found then an ampty array is returned
-     * @example 
+     * @example
      *     var value = rxtManager.getRxtFieldValue('gadget','overview_name');
      * @param  {String} type The RXT type
      * @param  {String} name The name of the field to be obtained as a {tableName}_{fieldName}
@@ -693,7 +705,7 @@ var core = {};
         var field = this.getRxtField(type, name);
         var values = [];
         if (!field) {
-            if(log.isDebugEnabled()) {
+            if (log.isDebugEnabled()) {
                 log.debug('Unable to locate values for field ' + name + ' as the field was not located in the rxt definition');
             }
             return values;
@@ -757,7 +769,7 @@ var core = {};
     /**
      * Returns the object that is used to maintain the RxtManager map in the application context
      * @param  {Number} tenantId  The tenant ID
-     * @return {Object}          A map of RxtManager instances 
+     * @return {Object}          A map of RxtManager instances
      */
     core.configs = function(tenantId) {
         var rxtMap = application.get(RXT_MAP);
@@ -793,7 +805,7 @@ var core = {};
      * @example
      *     var resources =  core.assetResources(-1234,'gadget');
      * @param  {Number} tenantId The tenant ID
-     * @param  {String} type     The asset type 
+     * @param  {String} type     The asset type
      * @return {Object}          The asset specific resources
      * @throws Unable to locate assetResources for tenant and type
      */
@@ -807,7 +819,7 @@ var core = {};
         return assetResource;
     };
     /**
-     * Returns the map of app specific resources based on the tenant 
+     * Returns the map of app specific resources based on the tenant
      * @param  {Number} tenantId The tenant ID
      * @return {Object}          The app specific resources
      */
@@ -855,7 +867,7 @@ var core = {};
     /**
      * Returns an application page url qualified by the base url of app pages
      * @param  {String} endpoint A page endpoint
-     * @return {String}     The app page url qualified by the vase url of the app pages         
+     * @return {String}     The app page url qualified by the vase url of the app pages
      */
     core.getAppPageUrl = function(endpoint) {
         return this.getAppPageBaseUrl() + endpoint;
@@ -942,18 +954,18 @@ var core = {};
      * @param  {String} type     The type of asset
      * @param tenantID
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
-
+     
      */
     core.createAnonAssetContext = function(session, type, tenantID) {
         var server = require('store').server;
         var user = require('store').user;
-        var tenantId = tenantID ||DEFAULT_TENANT;
+        var tenantId = tenantID || DEFAULT_TENANT;
         var sysRegistry = server.anonRegistry(tenantId);
         var userManager = server.userManager(tenantId);
         var tenatConfigs = user.configs(tenantId);
         var serverConfigs = server.configs(tenantId);
         var rxtManager = core.rxtManager(tenantId);
-        var username = "wso2.anonymous.user";//TODO: Move this to constants
+        var username = "wso2.anonymous.user"; //TODO: Move this to constants
         return {
             username: username,
             userManager: userManager,
