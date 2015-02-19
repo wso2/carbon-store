@@ -79,6 +79,10 @@ asset.server = function (ctx) {
                 {
                     url: 'assets',
                     path: 'assets.jag'
+                },
+                {
+                    url:'statistics',
+                    path:'statistics.jag'
                 }
             ],
             pages: [
@@ -117,6 +121,11 @@ asset.server = function (ctx) {
                     title: 'Lifecycle',
                     url: 'lifecycle',
                     path: 'lifecycle.jag'
+                },
+                {
+                    title:'Statistics',
+                    url:'statistics',
+                    path:'statistics.jag'
                 }
             ]
         }
@@ -168,7 +177,8 @@ asset.configure = function () {
                 icon: 'icon-cog'
             },
             thumbnail: 'images_thumbnail',
-            banner: 'images_banner'
+            banner: 'images_banner',
+            versionAttribute:'overview_version'
         }
     };
 };

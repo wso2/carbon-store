@@ -16,9 +16,26 @@
  *  under the License.
  *
  */
-var resources = function (page,meta) {
-    return {
-        js: ['date_picker/datepicker.js','flot/jquery.flot.js', 'flot/excanvas.min.js', 'logic/flot.stat.js'],
-        css: ['flot-graphs.css','date_picker/datepicker/base.css','date_picker/datepicker/custom-widget.css','date_picker/datepicker/clean.css','es_statistics.css']
-    };
+    
+var render = function(theme, data, meta, require) {
+    
+    theme('single-col-fluid', {
+        title: 'Statistics',
+        header: [{
+            partial: 'header',
+            context: data
+        }],
+        ribbon: [{
+            partial: 'ribbon',
+            context: data
+        }],
+        leftnav: [{
+        	partial:'left-nav',
+        	context:data
+        }],
+        listassets: [{
+            partial: 'statistics',
+            context: data
+        }]
+    });
 };
