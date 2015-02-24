@@ -85,11 +85,6 @@ $btn.click(function (e) {
 
         var addAndRenderNew = function (successCallback) {
             $('#newest').addClass('selected');
-            $.get("/store/apis/rate", {
-                id: aid,
-                type: type,
-                value: rating
-            }, function (r) {
                 publish(activity, function (published) {
                     if ($firstReview.length) {
                         $firstReview.hide();
@@ -107,7 +102,7 @@ $btn.click(function (e) {
                       //Remove carbon.super tenant domain from username
                         var pieces = user.split(/[\s@]+/);
                         if(pieces[pieces.length-1] == 'carbon.super'){
-                        	user= pieces[pieces.length-2];
+                            user= pieces[pieces.length-2];
                         }
                         activity.actor = {id: user};
                         usingTemplate(function (template) {
@@ -117,7 +112,6 @@ $btn.click(function (e) {
                         });
                     }
                 });
-            });
         };
 
         addAndRenderNew(function(){
