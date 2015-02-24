@@ -44,7 +44,6 @@ var DEFAULT_PAGIN = {'start':0, 'count':1000 , 'sortOrder':'desc','sortBy': 'ove
 
  });*/
 var log = new Log();
-
 routeMnger.register('GET', 'publisher', '/publisher/assets/{type}/', function(context) {
 	var query = request.getParameter("query");
 	var sortby = request.getParameter("sortby");
@@ -71,6 +70,7 @@ routeMnger.register('GET', 'publisher', '/publisher/assets/{type}/', function(co
 			var queryz = {};
 			assets = artifactManager.search(queryz, DEFAULT_PAGIN);
 			artifacts = assets;
+            log.info(assets);
 
 		}
 

@@ -24,7 +24,6 @@
  */
 
 require('/modules/publisher.js').exec(function(ctx) {
-
 /*
  Constant variables used to designate Header parameters
  */
@@ -38,23 +37,18 @@ var log = new Log('storage.router');
 var storageModule = require('/modules/data/storage.js').storageModule();
 var securityProviderModule = require('/modules/security/storage.security.provider.js').securityModule();
 var publisher = require('/modules/publisher.js').publisher(request, session);
+var registryOperator = require("/modules/registry/registry.operator.js").registryOperator();
 
 var storageSecurityProvider = publisher.storageSecurityProvider;
 
-var storageManager = new storageModule.StorageManager({
-    context: 'storage',
-    isCached: false,
-    connectionInfo: {
-        dataSource: 'JAGH2'
-    }
-});
+
 
 var value = {};
 
 //Obtain the tenantId and the uuid from the url
 var uriMatcher = new URIMatcher(request.getRequestURI());
 
-var isMatch = uriMatcher.match('/{context}/storage/{type}/{id}/{uuid}/{filename}');
+    var isMatch = uriMatcher.match('/{context}/storage/{type}/{id}/{uuid}/{filename}');
 
 //Handle the request only if the url matches
 if (isMatch) {
@@ -73,31 +67,32 @@ else {
  @matchedElements: A list of elements extracted from the url
  */
 function handleResourceRequest(matchedElements) {
+    var registryOperator = require("/modules/registry/registry.operator.js").registryOperator();
     var key = matchedElements['uuid'];
     var compoundKey = matchedElements['uuid'] + '/' + matchedElements['filename'];
     var type = matchedElements['type'];
     var id = matchedElements['id'];
-
     //Check if the user is allowed to access the resource
     var isAllowed = storageSecurityProvider.execute(type, id, compoundKey,session);
+
 
     //Stop the request if the user does not have permission
     if (!isAllowed) {
         response.sendError(401);
         return isAllowed;
     }
-
-    var storedValue = storageManager.get(key);
+    var fetchedFile = registryOperator.getFile(compoundKey);
+    //var storedValue = storageManager.get(key);
 
     //Check if a value was returned from storage
-    if (!storedValue) {
+    if (!fetchedFile) {
         response.sendError(404, ERROR_NOT_FOUND);
     }
     else {
 
         //Get the image details
-        var contentType = storedValue.contentType;
-        var contentLength = storedValue.contentLength;
+        var contentType = fetchedFile.resource.mediaType;
+        var contentLength = fetchedFile.contentLength;
 
         //Create the headers
         response.addHeader(HEADER_CONTENT_TYPE, contentType);
@@ -105,7 +100,7 @@ function handleResourceRequest(matchedElements) {
 
         try {
             //Send the file stream
-            print(storedValue.content);
+            print(fetchedFile.content);
         } catch (e) {
 
         }

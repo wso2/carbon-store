@@ -46,6 +46,7 @@ if (uriMatcher.match(API_URL)) {
     var page = getPage(args.suffix);
     var path = app.getApiEndpointPath(tenantId, page);
     if (path) {
+
         var file = new File(path);
         if (file.isExists()) {
             request.getMappedPath = mapper(path);

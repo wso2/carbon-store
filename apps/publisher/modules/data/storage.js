@@ -104,41 +104,12 @@ var storageModule = function () {
      @value: An object containing the contentType and a file
      */
     StorageManager.prototype.put = function (value) {
-
-        //Obtain a resource model
-        var resource = this.modelManager.get('Resource');
-		var fileName;
-        //value should contain the file path and content type
-        var file;
-
-        //If a path is given then use the path to create a file,otherwise
-        //use the provided file.
-        if(value.path){
-            file=new File(value.path);
-        }
-        else{
-            file=value.file;
-        }
-
-        //log.debug('filename :'+file.getName());
-
-        //Generate a uuid for the resource
-        resource.uuid = uuid.generate();
-        resource.contentType = value.contentType;
-        resource.contentLength = file.getLength();
-        resource.content = file;
-        resource.fileName =file.getName();
-        resource.tenantId = value.tenantId||'super';
-
-        //Save the resource
-        resource.save();
-        
-        //log.info(file.getPath());
-        
-        //log.info(file.getName());
-        fileName=parseFileName(file.getName());
-
-        return resource.uuid+'/'+fileName;
+        var registryOperator = require("/modules/registry/registry.operator.js").registryOperator();
+        var resource = registryOperator.addFile({
+            file:value.file,
+            tenantId:value.tenantId
+        });
+        return resource.uuid+'/'+resource.name;
     };
 
 

@@ -1,0 +1,14 @@
+<%
+    var carbon = require('carbon');
+    var server = new carbon.server.Server();
+    var options = {
+        username: 'admin',
+        tenantId: -1234
+    };
+    var reg = new carbon.registry.Registry(server, options);
+    var path = '/_system/es/5f8b3534-e16c-4e6d-a603-11ec979fec5a/cartoon016gossiplankanews.jpg';
+    //var path = '/_system/es/cartoon001gossiplankanews.png';
+    var resource = reg.get(path);
+    response.contentType = resource.mediaType;
+    print(reg.content(path));
+%>

@@ -79,10 +79,9 @@ var result;
 
     /**
      * This function put asset to the storage
-     * @param am    The asset manager instance
+     * @param am The asset manager instance
      * @param asset The asset to be saved
      */
-
     var putInStorage = function (asset, am) {
         var resourceFields = am.getAssetResources();
         var ref = utils.file;
@@ -99,7 +98,7 @@ var result;
         var extension = '';
         var uuid;
         var key;
-        //Get all of the files that have been sent in the request
+//Get all of the files that have been sent in the request
         var files = request.getAllFiles();
         if (!files) {
             if (log.isDebugEnabled()) {

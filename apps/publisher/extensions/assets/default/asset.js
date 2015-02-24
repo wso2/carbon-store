@@ -184,18 +184,20 @@ asset.configure = function () {
 };
 asset.renderer = function (ctx) {
     var type = ctx.assetType;
-    var buildListLeftNav = function (page, util) {
+    var buildListLeftNav = function(page, util) {
         var navList = util.navList();
-        navList.push('Add', 'icon-plus-sign-alt', util.buildUrl('create'));
-        navList.push('Statistics', 'icon-dashboard', '/assets/statistics/' + type + '/');
+        navList.push('Add ' + type,'fa-plus', util.buildUrl('create'));
+        navList.push('Statistics', 'fa-area-chart', '/assets/statistics/' + type + '/');
+        //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
     };
-    var buildDefaultLeftNav = function (page, util) {
+    var buildDefaultLeftNav = function(page, util) {
         var id = page.assets.id;
         var navList = util.navList();
-        navList.push('Overview', 'icon-list-alt', util.buildUrl('details') + '/' + id);
-        navList.push('Edit', 'icon-edit', util.buildUrl('update') + '/' + id);
-        navList.push('Life Cycle', 'icon-retweet', util.buildUrl('lifecycle') + '/' + id);
+        navList.push('Edit', 'fa-pencil', util.buildUrl('update') + '/' + id);
+        navList.push('Overview', 'fa-list-alt', util.buildUrl('details') + '/' + id);
+        navList.push('Life Cycle' , 'fa-recycle', util.buildUrl('lifecycle') + '/' + id);
+        navList.push('Statistics', 'fa-area-chart', '/assets/statistics/' + type + '/');
         return navList.list();
     };
     var buildAddLeftNav = function (page, util) {

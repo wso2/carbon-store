@@ -42,6 +42,7 @@ function renderView(partial, data, container, cb) {
 
     caramel.partials(obj, function () {
         var template = Handlebars.partials[partial](data);
+
         $(container).append(template);
 
         if (cb) {
@@ -82,7 +83,7 @@ function getNextPage(param) {
         success: function (response) {//on success
             var assets = convertTimeToUTC(response.data);
             if (assets) {
-                renderView('list_assets_table_body', assets, '#list-asset-table-body', null);
+                renderView('list_assets_table_body', assets, '#list_assets_table_body', null);
 
                 if (assets.length < store.publisher.itemsPerPage) {// if no more assets for the next page
                     infiniteScroll = false;
@@ -139,7 +140,7 @@ var scroll = function () {
     var startInitItems = store.publisher.itemsPerPage;// items-per-page by global store object
 
     if (infiniteScroll && startInitItems > 1) { //if scroll enabled
-        if ($(window).scrollTop() + $(window).height() >= $(document).height() * .001) {
+        if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
             var start = startInitItems * (currentPage++);
             var path = window.location.href;//current page path
             var param = '&&start=' + start + '&&count=' + startInitItems + setSortingParams(path);
@@ -169,6 +170,6 @@ var initSearch = function () {
 $(window).bind('scroll', scroll);
 
 $(window).load(function () {
-    scroll();
+    //scroll();
     initSearch();
 });
