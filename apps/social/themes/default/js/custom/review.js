@@ -71,8 +71,8 @@ $btn.click(function (e) {
         showAlert("Please add your Rating");
     } else {
         var activity = {"verb": "post",
-            "object": {"objectType": "review", "content": review, rating: rating},
-            "likes" : {"totalItems": 0}, "dislikes" : {"totalItems": 0}
+            "object": {"objectType": "review", "content": review, rating: rating, "likes" : {"totalItems": 0}, "dislikes" : {"totalItems": 0}},
+            "actor" : {"id": user, "objectType": "person" }
         };
 
         $btn.attr('disabled', 'disabled');
@@ -133,7 +133,7 @@ $stream.on('click', '.icon-thumbs-down', function (e) {
     var id = $review.attr('data-target-id');
     var $likeCount = $review.find('.com-dislike-count');
 
-    var activity = { target: {id: id} };
+    var activity = { target: {id: id}, object : {}, "actor" : {"id": user, "objectType": "person" } };
 
     if ($likeBtn.hasClass('selected')) {
         activity.verb = 'undislike';
@@ -157,7 +157,7 @@ $stream.on('click', '.icon-thumbs-up', function (e) {
     var id = $review.attr('data-target-id');
     var $likeCount = $review.find('.com-like-count');
 
-    var activity = { target: {id: id} };
+        var activity = { target: {id: id}, object :{}, "actor" : {"id": user, "objectType": "person" } };
 
     if ($likeBtn.hasClass('selected')) {
         activity.verb = 'unlike';
