@@ -130,7 +130,7 @@ var constants = {};
 
     constants.DEFAULT_ASSET_PAGIN={
         start:0,
-        count:24,
+        count:12,
         sortBy: 'overview_createdtime',
         sortOrder: 'DESC',
         paginationLimit: 100
