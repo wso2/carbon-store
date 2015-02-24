@@ -71,8 +71,8 @@ $btn.click(function (e) {
         showAlert("Please add your Rating");
     } else {
         var activity = {"verb": "post",
-            "object": {"objectType": "review", "content": review, rating: rating},
-            "likes" : {"totalItems": 0}, "dislikes" : {"totalItems": 0}
+            "object": {"objectType": "review", "content": review, rating: rating, "likes" : {"totalItems": 0}, "dislikes" : {"totalItems": 0}},
+            "actor" : {"id": user, "objectType": "person" }
         };
 
         $btn.attr('disabled', 'disabled');
@@ -85,11 +85,6 @@ $btn.click(function (e) {
 
         var addAndRenderNew = function (successCallback) {
             $('#newest').addClass('selected');
-            $.get("/store/apis/rate", {
-                id: aid,
-                type: type,
-                value: rating
-            }, function (r) {
                 publish(activity, function (published) {
                     if ($firstReview.length) {
                         $firstReview.hide();
@@ -107,7 +102,7 @@ $btn.click(function (e) {
                       //Remove carbon.super tenant domain from username
                         var pieces = user.split(/[\s@]+/);
                         if(pieces[pieces.length-1] == 'carbon.super'){
-                        	user= pieces[pieces.length-2];
+                            user= pieces[pieces.length-2];
                         }
                         activity.actor = {id: user};
                         usingTemplate(function (template) {
@@ -117,7 +112,6 @@ $btn.click(function (e) {
                         });
                     }
                 });
-            });
         };
 
         addAndRenderNew(function(){
@@ -133,7 +127,7 @@ $stream.on('click', '.icon-thumbs-down', function (e) {
     var id = $review.attr('data-target-id');
     var $likeCount = $review.find('.com-dislike-count');
 
-    var activity = { target: {id: id} };
+    var activity = { target: {id: id}, object : {}, "actor" : {"id": user, "objectType": "person" } };
 
     if ($likeBtn.hasClass('selected')) {
         activity.verb = 'undislike';
@@ -157,7 +151,7 @@ $stream.on('click', '.icon-thumbs-up', function (e) {
     var id = $review.attr('data-target-id');
     var $likeCount = $review.find('.com-like-count');
 
-    var activity = { target: {id: id} };
+        var activity = { target: {id: id}, object :{}, "actor" : {"id": user, "objectType": "person" } };
 
     if ($likeBtn.hasClass('selected')) {
         activity.verb = 'unlike';
