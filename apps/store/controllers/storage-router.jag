@@ -58,19 +58,12 @@ var store = require('/modules/store.js').storeManagers(request, session, tenantI
 
 var storageSecurityProvider = store.storageSecurityProvider;
 
-var storageManager = new storageModule.StorageManager({
-    context: 'storage',
-    isCached: false,
-    connectionInfo: {
-        dataSource: 'JAGH2'
-    }
-});
-
 var value = {};
 
 //Obtain the tenantId and the uuid from the url
 
-var isMatch = uriMatcher.match(storageEndpoint);
+//var isMatch = uriMatcher.match(storageEndpoint);
+var isMatch = uriMatcher.match('/{context}/storage/{type}/{id}/{uuid}/{filename}');
 
 //Handle the request only if the url matches
 if (isMatch || isTenanted) {
@@ -86,41 +79,38 @@ else {
  @matchedElements: A list of elements extracted from the url
  */
 function handleResourceRequest(matchedElements) {
+    var registryOperator = require("/modules/registry/registry.operator.js").registryOperator();
     var key = matchedElements['uuid'];
-    var compoundKey = key + '/' + matchedElements['fileName'];
+    var compoundKey = matchedElements['uuid'] + '/' + matchedElements['filename'];
     var type = matchedElements['type'];
     var id = matchedElements['id'];
+    //Check if the user is allowed to access the resource
+    var isAllowed = storageSecurityProvider.execute(type, id, compoundKey,session);
 
-    //log.debug(compoundKey);
-    var isAllowed = storageSecurityProvider.execute(type, id, compoundKey, session);
-
-    //log.debug(isAllowed);
-
+    //Stop the request if the user does not have permission
     if (!isAllowed) {
-        response.sendError(401, ERROR_AUTH_REQ);
+        response.sendError(401);
         return isAllowed;
-        //return;
     }
-
-    var storedValue = storageManager.get(key);
+    var fetchedFile = registryOperator.getFile(compoundKey);
 
     //Check if a value was returned from storage
-    if (!storedValue) {
+    if (!fetchedFile) {
         response.sendError(404, ERROR_NOT_FOUND);
     }
-    else {
 
+    else {
         //Get the image details
-        var contentType = storedValue.contentType;
-        var contentLength = storedValue.contentLength;
+        var contentType = fetchedFile.resource.mediaType;
+        var contentLength = fetchedFile.contentLength;
 
         //Create the headers
         response.addHeader(HEADER_CONTENT_TYPE, contentType);
         response.addHeader(HEADER_CONTENT_LENGTH, contentLength + '');
 
-        //Send the file stream
         try {
-            print(storedValue.content);
+            //Send the file stream
+            print(fetchedFile.content);
         } catch (e) {
 
         }
