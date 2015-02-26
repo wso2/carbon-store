@@ -44,6 +44,9 @@ response.addHeader("Content-Type", "application/json");
 	                var username = String(logged.username) + '@' + logged.tenantDomain;
 	                review.iLike = social.isUserliked(username, review.object.id, 1);
 	                review.iDislike = social.isUserliked(username, review.object.id, 0);
+		            if(user == username){
+	                    review.isMyComment = true;
+	                }
             	}
             }
             }

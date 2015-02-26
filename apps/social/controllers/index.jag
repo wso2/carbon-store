@@ -56,6 +56,9 @@ var caramel;
                 var review = reviewsJSON[i];
                 review.iLike = social.isUserliked(username, review.object.id, 1);
                 review.iDislike = social.isUserliked(username, review.object.id, 0);
+                if(user == username){
+                    review.isMyComment = true;
+                }
             }
         }
 
