@@ -17,19 +17,8 @@
  *
  */
 var $stream = $stream || $('#stream');
-
-var didILike = function (review, username) {
-    var likes = review.likes && review.likes.items;
-    if (likes) {
-        for (var j = 0; j < likes.length; j++) {
-            var like = likes[j];
-            if (like.id == username) {
-                return true;
-            }
-        }
-    }
-    return false;
-};
+var $more = $('#more');
+var $empty_list = $('#empty_list');
 
 var usingTemplate = function (callback) {
     caramel.partials({activity: 'themes/' + caramel.themer + '/partials/activity.hbs'}, function () {
@@ -45,25 +34,18 @@ var redrawReviews = function (sortBy, callback) {
         PreviousActivityID: "",
         limit: 10
     }, function (obj) {
-        var reviews = obj.attachments || [];
+        var reviews = obj || [];
         usingTemplate(function (template) {
             var str = "";
             for (var i = 0; i < reviews.length; i++) {
-            	//Remove carbon.super tenant domain from username
-                var user = reviews[i].actor.id;
-                var pieces = user.split(/[\s@]+/);
-                if(pieces[pieces.length-1] == 'carbon.super'){
-                	reviews[i].actor.id= pieces[pieces.length-2];
-                }
                 var review = reviews[i];
-                var iLike = didILike(review, user);
-                review.iLike = iLike;
-                console.log(iLike);
                 str += template(review);
                 var lastReviewID = review.id;
             }
             $stream.html(str);
             $('.load-more').attr("value", lastReviewID);
+            $more.show();
+            $empty_list.text("");
             //callback && callback();
             adjustHeight();
         });

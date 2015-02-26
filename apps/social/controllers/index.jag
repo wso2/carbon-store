@@ -25,18 +25,6 @@ var caramel;
     var userModule = require('/modules/user.js');
     var logged = userModule.current(session);
 
-    var isUserInList = function (lists, username) {
-        if (lists) {
-            for (var j = 0; j < lists.length; j++) {
-                var like = lists[j];
-                if (like.id == username) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
-
     if (user && !logged) {
         include('login.jag');
     }
