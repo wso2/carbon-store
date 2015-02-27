@@ -18,29 +18,47 @@
  *
  */
 response.addHeader("Content-Type", "application/json");
+var matcher = new URIMatcher(request.getRequestURI()),
+method = request.getMethod();
 
 (function () {
-    var userModule = require('/modules/user.js');
-    var logged = userModule.current(session);
-    if (logged) {
-        var carbon = require('carbon');
-        var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
-        //Read the social.json file
-        //var config=require('/configs/social.json');
-        //social.configPublisher(config.dataPublisherConnectionInfo);
-        var username = String(logged.username) + '@' + logged.tenantDomain;
-        var activity = JSON.parse(request.getParameter('activity'));
-        activity.actor = {"id": username, "objectType": "person" };
-        var id = social.publish(JSON.stringify(activity));
+var userModule = require('/modules/user.js');
+var logged = userModule.current(session);
 
-        var result = {
-            success: Boolean(id),
-            id: id
-        };
+if (logged) {
+    if(method == 'POST'){    	
+            var carbon = require('carbon');
+            var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
+            //Read the social.json file
+            //var config=require('/configs/social.json');
+            //social.configPublisher(config.dataPublisherConnectionInfo);
+            var username = String(logged.username) + '@' + logged.tenantDomain;
+            var activity = JSON.parse(request.getParameter('activity'));
+            activity.actor = {"id": username, "objectType": "person" };
+            var id = social.publish(JSON.stringify(activity));
 
-        print(result);
-    } else {
-        response.sendError(401);
+            var result = {
+                success: Boolean(id),
+                id: id
+            };
+
+            print(result);
+    }else{
+            var carbon = require('carbon');
+            var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
+            var log = new Log();
+            log.info(request.getParameter('id'));
+            var ret = social.removeActivity(request.getParameter('id'));
+
+            var result = {
+                success: ret
+            };
+
+            print(result);
     }
+
+} else {
+    response.sendError(401);
+}
 })();
 %>

@@ -35,7 +35,7 @@ var publish = function (activity, onSuccess) {
     } else {
         activity.target = {"id": target};
     }
-    $.get('apis/comments.jag', {
+    $.post('apis/comments.jag', {
         activity: JSON.stringify(activity)
     }, onSuccess)
 };
@@ -197,4 +197,19 @@ $more.on('click', '.load-more', function (e) {
             });
         })
 
+});
+
+$stream.on('click', '.com-delete', function (e) {
+    e.preventDefault();
+    var $deleteBtn = $(e.target);
+    var $review = $deleteBtn.parents('.com-review');
+    var id = $review.attr('data-target-id');
+
+    $.get('apis/comments.jag',{
+        id:id
+    }, function(obj){
+        if(obj.success){
+        $review.remove();
+        }
+    });
 });
