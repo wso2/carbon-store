@@ -25,18 +25,6 @@ var caramel;
     var userModule = require('/modules/user.js');
     var logged = userModule.current(session);
 
-    var isUserInList = function (lists, username) {
-        if (lists) {
-            for (var j = 0; j < lists.length; j++) {
-                var like = lists[j];
-                if (like.id == username) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    };
-
     if (user && !logged) {
         include('login.jag');
     }
@@ -68,6 +56,9 @@ var caramel;
                 var review = reviewsJSON[i];
                 review.iLike = social.isUserliked(username, review.object.id, 1);
                 review.iDislike = social.isUserliked(username, review.object.id, 0);
+                if(user == username){
+                    review.isMyComment = true;
+                }
             }
         }
 

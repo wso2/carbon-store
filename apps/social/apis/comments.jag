@@ -28,10 +28,10 @@ response.addHeader("Content-Type", "application/json");
         //Read the social.json file
         //var config=require('/configs/social.json');
         //social.configPublisher(config.dataPublisherConnectionInfo);
-        //var username = String(logged.username) + '@' + logged.tenantDomain;
-        //var activity = JSON.parse(request.getParameter('activity'));
-        //activity.actor = {"id": username, "objectType": "person" };
-        var id = social.publish(request.getParameter('activity'));
+        var username = String(logged.username) + '@' + logged.tenantDomain;
+        var activity = JSON.parse(request.getParameter('activity'));
+        activity.actor = {"id": username, "objectType": "person" };
+        var id = social.publish(JSON.stringify(activity));
 
         var result = {
             success: Boolean(id),
