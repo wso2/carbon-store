@@ -46,8 +46,6 @@ if (logged) {
     }else{
             var carbon = require('carbon');
             var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
-            var log = new Log();
-            log.info(request.getParameter('id'));
             var ret = social.removeActivity(request.getParameter('id'));
 
             var result = {
