@@ -418,7 +418,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	}
 
 	@Override
-	public boolean remove(String activityId) {
+	public boolean remove(String activityId, String userId) {
 		DSConnection con = new DSConnection();
 		Connection connection = con.getConnection();
 
@@ -433,10 +433,12 @@ public class SQLActivityPublisher extends ActivityPublisher {
 		int ret = 0;
 		try {
 			connection.setAutoCommit(false);
-			removeRating(activityId, connection);
-			deleteComment = connection.prepareStatement(DELETE_COMMENT_SQL);
-			deleteComment.setString(1, activityId);
-			ret = deleteComment.executeUpdate();
+			boolean retVal = removeRating(activityId, connection, userId);
+			if(retVal){
+				deleteComment = connection.prepareStatement(DELETE_COMMENT_SQL);
+				deleteComment.setString(1, activityId);
+				ret = deleteComment.executeUpdate();
+			}
 			connection.commit();
 		} catch (SQLException e) {
 			try {
@@ -465,7 +467,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	 * @param activityId
 	 * @return
 	 */
-	private void removeRating(String activityId, Connection connection) {
+	private boolean removeRating(String activityId, Connection connection, String userId) {
 		ResultSet selectResultSet;
 		ResultSet cacheResultSet;
 		PreparedStatement selectStatement;
@@ -482,6 +484,15 @@ public class SQLActivityPublisher extends ActivityPublisher {
 				JsonObject body = (JsonObject) parser.parse(selectResultSet
 						.getString(Constants.BODY_COLUMN));
 				Activity activity = new SQLActivity(body);
+				
+				String actorId = activity.getActorId();
+				
+				if(!actorId.equals(userId)){
+					if (log.isDebugEnabled()) {
+						log.debug("User: " + userId + " not authorized to perform activity remove action.");
+					}
+					return false;
+				}
 
 				int rating = activity.getRating();
 				if (rating > 0) {
@@ -515,6 +526,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 		} catch (SQLException e) {
 			log.error("Unable to update the rating cache. " + e);
 		}
+		return true;
 
 	}
 
