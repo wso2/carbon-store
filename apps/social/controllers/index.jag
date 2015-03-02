@@ -69,7 +69,7 @@ var caramel;
             input_param: {
                 user: username
             },
-            stream: {reviews: reviewsJSON, id: target, user: username, lastReviewID: 10}
+            stream: {reviews: reviewsJSON, id: target, user: username, offset: 10}
         });
     } else {
         print('please use the target URL parameter as the asset id, eg: http://localhost:9763/social/?target=33530252-rer-w345325');
