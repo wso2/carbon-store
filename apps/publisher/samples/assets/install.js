@@ -169,7 +169,7 @@ var installer = function () {
      adds the asset to Social Cache DB. (this is a hack to warm up the cache,
      so it want be empty at start up)
      */
-    function addToSocialCache(asset) {
+    /*function addToSocialCache(asset) {
         if (asset) {
             var domain = "carbon.super";
 
@@ -184,7 +184,7 @@ var installer = function () {
                 db.close();
             });
         }
-    }
+    }*/
 
     /*
      The function is used to add a new asset instance to the registry
@@ -210,7 +210,7 @@ var installer = function () {
         context['currentAsset'] = assets[0] || null;
         //log.debug('added asset: ' + stringify(context.currentAsset));
 
-        addToSocialCache(context.currentAsset);
+        //addToSocialCache(context.currentAsset);
         //log.debug('finished');
     }
 
