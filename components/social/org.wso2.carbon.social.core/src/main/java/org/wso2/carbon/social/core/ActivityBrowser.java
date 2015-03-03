@@ -23,7 +23,7 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 public interface ActivityBrowser {
-	double getRating(String targetId);
+	JsonObject getRating(String targetId);
 
 	JsonObject getSocialObject(String targetId, String order, int offset,
 			int limit);

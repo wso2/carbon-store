@@ -96,7 +96,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	private JsonParser parser = new JsonParser();
 
 	@Override
-	public double getRating(String targetId) {
+	public JsonObject getRating(String targetId) {
 		DSConnection con = new DSConnection();
 		Connection connection = con.getConnection();
 
@@ -104,11 +104,12 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			if (log.isDebugEnabled()) {
 				log.debug(Constants.CONNECTION_ERROR);
 			}
-			return 0;
+			return null;
 		}
 
 		PreparedStatement statement;
 		ResultSet resultSet;
+		
 		try {
 			statement = connection.prepareStatement(SELECT_CACHE_SQL);
 
@@ -123,7 +124,10 @@ public class SQLActivityBrowser implements ActivityBrowser {
 						.getString(Constants.RATING_COUNT));
 				resultSet.close();
 				if(total != 0){
-					return (double) total / count;
+					JsonObject object = new JsonObject();
+					object.addProperty(Constants.RATING, (double) total / count);
+					object.addProperty(Constants.COUNT, count);
+					return object;
 				}
 			}
 
@@ -135,7 +139,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			}
 		}
 
-		return 0;
+		return null;
 	}
 
 	@Override

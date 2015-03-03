@@ -71,7 +71,7 @@ public abstract class SocialActivityService {
 	 * @param targetId
 	 * @return averageRating
 	 */
-	public double getRating(String targetId) {
+	public JsonObject getRating(String targetId) {
 		return getActivityBrowser().getRating(targetId);
 	}
 

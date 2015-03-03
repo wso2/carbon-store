@@ -178,13 +178,17 @@ label.error {
 }
 .asset-introduction-box .asset-rating {
     margin-top: 10px;
-    width: auto;
     margin-bottom: 15px;
 }
 .text-review-box-charCount-msg {
     text-align: right;
     width: 50%;
     float: right;
+}
+.asset-introduction-box .rating-count {
+    margin-top: 10px;
+    margin-bottom: 15px;
+    margin-left: 10px;
 }
 
 /*

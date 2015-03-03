@@ -64,9 +64,12 @@ var api = {};
         }
         for (var index in assets) {
             var aid = assets[index].type + ":" + assets[index].id;
-            var average = social.getRating(aid);
+            var obj = JSON.parse(social.getRating(aid));
+            var average = obj ? obj.rating : 0;
+            var count = obj ? obj.count : 0; 
             assets[index].rating = rating ? average : 0;
             assets[index].avgRating = average;
+            assets[index].count = count;
             assets[index].ratingPx = calculateRatingPixel(average);
         }
     };

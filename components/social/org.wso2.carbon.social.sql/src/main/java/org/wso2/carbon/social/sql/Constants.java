@@ -42,6 +42,7 @@ public class Constants {
 	public static final String ASSETS = "assets";
 	public static final String COMMENTS = "comments";
 	public static final String RATING = "rating";
+	public static final String COUNT = "count";
 
 	public static final String TARGET_JSON_PROP = "target";
 	public static final String VERB_JSON_PROP = "verb";
