@@ -122,10 +122,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			PreparedStatement commentStatement;
 			PreparedStatement ratingStatement;
-
-			String json = null;
-
-			json = jsonObject.toString();
+			String json = jsonObject.toString();
 			String targetId = activity.getTargetId();
 			// String id = activity.getId();
 			String userId = activity.getActorId();

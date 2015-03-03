@@ -42,6 +42,7 @@ import org.wso2.carbon.social.sql.SocialUtil;
 public class SQLActivityBrowser implements ActivityBrowser {
 	private static final Log log = LogFactory.getLog(SQLActivityBrowser.class);
 
+	//TODO think about oracle and other db support
 	public static final String COMMENT_SELECT_SQL_DESC = "SELECT "
 			+ Constants.BODY_COLUMN + ", " + Constants.ID_COLUMN + " FROM "
 			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
