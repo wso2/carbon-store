@@ -220,8 +220,8 @@ var engine = caramel.engine('handlebars', (function() {
                 for (var index in values) {
                     out += '<option>' + values[index].value + '</option>';
                 }
-                //Filter out the selected 
-                out + '</select>';
+                //Filter out the selected
+                out += '</select>';
                 return out;
             };
             var renderOptionsTextField = function(field) {
