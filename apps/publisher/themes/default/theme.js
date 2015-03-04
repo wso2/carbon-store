@@ -204,7 +204,12 @@ var engine = caramel.engine('handlebars', (function() {
                 return meta;
             };
             var renderFieldLabel = function(field) {
-                return '<label class="control-label col-sm-2">' + (field.name.label || field.name.name) + '</label>';
+                var output = '';
+                var isHidden= (field.hidden)?field.hidden:false;
+                if (!isHidden){
+                    output = '<label class="control-label col-sm-2">' + (field.name.label || field.name.name) + '</label>';
+                }
+                return output;
             };
             var renderOptions = function(value, values, field,count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
@@ -261,22 +266,25 @@ var engine = caramel.engine('handlebars', (function() {
             var renderField = function(field) {
                 var out = '';
                 var value = field.value || '';
-                switch (field.type) {
-                    case 'options':
-                        out = '<div class="col-sm-10">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
-                        break;
-                    case 'text':
-                        out = '<div class="col-sm-10"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></div>';
-                        break;
-                    case 'text-area':
-                        out = '<div class="col-sm-10"><textarea row="3" ' + renderFieldMetaData(field) + ' class="width-full">'+value+'</textarea></div>';
-                        break;
-                    case 'file':
-                        out = '<div class="col-sm-10"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field) + ' ></div>';
-                        break;
-                    default:
-                        out = '<div class="col-sm-10">Normal Field' + field.type + '</div>';
-                        break;
+                var isHidden= (field.hidden)?field.hidden:false;
+                if (!isHidden) {
+                    switch (field.type) {
+                        case 'options':
+                            out = '<div class="col-sm-10">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
+                            break;
+                        case 'text':
+                            out = '<div class="col-sm-10"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></div>';
+                            break;
+                        case 'text-area':
+                            out = '<div class="col-sm-10"><textarea row="3" ' + renderFieldMetaData(field) + ' class="width-full">'+value+'</textarea></div>';
+                            break;
+                        case 'file':
+                            out = '<div class="col-sm-10"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field) + ' ></div>';
+                            break;
+                        default:
+                            out = '<div class="col-sm-10">Normal Field' + field.type + '</div>';
+                            break;
+                    }
                 }
                 return out;
             };

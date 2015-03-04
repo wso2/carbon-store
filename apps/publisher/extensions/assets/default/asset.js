@@ -25,7 +25,7 @@ asset.manager = function (ctx) {
             var ref = require('utils').time;
 
             //Check if the options object has a createdtime attribute and populate it
-            if ((options.attributes) && (options.attributes.hasOwnProperty('overview_createdtime'))) {
+            if ((options.attributes) && ctx.rxtManager.getRxtField(ctx.assetType, 'overview_createdtime')) {
                 options.attributes.overview_createdtime = ref.getCurrentTime();
             }
             this._super.create.call(this, options);
@@ -151,6 +151,9 @@ asset.configure = function () {
                         name: {
                             label: 'Version'
                         }
+                    },
+                    createdtime: {
+                        hidden: true
                     }
                 }
             },
@@ -228,6 +231,18 @@ asset.renderer = function (ctx) {
                     var date = new Date();
                     date.setTime(value);
                     asset.attributes.overview_createdtime = date.toUTCString();
+                }
+            }
+        },
+        details: function (page) {
+            var tables = page.assets.tables;
+            for (var index in tables) {
+                var table = tables[index];
+                if (table.name == 'overview') {
+                    var value = table.fields.createdtime.value;
+                    var date = new Date();
+                    date.setTime(value);
+                    table.fields.createdtime.value = date.toUTCString();
                 }
             }
         },
