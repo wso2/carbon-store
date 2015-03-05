@@ -176,6 +176,9 @@ asset.configure = function () {
             ui: {
                 icon: 'icon-cog'
             },
+            categories: {
+                categoryField: 'overview_category'
+            },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
             versionAttribute:'overview_version'
@@ -230,6 +233,7 @@ asset.renderer = function (ctx) {
                     asset.attributes.overview_createdtime = date.toUTCString();
                 }
             }
+            require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page,this);
         },
         pageDecorators: {
             leftNav: function (page) {
