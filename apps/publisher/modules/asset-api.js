@@ -82,7 +82,7 @@ var result;
      * @param am The asset manager instance
      * @param asset The asset to be saved
      */
-    var putInStorage = function (asset, am) {
+    var putInStorage = function (asset, am,tenantId) {
         var resourceFields = am.getAssetResources();
         var ref = utils.file;
         var storageModule = require('/modules/data/storage.js').storageModule();
@@ -111,6 +111,7 @@ var result;
             if (files[key]) {
                 resource = {};
                 resource.file = files[key];
+                resource.tenantId = tenantId;
                 extension = ref.getExtension(files[key]);
                 resource.contentType = ref.getMimeType(extension);
                 uuid = storageManager.put(resource);
@@ -185,7 +186,8 @@ var result;
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var assetReq = req.getAllParameters('UTF-8');//get asset attributes from the request
-
+        var server = require('store').server;
+        var user = server.current(session);
         var asset = null;
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
@@ -194,7 +196,7 @@ var result;
         }//generate asset object
 
         try {
-            putInStorage(asset, am);//save to the storage
+            putInStorage(asset, am,user.tenantId);//save to the storage
             am.create(asset);
         } catch (e) {
             log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
@@ -225,7 +227,8 @@ var result;
 
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
-
+        var server = require('store').server;
+        var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
         var asset = null;
         if (request.getParameter("asset")) {
@@ -247,7 +250,7 @@ var result;
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.NOT_FOUND);
         }
         if (original) {
-            putInStorage(asset, am);
+            putInStorage(asset, am,user.tenantId);
             putInOldResources(original, asset, am);//load current asset values
             putInUnchangedValues(original, asset, assetReq);
             //If the user has not uploaded any new resources then use the old resources
