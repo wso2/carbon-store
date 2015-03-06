@@ -34,7 +34,7 @@
                         <li><a tabindex="-1" href="#">Disk Utilities</a></li>
                     </ul>
                 </div>
-                <form class="form-group" id="assetSearchForm" target='{{url ""}}{{this.url}}'>
+                <form class="form-group" id="assetSearchForm" action='{{url ""}}{{meta.landingPage}}'>
                     <input type="text" name="query" class="form-control" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{paging.query}}"  />
                     <input type="hidden" name="sortby" value="{{paging.sortBy}}"/>
                     <input type="hidden" name="sort" value="{{paging.sortOrder}}"/>
