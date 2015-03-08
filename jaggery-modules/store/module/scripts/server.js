@@ -306,7 +306,7 @@ var server = {};
             log.debug('startTenantFlow');
         }
 
-        modify(options);
+        //modify(options);
 
         try {
             context = PrivilegedCarbonContext.getThreadLocalCarbonContext();
