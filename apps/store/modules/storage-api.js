@@ -22,6 +22,7 @@ var api = {};
     var carbon = require('carbon');
     var rxt = require('rxt');
     var log = new Log('storage-api');
+    PrivilegedCarbonContext = org.wso2.carbon.context.PrivilegedCarbonContext;
     /**
      * Checks if the resource of a given asset can be accessed 
      * @param  {String}  type         The type of the asset
@@ -35,16 +36,20 @@ var api = {};
         var user = server.current(session);
         var am;
         var asset;
+        var carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        tenantId = carbonContext.getTenantId();
         //Check if the tenant has not been provided and then eagerly assign the super tenant id
-        tenantId = tenantId || carbon.server.superTenant.tenantId;
+        //tenantId = tenantId || carbon.server.superTenant.tenantId;
+        //log.info('After consolidation '+tenantId);
         //If there is a logged in user the tenant id should be picked up 
         //from the user
-        if (user) {
-            am = rxt.asset.createUserAssetManager(session, type);
-            tenantId = tenantId ? tenantId : user.tenantId;
-        } else {
-            am = rxt.asset.createAnonAssetManager(session, type, tenantId);
-        }
+        // if (user) {
+        //     am = rxt.asset.createUserAssetManager(session, type);
+        //     tenantId = tenantId ? tenantId : user.tenantId;
+        // } else {
+        //     am = rxt.asset.createAnonAssetManager(session, type, tenantId);
+        // }
+        am = rxt.asset.createAnonAssetManager(session, type, tenantId);
         //Attempt to retrieve the asset details
         try {
             asset = am.get(assetId);

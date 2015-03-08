@@ -42,6 +42,7 @@ require('/modules/store.js').exec(function(ctx) {
     var isMatch = uriMatcher.match(nonTenantedUrlPattern) || uriMatcher.match(tenantedUrlPattern);
     var carbon = require('carbon');
     var store = require('store');
+    PrivilegedCarbonContext = org.wso2.carbon.context.PrivilegedCarbonContext;
     //Handle the request only if the url matches
     if (isMatch) {
         var matchedElements = uriMatcher.elements();
@@ -65,15 +66,17 @@ require('/modules/store.js').exec(function(ctx) {
         var tenantId = carbon.server.superTenant.tenantId;
         var user = store.server.current(session);
         //Attempt to obtain the tenant id from the domain provided 
-        if (matchedElements.domain) {
-            tenantId = carbon.server.tenantId({
-                domain: matchedElements.domain
-            });
-        }
+        // if (matchedElements.domain) {
+        //     tenantId = carbon.server.tenantId({
+        //         domain: matchedElements.domain
+        //     });
+        // }
         //If there is a logged in user then the tenantId should inherit from the currently logged in user
-        if (user) {
-            tenantId = user.tenantId;
-        }
+        // if (user) {
+        //     tenantId = user.tenantId;
+        // }
+        var carbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        tenantId = carbonContext.getTenantId();
         //Check if the user is allowed to access the resource
         var isAllowed = storageApi.isAssetResourceAccessible(type, id, compoundKey, session, tenantId); 
         //Stop the request if the user does not have permission
