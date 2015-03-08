@@ -86,7 +86,7 @@ var pageDecorators = {};
         var am = getAssetManager(ctx);
         var ratingApi = require('/modules/rating-api.js').api;
         var assets = am.recentAssets();
-        ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+        //ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
         page.recentAssets = assets;
         return page;
     };
