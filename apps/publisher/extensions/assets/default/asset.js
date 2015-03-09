@@ -144,6 +144,7 @@ asset.configure = function () {
                             name: 'name',
                             label: 'Name'
                         },
+                        updatable: false,
                         validation: function () {
                         }
                     },
@@ -243,6 +244,15 @@ asset.renderer = function (ctx) {
                     var date = new Date();
                     date.setTime(value);
                     table.fields.createdtime.value = date.toUTCString();
+                }
+            }
+        },
+        create: function (page) {
+            var tables = page.assets.tables;
+            for (var index in tables) {
+                var table = tables[index];
+                if (table.name == 'overview') {
+                    table.fields.provider.value = page.cuser.username;
                 }
             }
         },

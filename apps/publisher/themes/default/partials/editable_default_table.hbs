@@ -12,7 +12,7 @@
 <div class="collapse in" id="collapse{{label}}">
 {{#eachField this.fields}}
     <div class="form-group">
-        {{renderEditableField .}}
+        {{renderEditableField . mode=../mode}}
     </div>
 {{/eachField}}
 </div>
