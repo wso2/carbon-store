@@ -343,6 +343,7 @@ br.c-both {
 	float:left;
 	margin-left:0px;
 	overflow:hidden;
+    width:140px;
 }
 
 h3.ast-name {
@@ -351,8 +352,24 @@ h3.ast-name {
 	color:#555;
 	margin-top:12px;
 	margin-bottom:12px;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 26px;
+    position: relative;
 }
 
+h3.ast-name:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    height: 26px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
+
+}
 .ast-ver {
 	font-weight:300;
 	font-size:13px;
