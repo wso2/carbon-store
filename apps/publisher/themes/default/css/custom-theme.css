@@ -206,3 +206,8 @@ a.ctrl-filter-category:hover {
   width: 150px;
   height: 150px;
 }
+@media all and (min-width: 992px) {
+    .custom-form-label{
+        text-align: right;
+    }
+}

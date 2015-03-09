@@ -677,3 +677,9 @@ h2 span.fa-stack{
 .graph-placeholder{
     margin-top:20px;
 }
+.menu-stack-icons.fa-stack i:first-child{
+    text-indent: 1px;
+}
+.collapse-stack-icons.fa-stack i:first-child{
+    text-indent: 4px;
+}
