@@ -256,6 +256,18 @@ asset.renderer = function (ctx) {
                 }
             }
         },
+        update: function (page) {
+            var tables = page.assets.tables;
+            for (var index in tables) {
+                var table = tables[index];
+                if (table.name == 'overview') {
+                    var value = table.fields.createdtime.value;
+                    var date = new Date();
+                    date.setTime(value);
+                    table.fields.createdtime.value = date.toUTCString();
+                }
+            }
+        },
         pageDecorators: {
             leftNav: function (page) {
                 if(log.isDebugEnabled()){
