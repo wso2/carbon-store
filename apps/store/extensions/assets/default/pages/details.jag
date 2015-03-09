@@ -51,7 +51,7 @@ require('/modules/store.js').exec(function(ctx) {
         // }else {
         //     am = asset.createUserAssetManager(ctx.session, type);
         // }
-        var tenantResources = tenantApi.createTenantAwareResources(ctx.session, options);
+        var tenantResources = tenantApi.createTenantAwareAssetResources(ctx.session, options);
         context = tenantResources.context;
         am = tenantResources.am;
         var page = ui.buildPage(ctx.session, ctx.request);

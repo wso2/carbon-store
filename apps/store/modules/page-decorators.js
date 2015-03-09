@@ -19,22 +19,24 @@
 var pageDecorators = {};
 (function() {
     var storeConstants = require('store').storeConstants;
-
+    var tenantApi = require('/modules/tenant-api.js').api;
     pageDecorators.navigationBar = function(ctx, page, utils) {
-        var rxtManager = ctx.rxtManager;
         var app = require('rxt').app;
+        //Change the context to support cross tenant views
+        var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
+        //Support for cross tenant views
+        ctx = tenantAppResources.context;
+        var rxtManager = ctx.rxtManager;
         //Obtain all of the available rxt types
-        var availableTypes = app.getActivatedAssets(ctx.tenantId); //rxtManager.listRxtTypeDetails();
+        var availableTypes = app.getActivatedAssets(ctx.tenantId);
         var types = [];
         var type;
-        var currentType = ctx.assetType;
-        var log = new Log();
+        var currentType;
         page.navigationBar = {};
         for (var index in availableTypes) {
             type = availableTypes[index];
-            currentType = rxtManager.getRxtTypeDetails(type); //availableTypes[index];
+            currentType = rxtManager.getRxtTypeDetails(type);
             currentType.selected = false;
-            //currentType.listingUrl = utils.buildAssetPageUrl(availableTypes[index].shortName, '/list');
             currentType.listingUrl = utils.buildAssetPageUrl(currentType.shortName, '/list');
             if (currentType.shortName == ctx.assetType) {
                 currentType.selected = true;
@@ -99,7 +101,11 @@ var pageDecorators = {};
         var am;
         var type;
         var rxtDetails;
-        var types = app.getActivatedAssets(ctx.tenantId); //ctx.rxtManager.listRxtTypeDetails();
+        var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
+        var tenantAssetResources;
+        // Supporting cross tenant views
+        ctx = tenantAppResources.context;
+        types = app.getActivatedAssets(ctx.tenantId);
         var typeDetails;
         var ratingApi = require('/modules/rating-api.js').api;
         var q = page.assetMeta.q;
@@ -107,11 +113,16 @@ var pageDecorators = {};
         for (var index in types) {
             typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
             type = typeDetails.shortName;
-            if (ctx.isAnonContext) {
-                am = asset.createAnonAssetManager(ctx.session, type, ctx.tenantId);
-            } else {
-                am = asset.createUserAssetManager(ctx.session, type);
-            }
+            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                type: type
+            });
+            am = tenantAssetResources.am;
+            // if (ctx.isAnonContext) {
+            //     am = asset.createAnonAssetManager(ctx.session, type, ctx.tenantId);
+            // } else {
+            //     am = asset.createUserAssetManager(ctx.session, type);
+            // }
+
             if (query) {
                 assets = am.recentAssets({
                     q: query
@@ -124,7 +135,7 @@ var pageDecorators = {};
                 if (!ctx.isAnonContext) {
                     addSubscriptionDetails(assets, am, ctx.session);
                 }
-                ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                //ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
                 items = items.concat(assets);
                 assetsByType.push({
                     assets: assets,
@@ -134,6 +145,7 @@ var pageDecorators = {};
         }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
+        log.info('Finished executing decorator recentAssetsOfActivatedTypes');
     };
     var addSubscriptionDetails = function(assets, am, session) {
         for (var index = 0; index < assets.length; index++) {
@@ -165,19 +177,26 @@ var pageDecorators = {};
         var assetsOfType;
         var am;
         var type;
-        var types = app.getActivatedAssets(ctx.tenantId); //ctx.rxtManager.listRxtTypeDetails();
+        var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
+        var tenantAssetResources;
+        //Support for cross tenant views
+        ctx = tenantAppResources.context;
+        var types = app.getActivatedAssets(ctx.tenantId);
         for (var index in types) {
-            type = types[index]; //typeDetails.shortName;
-            if (ctx.isAnonContext) {
-                am = asset.createAnonAssetManager(ctx.session, type, ctx.tenantId);
-            } else {
-                am = asset.createUserAssetManager(ctx.session, type);
-            }
+            type = types[index];
+            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                type: type
+            });
+            am = tenantAssetResources.am;
+            // if (ctx.isAnonContext) {
+            //     am = asset.createAnonAssetManager(ctx.session, type, ctx.tenantId);
+            // } else {
+            //     am = asset.createUserAssetManager(ctx.session, type);
+            // }
             assetsOfType = am.popularAssets();
-            ratingApi.addRatings(assetsOfType, am, ctx.tenantId, ctx.username);
+            //ratingApi.addRatings(assetsOfType, am, ctx.tenantId, ctx.username);
             items = items.concat(assetsOfType);
         }
-        //log.info(items);
         page.popularAssets = items;
     };
     pageDecorators.tags = function(ctx, page) {
@@ -196,35 +215,36 @@ var pageDecorators = {};
     };
     pageDecorators.socialFeature = function(ctx, page) {
         var app = require('rxt').app;
-        var carbon = require('carbon');
         var constants = require('rxt').constants;
         if (!app.isFeatureEnabled(ctx.tenantId, constants.SOCIAL_FEATURE)) {
             log.warn('social feature has been disabled.');
             return page;
         }
+        var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
+        //Support for cross tenant views
+        ctx = tenantAppResources.context;
         var socialFeatureDetails = app.getSocialFeatureDetails(ctx.tenantId);
-
         var domain = carbon.server.tenantDomain({
             tenantId: ctx.tenantId
         });
-        socialFeatureDetails.keys.urlDomain = getDomainFromURL(request);
+        socialFeatureDetails.keys.urlDomain = domain; //getDomainFromURL(request);
         page.features[constants.SOCIAL_FEATURE] = socialFeatureDetails;
         return page;
     };
-
-   var getDomainFromURL = function(request){
-        var uriMatcher = new URIMatcher(request.getRequestURI());
-        var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
-        var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
-        var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
-
-        var carbon = require('carbon');
-        var urlTenantDomain =  opts.domain ? opts.domain : constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
-
-        return urlTenantDomain;
+    // var getDomainFromURL = function(request) {
+    //     var uriMatcher = new URIMatcher(request.getRequestURI());
+    //     var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN; // '/{context}/t/{domain}/{+any}';
+    //     var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN; //  = '/{context}/{+any}';
+    //     var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
+    //     var carbon = require('carbon');
+    //     var urlTenantDomain = opts.domain ? opts.domain : constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+    //     return urlTenantDomain;
+    // };
+    var buildTenantQualifiedUrlSuffix = function(session) {
+        var tenant = tenantApi.activeTenant();
+        return '/t/' + tenant.domain;
     };
-
-    pageDecorators.socialSites = function(page, meta, util) {
+    pageDecorators.socialSites = function(ctx, page, meta, util) {
         var utils = require('utils');
         if (!utils.reflection.isArray(page.assets || [])) {
             var asset = page.assets;
@@ -234,8 +254,8 @@ var pageDecorators = {};
             var port = process.getProperty('http.port');
             var app = require('rxt').app;
             var context = app.getContext();
-            var completeAssetUrl = ('http://' + host + ':' + port + context + assetUrl);
-
+            var tenantSuffix = buildTenantQualifiedUrlSuffix(ctx.session);
+            var completeAssetUrl = ('http://' + host + ':' + port + context + tenantSuffix + assetUrl);
             page.socialSites = {};
             var facebook = page.socialSites.facebook = {};
             var gplus = page.socialSites.gplus = {};
@@ -248,41 +268,40 @@ var pageDecorators = {};
         }
         return page;
     };
-    pageDecorators.embedLinks = function(page, meta) {
+    pageDecorators.embedLinks = function(ctx, page, meta) {
         var utils = require('utils');
         if (!utils.reflection.isArray(page.assets || [])) {
             var asset = page.assets;
             var attributes = asset.attributes || {};
             var widgetLink = '/' + asset.type + 's/widget';
-            var assetUrl = widgetLink+'?name=' + asset.name + '&version=' + attributes.overview_version + '&provider=' + attributes.overview_provider;
+            var assetUrl = widgetLink + '?name=' + asset.name + '&version=' + attributes.overview_version + '&provider=' + attributes.overview_provider;
             page.embedLinks = '<iframe width="450" height="120" src="' + assetUrl + '" frameborder="0" allowfullscreen></iframe>';
         }
         return page;
     };
-
     var getAssetManager = function(ctx) {
-        var asset = require('rxt').asset;
+        //       var asset = require('rxt').asset;
         var am;
-
-//        var uriMatcher = new URIMatcher(request.getRequestURI());
-//        var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
-//        var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
-//        var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
-
-        var carbon = require('carbon');
-        var URLTenantId = carbon.server.tenantId({domain: getDomainFromURL(request)});
-
-        if (ctx.isAnonContext || ctx.tenantId != URLTenantId) {
-            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, URLTenantId);
-        }else {
-            am = asset.createUserAssetManager(ctx.session, ctx.assetType);
-        }
-
-//        if (ctx.isAnonContext) {
-//            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, ctx.tenantId);
-//        } else {
-//            am = asset.createUserAssetManager(ctx.session, ctx.assetType);
-//        }
+        var resources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+            type: ctx.assetType
+        });
+        am = resources.am;
+        //        var uriMatcher = new URIMatcher(request.getRequestURI());
+        //        var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
+        //        var superTenantUrl = constants.DEFAULT_SUPER_TENANT_URL_PATTERN;//  = '/{context}/{+any}';
+        //        var opts = uriMatcher.match(tenantedAssetPageUrl) || uriMatcher.match(superTenantUrl);
+        //        var carbon = require('carbon');
+        //        var URLTenantId = carbon.server.tenantId({domain: getDomainFromURL(request)});
+        //        if (ctx.isAnonContext || ctx.tenantId != URLTenantId) {
+        //            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, URLTenantId);
+        //        }else {
+        //            am = asset.createUserAssetManager(ctx.session, ctx.assetType);
+        //        }
+        //        if (ctx.isAnonContext) {
+        //            am = asset.createAnonAssetManager(ctx.session, ctx.assetType, ctx.tenantId);
+        //        } else {
+        //            am = asset.createUserAssetManager(ctx.session, ctx.assetType);
+        //        }
         return am;
     };
     var fetchActiveAuthDetails = function(method, methods) {

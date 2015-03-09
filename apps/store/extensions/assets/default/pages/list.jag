@@ -66,7 +66,7 @@ require('/modules/store.js').exec(function (ctx) {
     //     context = core.createAssetContext(ctx.session, type, URLTenantId);
     //     am = asset.createUserAssetManager(ctx.session, type);
     // }
-    var tenantResources = tenantApi.createTenantAwareResources(ctx.session,options);
+    var tenantResources = tenantApi.createTenantAwareAssetResources(ctx.session,options);
     am = tenantResources.am;
     context = tenantResources.context;
     if (tag) {
@@ -79,7 +79,8 @@ require('/modules/store.js').exec(function (ctx) {
         assets = am.search(null, PAGING);
     }
     //Add subscription details to the assets
-    subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);
+    tenantApi.debug();
+    //subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);
 //    ratingApi.addRatings(assets, am, context.tenantId, context.username);
     var output = am.render(assets, page).list();
     output.paging = assetApi.assetsPaging(assets, type, ctx.request);
