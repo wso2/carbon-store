@@ -510,26 +510,6 @@ a.cu-ico-button-stats {
 :-ms-input-placeholder {  
    color: #fff;  
 }
-.wr-global-header .dropdown{
-    text-align:right;
-    padding-top:10px;
-    padding-right:5px;
-}
-.wr-global-header .dropdown > a{
-    color:#fff;
-    text-decoration: none;
-    font-size:13px;
-}
-.wr-global-header .dropdown .dropdown-menu{
-    background: #5d5d5d;
-}
-.wr-global-header .dropdown .dropdown-menu a{
-    color:#fff;
-}
-.wr-global-header .dropdown .dropdown-menu a:hover{
-    background: #767676;
-    color: #fff;
-}
 .modal-comment{
     width:100%;
     height: 150px;
