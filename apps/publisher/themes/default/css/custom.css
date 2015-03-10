@@ -343,6 +343,7 @@ br.c-both {
 	float:left;
 	margin-left:0px;
 	overflow:hidden;
+    width:140px;
 }
 
 h3.ast-name {
@@ -351,8 +352,24 @@ h3.ast-name {
 	color:#555;
 	margin-top:12px;
 	margin-bottom:12px;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 26px;
+    position: relative;
 }
 
+h3.ast-name:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    height: 26px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
+
+}
 .ast-ver {
 	font-weight:300;
 	font-size:13px;
@@ -492,26 +509,6 @@ a.cu-ico-button-stats {
 
 :-ms-input-placeholder {  
    color: #fff;  
-}
-.wr-global-header .dropdown{
-    text-align:right;
-    padding-top:10px;
-    padding-right:5px;
-}
-.wr-global-header .dropdown > a{
-    color:#fff;
-    text-decoration: none;
-    font-size:13px;
-}
-.wr-global-header .dropdown .dropdown-menu{
-    background: #5d5d5d;
-}
-.wr-global-header .dropdown .dropdown-menu a{
-    color:#fff;
-}
-.wr-global-header .dropdown .dropdown-menu a:hover{
-    background: #767676;
-    color: #fff;
 }
 .modal-comment{
     width:100%;
@@ -679,4 +676,10 @@ h2 span.fa-stack{
 }
 .graph-placeholder{
     margin-top:20px;
+}
+.menu-stack-icons.fa-stack i:first-child{
+    text-indent: 1px;
+}
+.collapse-stack-icons.fa-stack i:first-child{
+    text-indent: 4px;
 }

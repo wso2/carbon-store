@@ -67,7 +67,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var ret = '';
                 for (var key in context) {
                     context[key].label = context[key].name.label ? context[key].name.label : context[key].name.name;
-                    ret += options.fn(context[key]);
+                    if(!context[key].hidden){
+                        ret += options.fn(context[key]);
+                    }
                 }
                 return ret;
             });
@@ -191,20 +193,32 @@ var engine = caramel.engine('handlebars', (function() {
                 //Check if the table is a normal table
                 return new Handlebars.SafeString(defaultPtr(table));
             });
-            var renderFieldMetaData = function(field,name) {
+            var renderFieldMetaData = function(field,name,options) {
                 var isRequired=(field.required)?field.required:false;
                 var isReadOnly=(field.readonly)?field.readonly:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
+                var isUpdatable = true;
+                if(field.updatable == false){
+                    isUpdatable = false;
+                }
+                var mode = options?options.hash.mode:'create';
                 /*if(isRequired){
                     meta+=' required';
                 }*/
-                /*if(isReadOnly){
+                if(isReadOnly){
                     meta+=' readonly';
-                }*/
+                } else if(!isUpdatable && mode == 'edit'){
+                    meta+=' readonly';
+                }
                 return meta;
             };
             var renderFieldLabel = function(field) {
-                return '<label class="control-label col-sm-2">' + (field.name.label || field.name.name) + '</label>';
+                var output = '';
+                var isHidden= (field.hidden)?field.hidden:false;
+                if (!isHidden){
+                    output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name) + '</label>';
+                }
+                return output;
             };
             var renderOptions = function(value, values, field,count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
@@ -215,8 +229,8 @@ var engine = caramel.engine('handlebars', (function() {
                 for (var index in values) {
                     out += '<option>' + values[index].value + '</option>';
                 }
-                //Filter out the selected 
-                out + '</select>';
+                //Filter out the selected
+                out += '</select>';
                 return out;
             };
             var renderOptionsTextField = function(field) {
@@ -258,7 +272,7 @@ var engine = caramel.engine('handlebars', (function() {
                 out += '<input type="file" value="' + value + '" ' + renderFieldMetaData(field) + '></td>';
                 return out;
             };
-            var renderField = function(field) {
+            var renderField = function(field, options) {
                 var out = '';
                 var value = field.value || '';
                 switch (field.type) {
@@ -266,13 +280,13 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<div class="col-sm-10">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
                         break;
                     case 'text':
-                        out = '<div class="col-sm-10"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></div>';
+                        out = '<div class="col-sm-10"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
                         break;
                     case 'text-area':
-                        out = '<div class="col-sm-10"><textarea row="3" ' + renderFieldMetaData(field) + ' class="width-full">'+value+'</textarea></div>';
+                        out = '<div class="col-sm-10"><textarea row="3" ' + renderFieldMetaData(field, null, options) + ' class="width-full">'+value+'</textarea></div>';
                         break;
                     case 'file':
-                        out = '<div class="col-sm-10"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field) + ' ></div>';
+                        out = '<div class="col-sm-10"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     default:
                         out = '<div class="col-sm-10">Normal Field' + field.type + '</div>';
@@ -325,9 +339,9 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return new Handlebars.SafeString(out);
             });
-            Handlebars.registerHelper('renderEditableField', function(field) {
+            Handlebars.registerHelper('renderEditableField', function(field, options) {
                 var label = renderFieldLabel(field);
-                return new Handlebars.SafeString(label + renderField(field));
+                return new Handlebars.SafeString(label + renderField(field, options));
             });
             Handlebars.registerHelper('renderEditableHeadingTable', function(table) {
                 var fieldCount = getFieldCount(table);
@@ -370,7 +384,8 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return new Handlebars.SafeString(out);
             });
-            Handlebars.registerHelper('renderTable', function(table) {
+            Handlebars.registerHelper('renderTable', function(table, options) {
+                table.mode = options.hash.mode;
                 var headingPtr = Handlebars.compile('{{> editable_heading_table .}}');
                 var defaultPtr = Handlebars.compile('{{> editable_default_table .}}');
                 var unboundPtr = Handlebars.compile('{{> editable_unbound_table .}}');
