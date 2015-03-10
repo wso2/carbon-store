@@ -165,10 +165,10 @@ asset.renderer = function(ctx) {
                 return decoratorApi.socialFeature(ctx, page);
             },
             socialSites: function(page, meta) {
-                return decoratorApi.socialSites(page, meta, this);
+                return decoratorApi.socialSites(ctx,page, meta, this);
             },
             embedLinks: function(page, meta) {
-                return decoratorApi.embedLinks(page, meta);
+                return decoratorApi.embedLinks(ctx,page, meta);
             }
         }
     };

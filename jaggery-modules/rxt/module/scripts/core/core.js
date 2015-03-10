@@ -1055,10 +1055,10 @@ var core = {};
      * @param  {String} type     The type of asset
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
      */
-    core.createAnonAppContext = function(session, tenantID) {
+    core.createAnonAppContext = function(session, tenantId) {
         var server = require('store').server;
         var user = require('store').user;
-        var tenantId = tenantID || DEFAULT_TENANT;
+        tenantId = tenantId || DEFAULT_TENANT;
         var sysRegistry = server.anonRegistry(tenantId);
         var userManager = server.userManager(tenantId);
         var tenatConfigs = user.configs(tenantId);
