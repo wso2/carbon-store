@@ -25,6 +25,7 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.core.CarbonDataSource;
 import org.wso2.carbon.ndatasource.core.DataSourceManager;
@@ -35,18 +36,28 @@ public class DSConnection {
 	private static Log log = LogFactory.getLog(DSConnection.class);
 	
 	public Connection getConnection() {
-    	Connection conn = null;
-            try {
-                CarbonDataSource carbonDataSource = DataSourceManager.getInstance().getDataSourceRepository().getDataSource(Constants.SOCIAL_DB_NAME);
-                DataSource dataSource = (DataSource) carbonDataSource.getDSObject();
-                conn = dataSource.getConnection();
-            } catch (SQLException e) {
-            	log.error("Can't create JDBC connection to the SQL Server", e);
-            } catch (DataSourceException e) {
-            	log.error("Can't create data source for SQL Server", e);
-            }
-        return conn;
-    }
+		Connection conn = null;
+		try {
+			PrivilegedCarbonContext.startTenantFlow();
+			PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext
+					.getThreadLocalCarbonContext();
+			privilegedCarbonContext.setTenantId(Constants.SUPER_TENANT_ID);
+			privilegedCarbonContext
+					.setTenantDomain(Constants.SUPER_TENANT_DOMAIN);
+			CarbonDataSource carbonDataSource = DataSourceManager.getInstance()
+					.getDataSourceRepository()
+					.getDataSource(Constants.SOCIAL_DB_NAME);
+			DataSource dataSource = (DataSource) carbonDataSource.getDSObject();
+			conn = dataSource.getConnection();
+		} catch (SQLException e) {
+			log.error("Can't create JDBC connection to the SQL Server", e);
+		} catch (DataSourceException e) {
+			log.error("Can't create data source for SQL Server", e);
+		} finally {
+			PrivilegedCarbonContext.endTenantFlow();
+		}
+		return conn;
+	}
     
     public void closeConnection(Connection connection){
     	try {
