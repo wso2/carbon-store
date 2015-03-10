@@ -204,7 +204,6 @@ asset.renderer = function (ctx) {
         navList.push('Edit', 'fa-pencil', util.buildUrl('update') + '/' + id);
         navList.push('Overview', 'fa-list-alt', util.buildUrl('details') + '/' + id);
         navList.push('Life Cycle' , 'fa-recycle', util.buildUrl('lifecycle') + '/' + id);
-        navList.push('Statistics', 'fa-area-chart', '/asts/' + type + '/statistics');
         return navList.list();
     };
     var buildAddLeftNav = function (page, util) {
