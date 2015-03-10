@@ -216,7 +216,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var output = '';
                 var isHidden= (field.hidden)?field.hidden:false;
                 if (!isHidden){
-                    output = '<label class="control-label col-sm-2">' + (field.name.label || field.name.name) + '</label>';
+                    output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name) + '</label>';
                 }
                 return output;
             };
