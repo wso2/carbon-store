@@ -32,16 +32,16 @@ var storageEndpoint = '/{context}/t/{domain}/storage/{+suffix}';
 
 if (matcher.match(apiEndpoint)) {
     loadTenant(matcher.elements().domain);
-    include('ref_apis_router.jag');
+    include('apis-router.jag');
 } else if (matcher.match(pageEndpoint)) {
     loadTenant(matcher.elements().domain);
-    include('ref_pages_router.jag');
+    include('pages-router.jag');
 } else if (matcher.match(assetEndpoint)) {
     loadTenant(matcher.elements().domain);
-    include('ref_assets_router.jag');
+    include('assets-router.jag');
 } else if (matcher.match(storageEndpoint)) {
     loadTenant(matcher.elements().domain);
-    include('routers/storage_router.jag');
+    include('storage-router.jag');
 }
 else {
     include('index.jag');

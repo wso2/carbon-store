@@ -180,6 +180,9 @@ asset.configure = function () {
             ui: {
                 icon: 'icon-cog'
             },
+            categories: {
+                categoryField: 'overview_category'
+            },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
             versionAttribute:'overview_version'
@@ -201,7 +204,6 @@ asset.renderer = function (ctx) {
         navList.push('Edit', 'fa-pencil', util.buildUrl('update') + '/' + id);
         navList.push('Overview', 'fa-list-alt', util.buildUrl('details') + '/' + id);
         navList.push('Life Cycle' , 'fa-recycle', util.buildUrl('lifecycle') + '/' + id);
-        navList.push('Statistics', 'fa-area-chart', '/asts/' + type + '/statistics');
         return navList.list();
     };
     var buildAddLeftNav = function (page, util) {
@@ -234,6 +236,7 @@ asset.renderer = function (ctx) {
                     asset.attributes.overview_createdtime = date.toUTCString();
                 }
             }
+            require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page,this);
         },
         details: function (page) {
             var tables = page.assets.tables;
