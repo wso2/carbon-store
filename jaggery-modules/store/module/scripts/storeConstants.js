@@ -41,7 +41,7 @@ var storeConstants = {};
     storeConstants.MESSAGE_SENT_EVENT = "message.sent";
 
     storeConstants.FACEBOOK_SHARE_LINK = "https://facebook.com/sharer.php?u=";
-    storeConstants.GLPUS_SHARE_LINK = "https://plus.google.com/share?url=";
+    storeConstants.GPLUS_SHARE_LINK = "https://plus.google.com/share?url=";
     storeConstants.TWITTER_SHARE_LINK ="https://twitter.com/share?text=";
     storeConstants.DIGG_SHARE_LINK = "https://digg.com/submit?url=";
 

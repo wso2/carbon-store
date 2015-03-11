@@ -18,59 +18,48 @@
  Filename: registry.operator.js
  Created Date: 2/20/2015
  */
-var registryOperator = function () {
+var registryOperator = function() {
     var log = new Log("registry.operator");
     var uuid = require("uuid");
+    var carbon = require('carbon');
     var utils = require("utils");
     var es = require("store");
     var ref = utils.file;
     var path = '/_system/es/';
-
     /**
      * Add a file resource to the registry path
      * @param  fileObj file to be added to the registry
      * @return the uuid+uploaded file name for the asset
      */
     function addFile(fileObj) {
-        var tenantId =fileObj.tenantId || -1234;
-        var registry = es.server.systemRegistry(tenantId); //new carbon.registry.Registry(server, options);
-
+        var tenantId = fileObj.tenantId || carbon.server.superTenant.tenantId;
+        var registry = es.server.systemRegistry(tenantId); 
         var resource = {};
         resource.content = fileObj.file.getStream();
         var extension = ref.getExtension(fileObj.file);
         resource.mediaType = ref.getMimeType(extension);
-
         resource.uuid = uuid.generate();
         resource.name = fileObj.file.getName();
         path += resource.uuid + "/" + fileObj.file.getName();
-
         registry.put(path, resource);
         return resource;
-
     }
-
     /**
      * Get a image resource from the registry and serve it.
      * @param  file file to be added to the registry
      * @return the uuid+uploaded file name for the asset
      */
-    function getFile(filename) {
+    function getFile(filename, tenantId) {
         var fetchedFile = {};
-        var tenant =es.server.tenant(request,session);
-        var tenantId = tenant.tenantId || -1234;
+        tenantId = tenantId || carbon.server.superTenant.tenantId;
         var registry = es.server.systemRegistry(tenantId);
-
         path += filename;
-
         fetchedFile.resource = registry.get(path);
         fetchedFile.content = registry.content(path);
         return fetchedFile;
     }
-
-
     return {
         addFile: addFile,
         getFile: getFile
     };
-
 };

@@ -11,9 +11,10 @@
             </button>
         </div>
         <div class="wr-asset-type-switcher">
-            <a data-trigger="focus" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="#" data-original-title="" title="">
-                <!--a href="#" class="ctrl-asset-type-switcher" data-placement="bottom" data-trigger="focus"-->
-                <span class="btn-asset"></span></a>
+            <a id="popoverExampleTwo" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="#" data-original-title="" title="">
+                <span class="btn-asset"></span>
+            </a>
+
             <a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}{{ribbon.currentUrl}}'>{{rxt.pluralLabel}}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
@@ -21,7 +22,7 @@
                 {{#each leftNav}}
                 <li>
                     <a href='{{url ""}}{{this.url}}' >
-                        <span class="fa-stack fa-lg">
+                        <span class="fa-stack fa-lg menu-stack-icons">
                           <i class="fa {{this.iconClass}} fa-stack-1x"></i>
                           <i class="fa fa-circle-thin fa-stack-2x"></i>
                         </span>
@@ -35,9 +36,7 @@
     </div>
 </nav>
 
-
 <!--Need to delete these sections down-->
-
 <div id="content-asset-types" style="display: none">
     <div>
         {{#each ribbon.breadcrumb}}
@@ -47,7 +46,6 @@
 </div>
 
 <div id="modal-redirect" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-
     <div class="modal-body">
         <div class="modal-loading"></div>
         <p>

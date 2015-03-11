@@ -1,7 +1,7 @@
 
 <a data-toggle="collapse" href="#collapse{{label}}" aria-expanded="false" class="collapsing-h2" >
 <h2>
-<span class="fa-stack fa-lg">
+<span class="fa-stack fa-lg collapse-stack-icons">
                 <i class="fa fa-caret-right fa-stack-1x"></i>
                 <i class="fa fa-circle-thin fa-stack-2x"></i>
             </span>
@@ -9,10 +9,10 @@
 </h2>
 </a>
 
-<div class="collapse in" id="collapse{{label}}">
+<div class="collapse in responsive-form-container" id="collapse{{label}}">
 {{#eachField this.fields}}
     <div class="form-group">
-        {{renderEditableField .}}
+        {{renderEditableField . mode=../mode}}
     </div>
 {{/eachField}}
 </div>

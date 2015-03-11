@@ -17,24 +17,19 @@
     <div class="col-lg-6 col-md-12 col-sm-9 col-xs-12 wr-filters">
         <div class="wr-search">
             <div class="form-inline">
+                {{#if assetCategoryDetails.hasCategories}}
                 <div class="form-group wr-filter-category">
                     <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select Category ... <span class="fa fa-angle-down pull-right"></span></a>
+  
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                        <li><a tabindex="-1" href="#">Tools and Utilities</a></li>
-                        <li><a tabindex="-1" href="#">Entertainment</a></li>
-                        <li><a tabindex="-1" href="#">Gaming</a></li>
-                        <li><a tabindex="-1" href="#">Disk Utilities</a></li>
-                        <li><a tabindex="-1" href="#">Tools and Utilities</a></li>
-                        <li><a tabindex="-1" href="#">Entertainment</a></li>
-                        <li><a tabindex="-1" href="#">Gaming</a></li>
-                        <li><a tabindex="-1" href="#">Disk Utilities</a></li>
-                        <li><a tabindex="-1" href="#">Tools and Utilities</a></li>
-                        <li><a tabindex="-1" href="#">Entertainment</a></li>
-                        <li><a tabindex="-1" href="#">Gaming</a></li>
-                        <li><a tabindex="-1" href="#">Disk Utilities</a></li>
+                        {{#each assetCategoryDetails.values}}
+                            <li><a tabindex="-1" href="#">{{this}}</a></li>
+                        {{/each}}
                     </ul>
+                    
                 </div>
-                <form class="form-group" id="assetSearchForm" target='{{url ""}}{{this.url}}'>
+                {{/if}}
+                <form class="form-group" id="assetSearchForm" action='{{url ""}}{{meta.landingPage}}'>
                     <input type="text" name="query" class="form-control" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{paging.query}}"  />
                     <input type="hidden" name="sortby" value="{{paging.sortBy}}"/>
                     <input type="hidden" name="sort" value="{{paging.sortOrder}}"/>

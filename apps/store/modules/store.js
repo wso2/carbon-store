@@ -945,9 +945,17 @@ var exec = function (fn, request, response, session) {
         carbon = require('carbon'),
         tenant = es.server.tenant(request, session),
         user = es.server.current(session);
-
+    var tenantApi = require('/modules/tenant-api.js').api;
+    var tenantId;
+    var tenantDetails = tenantApi.createTenantDetails(request, session);
+    tenantId = tenantDetails.tenantId;
+    //Determine if the tenant domain was not resolved
+    if(tenantId===-1){
+        response.sendError(404,'Tenant:'+tenantDetails.domain+' not registered');
+        return;
+    }
     es.server.sandbox({
-        tenantId: tenant.tenantId,
+        tenantId: tenantId,
         username: user ? user.username : carbon.user.anonUser,
         request: request
     }, function () {
@@ -958,7 +966,7 @@ var exec = function (fn, request, response, session) {
             sso: configs.ssoConfiguration.enabled,
             usr: es.user,
             user: user,
-            store: require('/modules/store.js').store(tenant.tenantId, session),
+            store: require('/modules/store.js').store(tenantId, session),
             configs: configs,
             request: request,
             response: response,
@@ -966,6 +974,7 @@ var exec = function (fn, request, response, session) {
             application: application,
             event: require('event'),
             params: request.getAllParameters(),
+            urlParams:tenantDetails.urlParams,
             files: request.getAllFiles(),
             matcher: new URIMatcher(request.getRequestURI()),
             site: require('/modules/site.js'),

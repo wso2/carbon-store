@@ -25,18 +25,25 @@ import javax.sql.DataSource;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.ndatasource.core.CarbonDataSource;
 import org.wso2.carbon.ndatasource.core.DataSourceManager;
 import org.wso2.carbon.social.sql.Constants;
 
 public class DSConnection {
-	private static Log log = LogFactory.getLog(DSConnection.class);
+	private static final Log log = LogFactory.getLog(DSConnection.class);
 
-	// TODO make this static, add a null check | throw exception
-	public static Connection getConnection() throws SQLException, DataSourceException{
+	public static Connection getConnection() throws SQLException,
+			DataSourceException {
 		Connection conn;
 		try {
+			PrivilegedCarbonContext.startTenantFlow();
+			PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext
+					.getThreadLocalCarbonContext();
+			privilegedCarbonContext.setTenantId(Constants.SUPER_TENANT_ID);
+			privilegedCarbonContext
+					.setTenantDomain(Constants.SUPER_TENANT_DOMAIN);
 			CarbonDataSource carbonDataSource = DataSourceManager.getInstance()
 					.getDataSourceRepository()
 					.getDataSource(Constants.SOCIAL_DB_NAME);
@@ -49,12 +56,14 @@ public class DSConnection {
 		} catch (DataSourceException e) {
 			log.error("Can't create data source for SQL Server", e);
 			throw e;
-		}		
+		} finally {
+			PrivilegedCarbonContext.endTenantFlow();
+		}
 	}
 
 	public static void closeConnection(Connection connection) {
 		try {
-			if(connection != null){
+			if (connection != null) {
 				connection.close();
 			}
 		} catch (SQLException e) {

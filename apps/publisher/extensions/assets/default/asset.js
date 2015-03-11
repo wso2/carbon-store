@@ -25,7 +25,7 @@ asset.manager = function (ctx) {
             var ref = require('utils').time;
 
             //Check if the options object has a createdtime attribute and populate it
-            if ((options.attributes) && (options.attributes.hasOwnProperty('overview_createdtime'))) {
+            if ((options.attributes) && ctx.rxtManager.getRxtField(ctx.assetType, 'overview_createdtime')) {
                 options.attributes.overview_createdtime = ref.getCurrentTime();
             }
             this._super.create.call(this, options);
@@ -144,6 +144,7 @@ asset.configure = function () {
                             name: 'name',
                             label: 'Name'
                         },
+                        updatable: false,
                         validation: function () {
                         }
                     },
@@ -151,6 +152,9 @@ asset.configure = function () {
                         name: {
                             label: 'Version'
                         }
+                    },
+                    createdtime: {
+                        hidden: true
                     }
                 }
             },
@@ -176,6 +180,9 @@ asset.configure = function () {
             ui: {
                 icon: 'icon-cog'
             },
+            categories: {
+                categoryField: 'overview_category'
+            },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
             versionAttribute:'overview_version'
@@ -187,7 +194,7 @@ asset.renderer = function (ctx) {
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
         navList.push('Add ' + type,'fa-plus', util.buildUrl('create'));
-        navList.push('Statistics', 'fa-area-chart', '/assets/statistics/' + type + '/');
+        navList.push('Statistics', 'fa-area-chart', '/asts/' + type + '/statistics');
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
     };
@@ -197,7 +204,6 @@ asset.renderer = function (ctx) {
         navList.push('Edit', 'fa-pencil', util.buildUrl('update') + '/' + id);
         navList.push('Overview', 'fa-list-alt', util.buildUrl('details') + '/' + id);
         navList.push('Life Cycle' , 'fa-recycle', util.buildUrl('lifecycle') + '/' + id);
-        navList.push('Statistics', 'fa-area-chart', '/assets/statistics/' + type + '/');
         return navList.list();
     };
     var buildAddLeftNav = function (page, util) {
@@ -228,6 +234,40 @@ asset.renderer = function (ctx) {
                     var date = new Date();
                     date.setTime(value);
                     asset.attributes.overview_createdtime = date.toUTCString();
+                }
+            }
+            require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page,this);
+        },
+        details: function (page) {
+            var tables = page.assets.tables;
+            for (var index in tables) {
+                var table = tables[index];
+                if (table.name == 'overview') {
+                    var value = table.fields.createdtime.value;
+                    var date = new Date();
+                    date.setTime(value);
+                    table.fields.createdtime.value = date.toUTCString();
+                }
+            }
+        },
+        create: function (page) {
+            var tables = page.assets.tables;
+            for (var index in tables) {
+                var table = tables[index];
+                if (table.name == 'overview') {
+                    table.fields.provider.value = page.cuser.username;
+                }
+            }
+        },
+        update: function (page) {
+            var tables = page.assets.tables;
+            for (var index in tables) {
+                var table = tables[index];
+                if (table.name == 'overview') {
+                    var value = table.fields.createdtime.value;
+                    var date = new Date();
+                    date.setTime(value);
+                    table.fields.createdtime.value = date.toUTCString();
                 }
             }
         },
