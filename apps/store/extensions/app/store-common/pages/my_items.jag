@@ -20,6 +20,7 @@
 var caramel;
 require('/modules/store.js').exec(function(ctx) {
     caramel = require('caramel');
+    var tenantApi = require('/modules/tenant-api.js').api;
     var app = require('rxt').app;
     var constants = require('rxt').constants;
     var asset = require('rxt').asset;
@@ -32,28 +33,32 @@ require('/modules/store.js').exec(function(ctx) {
     var page = ui.buildPage(ctx.session, ctx.request);
     var appManager;
     var rxtManager;
-    appManager = app.createUserAppManager(ctx.session);
-    tenanId = user.tenantId;
+    var appResources = tenantApi.createTenantAwareAppResources(ctx.session);
+    appManager = appResources.appManager;
+    //appManager = app.createUserAppManager(ctx.session);
+    //tenanId = user.tenantId;
+    tenantId = appResources.context.tenantId;
     rxtManager = core.rxtManager(tenantId);
     var type;
     var availableAssetTypes = rxtManager.listRxtTypes();
     var assets = {};
     var subs;
-    for (var index in availableAssetTypes) {
-        type = availableAssetTypes[index];
-        am = asset.createUserAssetManager(ctx.session, type);
-        //Get all of the subscriptions for the current asset type
-        subs = am.subscriptions(ctx.session);
-        //Only create an entry if there are any subscriptions
-        if (subs.length > 0) {
-            assets[type]={};
-            assets[type].assets = subs;
-            assets[type].meta = rxtManager.getRxtTypeDetails(type);
+    //Subscriptions should not be retrieved if the user
+    //is accessing a cross tenant view
+    if (!appResources.context.isAnonContext) {
+        for (var index in availableAssetTypes) {
+            type = availableAssetTypes[index];
+            am = asset.createUserAssetManager(ctx.session, type);
+            //Get all of the subscriptions for the current asset type
+            subs = am.subscriptions(ctx.session);
+            //Only create an entry if there are any subscriptions
+            if (subs.length > 0) {
+                assets[type] = {};
+                assets[type].assets = subs;
+                assets[type].meta = rxtManager.getRxtTypeDetails(type);
+            }
         }
-        //assets=assets.concat(am.subscriptions(ctx.session));
-        //assets.push(sub);
     }
     var output = appManager.render(assets, page);
     caramel.render(output);
-    //print(output);
 }, request, response, session); %>

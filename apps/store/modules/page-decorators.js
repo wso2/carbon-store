@@ -145,7 +145,6 @@ var pageDecorators = {};
         }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
-        log.info('Finished executing decorator recentAssetsOfActivatedTypes');
     };
     var addSubscriptionDetails = function(assets, am, session) {
         for (var index = 0; index < assets.length; index++) {
