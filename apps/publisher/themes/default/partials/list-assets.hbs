@@ -30,11 +30,12 @@
                 </div>
                 {{/if}}
                 <form class="form-group" id="assetSearchForm" action='{{url ""}}{{meta.landingPage}}'>
-                    <input type="text" name="query" class="form-control" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{paging.query}}"  />
+                    <input id="searchQueryTextBox" type="text" name="query" class="form-control" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{paging.query}}"  />
                     <input type="hidden" name="sortby" value="{{paging.sortBy}}"/>
                     <input type="hidden" name="sort" value="{{paging.sortOrder}}"/>
+                    <input type="hidden" name="category" value=""/>
                 </form>
-                <button type="button" class="btn btn-search" id="searchButton"><span class="fa fa-search"></span></button>
+                <a class="btn btn-search" id="searchButton"><span class="fa fa-search"></span></a>
             </div>
         </div>
     </div>
