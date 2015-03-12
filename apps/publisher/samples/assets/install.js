@@ -198,10 +198,20 @@ var installer = function () {
         //Add the asset
         log.debug('about to add the asset : ' + artifact.name);
 
+
+        var assetId = artifactManager.add(artifact);
+
+        if(artifact.id == undefined || artifact.id == null || artifact.id == '') {
+            artifact.id = assetId;
+        }
+
         //Store any resources in the Storage Manager
         context.dataInjector.inject(artifact, context.dataInjectorModes.STORAGE);
 
-        artifactManager.add(artifact);
+        artifact.attributes.images_banner = 'images_banner';
+        artifact.attributes.images_thumbnail = 'images_thumbnail';
+
+        artifactManager.update(artifact);
 
         var assets = artifactManager.find(function (adapter) {
             return (adapter.attributes.overview_name == name) ? true : false;

@@ -54,7 +54,6 @@ var handleApiEndpoint = function (request, session, uriParams) {
     var options = req.getQueryOptions(request.getQueryString());
     var type = options.type;
     var page = getPage(uriParams.suffix);
-
     try {
         var endPoints = asset.getAssetApiEndpoints(session, type);
         var endpoint;

@@ -103,13 +103,9 @@ var storageModule = function () {
      @key: The key to use in the storage
      @value: An object containing the contentType and a file
      */
-    StorageManager.prototype.put = function (value) {
+    StorageManager.prototype.put = function (fileObject) {
         var registryOperator = require("/modules/registry/registry.operator.js").registryOperator();
-        var resource = registryOperator.addFile({
-            file:value.file,
-            tenantId:value.tenantId
-        });
-        return resource.uuid+'/'+resource.name;
+        return registryOperator.addFile(fileObject);
     };
 
 

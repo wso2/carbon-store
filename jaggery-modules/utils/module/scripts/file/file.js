@@ -27,6 +27,7 @@ var file = {};
         'json': 'application/json',
         'png': 'image/png',
         'jpeg': 'image/jpeg',
+        'jpg': 'image/jpeg',
         'gif': 'image/gif',
         'svg': 'image/svg+xml',
         'ttf': 'application/x-font-ttf',
