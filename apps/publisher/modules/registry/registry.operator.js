@@ -29,7 +29,7 @@ var registryOperator = function() {
     /**
      * Add a file resource to the registry path
      * @param  fileObj file to be added to the registry
-     * @return the uuid+uploaded file name for the asset
+     * @return field name of the
      */
     function addFile(fileObj) {
         var tenantId = fileObj.tenantId || carbon.server.superTenant.tenantId;
@@ -49,8 +49,9 @@ var registryOperator = function() {
     }
     /**
      * Get a image resource from the registry and serve it.
-     * @param  file file to be added to the registry
-     * @return the uuid+uploaded file name for the asset
+     * @param  pathSuffix file to be added to the registry
+     * @param  tenantId id of the active tenant
+     * @return the file retrieved from registry
      */
     function getFile(pathSuffix, tenantId) {
         var fetchedFile = {};
