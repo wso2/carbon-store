@@ -23,10 +23,18 @@
  */
 
 var recovery = require('account-management').recovery,
-    captchaBean = recovery.getCaptcha(),
-    captchaPath = captchaBean.getImagePath(),
-    captchaKey = captchaBean.getSecretKey(),
-    recoveryOption = request.getParameter('recovery-option');
+    recoveryOption = request.getParameter('recovery-option'),
+    isCaptchaEnabled = recovery.isCaptchaEnabled();
+
+var captchaBean,
+    captchaPath,
+    captchaKey;
+
+if(isCaptchaEnabled) {
+    captchaBean = recovery.getCaptcha();
+    captchaPath = captchaBean.getImagePath();
+    captchaKey = captchaBean.getSecretKey();
+}
 
 var isChallengeRecovery = false;
 if(recoveryOption === 'challenge'){
@@ -88,6 +96,7 @@ if(recoveryOption === 'challenge'){
                                     <div class="control"><label>Username</label><input
                                             id="username" name="username" type="text"
                                             class="input-block-level required"></div>
+                                    <% if(isCaptchaEnabled){%>
                                     <div id="captcha" class="control">
                                         <label id='newCaptcha'>Can't read this? <a href='#'>Try another.</a></label>
                                         <div id="captcha-div" class="control">
@@ -100,6 +109,7 @@ if(recoveryOption === 'challenge'){
                                     <input type="hidden" id="captcha-path"
                                            name="captcha-path" value="<%=captchaPath%>">
                                     <input type="hidden" id="captcha-key" name="captcha-key" value="<%=captchaKey%>">
+                                    <% } %>
                                     <input type="hidden" id="recovery-option" name="recovery-option"
                                            value="<%=isChallengeRecovery ? 'challenge' : 'email'%>">
                                     <input id="action" name="action" type="hidden" value="verifyUser">

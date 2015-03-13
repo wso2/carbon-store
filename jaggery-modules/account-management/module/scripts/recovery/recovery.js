@@ -251,6 +251,12 @@ var recovery = {};
              }
              return isEnabled;
        }
+
+        recovery.isCaptchaEnabled = function () {
+            var identityMgtConfig = Packages.org.wso2.carbon.identity.mgt.IdentityMgtConfig;
+            var identityMgtConfigInstance = identityMgtConfig.getInstance();
+            return identityMgtConfigInstance.isCaptchaVerificationInternallyManaged();
+        }
 })(recovery);
 
 
