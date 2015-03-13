@@ -82,7 +82,12 @@ var errorProcessor = require('/modules/error.js');
      * @return success status
      */
     var verifyConfirmationCode = function (captchaPath, captchaKey, captchaAnswer, userName, confirmationCode) {
-        if (!userName || !captchaAnswer || !confirmationCode) {
+        var isCaptchaEnabled = recoveryModule.isCaptchaEnabled();
+        var isCaptchaMissing = false;
+        if(isCaptchaEnabled && !captchaAnswer) {
+            isCaptchaMissing = true;
+        }
+        if (!userName || isCaptchaMissing || !confirmationCode) {
             res.error = true;
             res.msg = 'Recovery failed. Username or Captcha Answer or Confirmation code is not provided';
             if (log.isDebugEnabled()) {

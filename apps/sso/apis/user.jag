@@ -49,7 +49,12 @@ var errorProcessor = require('/modules/error.js');
      * @return success status
      */
     var verifyUser = function (username, captchaPath, captchaKey, captchaAnswer) {
-        if (!username || !captchaAnswer) {
+        var isCaptchaEnabled = recoveryModule.isCaptchaEnabled();
+        var isCaptchaMissing = false;
+        if(isCaptchaEnabled && !captchaAnswer) {
+            isCaptchaMissing = true;
+        }
+        if (!username || isCaptchaMissing) {
             res.error = true;
             res.msg = 'Username or captcha answer is invalid';
             if (log.isDebugEnabled()) {
