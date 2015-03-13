@@ -25,7 +25,7 @@ var registryOperator = function() {
     var utils = require("utils");
     var es = require("store");
     var ref = utils.file;
-    var path = '/_system/es/';
+    var pathPrefix = '/_system/governance/store/asset_resources/';
     /**
      * Add a file resource to the registry path
      * @param  fileObj file to be added to the registry
@@ -33,27 +33,32 @@ var registryOperator = function() {
      */
     function addFile(fileObj) {
         var tenantId = fileObj.tenantId || carbon.server.superTenant.tenantId;
-        var registry = es.server.systemRegistry(tenantId); 
+        var registry = es.server.systemRegistry(tenantId);
         var resource = {};
         resource.content = fileObj.file.getStream();
         var extension = ref.getExtension(fileObj.file);
         resource.mediaType = ref.getMimeType(extension);
+        log.info("Extension of the inserting file is " + extension);
+        log.info("Media type of the inserting file is " + resource.mediaType);
         resource.uuid = uuid.generate();
         resource.name = fileObj.file.getName();
-        path += resource.uuid + "/" + fileObj.file.getName();
+        resource.properties = {};
+        resource.properties.extension = extension;
+        var pathSuffix = fileObj.type + "/" + fileObj.assetId + "/" + fileObj.fieldName;
+        var path =  pathPrefix + pathSuffix;
         registry.put(path, resource);
-        return resource;
+        return fileObj.fieldName;
     }
     /**
      * Get a image resource from the registry and serve it.
      * @param  file file to be added to the registry
      * @return the uuid+uploaded file name for the asset
      */
-    function getFile(filename, tenantId) {
+    function getFile(pathSuffix, tenantId) {
         var fetchedFile = {};
         tenantId = tenantId || carbon.server.superTenant.tenantId;
         var registry = es.server.systemRegistry(tenantId);
-        path += filename;
+        var path =  pathPrefix + pathSuffix;
         fetchedFile.resource = registry.get(path);
         fetchedFile.content = registry.content(path);
         return fetchedFile;

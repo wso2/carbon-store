@@ -56,7 +56,7 @@ var injector=function(){
         var config=context.config;
         var fields=config.storeFields;
         var field;
-        var uuid;
+        var fieldName;
         var path;
 
 
@@ -68,16 +68,17 @@ var injector=function(){
             //log.debug(field);
 
             utility.isPresent(object.attributes,field,function(){
-
                 //Get the value of the current field
                 path=object.attributes[field];
 
                 //Attempt to store
-                uuid=addToStorage(path,context);
-
+                fieldName=addToStorage(path,context,field);
+                //log.info("((((((((((((((((");
+                //log.info(stringify(object));
+                //log.info(")))))))))))))))");
                 //Update value
-                if(uuid){
-                    object.attributes[field]=uuid;
+                if(fieldName){
+                    object.attributes[field]=fieldName;
                 }
             });
         }
@@ -92,36 +93,38 @@ var injector=function(){
     @path: A path to a resource
     @return: If the file is added to storage then a uuid is returned,else null
      */
-    function addToStorage(path,context){
+    function addToStorage(path,context,field){
         var file=new File(path);
-        var uuid=null;
+        var fieldName=null;
         //log.debug('examining path: '+path);
         //Only add it storage if it is a valid path and get the uuid
         if(file.isExists()){
             log.debug('loaded resource '+path+' into storage.');
-            uuid=useStorageManager(path,file,context);
+            fieldName=useStorageManager(path,file,context,field);
         }
 
-        return uuid
+        return fieldName
     }
 
-    function useStorageManager(path,file,context){
+    function useStorageManager(path,file,context,field){
 
-        var path=path;
-
+        var fieldName=null;
         //Only store it if the storage manager exists
         if(context.storageManager){
+            var resource = {};
+            resource.assetId = context.object.id;
+            resource.fieldName = field;
+            resource.type = context.object.type;
+            resource.file = file;
+            resource.contentType = determineContentType(file);
 
-            var resource={};
-            resource['file']=file;
-            resource['contentType']=determineContentType(file);
 
             //Get the uuid/filename
-            path=context.storageManager.put(resource);
+            fieldName=context.storageManager.put(resource);
 
         }
 
-        return path;
+        return fieldName;
     }
 
     function determineContentType(file){
