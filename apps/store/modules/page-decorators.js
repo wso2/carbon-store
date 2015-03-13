@@ -20,6 +20,7 @@ var pageDecorators = {};
 (function() {
     var storeConstants = require('store').storeConstants;
     var tenantApi = require('/modules/tenant-api.js').api;
+    var log = new Log('store-page-decorators');
     pageDecorators.navigationBar = function(ctx, page, utils) {
         var app = require('rxt').app;
         //Change the context to support cross tenant views
@@ -122,7 +123,6 @@ var pageDecorators = {};
             // } else {
             //     am = asset.createUserAssetManager(ctx.session, type);
             // }
-
             if (query) {
                 assets = am.recentAssets({
                     q: query
@@ -145,7 +145,6 @@ var pageDecorators = {};
         }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
-        log.info('Finished executing decorator recentAssetsOfActivatedTypes');
     };
     var addSubscriptionDetails = function(assets, am, session) {
         for (var index = 0; index < assets.length; index++) {
@@ -205,11 +204,16 @@ var pageDecorators = {};
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {
-        if ((!ctx.assetType) && (!ctx.isAnonContext)) {
+        var resources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+            type: ctx.assetType
+        });
+        //Supprt for cross tenant views
+        ctx = resources.context;
+        if ((!ctx.assetType) || (ctx.isAnonContext)) {
             log.warn('Ignoring my assets decorator as the asset type was not present');
             return page;
         }
-        var am = getAssetManager(ctx);
+        var am = resources.am;
         page.myAssets = am.subscriptions(ctx.session) || [];
         return page;
     };

@@ -17,33 +17,34 @@
 var caramel;
 var constant = require("rxt").constants;
 var PAGING = constant.DEFAULT_ASSET_PAGIN;
-
-require('/modules/publisher.js').exec(function (ctx) {
+require('/modules/publisher.js').exec(function(ctx) {
     caramel = require('caramel');
     var ui = require('rxt').ui;
     var reqUtil = require('utils').request;
     var asset = require('rxt').asset;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var options = uriMatcher.match('/{context}/asts/{type}/{pageName}');
-    var q = ctx.request.getParameter('query');
-    var sortBy = ctx.request.getParameter('sortby');
-    var sort = ctx.request.getParameter('sort');
+    //var q = ctx.request.getParameter('query');
+    //var sortBy = ctx.request.getParameter('sortby');
+    //var sort = ctx.request.getParameter('sort');
+    var category = ctx.request.getParameter('category');
     var type = options.type;
-
+    var assetApi = require('/modules/asset-api.js').api;
     var am = asset.createUserAssetManager(ctx.session, type);
     var page = ui.buildPage(ctx.session, ctx.request);
     var assets;
-
-    PAGING.sortBy = (sortBy || PAGING.sortBy);
-    PAGING.sortOrder = (sort || PAGING.sortOrder);
-    PAGING.query = (q || '');
-
-    page.paging =PAGING;
-    if (q) {
-        assets = am.search(q, PAGING);
-    } else {
-        assets = am.search(null, PAGING);
-    }
+    //Determine if a category field is provided
+    // PAGING.sortBy = (sortBy || PAGING.sortBy);
+    // PAGING.sortOrder = (sort || PAGING.sortOrder);
+    // PAGING.query = (q || '');
+    // //page.paging = PAGING;
+    //  if (q) {
+    //      assets = am.search(q, PAGING);
+    //  } else {
+    //      assets = am.search(null, PAGING);
+    //  }
+    //options.q = q;
+    assets  = assetApi.search(options,ctx.request,ctx.response,ctx.session)||[];
     var output = am.render(assets, page).list();
     caramel.render(output);
 }, request, response, session); %>

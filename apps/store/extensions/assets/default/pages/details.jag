@@ -42,16 +42,8 @@ require('/modules/store.js').exec(function(ctx) {
         var username;
         var carbon = require('carbon');
         var context;
-        // var URLTenantId = carbon.server.tenantId({domain: options.domain ||
-        //         constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME});
-        // var context = core.createAssetContext(ctx.session, type, ctx.tenant.tenantId);
-        // //Determine the type of asset manager to be created
-        // if (!user || ctx.tenant.tenantId != URLTenantId) {
-        //     am = asset.createAnonAssetManager(ctx.session, type, URLTenantId);
-        // }else {
-        //     am = asset.createUserAssetManager(ctx.session, type);
-        // }
         var tenantResources = tenantApi.createTenantAwareAssetResources(ctx.session, options);
+        //Support for cross tenant views
         context = tenantResources.context;
         am = tenantResources.am;
         var page = ui.buildPage(ctx.session, ctx.request);
@@ -62,7 +54,10 @@ require('/modules/store.js').exec(function(ctx) {
             var assetsArray = [];
             assetsArray.push(assets);
             ratingApi.addRatings(assetsArray, am, context.tenantId, context.username);
-            assets.isSubscribed = am.isSubscribed(options.id, ctx.session);
+            //Cross tenant view could be anonymous
+            if (!context.isAnonContext) {
+                assets.isSubscribed = am.isSubscribed(options.id, ctx.session);
+            }
         } catch (e) {
             log.error('Unable to retrieve asset with id: ' + options.id + ' due to ', e);
         }
