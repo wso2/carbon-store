@@ -89,7 +89,7 @@ var result;
         });
         var resource = {};
         var extension = '';
-        var uuid;
+        var resourceName;
         var key;
         //Get all of the files that have been sent in the request
         var files = request.getAllFiles();
@@ -99,16 +99,20 @@ var result;
             }
             return;
         }
+
         for (var index in resourceFields) {
             key = resourceFields[index];
             if (files[key]) {
                 resource = {};
                 resource.file = files[key];
                 resource.tenantId = tenantId;
+                resource.assetId = asset.id;
+                resource.fieldName = key;
+                resource.type = am.type;
                 extension = ref.getExtension(files[key]);
                 resource.contentType = ref.getMimeType(extension);
-                uuid = storageManager.put(resource);
-                asset.attributes[key] = uuid;
+                resourceName = storageManager.put(resource);
+                asset.attributes[key] = resourceName;
             }
         }
     };
@@ -181,8 +185,9 @@ var result;
             asset = am.importAssetFromHttpRequest(assetReq);
         } //generate asset object
         try {
-            putInStorage(asset, am, user.tenantId); //save to the storage
             am.create(asset);
+            putInStorage(asset, am,user.tenantId);//save to the storage
+            am.update(asset);
         } catch (e) {
             log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
             return null;

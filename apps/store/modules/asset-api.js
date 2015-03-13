@@ -46,9 +46,16 @@ var responseProcessor = require('utils').response;
         //print(modifiedArtifacts);
         return modifiedAssets;
     };
-    var putInStorage = function(options, asset, am, req, session) {
+
+    /**
+     * This function put asset to the storage
+     * @param  The asset manager instance
+     * @param am The asset manager instance
+     * @param tenantId the tenant accessing the resource
+     */
+    var putInStorage = function (asset, am,tenantId) {
         var resourceFields = am.getAssetResources();
-        var ref = require('utils').file;
+        var ref = utils.file;
         var storageModule = require('/modules/data/storage.js').storageModule();
         var storageConfig = require('/config/storage.json');
         var storageManager = new storageModule.StorageManager({
@@ -60,12 +67,14 @@ var responseProcessor = require('utils').response;
         });
         var resource = {};
         var extension = '';
-        var uuid;
+        var resourceName;
         var key;
-        //Get all of the files that have been sent in the request
+//Get all of the files that have been sent in the request
         var files = request.getAllFiles();
         if (!files) {
-            log.debug('User has not provided any resources such any new images or files when updating the asset with id ' + asset.id);
+            if (log.isDebugEnabled()) {
+                log.debug('User has not provided any resources such any new images or files when updating the asset with id ' + asset.id);
+            }
             return;
         }
         for (var index in resourceFields) {
@@ -73,10 +82,14 @@ var responseProcessor = require('utils').response;
             if (files[key]) {
                 resource = {};
                 resource.file = files[key];
+                resource.tenantId = tenantId;
+                resource.assetId = asset.id;
+                resource.fieldName = key;
+                resource.type = am.type;
                 extension = ref.getExtension(files[key]);
                 resource.contentType = ref.getMimeType(extension);
-                uuid = storageManager.put(resource);
-                asset.attributes[key] = uuid;
+                resourceName = storageManager.put(resource);
+                asset.attributes[key] = resourceName;
             }
         }
     };

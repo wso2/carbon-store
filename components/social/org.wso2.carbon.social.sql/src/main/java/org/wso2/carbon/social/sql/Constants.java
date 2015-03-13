@@ -43,6 +43,7 @@ public class Constants {
 	public static final String COMMENTS = "comments";
 	public static final String RATING = "rating";
 	public static final String COUNT = "count";
+	public static final String POST_VERB = "post";
 
 	public static final String TARGET_JSON_PROP = "target";
 	public static final String VERB_JSON_PROP = "verb";
@@ -59,6 +60,8 @@ public class Constants {
 	public static final String ROLLBACK_ERROR = "Error while rollback operation.";
 	public static final String LIKE_VALUE_COLUMN = "like_value";
 	public static final String COMMENT_ID_COLUMN = "comment_id";
+	public static final int SUPER_TENANT_ID = -1234;
+	public static final String SUPER_TENANT_DOMAIN = "carbon.super";
 
 	public static enum VERB {
 		like, dislike, unlike, undislike;

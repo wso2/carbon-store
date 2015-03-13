@@ -19,9 +19,12 @@
 package org.wso2.carbon.social.core.service;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+
 import org.wso2.carbon.social.core.Activity;
 import org.wso2.carbon.social.core.ActivityBrowser;
 import org.wso2.carbon.social.core.ActivityPublisher;
+import org.wso2.carbon.social.core.SocialActivityException;
 
 import java.util.List;
 
@@ -39,9 +42,11 @@ public abstract class SocialActivityService {
 	 * },"actor":{"id":"user@tenant.com","objectType":"person"}}
 	 * 
 	 * @param activity
+	 * @throws SocialActivityException 
+	 * @throws JsonSyntaxException 
 	 * 
 	 */
-	public String publish(String activity) {
+	public long publish(String activity) throws SocialActivityException {
 		return getActivityPublisher().publish(activity);
 	}
 
@@ -52,11 +57,12 @@ public abstract class SocialActivityService {
 	 * @param offset
 	 * @param limit
 	 * @return
+	 * @throws SocialActivityException 
 	 */
 	public String[] listActivities(String targetId, String order, int offset,
-			int limit) {
+			int limit) throws SocialActivityException {
 		List<Activity> activities = getActivityBrowser()
-				.listActivitiesChronologically(targetId, order, offset, limit);
+				.listActivities(targetId, order, offset, limit);
 		String[] serializedActivities = new String[activities.size()];
 		for (int i = 0; i < activities.size(); i++) {
 			serializedActivities[i] = activities.get(i).toString();
@@ -71,7 +77,7 @@ public abstract class SocialActivityService {
 	 * @param targetId
 	 * @return averageRating
 	 */
-	public JsonObject getRating(String targetId) {
+	public JsonObject getRating(String targetId) throws SocialActivityException {
 		return getActivityBrowser().getRating(targetId);
 	}
 
@@ -90,7 +96,7 @@ public abstract class SocialActivityService {
 	 * @return
 	 */
 	public String getSocialObjectJson(String targetId, String sortOrder,
-			int offset, int limit) {
+			int offset, int limit) throws SocialActivityException {
 		JsonObject socialObject = getActivityBrowser().getSocialObject(
 				targetId, sortOrder, offset, limit);
 
@@ -109,7 +115,7 @@ public abstract class SocialActivityService {
 	 * @param limit
 	 * @return
 	 */
-	public String getTopAssets(double avgRating, int limit) {
+	public String getTopAssets(double avgRating, int limit) throws SocialActivityException {
 		JsonObject topAssetObject = getActivityBrowser().getTopAssets(
 				avgRating, limit);
 		if (topAssetObject != null) {
@@ -127,7 +133,7 @@ public abstract class SocialActivityService {
 	 * @param likes
 	 * @return
 	 */
-	public String getTopComments(String targetId, int likes) {
+	public String getTopComments(String targetId, int likes) throws SocialActivityException {
 		JsonObject topCommentObject = getActivityBrowser().getTopComments(
 				targetId, likes);
 		if (topCommentObject != null) {
@@ -143,7 +149,7 @@ public abstract class SocialActivityService {
 	 * @param timestamp
 	 * @return
 	 */
-	public String pollLatestComments(String targetId, int timestamp) {
+	public String pollLatestComments(String targetId, int timestamp) throws SocialActivityException {
 		JsonObject newestCommentObject = getActivityBrowser()
 				.pollNewestComments(targetId, timestamp);
 		if (newestCommentObject != null) {
@@ -161,7 +167,7 @@ public abstract class SocialActivityService {
 	 * @param userId
 	 * @return
 	 */
-	public boolean removeActivity(String activityId, String userId) {
+	public boolean removeActivity(String activityId, String userId) throws SocialActivityException {
 		return getActivityPublisher().remove(activityId, userId);
 	}
 
@@ -174,7 +180,7 @@ public abstract class SocialActivityService {
 	 * @param like
 	 * @return
 	 */
-	public boolean isUserliked(String userId, String targetId, int like) {
+	public boolean isUserliked(String userId, String targetId, int like) throws SocialActivityException {
 		return getActivityBrowser().isUserlikedActivity(userId, targetId, like);
 	}
 
