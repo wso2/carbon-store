@@ -79,7 +79,7 @@ require('/modules/store.js').exec(function (ctx) {
         assets = am.search(null, PAGING);
     }
     //Add subscription details to the assets
-    tenantApi.debug();
+    //tenantApi.debug();
     //subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);
     ratingApi.addRatings(assets, am, context.tenantId, context.username);
     var output = am.render(assets, page).list();
