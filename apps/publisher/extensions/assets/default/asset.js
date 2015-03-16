@@ -283,6 +283,9 @@ asset.renderer = function (ctx) {
                     case 'create':
                         page.leftNav = buildAddLeftNav(page, this);
                         break;
+                    case 'statistics':
+                        page.leftNav = buildListLeftNav(page, this);
+                        break;
                     default:
                         page.leftNav = buildDefaultLeftNav(page, this);
                         break;
