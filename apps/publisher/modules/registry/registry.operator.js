@@ -18,14 +18,14 @@
  Filename: registry.operator.js
  Created Date: 2/20/2015
  */
-var registryOperator = function() {
+var registryOperator = function() {       // Go with the module design pattern
     var log = new Log("registry.operator");
     var uuid = require("uuid");
     var carbon = require('carbon');
     var utils = require("utils");
     var es = require("store");
     var ref = utils.file;
-    var pathPrefix = '/_system/governance/store/asset_resources/';
+    var pathPrefix = '/_system/governance/store/asset_resources/';  //to cap
     /**
      * Add a file resource to the registry path
      * @param  fileObj file to be added to the registry

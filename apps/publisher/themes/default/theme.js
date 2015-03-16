@@ -277,19 +277,19 @@ var engine = caramel.engine('handlebars', (function() {
                 var value = field.value || '';
                 switch (field.type) {
                     case 'options':
-                        out = '<div class="col-sm-10">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
+                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
                         break;
                     case 'text':
-                        out = '<div class="col-sm-10"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
+                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
                         break;
                     case 'text-area':
-                        out = '<div class="col-sm-10"><textarea row="3" ' + renderFieldMetaData(field, null, options) + ' class="width-full">'+value+'</textarea></div>';
+                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12"><textarea row="3" ' + renderFieldMetaData(field, null, options) + ' class="width-full">'+value+'</textarea></div>';
                         break;
                     case 'file':
-                        out = '<div class="col-sm-10"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     default:
-                        out = '<div class="col-sm-10">Normal Field' + field.type + '</div>';
+                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12">Normal Field' + field.type + '</div>';
                         break;
                 }
                 return out;
