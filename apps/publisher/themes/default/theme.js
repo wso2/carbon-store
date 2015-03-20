@@ -201,10 +201,12 @@ var engine = caramel.engine('handlebars', (function() {
                 if(field.updatable == false){
                     isUpdatable = false;
                 }
-                var mode = options?options.hash.mode:'create';
-                /*if(isRequired){
+                var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
+                if(isRequired && field.type != 'file'){
                     meta+=' required';
-                }*/
+                } else if (isRequired && field.type == 'file' && mode == 'create') {
+                    meta+=' required';
+                }
                 if(isReadOnly){
                     meta+=' readonly';
                 } else if(!isUpdatable && mode == 'edit'){
