@@ -123,6 +123,11 @@ asset.server = function (ctx) {
                     path: 'lifecycle.jag'
                 },
                 {
+                    title:'New lifecycle ',
+                    url:'new-lifecycle',
+                    path:'new-lifecycle.jag'
+                },
+                {
                     title:'Statistics',
                     url:'statistics',
                     path:'statistics.jag'
