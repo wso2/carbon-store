@@ -19,8 +19,8 @@
 var resources = function (page, meta) {
     return {
     	css:['lifecycle-styles.css'],
-        js: ['libs/d3.min.js','lifecycle/lodash.min.js','lifecycle/graphlib.core.min.js','lifecycle/dagre-d3.min.js','lifecycle/lifecycle-core.js','lifecycle/lifecycle-configs.js','lifecycle/lifecycle-init.js'],
-        code:['publisher.lifecycle.meta.hbs']
+    	code:['publisher.lifecycle.meta.hbs'],
+        js: ['libs/d3.min.js','lifecycle/lodash.min.js','lifecycle/graphlib.core.min.js','lifecycle/dagre-d3.min.js','lifecycle/lifecycle-core.js','lifecycle/lifecycle-configs.js','lifecycle/lifecycle-init.js']
     };
 };
 //'libs/d3.min.js',
