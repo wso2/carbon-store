@@ -23,6 +23,19 @@ var LifecycleUtils = {};
     var eventMap = {};
     var dataMap = {};
     var lifecycleImpl = {};
+    var currentLifecycle;
+    var constants = LifecycleAPI.constants = {}; //Sgort hand reference
+    constants.API_ENDPOINT = 'lifecycle-api';
+    constants.API_LC_DEFINITION = 'lifecycle-definition-api';
+    constants.UI_LIFECYCLE_SELECT_ID = '#lifecycle-selector';
+    constants.CONTAINER_SVG = 'svgContainer';
+    constants.CONTAINER_GRAPH = 'graphContainer';
+    constants.CONTAINER_LC_ACTION_AREA = 'lifecycleActionArea';
+    constants.CONTAINER_RENDERING_AREA = 'lifecycleRenderingArea';
+    constants.CONTAINER_CHECKLIST_AREA = 'lifecycleChecklistArea';
+    constants.EVENT_LC_LOAD = 'event.lc.loaded';
+    constants.EVENT_LC_UNLOAD = 'event.lc.unload';
+    constants.EVENT_STATE_CHANGE = 'event.state.change';
     var processCheckItems = function(stateDetails, datamodel) {
         if (!stateDetails.hasOwnProperty('datamodel')) {
             stateDetails.datamodel = {};
@@ -36,6 +49,18 @@ var LifecycleUtils = {};
                 break;
             default:
                 break;
+        }
+    };
+    var triggerEvent = function(eventName, eventCb) {
+        if (eventMap.hasOwnProperty(eventName)) {
+            eventCb = eventCb || {};
+            eventCallbacks = eventMap[eventName];
+            console.log('emiting event::' + eventName + ' [active lifecycle: ' + LifecycleAPI.currentLifecycle() + ' ]');
+            for (var index = 0; index < eventCallbacks.length; index++) {
+                eventCallbacks[index](eventCb);
+            }
+        } else {
+            console.log('no event listeners for event :: ' + eventName);
         }
     };
     /**
@@ -94,27 +119,6 @@ var LifecycleUtils = {};
             return configMap;
         }
     };
-    var constants = LifecycleAPI.constants = {}; //Sgort hand reference
-    constants.API_ENDPOINT = 'lifecycle-api';
-    constants.API_LC_DEFINITION = 'lifecycle-definition-api';
-    constants.UI_LIFECYCLE_SELECT_ID = '#lifecycle-selector';
-    constants.CONTAINER_SVG = 'svgContainer';
-    constants.CONTAINER_GRAPH = 'graphContainer';
-    constants.EVENT_LC_LOAD = 'event.lc.loaded';
-    constants.CONTAINER_RENDERING_AREA = 'lifecycleRenderingArea';
-    constants.EVENT_LC_UNLOAD = 'event.lc.unload';
-    var triggerEvent = function(eventName, eventCb) {
-        if (eventMap.hasOwnProperty(eventName)) {
-            eventCb = eventCb || {};
-            eventCallbacks = eventMap[eventName];
-            console.log('emiting event::' + eventName);
-            for (var index = 0; index < eventCallbacks.length; index++) {
-                eventCallbacks[index](eventCb);
-            }
-        } else {
-            console.log('no event listeners for event :: ' + eventName);
-        }
-    };
     LifecycleAPI.event = function() {
         var eventName = arguments[0];
         var eventCb = arguments[1];
@@ -142,7 +146,10 @@ var LifecycleUtils = {};
     LifecycleAPI.lifecycle = function() {
         var name = arguments[0];
         var impl = arguments[1];
-        if ((arguments.length === 1) && (typeof name === 'string')) {
+        if (arguments.length == 0) {
+            var currentLC = LifecycleAPI.currentLifecycle();
+            return LifecycleAPI.lifecycle(currentLC);
+        } else if ((arguments.length === 1) && (typeof name === 'string')) {
             var impl = LifecycleAPI.data(name);
             if (!impl) {
                 impl = new LifecycleImpl({
@@ -155,6 +162,13 @@ var LifecycleUtils = {};
             //Allow method overiding
         } else {
             throw 'Invalid lifecycle name provided';
+        }
+    };
+    LifecycleAPI.currentLifecycle = function() {
+        if (arguments.length === 1) {
+            currentLifecycle = arguments[0];
+        } else {
+            return currentLifecycle;
         }
     };
 
@@ -178,6 +192,7 @@ var LifecycleUtils = {};
                     that.rawAPIDefinition = data;
                     that.processDefinition();
                     that.currentState = that.stateMap.initialState;
+                    LifecycleAPI.currentLifecycle(that.lifecycleName);
                     //Obtain the asset current state from the code block,if not set it to the initial state
                     LifecycleAPI.event(constants.EVENT_LC_LOAD, {
                         lifecycle: that.lifecycleName
@@ -188,13 +203,14 @@ var LifecycleUtils = {};
                 }
             });
         } else {
+            LifecycleAPI.currentLifecycle(this.lifecycleName);
             //If the definition is present then the lifecycle has already been loaded
             LifecycleAPI.event(constants.EVENT_LC_LOAD, {
                 lifecycle: this.lifecycleName
             });
         }
     };
-    LifecycleAPI.unloadActiveLifecycle = function(){
+    LifecycleAPI.unloadActiveLifecycle = function() {
         LifecycleAPI.event(constants.EVENT_LC_UNLOAD);
     };
     LifecycleImpl.prototype.resolveRenderingSite = function() {
@@ -316,7 +332,12 @@ var LifecycleUtils = {};
     LifecycleImpl.prototype.state = function(name) {
         return this.stateMap.states[name];
     };
-    LifecycleImpl.prototype.currentState = function() {};
+    LifecycleImpl.prototype.stateNode = function(name){
+        return this.dagreD3GraphObject.node(name);
+    };
     LifecycleImpl.prototype.uncheckItems = function() {};
-    LifecycleImpl.prototype.changeState = function(nextState) {};
+    LifecycleImpl.prototype.changeState = function(nextState) {
+        this.currentState = nextState;
+        LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
+    };
 }());

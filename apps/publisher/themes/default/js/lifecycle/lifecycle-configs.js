@@ -3,5 +3,7 @@ LifecycleAPI.configs({
 	"lifecycle-definition-api":"/apis/lifecycles",
 	"svgContainer":"svg",
 	"graphContainer":"g",
-	"lifecycleRenderingArea":"lifecycle-rendering-area"
+	"lifecycleRenderingArea":"lifecycle-rendering-area",
+	"lifecycleActionArea":"lifecycle-actions",
+	"lifecycleChecklistArea":"lifecycle-checklist"
 });

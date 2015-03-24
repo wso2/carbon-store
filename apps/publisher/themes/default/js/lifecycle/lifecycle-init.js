@@ -19,6 +19,60 @@
 $(function() {
     'use strict';
     var constants = LifecycleAPI.constants;
+    var id = function(name) {
+        return '#' + name;
+    };
+    var config = function(key) {
+        return LifecycleAPI.configs(key);
+    };
+    var partial = function(name) {
+        return '/themes/' + caramel.themer + '/partials/' + name + '.hbs';
+    };
+    var renderPartial = function(partialKey, containerKey, data, fn) {
+        fn = fn || function() {};
+        var partialName = config(partialKey);
+        var containerName = config(containerKey);
+        if (!partialName) {
+            throw 'A template name has not been specified for template key ' + partialKey;
+        }
+        if (!containerName) {
+            throw 'A container name has not been specified for container key ' + containerKey;
+        }
+        var obj = {};
+        obj[partialName] = partial(partialName);
+        caramel.partials(obj, function() {
+            var template = Handlebars.partials[partialName](data);
+            $(id(containerName)).html(template);
+            fn();
+        });
+    };
+    var renderLCActions = function() {
+        var container = config(constants.CONTAINER_LC_ACTION_AREA);
+        var impl = LifecycleAPI.lifecycle();
+        var actions;
+        var action;
+        if (impl) {
+            actions = impl.actions();
+            var data = {};
+            var map = data.actions = [];
+            var mapping;
+            for (var index = 0; index < actions.length; index++) {
+                action = actions[index];
+                mapping = {};
+                mapping.label = action;
+                mapping.style = 'btn-default';
+                map.push(mapping);
+            }
+            renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data);
+        }
+    };
+    var renderChecklistItems = function(){
+        var container = config(constants.CONTAINER_CHECKLIST_AREA);
+        var impl = LifecycleAPI.lifecycle();
+        if(impl){
+            checklist = impl.checkItems();
+        }
+    };
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
         options = options || {};
         var lifecycleName = options.lifecycle;
@@ -28,7 +82,14 @@ $(function() {
         }
     });
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
-        
+        renderLCActions();
+    });
+    LifecycleAPI.event(constants.EVENT_STATE_CHANGE, function() {
+        renderLCActions();
+    });
+    LifecycleAPI.event(constants.EVENT_LC_UNLOAD, function(options) {
+        var container = config(constants.CONTAINER_LC_ACTION_AREA);
+        $(id(container)).html('');
     });
     /**
      * The event callback is used to listen to selection changes to
