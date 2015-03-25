@@ -27,20 +27,39 @@ var LifecycleUtils = {};
     var constants = LifecycleAPI.constants = {}; //Sgort hand reference
     constants.API_ENDPOINT = 'lifecycle-api';
     constants.API_LC_DEFINITION = 'lifecycle-definition-api';
+    constants.API_BASE = 'apiLCBase';
+    constants.API_CHANGE_STATE = 'apiChangeState';
+    constants.API_FETCH_STATE = 'apiFetchState';
+    constants.API_UPDATE_CHECKLIST = 'apiUpdateChecklist';
     constants.UI_LIFECYCLE_SELECT_ID = '#lifecycle-selector';
     constants.CONTAINER_SVG = 'svgContainer';
     constants.CONTAINER_GRAPH = 'graphContainer';
     constants.CONTAINER_LC_ACTION_AREA = 'lifecycleActionArea';
     constants.CONTAINER_RENDERING_AREA = 'lifecycleRenderingArea';
     constants.CONTAINER_CHECKLIST_AREA = 'lifecycleChecklistArea';
+    constants.CONTAINER_CHECKLIST_OVERLAY = 'lifecycleChecklistBlock';
+    constants.CONTAINER_LC_ACTION_OVERLAY = 'lifecycleActionOverlay';
     constants.EVENT_LC_LOAD = 'event.lc.loaded';
     constants.EVENT_LC_UNLOAD = 'event.lc.unload';
+    constants.EVENT_FETCH_STATE_START = 'event.fetch.state.start';
+    constants.EVENT_FETCH_STATE_SUCCESS = 'event.fetch.state.success';
+    constants.EVENT_FETCH_STATE_FAILED = 'event.fetch.state.failed';
     constants.EVENT_STATE_CHANGE = 'event.state.change';
+    constants.EVENT_ACTION_START = 'event.action.invoked';
+    constants.EVENT_ACTION_FAILED = 'event.action.failed';
+    constants.EVENT_ACTION_SUCCESS = 'event.action.success';
+    constants.EVENT_UPDATE_CHECKLIST_START ='event.update.checklist.start';
+    constants.EVENT_UPDATE_CHECKLIST_SUCCESS = 'event.update.checklist.success';
+    constants.EVENT_UPDATE_CHECKLIST_FAILED = 'event.update.checklist.failed';
     var processCheckItems = function(stateDetails, datamodel) {
         if (!stateDetails.hasOwnProperty('datamodel')) {
             stateDetails.datamodel = {};
         }
         stateDetails.datamodel.checkItems = datamodel.item;
+        for (var index = 0; index < datamodel.item.length; index++) {
+            datamodel.item[index].checked = false;
+            datamodel.item[index].index = index;
+        }
     }
     var processDataModel = function(stateDetails, datamodel) {
         switch (datamodel.name) {
@@ -109,6 +128,9 @@ var LifecycleUtils = {};
      */
     LifecycleUtils.currentAsset = function() {
         return store.publisher.lifecycle;
+    };
+    LifecycleUtils.config = function(key) {
+        return LifecycleAPI.configs(key);
     };
     LifecycleAPI.configs = function() {
         if ((arguments.length == 1) && (typeof arguments[0] == 'object')) {
@@ -197,6 +219,7 @@ var LifecycleUtils = {};
                     LifecycleAPI.event(constants.EVENT_LC_LOAD, {
                         lifecycle: that.lifecycleName
                     });
+                    that.fetchState();
                 },
                 error: function() {
                     alert('Failed to load definition');
@@ -208,6 +231,7 @@ var LifecycleUtils = {};
             LifecycleAPI.event(constants.EVENT_LC_LOAD, {
                 lifecycle: this.lifecycleName
             });
+            this.fetchState();
         }
     };
     LifecycleAPI.unloadActiveLifecycle = function() {
@@ -292,9 +316,40 @@ var LifecycleUtils = {};
         return caramel.context + baseURL + '/' + this.lifecycleName;
     };
     LifecycleImpl.prototype.queryHistory = function() {};
-    LifecycleImpl.prototype.checkItems = function() {
-        if (arguments.length === 0) {
-            //Return all of the check list items
+    LifecycleImpl.prototype.urlChangeState = function() {
+        var apiBase = LifecycleUtils.config(constants.API_BASE);
+        var apiChangeState = LifecycleUtils.config(constants.API_CHANGE_STATE);
+        var asset = LifecycleUtils.currentAsset();
+        if ((!asset) || (!asset.id)) {
+            throw 'Unable to locate details about asset';
+        }
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState+'?type='+asset.type);
+    };
+    LifecycleImpl.prototype.urlFetchState = function() {
+        var apiBase = LifecycleUtils.config(constants.API_BASE);
+        var apiChangeState = LifecycleUtils.config(constants.API_FETCH_STATE);
+        var asset = LifecycleUtils.currentAsset();
+        if ((!asset) || (!asset.id)) {
+            throw 'Unable to locate details about asset';
+        }
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type);
+    };
+    LifecycleImpl.prototype.urlUpdateChecklist = function() {
+        var apiBase = LifecycleUtils.config(constants.API_BASE);
+        var apiUpdateChecklist = LifecycleUtils.config(constants.API_UPDATE_CHECKLIST);
+        var asset = LifecycleUtils.currentAsset();
+        if ((!asset) || (!asset.id)) {
+            throw 'Unable to locate details about asset';
+        }
+        return caramel.url(apiBase + '/' + asset.id + apiUpdateChecklist + '?type=' + asset.type);
+    };
+    LifecycleImpl.prototype.checklist = function() {
+        var state = this.state(this.currentState);
+        if (arguments.length === 1) {
+            console.log('changing checklist state');
+            state.datamodel.checkItems = arguments[0];
+        } else {
+            return state.datamodel.checkItems;
         }
     };
     LifecycleImpl.prototype.actions = function() {
@@ -313,6 +368,65 @@ var LifecycleUtils = {};
         }
         return actions;
     };
+    LifecycleImpl.prototype.invokeAction = function() {
+        var action = arguments[0];
+        var comment = arguments[1];
+        if (!action) {
+            throw 'Attempt to invoke an action without providing the action';
+            return;
+        }
+        //Check if the action is one of the available actions for the current state
+        var availableActions = this.actions(this.currentState);
+        if ((availableActions.indexOf(action, 0) <= -1)) {
+            throw 'Attempt to invoke an action (' + action + ') which is not available for the current state : ' + this.currentState;
+        }
+        var data = {};
+        data.action = action;
+        if (comment) {
+            data.comment = comment;
+        }
+        //alert(this.urlChangeState());
+        LifecycleAPI.event(constants.EVENT_ACTION_START);
+        $.ajax({
+            url:this.urlChangeState(),
+            type:'POST',
+            success:function(){
+                LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
+                LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
+            },
+            error:function(){
+                LifecycleAPI.event(constants.EVENT_ACTION_FAILED);
+            }
+        });
+    };
+    LifecycleImpl.prototype.updateChecklist = function(checklistItemIndex, state) {
+        var data = {};
+        LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START);
+        $.ajax({
+            type: 'POST',
+            url: this.urlUpdateChecklist(),
+            data:data,
+            success:function(){
+                LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS);
+            },
+            error:function(){
+                LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED);
+            }
+        });
+    };
+    LifecycleImpl.prototype.fetchState = function() {
+        LifecycleAPI.event(constants.EVENT_FETCH_STATE_START);
+        $.ajax({
+            url: this.urlFetchState(),
+            success: function() {
+                LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS);
+            },
+            error: function() {
+                LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED);
+            }
+        })
+    };
+
     LifecycleImpl.prototype.nextStates = function() {
         //Assume that a state has not been provided
         var currentState = this.currentState;
@@ -332,10 +446,9 @@ var LifecycleUtils = {};
     LifecycleImpl.prototype.state = function(name) {
         return this.stateMap.states[name];
     };
-    LifecycleImpl.prototype.stateNode = function(name){
+    LifecycleImpl.prototype.stateNode = function(name) {
         return this.dagreD3GraphObject.node(name);
     };
-    LifecycleImpl.prototype.uncheckItems = function() {};
     LifecycleImpl.prototype.changeState = function(nextState) {
         this.currentState = nextState;
         LifecycleAPI.event(constants.EVENT_STATE_CHANGE);

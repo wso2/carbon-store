@@ -22,7 +22,9 @@
     	store.publisher.lifecycle ={};
     }
     store.publisher.lifecycle = { 
+        id: "{{assets.id}}",
         currentState: "{{assets.lifecycleState}}",
-        activeLifecycle: "{{assets.lifecycle}}",        
+        activeLifecycle: "{{assets.lifecycle}}",    
+        type: "{{rxt.shortName}}"    
     };
 </script>

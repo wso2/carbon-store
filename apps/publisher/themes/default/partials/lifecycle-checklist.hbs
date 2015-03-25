@@ -1,3 +1,3 @@
-{{#each checkitems}}
-	<div class="checkbox"><label> <input type="checkbox" {{checked}}> {{label}}</label></div>
+{{#each checklist}}
+	<div class="checkbox"><label> <input type="checkbox" data-index="{{index}}" {{checked}}> {{name}}</label></div>
 {{/each}}

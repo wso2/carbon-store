@@ -81,6 +81,10 @@ asset.server = function (ctx) {
                     path: 'assets.jag'
                 },
                 {
+                    url:'asset',
+                    path:'asset.jag'
+                },
+                {
                     url:'statistics',
                     path:'statistics.jag'
                 }
@@ -259,7 +263,7 @@ asset.renderer = function (ctx) {
             var tables = page.assets.tables;
             for (var index in tables) {
                 var table = tables[index];
-                if (table.name == 'overview') {
+                if ((table.name == 'overview') &&(table.fields.provider)) {
                     table.fields.provider.value = page.cuser.username;
                 }
             }

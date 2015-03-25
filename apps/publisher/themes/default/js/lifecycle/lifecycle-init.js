@@ -28,6 +28,9 @@ $(function() {
     var partial = function(name) {
         return '/themes/' + caramel.themer + '/partials/' + name + '.hbs';
     };
+    var spinnerURL = function() {
+        return caramel.url('/themes/default/img/preloader-40x40.gif');
+    }
     var renderPartial = function(partialKey, containerKey, data, fn) {
         fn = fn || function() {};
         var partialName = config(partialKey);
@@ -43,7 +46,27 @@ $(function() {
         caramel.partials(obj, function() {
             var template = Handlebars.partials[partialName](data);
             $(id(containerName)).html(template);
-            fn();
+            fn(containerName);
+        });
+    };
+    var wireLCActionHandlers = function(container) {
+        var action;
+        $(id(container)).children('a').each(function() {
+            $(this).on('click', function(e) {
+                e.preventDefault();
+                action = $(this).data('action');
+                alert('action:: ' + action + ' clicked');
+                LifecycleAPI.lifecycle().invokeAction(action);
+            });
+        });
+    };
+    var wireChecklistHandlers = function(container) {
+        $(id(container)).find('input:checkbox').each(function() {
+            $(this).on('click', function(e) {
+                var index = $(this).data('index');
+                var state = $(this).is(':checked');
+                LifecycleAPI.lifecycle().updateChecklist(index, state);
+            });
         });
     };
     var renderLCActions = function() {
@@ -63,15 +86,57 @@ $(function() {
                 mapping.style = 'btn-default';
                 map.push(mapping);
             }
-            renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data);
+            renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
-    var renderChecklistItems = function(){
+    var renderChecklistItems = function() {
         var container = config(constants.CONTAINER_CHECKLIST_AREA);
         var impl = LifecycleAPI.lifecycle();
-        if(impl){
-            checklist = impl.checkItems();
+        if (impl) {
+            var data = {};
+            data.checklist = impl.checklist();
+            renderPartial(constants.CONTAINER_CHECKLIST_AREA, constants.CONTAINER_CHECKLIST_AREA, data, wireChecklistHandlers);
         }
+    };
+    //Blocks user interaction with the lifecycle actions
+    var blockLCActions = function() {
+        var lcActionContainer = config(constants.CONTAINER_LC_ACTION_OVERLAY);
+        var container = $(id(lcActionContainer));
+        container.html('<img src="' + spinnerURL() + '" /> Invoking action');
+        container.css('position', 'absolute');
+        container.css('z-index', 2);
+        container.css('display', 'block');
+        container.css('background-color', 'grey');
+        container.css('top', 0);
+        container.css('bottom', 0);
+        container.css('left', 0);
+        container.css('right', 0);
+    };
+    var unblockLCActions = function() {
+        var checklistContainer = config(constants.CONTAINER_LC_ACTION_OVERLAY);
+        var container = $(id(checklistContainer));
+        container.html('');
+        container.attr('style', '');
+    }
+    //Blocks user interaction with the check list 
+    var blockChecklist = function() {
+        var checklistContainer = config(constants.CONTAINER_CHECKLIST_OVERLAY);
+        var container = $(id(checklistContainer));
+        container.html('<img src="' + spinnerURL() + '" /> Updating check list');
+        container.css('position', 'absolute');
+        container.css('z-index', 2);
+        container.css('display', 'block');
+        container.css('background-color', 'grey');
+        container.css('top', 0);
+        container.css('bottom', 0);
+        container.css('left', 0);
+        container.css('right', 0);
+    };
+    var unblockChecklist = function() {
+        var checklistContainer = config(constants.CONTAINER_CHECKLIST_OVERLAY);
+        var container = $(id(checklistContainer));
+        container.html('');
+        container.attr('style', '');
     };
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
         options = options || {};
@@ -79,17 +144,41 @@ $(function() {
         var impl = LifecycleAPI.lifecycle(lifecycleName);
         if (impl) {
             impl.render();
+            renderLCActions();
+            renderChecklistItems();
         }
     });
-    LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
-        renderLCActions();
-    });
+    //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
+    //renderLCActions();
+    //renderChecklistItems();
+    //});
     LifecycleAPI.event(constants.EVENT_STATE_CHANGE, function() {
         renderLCActions();
+        renderChecklistItems();
+    });
+    LifecycleAPI.event(constants.EVENT_FETCH_STATE_START, function() {
+        blockChecklist();
+    });
+    LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS, function() {
+        unblockChecklist();
+    });
+    LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START, function() {
+        blockChecklist();
+    });
+    LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS, function() {
+        unblockChecklist();
+    });
+    LifecycleAPI.event(constants.EVENT_ACTION_START, function() {
+        blockLCActions();
+    });
+    LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
+        unblockLCActions();
     });
     LifecycleAPI.event(constants.EVENT_LC_UNLOAD, function(options) {
-        var container = config(constants.CONTAINER_LC_ACTION_AREA);
-        $(id(container)).html('');
+        var lcContainer = config(constants.CONTAINER_LC_ACTION_AREA);
+        var checklistContainer = config(constants.CONTAINER_CHECKLIST_AREA);
+        $(id(lcContainer)).html('');
+        $(id(checklistContainer)).html('');
     });
     /**
      * The event callback is used to listen to selection changes to
