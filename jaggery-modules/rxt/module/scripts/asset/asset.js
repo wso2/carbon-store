@@ -736,6 +736,11 @@ var asset = {};
         }
         return checkItems;
     };
+    AssetManager.prototype.getLifecycleHistory = function(id){
+        var artifact = this.am.get(id);
+        var historyXML = this.am.getLifecycleHistory(artifact);
+        return historyXML;
+    };
     AssetManager.prototype.createVersion = function(options, newVersion) {};
     AssetManager.prototype.getName = function(asset) {
         var nameAttribute = this.rxtManager.getNameAttribute(this.type);

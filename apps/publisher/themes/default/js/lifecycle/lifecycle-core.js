@@ -30,6 +30,7 @@ var LifecycleUtils = {};
     constants.API_BASE = 'apiLCBase';
     constants.API_CHANGE_STATE = 'apiChangeState';
     constants.API_FETCH_STATE = 'apiFetchState';
+    constants.API_FETCH_HISTORY = 'apiFetchHistory';
     constants.API_UPDATE_CHECKLIST = 'apiUpdateChecklist';
     constants.UI_LIFECYCLE_SELECT_ID = '#lifecycle-selector';
     constants.CONTAINER_SVG = 'svgContainer';
@@ -39,6 +40,8 @@ var LifecycleUtils = {};
     constants.CONTAINER_CHECKLIST_AREA = 'lifecycleChecklistArea';
     constants.CONTAINER_CHECKLIST_OVERLAY = 'lifecycleChecklistBlock';
     constants.CONTAINER_LC_ACTION_OVERLAY = 'lifecycleActionOverlay';
+    constants.CONTAINER_HISTORY_AREA = 'lifecycleHistoryArea';
+    constants.CONTAINER_INFORMATION_AREA = 'lifecycleInformationArea';
     constants.EVENT_LC_LOAD = 'event.lc.loaded';
     constants.EVENT_LC_UNLOAD = 'event.lc.unload';
     constants.EVENT_FETCH_STATE_START = 'event.fetch.state.start';
@@ -48,9 +51,12 @@ var LifecycleUtils = {};
     constants.EVENT_ACTION_START = 'event.action.invoked';
     constants.EVENT_ACTION_FAILED = 'event.action.failed';
     constants.EVENT_ACTION_SUCCESS = 'event.action.success';
-    constants.EVENT_UPDATE_CHECKLIST_START ='event.update.checklist.start';
+    constants.EVENT_UPDATE_CHECKLIST_START = 'event.update.checklist.start';
     constants.EVENT_UPDATE_CHECKLIST_SUCCESS = 'event.update.checklist.success';
     constants.EVENT_UPDATE_CHECKLIST_FAILED = 'event.update.checklist.failed';
+    constants.EVENT_FETCH_HISTORY_START = 'event.fetch.history.start';
+    constants.EVENT_FETCH_HISTORY_SUCCESS = 'event.fetch.history.success';
+    constants.EVENT_FETCH_HISTORY_FAILED = 'event.fetch.history.failed';
     var processCheckItems = function(stateDetails, datamodel) {
         if (!stateDetails.hasOwnProperty('datamodel')) {
             stateDetails.datamodel = {};
@@ -202,6 +208,7 @@ var LifecycleUtils = {};
         this.stateMap = null;
         this.dagreD3GraphObject = null;
         this.renderingSite;
+        this.history = [];
     }
     LifecycleImpl.prototype.load = function() {
         var promise;
@@ -323,7 +330,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiChangeState+'?type='+asset.type);
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type);
     };
     LifecycleImpl.prototype.urlFetchState = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -343,13 +350,23 @@ var LifecycleUtils = {};
         }
         return caramel.url(apiBase + '/' + asset.id + apiUpdateChecklist + '?type=' + asset.type);
     };
+    LifecycleImpl.prototype.urlFetchHistory = function() {
+        var apiBase = LifecycleUtils.config(constants.API_BASE);
+        var apiFetchHistory = LifecycleUtils.config(constants.API_FETCH_HISTORY);
+        var asset = LifecycleUtils.currentAsset();
+        if ((!asset) || (!asset.id)) {
+            throw 'Unable to locate details about asset';
+        }
+        return caramel.url(apiBase + '/' + asset.id + apiFetchHistory + '?type=' + asset.type);
+    };
     LifecycleImpl.prototype.checklist = function() {
         var state = this.state(this.currentState);
         if (arguments.length === 1) {
             console.log('changing checklist state');
             state.datamodel.checkItems = arguments[0];
         } else {
-            return state.datamodel.checkItems;
+            var datamodel = state.datamodel || {};
+            return datamodel.checkItems? datamodel.checkItems : [] ;
         }
     };
     LifecycleImpl.prototype.actions = function() {
@@ -388,13 +405,13 @@ var LifecycleUtils = {};
         //alert(this.urlChangeState());
         LifecycleAPI.event(constants.EVENT_ACTION_START);
         $.ajax({
-            url:this.urlChangeState(),
-            type:'POST',
-            success:function(){
+            url: this.urlChangeState(),
+            type: 'POST',
+            success: function() {
                 LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
                 LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
             },
-            error:function(){
+            error: function() {
                 LifecycleAPI.event(constants.EVENT_ACTION_FAILED);
             }
         });
@@ -405,11 +422,11 @@ var LifecycleUtils = {};
         $.ajax({
             type: 'POST',
             url: this.urlUpdateChecklist(),
-            data:data,
-            success:function(){
+            data: data,
+            success: function() {
                 LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS);
             },
-            error:function(){
+            error: function() {
                 LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED);
             }
         });
@@ -426,7 +443,24 @@ var LifecycleUtils = {};
             }
         })
     };
-
+    LifecycleImpl.prototype.fetchHistory = function() {
+        LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_START);
+        var that = this;
+        $.ajax({
+            url:this.urlFetchHistory(),
+            success:function(data){
+                var data = data.data || [];
+                that.history = []; //Reset the history
+                for(var index = 0; index< data.length;index++){
+                    that.history.push(data[index]);
+                }
+                LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS);
+            },
+            error:function(){
+                LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_FAILED);
+            }
+        })
+    };
     LifecycleImpl.prototype.nextStates = function() {
         //Assume that a state has not been provided
         var currentState = this.currentState;

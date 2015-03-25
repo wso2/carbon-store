@@ -69,6 +69,26 @@ $(function() {
             });
         });
     };
+    var renderStateInformation = function() {
+        var container = config(constants.CONTAINER_INFORMATION_AREA);
+        var impl = LifecycleAPI.lifecycle();
+        var data = {};
+        if (impl) {
+            data.currentLifecycle = LifecycleAPI.currentLifecycle();
+            data.currentState = impl.state(impl.currentState).label;
+            renderPartial(constants.CONTAINER_INFORMATION_AREA,constants.CONTAINER_INFORMATION_AREA,data);
+        }
+    };
+    var renderHistory = function() {
+        var container = config(constants.CONTAINER_HISTORY_AREA);
+        var impl = LifecycleAPI.lifecycle();
+        var data = {};
+        if (impl) {
+            history = impl.history;
+            data.history = history;
+            renderPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
+        }
+    };
     var renderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         var impl = LifecycleAPI.lifecycle();
@@ -146,6 +166,7 @@ $(function() {
             impl.render();
             renderLCActions();
             renderChecklistItems();
+            renderStateInformation();
         }
     });
     //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
@@ -174,11 +195,16 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
         unblockLCActions();
     });
+    LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
+        renderHistory();
+    });
     LifecycleAPI.event(constants.EVENT_LC_UNLOAD, function(options) {
         var lcContainer = config(constants.CONTAINER_LC_ACTION_AREA);
         var checklistContainer = config(constants.CONTAINER_CHECKLIST_AREA);
+        var historyContainer = config(constants.CONTAINER_HISTORY_AREA);
         $(id(lcContainer)).html('');
         $(id(checklistContainer)).html('');
+        $(id(historyContainer)).html('');
     });
     /**
      * The event callback is used to listen to selection changes to
@@ -190,10 +216,12 @@ $(function() {
         LifecycleAPI.unloadActiveLifecycle();
         //Load the new lifecycle
         LifecycleAPI.lifecycle(selectedLC).load();
+        LifecycleAPI.lifecycle(selectedLC).fetchHistory();
     });
     var init = function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();
+        LifecycleAPI.lifecycle(activeLC).fetchHistory();
     };
     init();
 });

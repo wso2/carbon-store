@@ -76,10 +76,25 @@ var api = {};
     	//throw 'failed';
     	return successMsg(msg(200,'The checklist was updated successfully'));
     };
-    api.lifecycleHistory = function() {};
+    api.lifecycleHistory = function(req,res,session,options) {
+    	var history = lifecycleAPI.getHistory(options,req,res,session);
+    	var xmlHistoryContent =  new XML(history.content);
+    	var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent);
+    	var formatedHistory = [];
+    	var entry;
+    	var formatEntry;
+    	for(var index = 0; index< historyContent.item.length;index++){
+    		entry = historyContent.item[index];
+    		formatEntry = {};
+    		formatEntry.fromState = entry.state;
+    		formatEntry.toState = entry.targetState;
+    		formatEntry.time = entry.timestamp;
+    		formatEntry.user = entry.user;
+    		formatedHistory.push(formatEntry);
+    	}
+    	return successMsg(msg(200,'Lifecycle history retrieved successfully',formatedHistory));
+    };
     api.resolve = function(req, res, session, options) {
-        log.info('### action: ' + options.action + ' ###');
-        log.info('### id: ' + options.id + ' ###');
         var action = options.action;
         var result = errorMsg(msg(HTTP_ERROR_NOT_IMPLEMENTED, MSG_ERROR_NOT_IMPLEMENTED));
         switch (action) {
@@ -98,9 +113,6 @@ var api = {};
             default:
                 break;
         }
-        log.info('### Resolve finished ###');
-        log.info(result);
-        log.info('### Finsihed ###');
         return result;
     };
 }(api));

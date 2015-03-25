@@ -8,8 +8,11 @@ LifecycleAPI.configs({
 	"lifecycleChecklistArea":"lifecycle-checklist",
 	"lifecycleChecklistBlock":"lifecycle-checklist-overlay",
 	"lifecycleActionOverlay":"lifecycle-actions-overlay",
+	"lifecycleHistoryArea":"lifecycle-history",
+	"lifecycleInformationArea":"lifecycle-information",
 	"apiLCBase":"/apis/asset",
 	"apiChangeState":"/change-state",
 	"apiFetchState" :"/state",
-	"apiUpdateChecklist":"/update-checklist"
+	"apiUpdateChecklist":"/update-checklist",
+	"apiFetchHistory":"/lifecycle-history"
 });
