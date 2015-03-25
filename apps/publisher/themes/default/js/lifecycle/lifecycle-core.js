@@ -416,14 +416,21 @@ var LifecycleUtils = {};
             }
         });
     };
-    LifecycleImpl.prototype.updateChecklist = function(checklistItemIndex, state) {
+    LifecycleImpl.prototype.updateChecklist = function(checklistItemIndex, checked) {
         var data = {};
+        var entry = {};
+        entry.index = checklistItemIndex;
+        entry.checked = checked;
+        data.checklist = [];
+        data.checklist.push(entry);
         LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START);
         $.ajax({
             type: 'POST',
             url: this.urlUpdateChecklist(),
-            data: data,
+            data: JSON.stringify(data),
+            contentType:'application/json',
             success: function() {
+                //Update the internal check list items
                 LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS);
             },
             error: function() {
@@ -433,9 +440,16 @@ var LifecycleUtils = {};
     };
     LifecycleImpl.prototype.fetchState = function() {
         LifecycleAPI.event(constants.EVENT_FETCH_STATE_START);
+        var that = this;
         $.ajax({
             url: this.urlFetchState(),
-            success: function() {
+            success: function(data) {
+                var data = data.data;
+                that.currentState = data.id.toLowerCase();
+                for(var index =0 ; index< data.checkItems.length;index++){
+                    data.checkItems[index].index = index;
+                }
+                that.checklist(data.checkItems);
                 LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS);
             },
             error: function() {

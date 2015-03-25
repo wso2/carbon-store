@@ -182,6 +182,9 @@ $(function() {
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS, function() {
         unblockChecklist();
+        renderChecklistItems();
+        renderStateInformation();
+        renderLCActions();
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START, function() {
         blockChecklist();

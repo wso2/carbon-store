@@ -72,27 +72,39 @@ var api = {};
         }
         return successMsg(msg(200, 'The assets state was changed', result));
     };
-    api.updateCheckList = function(req,res,session,options) {
-    	//throw 'failed';
-    	return successMsg(msg(200,'The checklist was updated successfully'));
-    };
-    api.lifecycleHistory = function(req,res,session,options) {
-    	var history = lifecycleAPI.getHistory(options,req,res,session);
-    	var xmlHistoryContent =  new XML(history.content);
-    	var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent);
-    	var formatedHistory = [];
-    	var entry;
-    	var formatEntry;
-    	for(var index = 0; index< historyContent.item.length;index++){
-    		entry = historyContent.item[index];
-    		formatEntry = {};
-    		formatEntry.fromState = entry.state;
-    		formatEntry.toState = entry.targetState;
-    		formatEntry.time = entry.timestamp;
-    		formatEntry.user = entry.user;
-    		formatedHistory.push(formatEntry);
+    api.updateCheckList = function(req, res, session, options) {
+    	log.info(options);
+    	log.info(req.getContent());
+    	var success;
+    	var body;
+    	if(!req.getContentType()==='application/json'){
+    		throw 'Checklist items must be sent in the body of the request and content type should be set to application/json';
     	}
-    	return successMsg(msg(200,'Lifecycle history retrieved successfully',formatedHistory));
+    	body = req.getContent();
+    	options.checkItems = body.checklist||[];
+    	success = lifecycleAPI.checkItems(options, req, res, session);
+    	if(success){
+    		successMsg(msg(200, 'The checklist was updated successfully'));
+    	}
+        return errorMsg(msg(500, 'The checklist was not updated'));
+    };
+    api.lifecycleHistory = function(req, res, session, options) {
+        var history = lifecycleAPI.getHistory(options, req, res, session);
+        var xmlHistoryContent = new XML(history.content);
+        var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent);
+        var formatedHistory = [];
+        var entry;
+        var formatEntry;
+        for (var index = 0; index < historyContent.item.length; index++) {
+            entry = historyContent.item[index];
+            formatEntry = {};
+            formatEntry.fromState = entry.state;
+            formatEntry.toState = entry.targetState;
+            formatEntry.time = entry.timestamp;
+            formatEntry.user = entry.user;
+            formatedHistory.push(formatEntry);
+        }
+        return successMsg(msg(200, 'Lifecycle history retrieved successfully', formatedHistory));
     };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
