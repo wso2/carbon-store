@@ -50,7 +50,7 @@ asset.manager = function (ctx) {
             this._super.update.call(this, options);
             var asset = this.get(options.id); //TODO avoid get: expensive operation
             //trigger notification on asset update
-            notifier.notifyEvent(storeConstants.ASSET_UPDATE_EVENT, asset.type, asset.attributes.overview_name, null, asset.path, ctx.tenantId);
+            notifier.notifyEvent(storeConstants.ASSET_UPDATE_EVENT, asset.type, asset.name, null, asset.path, ctx.tenantId);
         },
         search: function (query, paging) {
             return this._super.search.call(this, query, paging);
@@ -64,7 +64,7 @@ asset.manager = function (ctx) {
         invokeLcAction: function (asset, action) {
             var success = this._super.invokeLcAction.call(this, asset, action);
             //trigger notification on LC state change
-            notifier.notifyEvent(storeConstants.LC_STATE_CHANGE_EVENT, asset.type, asset.attributes.overview_name, COMMENT, asset.path, ctx.tenantId);
+            notifier.notifyEvent(storeConstants.LC_STATE_CHANGE_EVENT, asset.type, asset.name, COMMENT, asset.path, ctx.tenantId);
             return success;
         }
     };

@@ -25,6 +25,7 @@ var notificationManager = {};
     //noinspection JSUnresolvedVariable
     var StoreNotificationService = Packages.org.wso2.carbon.store.notifications.service.StoreNotificationService;
     var storeNotifier = new StoreNotificationService();
+    var EMAIL_TEMP_GROUP = 'mail_templates';
 
     /**
      * Notify triggered event
@@ -33,13 +34,13 @@ var notificationManager = {};
      * @param assetName name of the asset event triggered on
      * @param message message to be sent in the notification
      * @param path path of the resource the event occured
-     * @param user logged in user
+     * @param tenantId tenant id of logged in user
      */
-    notificationManager.notifyEvent = function (eventName, assetType, assetName, message, path, user) {
+    notificationManager.notifyEvent = function (eventName, assetType, assetName, message, path, tenantId) {
         var isSuccessful;
-        var emailContent = generateEmail(assetType, assetName, message, eventName);
+        var emailContent = generateEmail(assetType, assetName, message, eventName, tenantId);
         try {
-            storeNotifier.notifyEvent(eventName, emailContent, path, user);
+            storeNotifier.notifyEvent(eventName, emailContent, path, tenantId);
             isSuccessful = true;
         } catch (e) {
             log.error('Notifying the event ' + eventName + 'failed for ' + eventName, e);
@@ -104,24 +105,33 @@ var notificationManager = {};
      * @param assetName name of the asset event triggered on
      * @param msg message to send in the email
      * @param eventName name of the triggered event
+     * @param tenantId tenant id of the user
      * @return content of the email
      */
-    var generateEmail = function (assetType, assetName, msg, eventName) {
+    var generateEmail = function (assetType, assetName, msg, eventName, tenantId) {
 
         var stringAssetName = stringify(assetName);
         var stringAssetType = stringify(assetType);
         var stringMsg = stringify(msg);
 
-        var email_temp;
+        var artifactManager = require('rxt').artifacts;
+
+        var email_temp_name;
         if (eventName == storeConstants.LC_STATE_CHANGE_EVENT) {
-            email_temp = storeConstants.EMAIL_TEMPLATE_LC;
+            email_temp_name = storeConstants.EMAIL_TEMPLATE_LC;
         } else if (eventName == storeConstants.ASSET_UPDATE_EVENT) {
-            email_temp = storeConstants.EMAIL_TEMPLATE_UPDATE;
+            email_temp_name = storeConstants.EMAIL_TEMPLATE_UPDATE;
         } else if (eventName == storeConstants.VERSION_CREATED_EVENT) {
-            email_temp = storeConstants.EMAIL_TEMPLATE_VERSION;
+            email_temp_name = storeConstants.EMAIL_TEMPLATE_VERSION;
         } else {
-            email_temp = storeConstants.EMAIL_TEMPLATE_DEFAULT;
+            email_temp_name = storeConstants.EMAIL_TEMPLATE_DEFAULT;
         }
+
+        var email_temp_meta = artifactManager.get(email_temp_name, EMAIL_TEMP_GROUP, tenantId, assetType);
+        var file = new File(email_temp_meta.path);
+        file.open("r");
+        var email_temp = "";
+        email_temp = file.readAll();
 
         message = new JaggeryParser().parse(email_temp).toString();
 
