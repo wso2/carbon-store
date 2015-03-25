@@ -63,7 +63,7 @@ var api = {};
     };
     api.changeState = function(req, res, session, options) {
         //Call the state change api
-        var success = true;
+        var success = lifecycleAPI.changeState(options,req,res,session);
         var newState = null;
         var result = {};
         if (success) {

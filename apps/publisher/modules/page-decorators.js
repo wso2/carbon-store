@@ -40,4 +40,11 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
     };
+    pageDecorators.populateAttachedLifecycles = function(ctx,page,utils){
+
+    };
+    var assetManager = function(ctx){
+        //var rxt = require('rxt');
+        //var am = rxt.
+    };
 }(pageDecorators));

@@ -394,4 +394,10 @@ var error = '';
         var history = am.getLifecycleHistory(options.id);
         return history;
     };
+    api.listAllAttachedLifecycles = function(options,req,res,session) {
+        validateOptions(options);
+        var assetApi = rxtModule.asset;
+        var am = assetApi.createUserAssetManager(session, options.type);
+        return am.listAllAttachedLifecycles(options.id);
+    };
 }(api));

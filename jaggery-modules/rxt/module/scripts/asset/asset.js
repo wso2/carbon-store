@@ -741,6 +741,9 @@ var asset = {};
         var historyXML = this.am.getLifecycleHistory(artifact);
         return historyXML;
     };
+    AssetManager.prototype.listAllAttachedLifecycles = function(id){
+        return this.am.listAllAttachedLifecycles(id);
+    };
     AssetManager.prototype.createVersion = function(options, newVersion) {};
     AssetManager.prototype.getName = function(asset) {
         var nameAttribute = this.rxtManager.getNameAttribute(this.type);

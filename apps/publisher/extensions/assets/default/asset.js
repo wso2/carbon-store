@@ -324,6 +324,11 @@ asset.renderer = function (ctx) {
                 ribbon.query = 'Query';
                 ribbon.breadcrumb = assetTypes;
                 return page;
+            },
+            populateAttachedLifecycles: function(page){
+                if(page.assets.id){
+                    require('/modules/page-decorators.js').populateAttachedLifecycles(ctx,page,this);
+                }
             }
         }
     };
