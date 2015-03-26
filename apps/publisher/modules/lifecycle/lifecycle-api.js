@@ -279,15 +279,12 @@ var error = '';
         var checkItemIndex;
         var checkItemState;
         var checkItem;
-        log.info('About to tick check items');
         //Go through each check item in the check items
         for (var index in checkItemsList) {
             checkItem = checkItemsList[index];
             checkItemIndex = checkItem.index;
             checkItemState = checkItem.checked;
             if ((checkItemIndex != null) && (checkItemState == true || checkItemState == false)) {
-                log.info('index: '+checkItemIndex);
-                log.info('checked: '+checkItemState);
                 updateCheckItemState(checkItemIndex, checkItemState, asset, state, am);
             }
         }
