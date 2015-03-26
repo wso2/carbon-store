@@ -35,8 +35,8 @@ require('/modules/store.js').exec(function(ctx) {
     var storageApi = require('/modules/storage-api.js').api;
     var registryOperator = require("/modules/registry/registry.operator.js").registryOperator();
     var value = {};
-    var tenantedUrlPattern = '/{context}/t/{domain}/storage/{type}/{id}/{uuid}/{filename}';
-    var nonTenantedUrlPattern = '/{context}/storage/{type}/{id}/{uuid}/{filename}';
+    var tenantedUrlPattern =    '/{context}/t/{domain}/storage/{type}/{id}/{filename}';
+    var nonTenantedUrlPattern =            '/{context}/storage/{type}/{id}/{filename}';
     //Obtain the tenantId and the uuid from the url
     var uriMatcher = new URIMatcher(request.getRequestURI());
     var isMatch = uriMatcher.match(nonTenantedUrlPattern) || uriMatcher.match(tenantedUrlPattern);
@@ -59,10 +59,9 @@ require('/modules/store.js').exec(function(ctx) {
      */
     function handleResourceRequest(session, matchedElements) {
         var registryOperator = require("/modules/registry/registry.operator.js").registryOperator();
-        var key = matchedElements['uuid'];
-        var compoundKey = matchedElements['uuid'] + '/' + matchedElements['filename'];
         var type = matchedElements['type'];
         var id = matchedElements['id'];
+        var compoundKey = type + '/' + id + '/' + matchedElements['filename'];
         var tenantId = carbon.server.superTenant.tenantId;
         var user = store.server.current(session);
         //Attempt to obtain the tenant id from the domain provided 

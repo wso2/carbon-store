@@ -1,5 +1,16 @@
-<h4>{{label}}</h4>
-<table class='table'>
+
+<a data-toggle="collapse" href="#collapse{{name}}" aria-expanded="false" class="collapsing-h2" >
+    <h2>
+        <span class="fa-stack fa-lg collapse-stack-icons">
+            <i class="fa fa-caret-right fa-stack-1x"></i>
+            <i class="fa fa-circle-thin fa-stack-2x"></i>
+        </span>
+        {{label}}
+    </h2>
+</a>
+
+<div class="collapse in responsive-form-container" id="collapse{{name}}">
+<table class='table table-responsive'>
 	<thead>
 		{{#each subheading}}
 			<th>{{heading}}</th>
@@ -9,3 +20,5 @@
 		{{renderEditableHeadingTable .}}
 	</tbody>
 </table>
+</div>
+

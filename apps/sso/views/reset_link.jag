@@ -25,9 +25,17 @@
 var confirmationCode = request.getParameter('confirmation'),
     recovery = require('account-management').recovery,
     username = request.getParameter('username'),
-    captchaBean = recovery.getCaptcha(),
-    captchaPath = captchaBean.getImagePath(),
+    isCaptchaEnabled = recovery.isCaptchaEnabled();
+
+var captchaBean,
+    captchaPath,
+    captchaKey;
+
+if (isCaptchaEnabled) {
+    captchaBean = recovery.getCaptcha();
+    captchaPath = captchaBean.getImagePath();
     captchaKey = captchaBean.getSecretKey();
+}
 
 session.put('confirmation', confirmationCode);
 session.put('username', username);
@@ -65,7 +73,6 @@ session.put('username', username);
 </head>
 
 <body>
-
 <div class="container">
     <div class="row">
         <div class="span8 offset2">
@@ -79,34 +86,43 @@ session.put('username', username);
                     <div class="form-forgot-password row-fluid">
                         <div class="span12">
                             <div class="row-fluid">
-                                <form id="verificationForm">
-                                    <h2 class="form-forgot-password-heading">Confirm password
-                                        reset</h2>
+                                <% if(isCaptchaEnabled) { %>
+                                    <form id="verificationForm">
+                                        <h2 class="form-forgot-password-heading">Confirm password
+                                            reset</h2>
 
-                                    <p>Enter the captcha to confirm password reset.</p>
+                                        <p>Enter the captcha to confirm password reset.</p>
 
-                                    <div id="verificationFormError" class="alert alert-error"
-                                         style="display:none"></div>
-                                    <div id="captcha" class="control">
-                                        <label id='newCaptcha'>Can't read this? <a href="#">Try another.</a></label>
+                                        <div id="verificationFormError" class="alert alert-error"
+                                             style="display:none"></div>
+                                        <div id="captcha" class="control">
+                                            <label id='newCaptcha'>Can't read this? <a href="#">Try another.</a></label>
 
-                                        <div id="captcha-div" class="control">
-                                            <img src="../<%=captchaPath%>"
-                                                 class="captcha-img">
+                                            <div id="captcha-div" class="control">
+                                                <img src="../<%=captchaPath%>"
+                                                     class="captcha-img">
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="control">
-                                        <label>Text in the box</label>
-                                        <input id="captcha-answer" name="captcha-answer" type="text"
-                                               class="input-block-level required">
-                                    </div>
-                                    <input type="hidden" id="captcha-path" name="captcha-path"
-                                    value="<%=captchaPath%>">
-                                    <input type="hidden" id="captcha-key" name="captcha-key" value="<%=captchaKey%>">
-                                    <input id="action" name="action" type="hidden" value="verifyCode">
-                                    <button id="validationSubmit" class="btn btn-large" type="button">Continue
-                                    </button>
-                                </form>
+                                        <div class="control">
+                                            <label>Text in the box</label>
+                                            <input id="captcha-answer" name="captcha-answer" type="text"
+                                                   class="input-block-level required">
+                                        </div>
+                                        <input type="hidden" id="captcha-path" name="captcha-path"
+                                        value="<%=captchaPath%>">
+                                        <input type="hidden" id="captcha-key" name="captcha-key" value="<%=captchaKey%>">
+                                        <input id="action" name="action" type="hidden" value="verifyCode">
+                                        <button id="validationSubmit" class="btn btn-large" type="button">Continue
+                                        </button>
+                                    </form>
+                                <% } else { %>
+                                    <form id="verificationForm2">
+                                        <div id="verificationFormError2" class="alert alert-error"
+                                             style="display:none"></div>
+                                        <input id="captchaDisabled" type="hidden" value=true>
+                                        <input id="action2" name="action" type="hidden" value="verifyCode">
+                                    </form>
+                                <% } %>
                             </div>
                         </div>
                     </div>
@@ -156,10 +172,17 @@ session.put('username', username);
         var ENTER_KEY = 13;
 
         function validateCode() {
-            var verificationForm = $('#verificationForm');
-
-            if (!verificationForm.valid()) {
-                return;
+            var verificationForm;
+            var verificationFormError;
+            if(!isCaptchaDisabled) {
+                verificationForm= $('#verificationForm');
+                verificationFormError = $('#verificationFormError');
+                if (!verificationForm.valid()) {
+                    return;
+                }
+            } else {
+                verificationForm= $('#verificationForm2');
+                verificationFormError = $('#verificationFormError2');
             }
 
             var formData = verificationForm.serialize();
@@ -168,12 +191,16 @@ session.put('username', username);
             $.post('captcha', formData, function (data) {
                 var responseData = data.data;
                 if (!responseData.error) {
-                    $('#verificationFormError').hide();
+                    verificationFormError.hide();
                     var result = responseData;
                     window.location = 'update-password';
 
                 } else {
-                    var verificationFormError = $('#verificationFormError');
+                    alert(responseData.code);
+                    //TODO identify the error in a better way
+                    if(responseData.msg == 'Expired code. Recovery failed'){
+                        window.location = 'recovery-failed';
+                    }
                     verificationFormError.show();
                     verificationFormError.text(responseData.msg);
                     //Regenerate captcha if validation fails
@@ -194,6 +221,11 @@ session.put('username', username);
                 $('#captcha-key').val(responseData.captchaKey);
                 $('#action').val('verifyCode');
             });
+        }
+
+        var isCaptchaDisabled = $('#captchaDisabled').val()?true:false;
+        if(isCaptchaDisabled){
+            validateCode();
         }
 
         $('#validationSubmit').bind('click', validateCode);

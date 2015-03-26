@@ -34,6 +34,7 @@ var installer = function () {
         //Create the deployment object
         var artifact = {};
 
+
         var now =new String(new Date().valueOf());
         var length = now.length;
         var prefix = 20;
@@ -72,7 +73,7 @@ var installer = function () {
         artifact['attributes']['overview_chartoptions'] = '/config/defaults/gadgets/' + context.bundle.getName() + '/config/chart-options.json';
 
 
-
+        artifact['type'] = 'gadget';
         //Set the tags
         context['tags'] = (String(xml.*::ModulePrefs.@tags)).split(',');
 

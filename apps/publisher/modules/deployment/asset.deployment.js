@@ -54,7 +54,6 @@ var deployment_logic = function () {
                 dataSource: storageConfig.dataSource
             }
         });
-
         //Add a reference to storageManager which will be used to store files
         this.dataInjector.addToContext('storageManager',this.storageManager);
     }

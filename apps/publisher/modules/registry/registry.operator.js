@@ -18,18 +18,18 @@
  Filename: registry.operator.js
  Created Date: 2/20/2015
  */
-var registryOperator = function() {
+var registryOperator = function() {       // Go with the module design pattern
     var log = new Log("registry.operator");
     var uuid = require("uuid");
     var carbon = require('carbon');
     var utils = require("utils");
     var es = require("store");
     var ref = utils.file;
-    var path = '/_system/es/';
+    var pathPrefix = '/_system/governance/store/asset_resources/';  //to cap
     /**
      * Add a file resource to the registry path
      * @param  fileObj file to be added to the registry
-     * @return the uuid+uploaded file name for the asset
+     * @return field name of the
      */
     function addFile(fileObj) {
         var tenantId = fileObj.tenantId || carbon.server.superTenant.tenantId;
@@ -40,20 +40,25 @@ var registryOperator = function() {
         resource.mediaType = ref.getMimeType(extension);
         resource.uuid = uuid.generate();
         resource.name = fileObj.file.getName();
-        path += resource.uuid + "/" + fileObj.file.getName();
+        resource.properties = {};
+        resource.properties.extension = extension;
+        var pathSuffix = fileObj.type + "/" + fileObj.assetId + "/" + fileObj.fieldName;
+        var path =  pathPrefix + pathSuffix;
         registry.put(path, resource);
-        return resource;
+        return fileObj.fieldName;
     }
     /**
      * Get a image resource from the registry and serve it.
-     * @param  file file to be added to the registry
-     * @return the uuid+uploaded file name for the asset
+     * @param  pathSuffix file to be added to the registry
+     * @param  tenantId id of the active tenant
+     * @return the file retrieved from registry
      */
-    function getFile(filename, tenantId) {
+    function getFile(pathSuffix, tenantId) {
         var fetchedFile = {};
         tenantId = tenantId || carbon.server.superTenant.tenantId;
         var registry = es.server.systemRegistry(tenantId);
-        path += filename;
+        var path =  pathPrefix + pathSuffix;
+
         fetchedFile.resource = registry.get(path);
         fetchedFile.content = registry.content(path);
         return fetchedFile;

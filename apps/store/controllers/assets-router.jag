@@ -59,8 +59,6 @@ var handleApiEndpoint = function (request, session, uriParams) {
 
 var handlePageEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
-    var page = uriParams.suffix;
-    var type = uriParams.type;
     var page = getPage(uriParams.suffix);
     var server = require('store').server;
     var user = server.current(session);

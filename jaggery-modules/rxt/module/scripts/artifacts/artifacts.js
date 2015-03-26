@@ -123,10 +123,14 @@ var artifacts = {};
             throw 'Unable to locate the artifact map for the tenant: ' + tenantId + ' to return the service: ' + artifactName;
         }
         assetMap = tenantArtifactMap.assets ? tenantArtifactMap.assets : {};
-        log.info(assetMap);
+        if(log.isDebugEnabled()){
+            log.debug(assetMap);
+        }
         //Check if the user specified an asset type
         if (assetType) {
-            log.info('Asset specific artifact');
+            if(log.isDebugEnabled()){
+                log.debug('Asset specific artifact');
+            }
             typeMap = assetMap[assetType] ? assetMap[assetType] : {};
             groupMap = typeMap[group] ? typeMap[group] : {};
             artifact = groupMap[artifactName];
@@ -135,7 +139,9 @@ var artifacts = {};
         if (artifact) {
             return artifact;
         }
-        log.info('Look under default asset');
+        if(log.isDebugEnabled()){
+            log.debug('Look under default asset');
+        }
         //If not check the default asset extension
         typeMap = assetMap[constants.DEFAULT_ASSET_EXTENSION] ? assetMap[constants.DEFAULT_ASSET_EXTENSION] : {};
         groupMap = typeMap[group] ? typeMap[group] : {};
@@ -143,7 +149,9 @@ var artifacts = {};
         if (artifact) {
             return artifact;
         }
-        log.info('Non asset specific artifact');
+        if(log.isDebugEnabled()){
+            log.debug('Non asset specific artifact');
+        }
         //Try to locate the service at the global scope
         globalMap = tenantArtifactMap.globals ? tenantArtifactMap.globals : {};
         groupMap = globalMap[group] ? globalMap[group] : {};

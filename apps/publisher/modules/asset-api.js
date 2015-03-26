@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /*
  Description:The apis-asset-manager is used to retriew assets for api calls
  Filename: asset_api.js
@@ -21,8 +20,7 @@
  */
 var api = {};
 var result;
-
-(function (api) {
+(function(api) {
     var utils = require('utils');
     var rxtModule = require('rxt');
     var log = new Log('asset_api');
@@ -33,20 +31,18 @@ var result;
      * @param  fieldParam   The raw string comes as field parameter of the request
      * @return Array of fields which are required to be filtered out from assets
      */
-    var getExpansionFileds = function (fieldParam) {
-        var rawFields = fieldParam.split(',');//set fields
+    var getExpansionFileds = function(fieldParam) {
+        var rawFields = fieldParam.split(','); //set fields
         for (var fieldIndex = 0; fieldIndex < rawFields.length; fieldIndex++) {
             rawFields[fieldIndex] = rawFields[fieldIndex].trim();
         }
         return rawFields;
     };
-
     /**
      * The function filter the requested fields from assets objects and build new asset object with requested fields
      * @param  options   The object contains array of required fields and array of assets for filtering fields
      */
-
-    var fieldExpansion = function (options) {
+    var fieldExpansion = function(options) {
         var fields = options.fields;
         var artifacts = options.assets;
         var artifact;
@@ -61,7 +57,6 @@ var result;
                 //First check if the field is top level in the artifact
                 if (artifact.hasOwnProperty(field)) {
                     asset[field] = artifact[field];
-
                 } else {
                     //Check if the appears in the attributes property
                     if (artifact.attributes && artifact.attributes.hasOwnProperty(field)) {
@@ -70,19 +65,17 @@ var result;
                         attributes[field] = artifact.attributes[field];
                     }
                 }
-
             }
-            modifiedAssets.push(asset);// add asset to the list
+            modifiedAssets.push(asset); // add asset to the list
         }
-        return modifiedAssets;// return the asset list
+        return modifiedAssets; // return the asset list
     };
-
     /**
      * This function put asset to the storage
      * @param am The asset manager instance
      * @param asset The asset to be saved
      */
-    var putInStorage = function (asset, am,tenantId) {
+    var putInStorage = function(asset, am, tenantId) {
         var resourceFields = am.getAssetResources();
         var ref = utils.file;
         var storageModule = require('/modules/data/storage.js').storageModule();
@@ -96,9 +89,9 @@ var result;
         });
         var resource = {};
         var extension = '';
-        var uuid;
+        var resourceName;
         var key;
-//Get all of the files that have been sent in the request
+        //Get all of the files that have been sent in the request
         var files = request.getAllFiles();
         if (!files) {
             if (log.isDebugEnabled()) {
@@ -106,32 +99,35 @@ var result;
             }
             return;
         }
+
         for (var index in resourceFields) {
             key = resourceFields[index];
             if (files[key]) {
                 resource = {};
                 resource.file = files[key];
                 resource.tenantId = tenantId;
+                resource.assetId = asset.id;
+                resource.fieldName = key;
+                resource.type = am.type;
                 extension = ref.getExtension(files[key]);
                 resource.contentType = ref.getMimeType(extension);
-                uuid = storageManager.put(resource);
-                asset.attributes[key] = uuid;
+                resourceName = storageManager.put(resource);
+                asset.attributes[key] = resourceName;
             }
         }
     };
-
     /**
      * The function get current asset in the storage
      * @param original  The current asset resources available in the store
      * @param asset     The new asset resources to continue with updating
      */
-    var putInOldResources = function (original, asset, am) {
+    var putInOldResources = function(original, asset, am) {
         var resourceFields = am.getAssetResources();
         var resourceField;
         for (var index in resourceFields) {
             resourceField = resourceFields[index];
             //If the asset attribute value is null then use the old resource
-//            if ((!asset.attributes[resourceField]) || (asset.attributes[resourceField] == '')) {
+            //            if ((!asset.attributes[resourceField]) || (asset.attributes[resourceField] == '')) {
             if (!asset.attributes[resourceField]) {
                 if (log.isDebugEnabled()) {
                     log.debug('Copying old resource attribute value for ' + resourceField);
@@ -140,14 +136,12 @@ var result;
             }
         }
     };
-
     /**
      *Check whether key:value available in data
      */
-    var isPresent = function (key, data) {
+    var isPresent = function(key, data) {
         return (data[key]) || (data[key] == '');
     };
-
     /**
      * keep unchanged values as they are
      * @param  original old asset
@@ -155,15 +149,13 @@ var result;
      * @param  sentData to change
      * @return The updated-asset
      */
-
-    var putInUnchangedValues = function (original, asset, sentData) {
+    var putInUnchangedValues = function(original, asset, sentData) {
         for (var key in original.attributes) {
             //We need to add the original values if the attribute was not present in the data object
             // sent from the client
             //and it was not deleted by the user (the sent data has an empty value)
             if (original.attributes.hasOwnProperty(key)) {
                 if (((!asset.attributes[key]) || (asset.attributes[key].length == 0)) && (!isPresent(key, sentData))) {
-
                     if (log.isDebugEnabled()) {
                         log.debug('Copying old attribute value for ' + key);
                     }
@@ -172,7 +164,6 @@ var result;
             }
         }
     };
-
     /**
      * api to create a new asset
      * @param  options incoming values
@@ -181,11 +172,10 @@ var result;
      * @param  session  sessionId
      * @return The created asset or null if failed to create the asset
      */
-    api.create = function (options, req, res, session) {
-
+    api.create = function(options, req, res, session) {
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
-        var assetReq = req.getAllParameters('UTF-8');//get asset attributes from the request
+        var assetReq = req.getAllParameters('UTF-8'); //get asset attributes from the request
         var server = require('store').server;
         var user = server.current(session);
         var asset = null;
@@ -193,11 +183,11 @@ var result;
             asset = parse(request.getParameter("asset"));
         } else {
             asset = am.importAssetFromHttpRequest(assetReq);
-        }//generate asset object
-
+        } //generate asset object
         try {
-            putInStorage(asset, am,user.tenantId);//save to the storage
             am.create(asset);
+            putInStorage(asset, am,user.tenantId);//save to the storage
+            am.update(asset);
         } catch (e) {
             log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
             return null;
@@ -214,7 +204,6 @@ var result;
         }
         return asset;
     };
-
     /**
      * The function to update an existing asset via api
      * @param  options  incoming
@@ -223,8 +212,7 @@ var result;
      * @param  session  sessionID
      * @return updated-asset
      */
-    api.update = function (options, req, res, session) {
-
+    api.update = function(options, req, res, session) {
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var server = require('store').server;
@@ -250,8 +238,8 @@ var result;
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.NOT_FOUND);
         }
         if (original) {
-            putInStorage(asset, am,user.tenantId);
-            putInOldResources(original, asset, am);//load current asset values
+            putInStorage(asset, am, user.tenantId);
+            putInOldResources(original, asset, am); //load current asset values
             putInUnchangedValues(original, asset, assetReq);
             //If the user has not uploaded any new resources then use the old resources
             if (!asset.name) {
@@ -267,33 +255,30 @@ var result;
                     log.debug('Failed to update the asset ' + stringify(asset));
                 }
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
-
             }
         }
         return asset;
     };
-
     /**
      *
      * @param sortParam The sort query parameter comes with request
      * @param paging    Paging object populated with default paging values
      */
-    var populateSortingValues = function (sortParam, paging) {
+    var populateSortingValues = function(sortParam, paging) {
         var constants = rxtModule.constants;
         var sortBy;
         if (sortParam) {
             var order = sortParam.charAt(0);
-            if (order == '+' || order == ' ') {// ascending
-                paging.sortOrder = constants.Q_SORT_ORDER_ASCENDING;//TODO get as constants
+            if (order == '+' || order == ' ') { // ascending
+                paging.sortOrder = constants.Q_SORT_ORDER_ASCENDING; //TODO get as constants
                 sortBy = sortParam.slice(1);
-            } else if (order == '-') {//descending
+            } else if (order == '-') { //descending
                 paging.sortOrder = constants.Q_SORT_ORDER_DESCENDING;
                 sortBy = sortParam.slice(1);
             }
             paging.sortBy = (sortBy || paging.sortBy);
         }
     };
-
     /**
      * This function id to validate and build the query object from the string
      * @param query This is the query string to be parsed
@@ -303,7 +288,6 @@ var result;
         var q = {};
         try {
             q = parse(query);
-
         } catch (e) {
             log.error("Invalid Query \'" + query + "\'");
             if (log.isDebugEnabled()) {
@@ -312,7 +296,6 @@ var result;
         }
         return q;
     }
-
     /**
      * The function search for assets
      * @param req      The request
@@ -320,31 +303,40 @@ var result;
      * @param options  Object containing parameters
      * @param session sessionID
      */
-    api.search = function (options, req, res, session) {
+    api.search = function(options, req, res, session) {
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         var sort = (request.getParameter("sort") || '');
         var paging = rxtModule.constants.DEFAULT_ASSET_PAGIN;
-        populateSortingValues(sort, paging);// populate sortOrder and sortBy
+        var server = require('store').server;
+        var user = server.current(session);
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        populateSortingValues(sort, paging); // populate sortOrder and sortBy
         paging.count = (request.getParameter("count") || paging.count);
         paging.start = (request.getParameter("start") || paging.start);
         paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
-
         var q = (request.getParameter("q") || '');
         try {
             var assets;
-            if (q) {//if search-query parameters are provided
+            if (q) { //if search-query parameters are provided
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
-                assets = assetManager.search(query, paging);// asset manager back-end call with search-query
+                query = replaceCategoryQuery(query, rxtManager, options.type);
+                query = replaceNameQuery(query, rxtManager, options.type);
+                if (log.isDebugEnabled) {
+                    //Need to log this as we perform some processing on the name and
+                    //category values
+                    log.debug('processed query used for searching: ' + stringify(query));
+                }
+                assets = assetManager.search(query, paging); // asset manager back-end call with search-query
             } else {
-                assets = assetManager.list(paging);// asset manager back-end call for asset listing
+                assets = assetManager.list(paging); // asset manager back-end call for asset listing
             }
             var expansionFieldsParam = (request.getParameter('fields') || '');
-            if (expansionFieldsParam) {//if field expansion is requested
-                options.fields = getExpansionFileds(expansionFieldsParam);//set fields
-                options.assets = assets;//set assets
-                result = fieldExpansion(options);//call field expansion methods to filter fields
+            if (expansionFieldsParam) { //if field expansion is requested
+                options.fields = getExpansionFileds(expansionFieldsParam); //set fields
+                options.assets = assets; //set assets
+                result = fieldExpansion(options); //call field expansion methods to filter fields
             } else {
                 result = assets;
             }
@@ -357,7 +349,36 @@ var result;
         }
         return result;
     };
-
+    var replaceCategoryQuery = function(q, rxtManager, type) {
+        //Determine if a category was provided
+        if (!q.hasOwnProperty('category')) {
+            return q;
+        }
+        var categoryField = rxtManager.getCategoryField(type);
+        var categoryValue;
+        if (!categoryField) {
+            return q;
+        }
+        categoryValue = q.category;
+        delete q.category;
+        q[categoryField] = categoryValue;
+        return q;
+    };
+    var replaceNameQuery = function(q, rxtManager, type) {
+        //Determine if a name was provided
+        if (!q.hasOwnProperty('name')) {
+            return q;
+        }
+        var nameField = rxtManager.getNameAttribute(type);
+        var nameValue;
+        if (!nameField) {
+            return q;
+        }
+        nameValue = q.name;
+        delete q.name;
+        q[nameField] = nameValue;
+        return q;
+    };
     /**
      * The function get an asset by id
      * @param options  Object containing parameters id, type
@@ -366,7 +387,7 @@ var result;
      * @param session  A string containing sessionID
      * @return The retrieved asset or null if an asset not found
      */
-    api.get = function (options, req, res, session) {
+    api.get = function(options, req, res, session) {
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         try {
@@ -374,14 +395,13 @@ var result;
             if (!retrievedAsset) {
                 return null;
             } else {
-
                 var expansionFieldsParam = (request.getParameter('fields') || '');
-                if (expansionFieldsParam) {//if field expansion requested
-                    options.fields = getExpansionFileds(expansionFieldsParam);//set fields
+                if (expansionFieldsParam) { //if field expansion requested
+                    options.fields = getExpansionFileds(expansionFieldsParam); //set fields
                     var assets = [];
                     assets.push(retrievedAsset);
                     options.assets = assets;
-                    result = fieldExpansion(options)[0];//call field-expansion to filter-out fields
+                    result = fieldExpansion(options)[0]; //call field-expansion to filter-out fields
                 } else {
                     result = retrievedAsset;
                 }
@@ -395,7 +415,6 @@ var result;
         }
         return result;
     };
-
     /**
      * The function deletes an asset by id
      * @param options  Object containing parameters id, type
@@ -404,7 +423,7 @@ var result;
      * @param session  A string containing sessionID
      * @return Boolean value whether deleted or not
      */
-    api.remove = function (options, req, res, session) {
+    api.remove = function(options, req, res, session) {
         var asset = rxtModule.asset;
         var am = asset.createUserAssetManager(session, options.type);
         var retrievedAsset = api.get(options, req, res, session);
@@ -420,5 +439,4 @@ var result;
             return false;
         }
     };
-
 }(api));

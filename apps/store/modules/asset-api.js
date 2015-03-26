@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /*
  Descripiton:The apis-asset-manager is used to retriew assets for api calls
  Filename: asset_api.js
@@ -47,12 +46,18 @@ var responseProcessor = require('utils').response;
         //print(modifiedArtifacts);
         return modifiedAssets;
     };
-    var putInStorage = function(options, asset, am, req, session) {
+
+    /**
+     * This function put asset to the storage
+     * @param  The asset manager instance
+     * @param am The asset manager instance
+     * @param tenantId the tenant accessing the resource
+     */
+    var putInStorage = function (asset, am,tenantId) {
         var resourceFields = am.getAssetResources();
-        var ref = require('utils').file;
+        var ref = utils.file;
         var storageModule = require('/modules/data/storage.js').storageModule();
         var storageConfig = require('/config/storage.json');
-
         var storageManager = new storageModule.StorageManager({
             context: 'storage',
             isCached: false,
@@ -62,12 +67,14 @@ var responseProcessor = require('utils').response;
         });
         var resource = {};
         var extension = '';
-        var uuid;
+        var resourceName;
         var key;
-        //Get all of the files that have been sent in the request
+//Get all of the files that have been sent in the request
         var files = request.getAllFiles();
         if (!files) {
-            log.debug('User has not provided any resources such any new images or files when updating the asset with id ' + asset.id);
+            if (log.isDebugEnabled()) {
+                log.debug('User has not provided any resources such any new images or files when updating the asset with id ' + asset.id);
+            }
             return;
         }
         for (var index in resourceFields) {
@@ -75,10 +82,14 @@ var responseProcessor = require('utils').response;
             if (files[key]) {
                 resource = {};
                 resource.file = files[key];
+                resource.tenantId = tenantId;
+                resource.assetId = asset.id;
+                resource.fieldName = key;
+                resource.type = am.type;
                 extension = ref.getExtension(files[key]);
                 resource.contentType = ref.getMimeType(extension);
-                uuid = storageManager.put(resource);
-                asset.attributes[key] = uuid;
+                resourceName = storageManager.put(resource);
+                asset.attributes[key] = resourceName;
             }
         }
     };
@@ -94,8 +105,8 @@ var responseProcessor = require('utils').response;
             }
         }
     };
-    var isPresent=function(key,data){
-        if((data[key])||(data[key]=='')){
+    var isPresent = function(key, data) {
+        if ((data[key]) || (data[key] == '')) {
             return true;
         }
         return false;
@@ -104,8 +115,8 @@ var responseProcessor = require('utils').response;
         for (var key in original.attributes) {
             //We need to add the original values if the attribute was not present in the data object sent from the client
             //and it was not deleted by the user (the sent data has an empty value)
-            if (((!asset.attributes[key]) || (asset.attributes[key].length==0)) && (!isPresent(key,sentData))) {
-                log.debug('Copying old attribute value for '+key);
+            if (((!asset.attributes[key]) || (asset.attributes[key].length == 0)) && (!isPresent(key, sentData))) {
+                log.debug('Copying old attribute value for ' + key);
                 asset.attributes[key] = original.attributes[key];
             }
         }
@@ -146,8 +157,8 @@ var responseProcessor = require('utils').response;
         putInOldResources(original, asset, am);
         putInUnchangedValues(original, asset, assetReq);
         //If the user has not uploaded any new resources then use the old resources
-        if(!asset.name){
-            asset.name=am.getName(asset);
+        if (!asset.name) {
+            asset.name = am.getName(asset);
         }
         try {
             am.update(asset);
@@ -158,22 +169,39 @@ var responseProcessor = require('utils').response;
         }
         return asset;
     };
+    /**
+     * This function id to validate and build the query object from the string
+     * @param query This is the query string to be parsed
+     * @return Returns the parsed Json object containing query
+     */
+    function validateQuery(query) {
+        var q = {};
+        try {
+            q = parse(query);
+        } catch (e) {
+            log.error("Invalid Query \'" + query + "\'");
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+        }
+        return q;
+    }
     api.search = function(options, req, res, session) {
         var asset = require('rxt').asset;
-
         var server = require('store').server;
         var userDetails = server.current(session);
         var assetManager = null;
-        var domain = options.domain || "carbon.super";
-        var tenantId =  carbon.server.tenantId({domain: domain});
-
-        if(!userDetails){
+        var domain = options.domain || carbon.server.superTenant.domain;
+        var tenantId = carbon.server.tenantId({
+            domain: domain
+        });
+        var rxtModule = require('rxt');
+        var rxtManager = rxtModule.core.rxtManager(tenantId);
+        if (!userDetails) {
             assetManager = asset.createAnonAssetManager(session, options.type, tenantId);
-        }
-        else {
+        } else {
             assetManager = asset.createUserAssetManager(session, options.type);
         }
-
         var sort = (request.getParameter("sort") || '');
         var sortOrder = DEFAULT_PAGIN.sortOrder;
         if (sort) {
@@ -203,22 +231,21 @@ var responseProcessor = require('utils').response;
         try {
             if (q) {
                 var qString = '{' + q + '}';
-                var query = parse(qString);
-
+                var query = validateQuery(qString);
+                query = replaceCategoryQuery(query, rxtManager, options.type);
+                query = replaceNameQuery(query, rxtManager, options.type);
                 var assets = assetManager.search(query, paging); //doesnt work properly
             } else {
-
                 var assets = assetManager.list(paging);
             }
             var expansionFields = (request.getParameter('fields') || '');
             if (expansionFields) {
                 options.fields = expansionFields.split(',');
                 options.assets = assets;
-                result =fieldExpansion(options, req, res, session);
+                result = fieldExpansion(options, req, res, session);
                 //return;                    
             } else {
                 result = assets;
-
             }
             //res = responseProcessor.buildSuccessResponse(res,200,result);
         } catch (e) {
@@ -229,17 +256,48 @@ var responseProcessor = require('utils').response;
         }
         return result;
     };
+    var replaceCategoryQuery = function(q, rxtManager, type) {
+        //Determine if a category was provided
+        if (!q.hasOwnProperty('category')) {
+            return q;
+        }
+        var categoryField = rxtManager.getCategoryField(type);
+        var categoryValue;
+        if (!categoryField) {
+            return q;
+        }
+        categoryValue = q.category;
+        delete q.category;
+        q[categoryField] = categoryValue;
+        return q;
+    };
+    var replaceNameQuery = function(q, rxtManager, type) {
+        //Determine if a name was provided
+        if (!q.hasOwnProperty('name')) {
+            return q;
+        }
+        var nameField = rxtManager.getNameAttribute(type);
+        var nameValue;
+        if (!nameField) {
+            return q;
+        }
+        nameValue = q.name;
+        delete q.name;
+        q[nameField] = nameValue;
+        return q;
+    };
     api.get = function(options, req, res, session) {
         var asset = require('rxt').asset;
         var server = require('store').server;
         var userDetails = server.current(session);
         var assetManager = null;
         var domain = options.domain || "carbon.super";
-        var tenantId =  carbon.server.tenantId({domain: domain});
-        if(!userDetails){
+        var tenantId = carbon.server.tenantId({
+            domain: domain
+        });
+        if (!userDetails) {
             assetManager = asset.createAnonAssetManager(session, options.type, tenantId);
-        }
-        else {
+        } else {
             assetManager = asset.createUserAssetManager(session, options.type);
         }
         try {
@@ -273,41 +331,37 @@ var responseProcessor = require('utils').response;
         var am = asset.createUserAssetManager(session, options.type);
         try {
             am.remove(options.id);
-            result=true;
+            result = true;
         } catch (e) {
             log.error('Asset with id: ' + asset.id + ' was not deleted due to ' + e);
             result = false;
         }
         return result;
     };
-
     /**
      * @param req       The global request object
      * @param constants The constants rxt object where all the constants are defined
      * @return returns the String for sortby parameter
      */
-    var getSort = function (req, constants) {
+    var getSort = function(req, constants) {
         return req.getParameter(constants.Q_SORT) || constants.ASSET_DEFAULT_SORT;
     };
-
     /**
      * @param req       The global request object
      * @param constants The constants rxt object where all the constants are defined
      * @return returns the String for sortOrder parameter
      */
-    var getSortOrder = function (req, constants) {
+    var getSortOrder = function(req, constants) {
         return req.getParameter(constants.Q_SORT_ORDER) || constants.ASSET_DEFAULT_SORT_ORDER;
     };
-
     /**
      * @param req       The global request object
      * @param constants The constants rxt object where all the constants are defined
      * @return returns the String for tag
      */
-    var getTag = function (req, constants) {
+    var getTag = function(req, constants) {
         return req.getParameter(constants.Q_TAG) || null;
     };
-
     /**
      * This function is to create paging object for store list page
      * @param assets list of assets
@@ -315,7 +369,7 @@ var responseProcessor = require('utils').response;
      * @param req Global request object
      * @return Returns a json object of paging information
      */
-    api.assetsPaging = function (assets, type, req) {
+    api.assetsPaging = function(assets, type, req) {
         var paging = {};
         var constants = require('rxt').constants;
         var sort = getSort(req, constants);

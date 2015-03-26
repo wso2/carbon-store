@@ -140,8 +140,8 @@ $(function () {
         var url, searchVal = getSearchFields('#search-dropdown-cont');//$('#search').val();
         //var url, searchVal = test($('#search').val());
         currentPage = 1;
+        var path = window.location.href;//current page path
         if (store.asset) {
-            var path = window.location.href;//current page path
             if(path.match('/t/')){
                 var regex = '/t/{1}([0-9A-Za-z-\\.@:%_\+~#=]+)';
                 var domain = path.match(regex)[1];
@@ -172,7 +172,13 @@ $(function () {
             });
             theme.loading($('#assets-container').parent());
         } else if (searchVal.length > 0 && searchVal != undefined) {
-            url = caramel.url('/?' + buildParams(searchVal));
+            if(path.match('/t/')){
+                var regex = '/t/{1}([0-9A-Za-z-\\.@:%_\+~#=]+)';
+                var domain = path.match(regex)[1];
+                url = caramel.url('/t/'+ domain +'/?' + buildParams(searchVal));
+            } else {
+                url = caramel.url('/?' + buildParams(searchVal));
+            }
             window.location = url;
             //TODO: The top assets page should render results without causing a page reload
             /*caramel.data({

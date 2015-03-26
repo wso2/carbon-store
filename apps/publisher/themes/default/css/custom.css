@@ -683,3 +683,8 @@ h2 span.fa-stack{
 .collapse-stack-icons.fa-stack i:first-child{
     text-indent: 4px;
 }
+@media all and (min-width: 768px) {
+    .custom-form-right{
+        width: 50%;
+    }
+}
