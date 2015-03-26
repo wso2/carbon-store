@@ -53,6 +53,28 @@ var api = {};
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.BAD_REQUEST);
         }
     }
+    /**
+     * Allows request data to be sent in either the request body or
+     * as url encoded query parameters
+     * @param  {Object} req  Request object
+     * @return {Object}      An object which contains data from request body and url encoded parameters
+     */
+    var obtainData = function(req) {
+        var data = {};
+        if (req.getContentType() === 'application/json') {
+            try {
+                data = req.getContent();
+            } catch (e) {
+                log.debug('Unable to obtain content from request', e);
+            }
+        }
+        var params = req.getAllParameters('UTF-8');
+        //Mix the content with request parameters
+        for (var key in params) {
+            data[key] = params[key];
+        }
+        return data;
+    };
     api.state = function(req, res, session, options) {
         if (req.getMethod() !== 'GET') {
             return error(msg(405, 'State must be retrieved using a GET'));
@@ -62,30 +84,40 @@ var api = {};
         return successMsg(msg(200, 'Asset state information returned', result));
     };
     api.changeState = function(req, res, session, options) {
-        //Call the state change api
-        var success = lifecycleAPI.changeState(options,req,res,session);
         var newState = null;
         var result = {};
+        var data;
+        var succcess;
+        if (req.getMethod() !== 'POST') {
+            return errorMsg(msg(405, 'State must be changed by a POST'));
+        }
+        data = obtainData(req);
+        if (!data.nextState) {
+            return errorMsg(msg(400,'State change requires a nextState to be provided either as a query string or in the body of the request'));
+        }
+        options.nextState = data.nextState;
+        //Call the state change api
+        success = lifecycleAPI.changeState(options, req, res, session);
         if (success) {
             //Obtain the next states
-            result.newState = '';
+            result.newState = data.nextState;
         }
         return successMsg(msg(200, 'The assets state was changed', result));
     };
     api.updateCheckList = function(req, res, session, options) {
-    	log.info(options);
-    	log.info(req.getContent());
-    	var success;
-    	var body;
-    	if(!req.getContentType()==='application/json'){
-    		throw 'Checklist items must be sent in the body of the request and content type should be set to application/json';
-    	}
-    	body = req.getContent();
-    	options.checkItems = body.checklist||[];
-    	success = lifecycleAPI.checkItems(options, req, res, session);
-    	if(success){
-    		successMsg(msg(200, 'The checklist was updated successfully'));
-    	}
+        log.info(options);
+        log.info(req.getContent());
+        var success;
+        var body;
+        if (!req.getContentType() === 'application/json') {
+            throw 'Checklist items must be sent in the body of the request and content type should be set to application/json';
+        }
+        body = req.getContent();
+        options.checkItems = body.checklist || [];
+        success = lifecycleAPI.checkItems(options, req, res, session);
+        if (success) {
+            successMsg(msg(200, 'The checklist was updated successfully'));
+        }
         return errorMsg(msg(500, 'The checklist was not updated'));
     };
     api.lifecycleHistory = function(req, res, session, options) {

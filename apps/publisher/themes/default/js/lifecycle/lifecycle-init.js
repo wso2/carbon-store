@@ -50,12 +50,12 @@ $(function() {
         });
     };
     var wireLCActionHandlers = function(container) {
-        var action;
         $(id(container)).children('a').each(function() {
             $(this).on('click', function(e) {
+                var action;
                 e.preventDefault();
                 action = $(this).data('action');
-                alert('action:: ' + action + ' clicked');
+                //alert('action:: ' + action + ' clicked');
                 LifecycleAPI.lifecycle().invokeAction(action);
             });
         });
@@ -76,7 +76,7 @@ $(function() {
         if (impl) {
             data.currentLifecycle = LifecycleAPI.currentLifecycle();
             data.currentState = impl.state(impl.currentState).label;
-            renderPartial(constants.CONTAINER_INFORMATION_AREA,constants.CONTAINER_INFORMATION_AREA,data);
+            renderPartial(constants.CONTAINER_INFORMATION_AREA, constants.CONTAINER_INFORMATION_AREA, data);
         }
     };
     var renderHistory = function() {
@@ -94,6 +94,7 @@ $(function() {
         var impl = LifecycleAPI.lifecycle();
         var actions;
         var action;
+        //      var action;
         if (impl) {
             actions = impl.actions();
             var data = {};
@@ -176,6 +177,7 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_STATE_CHANGE, function() {
         renderLCActions();
         renderChecklistItems();
+        renderStateInformation();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_START, function() {
         blockChecklist();

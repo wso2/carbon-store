@@ -361,12 +361,14 @@ var LifecycleUtils = {};
     };
     LifecycleImpl.prototype.checklist = function() {
         var state = this.state(this.currentState);
+        var datamodel;
         if (arguments.length === 1) {
             console.log('changing checklist state');
-            state.datamodel.checkItems = arguments[0];
+            datamodel = (state.datamodel) ? state.datamodel : (state.datamodel = {});
+            datamodel.checkItems = arguments[0];
         } else {
-            var datamodel = state.datamodel || {};
-            return datamodel.checkItems? datamodel.checkItems : [] ;
+            datamodel = state.datamodel || {};
+            return datamodel.checkItems ? datamodel.checkItems : [];
         }
     };
     LifecycleImpl.prototype.actions = function() {
@@ -385,35 +387,57 @@ var LifecycleUtils = {};
         }
         return actions;
     };
+    LifecycleImpl.prototype.nextStateByAction = function(action, state) {
+        //Get tinformation about the state
+        var stateDetails = this.state(state);
+        var transitions = stateDetails.transitions || [];
+        var transition;
+        var nextState;
+        for (var index = 0; index < transitions.length; index++) {
+            transition = transitions[index];
+            if (transition.event.toLowerCase() === action.toLowerCase()) {
+                nextState = transition.target;
+                return nextState;
+            }
+        }
+        return nextState;
+    };
     LifecycleImpl.prototype.invokeAction = function() {
         var action = arguments[0];
         var comment = arguments[1];
-        var optionalArguments = arguments [2];
+        var optionalArguments = arguments[2];
+        var nextState;
+        var data = {};
         if (!action) {
             throw 'Attempt to invoke an action without providing the action';
             return;
         }
+        nextState = this.nextStateByAction(action,this.currentState);
+        if(!nextState){
+            throw 'Unable to locate the next state for the given action::'+action;
+        }
+        data.nextState = nextState;
         //Check if the action is one of the available actions for the current state
         var availableActions = this.actions(this.currentState);
         if ((availableActions.indexOf(action, 0) <= -1)) {
             throw 'Attempt to invoke an action (' + action + ') which is not available for the current state : ' + this.currentState;
         }
-        var data = {};
-        data.action = action;
         if (comment) {
             data.comment = comment;
         }
-        if(optionalArguments){
+        if (optionalArguments) {
             data.arguments = optionalArguments;
         }
         //Determine the next state
-        
-
         LifecycleAPI.event(constants.EVENT_ACTION_START);
+        var that = this;
         $.ajax({
             url: this.urlChangeState(),
             type: 'POST',
-            success: function() {
+            data:JSON.stringify(data),
+            contentType:'application/json',
+            success: function(data) {
+                that.currentState = data.data.newState; 
                 LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
                 LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
             },
@@ -434,7 +458,7 @@ var LifecycleUtils = {};
             type: 'POST',
             url: this.urlUpdateChecklist(),
             data: JSON.stringify(data),
-            contentType:'application/json',
+            contentType: 'application/json',
             success: function() {
                 //Update the internal check list items
                 LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS);
@@ -452,7 +476,7 @@ var LifecycleUtils = {};
             success: function(data) {
                 var data = data.data;
                 that.currentState = data.id.toLowerCase();
-                for(var index =0 ; index< data.checkItems.length;index++){
+                for (var index = 0; index < data.checkItems.length; index++) {
                     data.checkItems[index].index = index;
                 }
                 that.checklist(data.checkItems);
@@ -467,16 +491,16 @@ var LifecycleUtils = {};
         LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_START);
         var that = this;
         $.ajax({
-            url:this.urlFetchHistory(),
-            success:function(data){
+            url: this.urlFetchHistory(),
+            success: function(data) {
                 var data = data.data || [];
                 that.history = []; //Reset the history
-                for(var index = 0; index< data.length;index++){
+                for (var index = 0; index < data.length; index++) {
                     that.history.push(data[index]);
                 }
                 LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS);
             },
-            error:function(){
+            error: function() {
                 LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_FAILED);
             }
         })
