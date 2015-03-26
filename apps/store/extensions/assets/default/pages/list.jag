@@ -78,7 +78,7 @@ require('/modules/store.js').exec(function (ctx) {
         assets = am.search(query, PAGING);
     } else {
         if(PAGING.sortOrder == 'popular'){
-                assets = ratingApi.getPopularAssets(type, context.tenantId, am);
+                assets = ratingApi.getPopularAssets(type, context.tenantId, am, PAGING.start);
             }else{
                 assets = am.search(null, PAGING);
             }

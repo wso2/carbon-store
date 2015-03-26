@@ -84,14 +84,15 @@ var api = {};
         var am = asset.createUserAssetManager(session, type);
         return am;
     };
-    api.getPopularAssets = function(type, tenantId, am){
+    api.getPopularAssets = function(type, tenantId, am, start){
         var carbon = require('carbon');
         var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
-        var index = 0, maxTry = 0; limit = 12; offset = 0;
+        var index = 0, maxTry = 0; limit = 12;
 
             var getNextAssetSet = function () {
+                var offset = Number(start)+ Number(index);
                 var result = JSON.parse(String(social.getPopularAssets(type, tenantId, limit, offset)));
-                offset += 12;
+                index += 12;
                 return result.assets || [];
             };
 
