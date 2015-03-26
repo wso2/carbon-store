@@ -637,11 +637,15 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			throw e;
 		}
 	}
+	
 	@Override
-	public int warmUpRatingCache(String targetId) throws SocialActivityException {
+	public int warmUpRatingCache(String targetId)
+			throws SocialActivityException {
 		PreparedStatement insertCacheWarmUpStatement;
 		Connection connection;
 		String tenantDomain = SocialUtil.getTenantDomain();
+		String errorMessage = "Unable to publish the target: " + targetId
+				+ " in to the rating cache.";
 
 		try {
 			if (log.isDebugEnabled()) {
@@ -660,12 +664,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			return returnVal;
 
 		} catch (SQLException e) {
-			//TODO add proper log message
-			log.error("Unable to update the cache. " + e.getMessage(), e);
-			throw new SocialActivityException("", e);
-		} catch (DataSourceException e){
-			log.error("Unable to update the cache. " + e.getMessage(), e);
-			throw new SocialActivityException("", e);
+			log.error(errorMessage + e.getMessage(), e);
+			throw new SocialActivityException(errorMessage, e);
+		} catch (DataSourceException e) {
+			log.error(errorMessage + e.getMessage(), e);
+			throw new SocialActivityException(errorMessage, e);
 		}
 	}
 
