@@ -19,6 +19,9 @@ asset.manager = function (ctx) {
     var notifier = require('store').notificationManager;
     var storeConstants = require('store').storeConstants;
     var COMMENT = 'User comment';
+    var carbon = require('carbon');
+    var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
+    var log = new Log('default-asset');
 
     return {
         create: function (options) {
@@ -35,6 +38,11 @@ asset.manager = function (ctx) {
             var user = ctx.username;
             var userRoles = ctx.userManager.getRoleListOfUser(user);
 
+            try{
+                social.warmUpRatingCache(ctx.assetType + ':' + options.id);
+            }catch(e){
+                log.warn("Unable to publish the asset: " + ctx.assetType + ":" + options.id + " to social cache. This may affect on sort by popularity function.");
+            }
             //Check whether the user has admin role
             var endpoint = storeConstants.PRIVATE_ROLE_ENDPOINT + user;
             for (var role in userRoles) {

@@ -26,6 +26,7 @@ require('/modules/store.js').exec(function (ctx) {
     var query = ctx.params.query;
     var store = ctx.store;
     var user = ctx.user;
+    var configs = ctx.configs;
     var am;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var assetPageUrl = constants.ASSET_PAGE_URL_PATTERN;
@@ -76,7 +77,11 @@ require('/modules/store.js').exec(function (ctx) {
         var query = parse(qString);
         assets = am.search(query, PAGING);
     } else {
-        assets = am.search(null, PAGING);
+        if(PAGING.sortOrder == 'popular'){
+                assets = ratingApi.getPopularAssets(type, context.tenantId, am);
+            }else{
+                assets = am.search(null, PAGING);
+            }
     }
     //Add subscription details to the assets
     tenantApi.debug();
