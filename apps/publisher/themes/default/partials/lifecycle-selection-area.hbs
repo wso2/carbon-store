@@ -1,8 +1,16 @@
 <div>
+    {{#if assets.hasMultipleLifecycles}}
 	<label>Available lifecycles </label>
 	<select id='lifecycle-selector' class='form-control input-small'>
+		{{#each assets.availableLifecycles}}
+		<option {{#if active}} selected{{else}} {{/if}}>{{name}} </option>
+		{{/each}}
+	</select>
+	{{/if}}
+</div>
+
+{{!--
 		<option>SampleLifeCycle2</option>
 		<option>MobileAppLifeCycle</option>
-		<option>ServiceLifeCycle</option>
-	</select>
-</div>
+		<option>ServiceLifeCycle</option> 
+--}}

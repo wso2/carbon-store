@@ -388,6 +388,7 @@ var LifecycleUtils = {};
     LifecycleImpl.prototype.invokeAction = function() {
         var action = arguments[0];
         var comment = arguments[1];
+        var optionalArguments = arguments [2];
         if (!action) {
             throw 'Attempt to invoke an action without providing the action';
             return;
@@ -402,7 +403,12 @@ var LifecycleUtils = {};
         if (comment) {
             data.comment = comment;
         }
-        //alert(this.urlChangeState());
+        if(optionalArguments){
+            data.arguments = optionalArguments;
+        }
+        //Determine the next state
+        
+
         LifecycleAPI.event(constants.EVENT_ACTION_START);
         $.ajax({
             url: this.urlChangeState(),

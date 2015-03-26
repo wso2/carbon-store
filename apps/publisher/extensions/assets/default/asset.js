@@ -327,7 +327,7 @@ asset.renderer = function (ctx) {
             },
             populateAttachedLifecycles: function(page){
                 if(page.assets.id){
-                    require('/modules/page-decorators.js').populateAttachedLifecycles(ctx,page,this);
+                    require('/modules/page-decorators.js').pageDecorators.populateAttachedLifecycles(ctx,page,this);
                 }
             }
         }
