@@ -1,3 +1,5 @@
 {{#each history}}
-	<div>{{time}} {{user}} moved asset from {{fromState}} to  {{toState}} </div>
+	{{#if targetState}}
+	<div>{{time}} {{user}} moved asset from {{state}} to  {{targetState}} </div>
+	{{/if}}
 {{/each}}

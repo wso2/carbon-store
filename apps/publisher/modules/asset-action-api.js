@@ -121,21 +121,21 @@ var api = {};
     api.lifecycleHistory = function(req, res, session, options) {
         var history = lifecycleAPI.getHistory(options, req, res, session);
         var xmlHistoryContent = new XML(history.content);
-        var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent);
+        var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent)||{};
         var formatedHistory = [];
         var entry;
         var formatEntry;
-        for (var index = 0; index < historyContent.item.length; index++) {
-            entry = historyContent.item[index];
-            formatEntry = {};
-            log.info(entry);
-            formatEntry.fromState = entry.state;
-            formatEntry.toState = entry.targetState;
-            formatEntry.time = entry.timestamp;
-            formatEntry.user = entry.user;
-            formatedHistory.push(formatEntry);
-        }
-        return successMsg(msg(200, 'Lifecycle history retrieved successfully', formatedHistory));
+        // for (var index = 0; index < historyContent.item.length; index++) {
+        //     entry = historyContent.item[index];
+        //     formatEntry = {};
+        //     log.info(entry);
+        //     formatEntry.fromState = entry.state;
+        //     formatEntry.toState = entry.targetState;
+        //     formatEntry.time = entry.timestamp;
+        //     formatEntry.user = entry.user;
+        //     formatedHistory.push(formatEntry);
+        // }
+        return successMsg(msg(200, 'Lifecycle history retrieved successfully', historyContent.item ||[]));
     };
     api.resolve = function(req, res, session, options) {
         var action = options.action;

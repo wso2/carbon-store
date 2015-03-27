@@ -83,6 +83,7 @@ $(function() {
         var container = config(constants.CONTAINER_HISTORY_AREA);
         var impl = LifecycleAPI.lifecycle();
         var data = {};
+        var modifiedHistory;
         if (impl) {
             history = impl.history;
             data.history = history;

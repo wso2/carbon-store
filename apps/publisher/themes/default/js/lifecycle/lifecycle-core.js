@@ -57,6 +57,8 @@ var LifecycleUtils = {};
     constants.EVENT_FETCH_HISTORY_START = 'event.fetch.history.start';
     constants.EVENT_FETCH_HISTORY_SUCCESS = 'event.fetch.history.success';
     constants.EVENT_FETCH_HISTORY_FAILED = 'event.fetch.history.failed';
+    constants.HISTORY_ACTION_TRANSITION ='transition';
+    constants.HISTORY_ACTION_CHECKITEM = 'check.item';
     var processCheckItems = function(stateDetails, datamodel) {
         if (!stateDetails.hasOwnProperty('datamodel')) {
             stateDetails.datamodel = {};
@@ -322,7 +324,6 @@ var LifecycleUtils = {};
         var baseURL = LifecycleAPI.configs(constants.API_LC_DEFINITION);
         return caramel.context + baseURL + '/' + this.lifecycleName;
     };
-    LifecycleImpl.prototype.queryHistory = function() {};
     LifecycleImpl.prototype.urlChangeState = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
         var apiChangeState = LifecycleUtils.config(constants.API_CHANGE_STATE);
@@ -487,6 +488,26 @@ var LifecycleUtils = {};
             }
         })
     };
+    LifecycleImpl.prototype.processHistory = function(data){
+        console.log('### Processing history ###');
+        var entry;
+        var historyEntry;
+        for(var index = 0;index<data.length;index++){
+            entry = data[index];
+            historyEntry = {};
+            historyEntry.state = entry.state;
+            historyEntry.timestamp = entry.timestamp;
+            historyEntry.user = entry.user;
+            historyEntry.actionType = constants.HISTORY_ACTION_CHECKITEM;
+            //Check if it is a state change
+            if(entry.targetState){
+                historyEntry.targetState = entry.targetState;
+                historyEntry.actionType = constants.HISTORY_ACTION_TRANSITION;
+            }
+            this.history.push(historyEntry);
+        }
+
+    };
     LifecycleImpl.prototype.fetchHistory = function() {
         LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_START);
         var that = this;
@@ -494,10 +515,11 @@ var LifecycleUtils = {};
             url: this.urlFetchHistory(),
             success: function(data) {
                 var data = data.data || [];
-                that.history = []; //Reset the history
-                for (var index = 0; index < data.length; index++) {
-                    that.history.push(data[index]);
-                }
+                // that.history = []; //Reset the history
+                // for (var index = 0; index < data.length; index++) {
+                //     that.history.push(data[index]);
+                // }
+                that.processHistory(data);
                 LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS);
             },
             error: function() {
