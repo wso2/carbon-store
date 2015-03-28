@@ -42,33 +42,6 @@ var error = '';
         }
         return asset;
     };
-    //    /**
-    //     *
-    //     * @param exception The exception body
-    //     * @param type      The type of exception that how it should be handled
-    //     * @param code      Exception status code
-    //     */
-    //    var handleError = function (exception, type, code) {
-    //        if (type == constants.THROW_EXCEPTION_TO_CLIENT) {
-    //            log.debug(exception);
-    //            var e = exceptionModule.buildExceptionObject(exception, code);
-    //            throw e;
-    //        } else if (type == constants.LOG_AND_THROW_EXCEPTION) {
-    //            log.error(exception);
-    //            throw exception;
-    //        } else if (type == constants.LOG_EXCEPTION_AND_TERMINATE) {
-    //            log.error(exception);
-    //            var msg = 'An error occurred while serving the request!';
-    //            var e = exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
-    //            throw e;
-    //        } else if (type == constants.LOG_EXCEPTION_AND_CONTINUE) {
-    //            log.debug(exception);
-    //        }
-    //        else {
-    //            log.error(exception);
-    //            throw e;
-    //        }
-    //    };
     /**
      * Validate asset type
      * @param  options Object contains asset type
@@ -99,6 +72,20 @@ var error = '';
         }
     };
     /**
+     * Determines the lifecycle to be used based on the options
+     * provided by the user.If the lifecycle query parameter is
+     * not found then it is picked up from the asset
+     * @param  {Object} options  An options object containing data provided by the user
+     * @param  {Object} asset    An asset instance
+     * @return {String}         The name of the lifecycle
+     */
+    var resolveLifecycle = function(options, asset) {
+        if (options.lifecycle) {
+            return options.lifecycle;
+        }
+        return asset.lifecycle;
+    };
+    /**
      * change the state of an asset
      * @param  options  Object contains asset-id
      * @param  req      jaggery request
@@ -120,25 +107,34 @@ var error = '';
         var tenantId = user.tenantId; //get tenant
         var am = assetM.createUserAssetManager(session, options.type); //get asset manager
         var asset = getAsset(options, am); //get asset
+        var lcName = resolveLifecycle(options, asset);
         validateAsset(asset, options); //validate asset
         //Obtain the lifecycle
         var lcApi = lifecycleModule.api;
-        var lifecycle = lcApi.getLifecycle(asset.lifecycle, tenantId); //get lifecycle bind with asset
-        var action = lifecycle.transitionAction(asset.lifecycleState, options.nextState);
+        var lcState = am.getLifecycleState(asset,lcName);
+        var lifecycle = lcApi.getLifecycle(lcName, tenantId); //get lifecycle bind with asset
+        log.info(':: change state ::');
+        log.info('lc name: '+lcName);
+        log.info('next state: '+options.nextState);
+        var action = lifecycle.transitionAction(lcState,options.nextState);
+
         //check whether a transition action available from asset.lifecycleState to options.nextState
         if (!action) {
-            error = 'It is not possible to reach ' + options.nextState + ' from ' + asset.lifecycleState;
+            error = 'It is not possible to reach ' + options.nextState + ' from ' + lcName;
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.BAD_REQUEST)
         }
         try {
-            success = am.invokeLcAction(asset, action);
+            log.info('invoking action');
+            success = am.invokeLcAction(asset, action, lcName);
+            log.info('finished invoking');
         } catch (e) {
-            error = 'Error while changing state to ' + options.nextState + ' from ' + asset.lifecycleState;
+            error = 'Error while changing state to ' + options.nextState + ' from ' + lcName;
             if (log.isDebugEnabled()) {
                 log.debug(e);
             }
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
         }
+        log.info(':: left change state ::');
         return success;
     };
     /**
@@ -205,10 +201,10 @@ var error = '';
      * @param am asset-manager
      * @return A list of check-items and checked:true/false
      */
-    var setCheckItemState = function(checkItems, asset, am) {
+    var setCheckItemState = function(checkItems, asset, am,lcName) {
         //Obtain the check item states for the asset
         try {
-            var assetCheckItems = am.getLifecycleCheckItems(asset);
+            var assetCheckItems = am.getLifecycleCheckItems(asset,lcName);
             var item;
             for (var index in assetCheckItems) {
                 item = assetCheckItems[index];
@@ -232,7 +228,7 @@ var error = '';
      * @param  state               The state information of the current asset
      * @param  am                  The asset Manager instance
      */
-    var updateCheckItemState = function(checkItemIndex, checkItemState, asset, state, am) {
+    var updateCheckItemState = function(checkItemIndex, checkItemState, asset, state, am,lcName) {
         //Check if the index provided is valid
         var msg;
         if ((checkItemIndex < 0) || (checkItemIndex > state.checkItems.length - 1)) {
@@ -248,7 +244,8 @@ var error = '';
         }
         //Invoke the state change
         try {
-            am.invokeLifecycleCheckItem(asset, checkItemIndex, checkItemState);
+            log.info('Before invoking check item for '+lcName);
+            am.invokeLifecycleCheckItem(asset, checkItemIndex, checkItemState,lcName);
         } catch (e) {
             if (log.isDebugEnabled()) {
                 log.debug(e);
@@ -268,6 +265,7 @@ var error = '';
     var updateCheckItemStates = function(options, asset, am, state) {
         var success = false;
         var msg = '';
+        var lcName = resolveLifecycle(options, asset);
         //Check if the current state has any check items
         if ((state.checkItems) && (state.checkItems.length < 1)) {
             msg = 'Unable to change the state of the check item as the current state(' + state.id + ') does not have any check items';
@@ -285,13 +283,13 @@ var error = '';
             checkItemIndex = checkItem.index;
             checkItemState = checkItem.checked;
             if ((checkItemIndex != null) && (checkItemState == true || checkItemState == false)) {
-                updateCheckItemState(checkItemIndex, checkItemState, asset, state, am);
+                updateCheckItemState(checkItemIndex, checkItemState, asset, state, am,lcName);
             }
         }
         return success;
     };
     /**
-     * The function will obtain the state detail of a asset
+     * The function will obtain the state detail of an asset
      * @param  options options.id=<asset-id>
      * @param  req     jaggery request
      * @param  res     jaggery response
@@ -299,6 +297,7 @@ var error = '';
      * @return A JSON object defining the structure of the lifecycle
      */
     api.getState = function(options, req, res, session) {
+        log.info('### getState ###');
         var state;
         validateOptions(options);
         var assetApi = rxtModule.asset;
@@ -308,22 +307,37 @@ var error = '';
         var user = server.current(session); //get current user
         var tenantId = user.tenantId; //get tenantID
         var asset = getAsset(options, am); //get asset
+        var lcName = resolveLifecycle(options, asset);
         validateAsset(asset, options); //validate asset
         var lcApi = lifecycleModule.api; //load lifecycle module
-        var lifecycle = lcApi.getLifecycle(asset.lifecycle, tenantId);
+        var lifecycle = lcApi.getLifecycle(lcName, tenantId);
+        log.info('### lifecycle name: '+lcName+' ###');
         var rxtManager = coreApi.rxtManager(tenantId);
+        var lcState = am.getLifecycleState(asset,lcName);
+        log.info('### lifecycle state information: '+lcState+' ###');
         //Obtain the state data
-        state = lifecycle.state(asset.lifecycleState);
+        state = lifecycle.state(lcState);
+        log.info('### After getting state ###');
         if (!state) {
-            var msg = 'Unable to locate state information for ' + asset.lifecycleState;
+            var msg = 'Unable to locate state information for ' + lcState;
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.NOT_FOUND);
         }
-        //Obtain the deletable states
-        state.deletableStates = rxtManager.getDeletableStates(options.type);
-        //Determine if the current state is a deletable state
-        state.isDeletable = isDeletable(asset.lifecycleState, state.deletableStates);
+        log.info('### Before getting lifecycle ###');
+        var defaultLifecycle = rxtManager.getLifecycleName(options.type);
+        state.deletableStates = [];
+        state.isDeletable = false;
+        //We can only populate delete meta data if the default lifecycle
+        //and the active lifecycle for the operation is the same
+        if (defaultLifecycle === lcName) {
+            //Obtain the deletable states
+            state.deletableStates = rxtManager.getDeletableStates(options.type);
+            //Determine if the current state is a deletable state
+            state.isDeletable = isDeletable(lcState, state.deletableStates, lcName);
+        }
+        log.info('### Before check item states');
         //Update the state of the check items
-        state.checkItems = setCheckItemState(state.checkItems, asset, am);
+        state.checkItems = setCheckItemState(state.checkItems, asset, am,lcName);
+        log.info('### exited state ###');
         return state;
     };
     /**
@@ -391,7 +405,7 @@ var error = '';
         var history = am.getLifecycleHistory(options.id);
         return history;
     };
-    api.listAllAttachedLifecycles = function(options,req,res,session) {
+    api.listAllAttachedLifecycles = function(options, req, res, session) {
         validateOptions(options);
         var assetApi = rxtModule.asset;
         var am = assetApi.createUserAssetManager(session, options.type);
