@@ -42,6 +42,7 @@ var LifecycleUtils = {};
     constants.CONTAINER_LC_ACTION_OVERLAY = 'lifecycleActionOverlay';
     constants.CONTAINER_HISTORY_AREA = 'lifecycleHistoryArea';
     constants.CONTAINER_INFORMATION_AREA = 'lifecycleInformationArea';
+    constants.INPUT_TEXTAREA_LC_COMMENT = 'lifecycleCommentTextArea';
     constants.EVENT_LC_LOAD = 'event.lc.loaded';
     constants.EVENT_LC_UNLOAD = 'event.lc.unload';
     constants.EVENT_FETCH_STATE_START = 'event.fetch.state.start';
@@ -502,6 +503,11 @@ var LifecycleUtils = {};
             historyEntry.timestamp = entry.timestamp;
             historyEntry.user = entry.user;
             historyEntry.actionType = constants.HISTORY_ACTION_CHECKITEM;
+            historyEntry.comment = entry.comment;
+            historyEntry.hasComment = false;
+            if(historyEntry.comment){
+                historyEntry.hasComment =true;
+            }
             //Check if it is a state change
             if(entry.targetState){
                 historyEntry.targetState = entry.targetState;

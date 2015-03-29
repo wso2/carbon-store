@@ -55,8 +55,10 @@ $(function() {
                 var action;
                 e.preventDefault();
                 action = $(this).data('action');
-                //alert('action:: ' + action + ' clicked');
-                LifecycleAPI.lifecycle().invokeAction(action);
+                //Get the comment
+                var commentContainer = config(constants.INPUT_TEXTAREA_LC_COMMENT);
+                var comment = $(id(commentContainer)).val() || null;
+                LifecycleAPI.lifecycle().invokeAction(action,comment);
             });
         });
     };
@@ -160,6 +162,13 @@ $(function() {
         container.html('');
         container.attr('style', '');
     };
+    var hightlightCurrentStateNode  = function(){
+        var currentState = LifecycleAPI.lifecycle().currentState;
+        var stateNode = LifecycleAPI.lifecycle().stateNode(currentState);
+        if(!stateNode){
+            return;
+        }
+    };
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
         options = options || {};
         var lifecycleName = options.lifecycle;
@@ -179,6 +188,7 @@ $(function() {
         renderLCActions();
         renderChecklistItems();
         renderStateInformation();
+        hightlightCurrentStateNode();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_START, function() {
         blockChecklist();
@@ -188,6 +198,7 @@ $(function() {
         renderChecklistItems();
         renderStateInformation();
         renderLCActions();
+        hightlightCurrentStateNode();
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START, function() {
         blockChecklist();

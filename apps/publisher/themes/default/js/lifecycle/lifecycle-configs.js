@@ -10,6 +10,7 @@ LifecycleAPI.configs({
 	"lifecycleActionOverlay":"lifecycle-actions-overlay",
 	"lifecycleHistoryArea":"lifecycle-history",
 	"lifecycleInformationArea":"lifecycle-information",
+	"lifecycleCommentTextArea":"lifecycle-comment",
 	"apiLCBase":"/apis/asset",
 	"apiChangeState":"/change-state",
 	"apiFetchState" :"/state",

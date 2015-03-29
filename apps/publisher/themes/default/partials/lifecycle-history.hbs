@@ -1,5 +1,5 @@
 {{#each history}}
 	{{#if targetState}}
-	<div>{{time}} {{user}} moved asset from {{state}} to  {{targetState}} </div>
+	<div>{{time}} {{user}} moved asset from {{state}} to  {{targetState}}  {{#if hasComment}} with  user comment: {{comment}} {{/if}}</div>
 	{{/if}}
 {{/each}}

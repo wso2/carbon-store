@@ -95,7 +95,9 @@ var api = {};
         if (!data.nextState) {
             return errorMsg(msg(400,'State change requires a nextState to be provided either as a query string or in the body of the request'));
         }
+        log.info('comment: '+data.comment);
         options.nextState = data.nextState;
+        options.comment = data.comment;
         log.info('Next state '+options.nextState);
         log.info('Lifecycle '+options.lifecycle);
         //Call the state change api
@@ -122,9 +124,9 @@ var api = {};
     };
     api.lifecycleHistory = function(req, res, session, options) {
         var history = lifecycleAPI.getHistory(options, req, res, session);
-        var xmlHistoryContent = new XML(history.content);
-        var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent)||{};
-        return successMsg(msg(200, 'Lifecycle history retrieved successfully', historyContent.item ||[]));
+        //var xmlHistoryContent = new XML(history.content);
+        //var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent)||{};
+        return successMsg(msg(200, 'Lifecycle history retrieved successfully', history.item ||[]));
     };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
