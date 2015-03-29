@@ -206,11 +206,19 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS, function() {
         unblockChecklist();
     });
+    LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED,function(){
+        unblockChecklist();
+        LifecycleAPI.notify("Unable to update the check list");
+    });
     LifecycleAPI.event(constants.EVENT_ACTION_START, function() {
         blockLCActions();
     });
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
         unblockLCActions();
+    });
+    LifecycleAPI.event(constants.EVENT_ACTION_FAILED,function(){
+        unblockLCActions();
+        LifecycleAPI.notify("Unable to perform the action.Please try again later!");
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
         renderHistory();

@@ -202,6 +202,9 @@ var LifecycleUtils = {};
             return currentLifecycle;
         }
     };
+    LifecycleAPI.notify = function(msg){
+        alert(msg);
+    };
 
     function LifecycleImpl(options) {
         options = options || {};
