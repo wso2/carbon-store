@@ -331,7 +331,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type);
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
     };
     LifecycleImpl.prototype.urlFetchState = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -340,7 +340,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type);
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
     };
     LifecycleImpl.prototype.urlUpdateChecklist = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -349,7 +349,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiUpdateChecklist + '?type=' + asset.type);
+        return caramel.url(apiBase + '/' + asset.id + apiUpdateChecklist + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
     };
     LifecycleImpl.prototype.urlFetchHistory = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -358,7 +358,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiFetchHistory + '?type=' + asset.type);
+        return caramel.url(apiBase + '/' + asset.id + apiFetchHistory + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
     };
     LifecycleImpl.prototype.checklist = function() {
         var state = this.state(this.currentState);

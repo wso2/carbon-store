@@ -91,11 +91,13 @@ var api = {};
         if (req.getMethod() !== 'POST') {
             return errorMsg(msg(405, 'State must be changed by a POST'));
         }
-        data = obtainData(req);
+        data = obtainData(req);       
         if (!data.nextState) {
             return errorMsg(msg(400,'State change requires a nextState to be provided either as a query string or in the body of the request'));
         }
         options.nextState = data.nextState;
+        log.info('Next state '+options.nextState);
+        log.info('Lifecycle '+options.lifecycle);
         //Call the state change api
         success = lifecycleAPI.changeState(options, req, res, session);
         if (success) {

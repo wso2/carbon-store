@@ -81,8 +81,10 @@ var error = '';
      */
     var resolveLifecycle = function(options, asset) {
         if (options.lifecycle) {
+            log.info('User has provided the lifecycle '+options.lifecycle);
             return options.lifecycle;
         }
+        log.info('Obtaining default lifecycle '+asset.lifecycle);
         return asset.lifecycle;
     };
     /**

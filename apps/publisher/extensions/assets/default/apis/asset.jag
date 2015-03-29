@@ -22,6 +22,7 @@ require('/modules/publisher.js').exec(function(ctx) {
     var assetActionAPI = require('/modules/asset-action-api.js').api;
     var utils = require('utils');
     var ref = utils.request;
+    var reflectionAPI = utils.reflection;
     var responseProcessor = utils.response;
     var ACTION_PATTERN = '/{context}/apis/asset/{id}/{action}';
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
@@ -34,7 +35,9 @@ require('/modules/publisher.js').exec(function(ctx) {
         response.sendError(404, 'Asset not found');
         return;
     }
-    options.type = qOptions.type;
+    //options.type = qOptions.type;
+    //Merge the query parameters and the URI pattern components
+    reflectionAPI.copyProps(qOptions,options);
     try {
         result = assetActionAPI.resolve(ctx.request, ctx.response, ctx.session, options);
     } catch (e) {
