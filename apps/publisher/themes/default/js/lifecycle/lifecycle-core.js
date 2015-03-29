@@ -284,7 +284,7 @@ var LifecycleUtils = {};
         // Run the renderer. This is what draws the final graph.
         render(inner, g);
         // Center the graph
-        var initialScale = 1;
+        var initialScale = 1.2;
         zoom.translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
         svg.attr('height', g.graph().height * initialScale + 40);
     };
@@ -297,7 +297,9 @@ var LifecycleUtils = {};
         for (var key in stateMap.states) {
             state = stateMap.states[key];
             g.setNode(key, {
-                label: state.id
+                label: state.id,
+                shape: 'rect',
+                labelStyle:'font-size: 10px;font-weight: lighter;fill: rgb(242, 242, 247);'
             });
         }
         //Add the edges
@@ -307,7 +309,8 @@ var LifecycleUtils = {};
             for (var index = 0; index < state.transitions.length; index++) {
                 transition = state.transitions[index];
                 g.setEdge(source, transition.target, {
-                    label: transition.event
+                    label: transition.event,
+                    lineInterpolate: 'basis'
                 });
             }
         }

@@ -1,14 +1,25 @@
 body {
-  font: 300 14px 'Helvetica Neue', Helvetica;
+    font: 300 14px'Helvetica Neue', Helvetica;
 }
-
 .node rect {
-  stroke: #333;
-  fill: #fff;
+    /*
+  stroke: #698FF3;
+  fill: #698FF3;
+ */
+	stroke: #474849;
+    fill: #474849;
 }
-
 .edgePath path {
-  stroke: #333;
-  fill: #333;
-  stroke-width: 1.5px;
+    /* stroke: #698FF3;
+  fill: #698FF3;
+  */
+
+	stroke: #474849;
+	fill:#474849;
+    stroke-width: 1.5px;
+}
+text {
+    /*font-size: 10px;*/
+    font-weight: lighter;
+    /*fill: rgb(242, 242, 247);*/
 }
