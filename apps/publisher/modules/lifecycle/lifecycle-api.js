@@ -113,9 +113,6 @@ var error = '';
         var lcApi = lifecycleModule.api;
         var lcState = am.getLifecycleState(asset,lcName);
         var lifecycle = lcApi.getLifecycle(lcName, tenantId); //get lifecycle bind with asset
-        log.info(':: change state ::');
-        log.info('lc name: '+lcName);
-        log.info('next state: '+options.nextState);
         var action = lifecycle.transitionAction(lcState,options.nextState);
 
         //check whether a transition action available from asset.lifecycleState to options.nextState
@@ -124,9 +121,7 @@ var error = '';
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.BAD_REQUEST)
         }
         try {
-            log.info('invoking action');
             success = am.invokeLcAction(asset, action, lcName);
-            log.info('finished invoking');
         } catch (e) {
             error = 'Error while changing state to ' + options.nextState + ' from ' + lcName;
             if (log.isDebugEnabled()) {
@@ -134,7 +129,6 @@ var error = '';
             }
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
         }
-        log.info(':: left change state ::');
         return success;
     };
     /**
@@ -244,7 +238,6 @@ var error = '';
         }
         //Invoke the state change
         try {
-            log.info('Before invoking check item for '+lcName);
             am.invokeLifecycleCheckItem(asset, checkItemIndex, checkItemState,lcName);
         } catch (e) {
             if (log.isDebugEnabled()) {
@@ -297,7 +290,6 @@ var error = '';
      * @return A JSON object defining the structure of the lifecycle
      */
     api.getState = function(options, req, res, session) {
-        log.info('### getState ###');
         var state;
         validateOptions(options);
         var assetApi = rxtModule.asset;
@@ -311,18 +303,14 @@ var error = '';
         validateAsset(asset, options); //validate asset
         var lcApi = lifecycleModule.api; //load lifecycle module
         var lifecycle = lcApi.getLifecycle(lcName, tenantId);
-        log.info('### lifecycle name: '+lcName+' ###');
         var rxtManager = coreApi.rxtManager(tenantId);
         var lcState = am.getLifecycleState(asset,lcName);
-        log.info('### lifecycle state information: '+lcState+' ###');
         //Obtain the state data
         state = lifecycle.state(lcState);
-        log.info('### After getting state ###');
         if (!state) {
             var msg = 'Unable to locate state information for ' + lcState;
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.NOT_FOUND);
         }
-        log.info('### Before getting lifecycle ###');
         var defaultLifecycle = rxtManager.getLifecycleName(options.type);
         state.deletableStates = [];
         state.isDeletable = false;
@@ -334,10 +322,8 @@ var error = '';
             //Determine if the current state is a deletable state
             state.isDeletable = isDeletable(lcState, state.deletableStates, lcName);
         }
-        log.info('### Before check item states');
         //Update the state of the check items
         state.checkItems = setCheckItemState(state.checkItems, asset, am,lcName);
-        log.info('### exited state ###');
         return state;
     };
     /**

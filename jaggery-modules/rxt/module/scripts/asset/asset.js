@@ -615,7 +615,6 @@ var asset = {};
         if(!artifact){
             return null;
         }
-        log.info('lc: '+artifact.lifecycle);
         return artifact.lifecycle;
     }
     /**
@@ -627,15 +626,9 @@ var asset = {};
      * @return {String|NULL}       If the lifecycle name is provided it is returned else NULL
      */
     var resolveLCName = function(args,artifact,index){
-        log.info('args length: '+args.length);
-        log.info('index: '+index);
-        log.info(args[index]);
         if((args.length-1) < index){
-            log.info('getting lc name from asset');
-            log.info(artifact);
             return getLifecycleName(artifact);
         }
-        log.info('getting lc from args');
         return args[index];
     };
     /**
@@ -703,9 +696,7 @@ var asset = {};
             return success;
         }
         try {
-            log.info('before calling promoteLifecycleState');
             this.am.promoteLifecycleState(action, asset,lifecycleName);
-            log.info('finished calling promoteLifecycleState');
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
@@ -732,9 +723,6 @@ var asset = {};
             log.warn('The check item at index ' + checkItemIndex + ' cannot be changed as the check item state is not provided.');
             return success;
         }
-        log.info('::: inside invokeLifecycleCheckItem :::');
-        log.info('lifecycle: '+lifecycleName);
-        log.info('check item index '+checkItemIndex);
         //Obtain the number of check items for this state
         var checkItems = this.getLifecycleCheckItems(asset,lifecycleName);
         //Check if the check item index is valid
@@ -763,10 +751,8 @@ var asset = {};
      * @return {Array}       An array of check items along with the checked state
      */
     AssetManager.prototype.getLifecycleCheckItems = function(asset) {
-        log.info('### getLifecycleCheckItems ###');
         var checkItems = [];
         var lifecycleName = resolveLCName(arguments,asset,1);
-        log.info('lifecycle '+lifecycleName);
         try {
             checkItems = this.am.getCheckListItemNames(asset,lifecycleName);
         } catch (e) {
