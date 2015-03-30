@@ -1,34 +1,33 @@
 <div class='row'>
-    <div id='lifecycle-rendering-area' class='lifecycle-rendering-area col-md-8'>
+    <div  class='col-md-9'>
+    <div id='lifecycle-rendering-area' class='lifecycle-rendering-area col-md-6'>
         <svg width=500 height=600></svg>
     </div>
-    <div id ='lifecycle-checklist-container' class='col-mid-1' style='position:relative'>
-        <div id='lifecycle-checklist'>
-            <h3>Check lists</h3>
-            <img src='{{url ""}}/themes/default/img/preloader-40x40.gif' />Loading check list items
-        </div>
-        <div id='lifecycle-checklist-overlay'></div>
-    </div>
-    <div id='lifecycle-transition-ui-container' class='col-md-1'>
-        <div id='lifecycle-transition-ui'>
-        </div>
-    </div>
-    <div id='lifecycle-actions-container' class='col-md-1' style='position:relative'>
-        <div id='lifecycle-comments'>
-            <div class='form-group'>
-            <label>Comment</label>
-            <textarea id='lifecycle-comment' class='form-control' placeholder='{{t "This comment will be recored with the state transition"}}'></textarea> 
+        <div id ='lifecycle-checklist-container' class='col-md-5 ' style='position:relative'>
+            <div id='lifecycle-checklist'>
+                <img src='{{url ""}}/themes/default/img/preloader-40x40.gif' />Loading check list items
             </div>
+            <div id='lifecycle-checklist-overlay'></div>
         </div>
-        <div id='lifecycle-actions' >
-            Lifecycle actions
+        <div id='lifecycle-actions-container' class='col-md-4 float-left' style='position:relative'>
+            <div id='lifecycle-comments'>
+                <div class='form-group'>
+                <label>Comment</label>
+                <textarea id='lifecycle-comment' class='form-control' placeholder='{{t "This comment will be recored with the state transition"}}'></textarea>
+                </div>
+            </div>
+            <div id='lifecycle-actions' >
+                Lifecycle actions
+            </div>
+            <div id='lifecycle-actions-overlay'></div>
         </div>
-        <div id='lifecycle-actions-overlay'></div>
-    </div>
-    <div id='lifecycle-history-container' class='col-mod-1'>
-        <h3>History</h3>
-        <div id='lifecycle-history'>
-            <img src='{{url ""}}/themes/default/img/preloader-40x40.gif' /> Loading history details ...
+</div>
+    <div class='col-md-3'>
+        <div id='lifecycle-history-container' class='col-md-10 '>
+            <h3>History</h3>
+            <div id='lifecycle-history'>
+                <img src='{{url ""}}/themes/default/img/preloader-40x40.gif' /> Loading history details ...
+            </div>
         </div>
     </div>
 </div>

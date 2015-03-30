@@ -23,3 +23,12 @@ text {
     font-weight: lighter;
     /*fill: rgb(242, 242, 247);*/
 }
+
+#lifecycle-selector{
+    width: 400px; }
+
+#lifecycle-rendering-area{border:1px solid #e8e8e8; margin: 16px; width: 55%;}
+.border-box{border:1px solid #333;width: 50%; background-color: #006596; }
+#lifecycle-history-container{float: left; background-color: #f9f9f9; border:1px solid #ccc; height: 100%; min-height: 500px;}
+.btn-default{background-color: #3a9ecf; border-radius:0px; border: 0px; padding: 12px 25px; color: #ffffff; }
+.history-entry{line-height: 20px; list-style: square;  }

@@ -55,7 +55,7 @@ $(function() {
                 var action;
                 e.preventDefault();
                 action = $(this).data('action');
-                renderTransitionUI(action);
+                //renderTransitionUI(action);
                 //Get the comment
                 var commentContainer = config(constants.INPUT_TEXTAREA_LC_COMMENT);
                 var comment = $(id(commentContainer)).val() || null;
@@ -124,23 +124,23 @@ $(function() {
         }
     };
     var renderTransitionUI = function(action){
-        var container = config(constants.CONTAINER_TRANSITION_UI_AREA);
-        var impl = LifecycleAPI.lifecycle();
-        var data = {};
-        var transitionUI;
-        if(impl) {
-            //Get the transition UI for the provided action
-            transitionUI = impl.transitionUIs(impl.currentState,action);
-            if(!transitionUI){
-                return;
-            }
-            data.href =transitionUI.href;
-            renderPartial(constants.CONTAINER_TRANSITION_UI_AREA,constants.CONTAINER_TRANSITION_UI_AREA,data); 
-        }
+        // var container = config(constants.CONTAINER_TRANSITION_UI_AREA);
+        // var impl = LifecycleAPI.lifecycle();
+        // var data = {};
+        // var transitionUI;
+        // if(impl) {
+        //     //Get the transition UI for the provided action
+        //     transitionUI = impl.transitionUIs(impl.currentState,action);
+        //     if(!transitionUI){
+        //         return;
+        //     }
+        //     data.href =transitionUI.href;
+        //     renderPartial(constants.CONTAINER_TRANSITION_UI_AREA,constants.CONTAINER_TRANSITION_UI_AREA,data); 
+        // }
     };
     var unrenderTransitionUI = function(){
-        var container = config(constants.CONTAINER_TRANSITION_UI_AREA);
-        $(id(container)).html('');
+        // var container = config(constants.CONTAINER_TRANSITION_UI_AREA);
+        // $(id(container)).html('');
     };
     //Blocks user interaction with the lifecycle actions
     var blockLCActions = function() {
@@ -234,12 +234,13 @@ $(function() {
         blockLCActions();
     });
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
-        unrenderTransitionUI();
+        //unrenderTransitionUI();
         unblockLCActions();
+        LifecycleAPI.lifecycle().fetchHistory();
     });
     LifecycleAPI.event(constants.EVENT_ACTION_FAILED,function(){
         unblockLCActions();
-        unrenderTransitionUI();
+        //unrenderTransitionUI();
         LifecycleAPI.notify("Unable to perform the action.Please try again later!");
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {

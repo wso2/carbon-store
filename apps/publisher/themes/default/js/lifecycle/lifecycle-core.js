@@ -520,6 +520,7 @@ var LifecycleUtils = {};
         console.log('### Processing history ###');
         var entry;
         var historyEntry;
+        this.history =[];
         for(var index = 0;index<data.length;index++){
             entry = data[index];
             historyEntry = {};
@@ -603,6 +604,9 @@ var LifecycleUtils = {};
         transitionUIs = (stateDetails.datamodel)?stateDetails.datamodel.transitionUIs:[];
         if(!action){
             return transitionUIs;
+        }
+        if(!transitionUIs){
+            return [];
         }
         //Find the transition UI for the provided action
         for(var index=0;index<transitionUIs.length; index++){
