@@ -11,6 +11,7 @@ LifecycleAPI.configs({
 	"lifecycleHistoryArea":"lifecycle-history",
 	"lifecycleInformationArea":"lifecycle-information",
 	"lifecycleCommentTextArea":"lifecycle-comment",
+	"lifecycleTransitionUIArea":"lifecycle-transition-ui",
 	"apiLCBase":"/apis/asset",
 	"apiChangeState":"/change-state",
 	"apiFetchState" :"/state",

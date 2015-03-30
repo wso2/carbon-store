@@ -42,6 +42,7 @@ var LifecycleUtils = {};
     constants.CONTAINER_LC_ACTION_OVERLAY = 'lifecycleActionOverlay';
     constants.CONTAINER_HISTORY_AREA = 'lifecycleHistoryArea';
     constants.CONTAINER_INFORMATION_AREA = 'lifecycleInformationArea';
+    constants.CONTAINER_TRANSITION_UI_AREA = 'lifecycleTransitionUIArea';
     constants.INPUT_TEXTAREA_LC_COMMENT = 'lifecycleCommentTextArea';
     constants.EVENT_LC_LOAD = 'event.lc.loaded';
     constants.EVENT_LC_UNLOAD = 'event.lc.unload';
@@ -69,11 +70,31 @@ var LifecycleUtils = {};
             datamodel.item[index].checked = false;
             datamodel.item[index].index = index;
         }
-    }
+    };
+    var processTransitionUI = function(stateDetails,datamodel){
+        if(!stateDetails.hasOwnProperty('datamodel')){
+            stateDetails.datamodel = {};
+        }
+        var ui = datamodel.ui ||[];
+        var transitions;
+        stateDetails.datamodel.transitionUIs = [];
+        if(ui.length>=0){
+            stateDetails.datamodel.transitionUIs = ui;
+        }
+        transitions = stateDetails.datamodel.transitionUIs;
+        for(var index = 0; index< transitions.length; index++){
+            transition = transitions[index];
+            transition.action = transition.forEvent;
+            delete transition.forEvent;
+        }
+    };
     var processDataModel = function(stateDetails, datamodel) {
         switch (datamodel.name) {
             case 'checkItems':
                 processCheckItems(stateDetails, datamodel);
+                break;
+            case 'transitionUI':
+                processTransitionUI(stateDetails,datamodel);
                 break;
             default:
                 break;
@@ -564,5 +585,32 @@ var LifecycleUtils = {};
     LifecycleImpl.prototype.changeState = function(nextState) {
         this.currentState = nextState;
         LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
+    };
+    LifecycleImpl.prototype.transitionUIs = function(){
+        var state = this.currentState;
+        var action;
+        var stateDetails;
+        var transition;
+        var transitionMappedToAction;
+        var transitionUI;
+        if(arguments.length === 1){
+            state = arguments[0];
+        }
+        if(arguments.length === 2){
+            action = arguments[1];
+        }
+        stateDetails = this.state(state)||{};
+        transitionUIs = (stateDetails.datamodel)?stateDetails.datamodel.transitionUIs:[];
+        if(!action){
+            return transitionUIs;
+        }
+        //Find the transition UI for the provided action
+        for(var index=0;index<transitionUIs.length; index++){
+            transition = transitionUIs[index];
+            if(transition.action.toLowerCase() === action.toLowerCase()){
+                transitionMappedToAction = transition;
+            }
+        }
+        return transitionMappedToAction;
     };
 }());
