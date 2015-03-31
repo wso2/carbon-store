@@ -1,6 +1,6 @@
 <div>
     {{#if assets.hasMultipleLifecycles}}
-	<label>Available lifecycles </label>
+	<label class="float-left"><h3>Available lifecycles </h3></label>
 	<select id='lifecycle-selector' class='form-control input-small'>
 		{{#each assets.availableLifecycles}}
 		<option {{#if active}} selected{{else}} {{/if}}>{{name}} </option>

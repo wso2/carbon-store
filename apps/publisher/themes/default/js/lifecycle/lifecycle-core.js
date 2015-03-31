@@ -43,6 +43,12 @@ var LifecycleUtils = {};
     constants.CONTAINER_HISTORY_AREA = 'lifecycleHistoryArea';
     constants.CONTAINER_INFORMATION_AREA = 'lifecycleInformationArea';
     constants.CONTAINER_TRANSITION_UI_AREA = 'lifecycleTransitionUIArea';
+    constants.CONTAINER_LC_NOTIFICATIONS_AREA = 'lifecycleNotificationsArea';
+    constants.CONTAINER_LC_GLOBAL_NOTIFICATIONS_AREA = 'lifecycleGlobalNotificationsArea';
+    constants.TEMPLATE_NOTIFICATION_ERROR = 'lifecycleTemplateNotficationError';
+    constants.TEMPLATE_NOTIFICATION_INFO = 'lifecycleTemplateNotificationInfo';
+    constants.TEMPLATE_NOTIFICATION_WARN = 'lifecycleTemplateNotificationWarn';
+    constants.TEMPLATE_NOTIFICATION_SUCCESS = 'lifecycleTemplateNotificationSuccess';
     constants.INPUT_TEXTAREA_LC_COMMENT = 'lifecycleCommentTextArea';
     constants.EVENT_LC_LOAD = 'event.lc.loaded';
     constants.EVENT_LC_UNLOAD = 'event.lc.unload';
@@ -59,8 +65,39 @@ var LifecycleUtils = {};
     constants.EVENT_FETCH_HISTORY_START = 'event.fetch.history.start';
     constants.EVENT_FETCH_HISTORY_SUCCESS = 'event.fetch.history.success';
     constants.EVENT_FETCH_HISTORY_FAILED = 'event.fetch.history.failed';
-    constants.HISTORY_ACTION_TRANSITION ='transition';
+    constants.HISTORY_ACTION_TRANSITION = 'transition';
     constants.HISTORY_ACTION_CHECKITEM = 'check.item';
+    constants.NOTIFICATION_INFO = 'info';
+    constants.NOTIFICATION_ERROR = 'error';
+    constants.NOTIFICATION_WARN = 'warn';
+    constants.NOTIFICATION_SUCCESS = 'success';
+    var id = function(name) {
+        return '#' + name;
+    };
+    var config = function(key) {
+        return LifecycleAPI.configs(key);
+    };
+    var partial = function(name) {
+        return '/themes/' + caramel.themer + '/partials/' + name + '.hbs';
+    };
+    var renderPartial = function(partialKey, containerKey, data, fn) {
+        fn = fn || function() {};
+        var partialName = config(partialKey);
+        var containerName = config(containerKey);
+        if (!partialName) {
+            throw 'A template name has not been specified for template key ' + partialKey;
+        }
+        if (!containerName) {
+            throw 'A container name has not been specified for container key ' + containerKey;
+        }
+        var obj = {};
+        obj[partialName] = partial(partialName);
+        caramel.partials(obj, function() {
+            var template = Handlebars.partials[partialName](data);
+            $(id(containerName)).html(template);
+            fn(containerName);
+        });
+    };
     var processCheckItems = function(stateDetails, datamodel) {
         if (!stateDetails.hasOwnProperty('datamodel')) {
             stateDetails.datamodel = {};
@@ -71,18 +108,18 @@ var LifecycleUtils = {};
             datamodel.item[index].index = index;
         }
     };
-    var processTransitionUI = function(stateDetails,datamodel){
-        if(!stateDetails.hasOwnProperty('datamodel')){
+    var processTransitionUI = function(stateDetails, datamodel) {
+        if (!stateDetails.hasOwnProperty('datamodel')) {
             stateDetails.datamodel = {};
         }
-        var ui = datamodel.ui ||[];
+        var ui = datamodel.ui || [];
         var transitions;
         stateDetails.datamodel.transitionUIs = [];
-        if(ui.length>=0){
+        if (ui.length >= 0) {
             stateDetails.datamodel.transitionUIs = ui;
         }
         transitions = stateDetails.datamodel.transitionUIs;
-        for(var index = 0; index< transitions.length; index++){
+        for (var index = 0; index < transitions.length; index++) {
             transition = transitions[index];
             transition.action = transition.forEvent;
             delete transition.forEvent;
@@ -94,7 +131,7 @@ var LifecycleUtils = {};
                 processCheckItems(stateDetails, datamodel);
                 break;
             case 'transitionUI':
-                processTransitionUI(stateDetails,datamodel);
+                processTransitionUI(stateDetails, datamodel);
                 break;
             default:
                 break;
@@ -223,8 +260,34 @@ var LifecycleUtils = {};
             return currentLifecycle;
         }
     };
-    LifecycleAPI.notify = function(msg){
-        alert(msg);
+    LifecycleAPI.notify = function(msg, options) {
+        options = options || {};
+        var global = options.global ? options.global : false;
+        var container = constants.CONTAINER_LC_NOTIFICATIONS_AREA;
+        var notificationType = options.type ? options.type : constants.NOTIFICATION_INFO;
+        var partial = constants.TEMPLATE_NOTIFICATION_INFO;
+        if (global) {
+            container = constants.CONTAINER_LC_GLOBAL_NOTIFICATIONS_AREA;
+        }
+        switch (notificationType) {
+            case constants.NOTIFICATION_WARN:
+                partial = constants.TEMPLATE_NOTIFICATION_WARN;
+                break;
+            case constants.NOTIFICATION_ERROR:
+                partial = constants.TEMPLATE_NOTIFICATION_ERROR;
+                break;
+            case constants.NOTIFICATION_SUCCESS:
+                partial = constants.TEMPLATE_NOTIFICATION_SUCCESS;
+            default:
+                break;
+        }
+        //Clear existing content
+        $(id(container)).html('');
+        renderPartial(partial, container, {
+            msg: msg
+        },function(container){
+            $(id(container)).fadeIn(5000);
+        });
     };
 
     function LifecycleImpl(options) {
@@ -324,7 +387,7 @@ var LifecycleUtils = {};
             g.setNode(key, {
                 label: state.id,
                 shape: 'rect',
-                labelStyle:'font-size: 10px;font-weight: lighter;fill: rgb(242, 242, 247);'
+                labelStyle: 'font-size: 10px;font-weight: lighter;fill: rgb(242, 242, 247);'
             });
         }
         //Add the edges
@@ -359,7 +422,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName);
     };
     LifecycleImpl.prototype.urlFetchState = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -368,7 +431,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName);
     };
     LifecycleImpl.prototype.urlUpdateChecklist = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -377,7 +440,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiUpdateChecklist + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
+        return caramel.url(apiBase + '/' + asset.id + apiUpdateChecklist + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName);
     };
     LifecycleImpl.prototype.urlFetchHistory = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -386,7 +449,7 @@ var LifecycleUtils = {};
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiFetchHistory + '?type=' + asset.type+'&lifecycle='+this.lifecycleName);
+        return caramel.url(apiBase + '/' + asset.id + apiFetchHistory + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName);
     };
     LifecycleImpl.prototype.checklist = function() {
         var state = this.state(this.currentState);
@@ -441,9 +504,9 @@ var LifecycleUtils = {};
             throw 'Attempt to invoke an action without providing the action';
             return;
         }
-        nextState = this.nextStateByAction(action,this.currentState);
-        if(!nextState){
-            throw 'Unable to locate the next state for the given action::'+action;
+        nextState = this.nextStateByAction(action, this.currentState);
+        if (!nextState) {
+            throw 'Unable to locate the next state for the given action::' + action;
         }
         data.nextState = nextState;
         //Check if the action is one of the available actions for the current state
@@ -463,10 +526,10 @@ var LifecycleUtils = {};
         $.ajax({
             url: this.urlChangeState(),
             type: 'POST',
-            data:JSON.stringify(data),
-            contentType:'application/json',
+            data: JSON.stringify(data),
+            contentType: 'application/json',
             success: function(data) {
-                that.currentState = data.data.newState; 
+                that.currentState = data.data.newState;
                 LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
                 LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
             },
@@ -516,12 +579,12 @@ var LifecycleUtils = {};
             }
         })
     };
-    LifecycleImpl.prototype.processHistory = function(data){
+    LifecycleImpl.prototype.processHistory = function(data) {
         console.log('### Processing history ###');
         var entry;
         var historyEntry;
-        this.history =[];
-        for(var index = 0;index<data.length;index++){
+        this.history = [];
+        for (var index = 0; index < data.length; index++) {
             entry = data[index];
             historyEntry = {};
             historyEntry.state = entry.state;
@@ -530,17 +593,16 @@ var LifecycleUtils = {};
             historyEntry.actionType = constants.HISTORY_ACTION_CHECKITEM;
             historyEntry.comment = entry.comment;
             historyEntry.hasComment = false;
-            if(historyEntry.comment){
-                historyEntry.hasComment =true;
+            if (historyEntry.comment) {
+                historyEntry.hasComment = true;
             }
             //Check if it is a state change
-            if(entry.targetState){
+            if (entry.targetState) {
                 historyEntry.targetState = entry.targetState;
                 historyEntry.actionType = constants.HISTORY_ACTION_TRANSITION;
             }
             this.history.push(historyEntry);
         }
-
     };
     LifecycleImpl.prototype.fetchHistory = function() {
         LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_START);
@@ -587,31 +649,31 @@ var LifecycleUtils = {};
         this.currentState = nextState;
         LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
     };
-    LifecycleImpl.prototype.transitionUIs = function(){
+    LifecycleImpl.prototype.transitionUIs = function() {
         var state = this.currentState;
         var action;
         var stateDetails;
         var transition;
         var transitionMappedToAction;
         var transitionUI;
-        if(arguments.length === 1){
+        if (arguments.length === 1) {
             state = arguments[0];
         }
-        if(arguments.length === 2){
+        if (arguments.length === 2) {
             action = arguments[1];
         }
-        stateDetails = this.state(state)||{};
-        transitionUIs = (stateDetails.datamodel)?stateDetails.datamodel.transitionUIs:[];
-        if(!action){
+        stateDetails = this.state(state) || {};
+        transitionUIs = (stateDetails.datamodel) ? stateDetails.datamodel.transitionUIs : [];
+        if (!action) {
             return transitionUIs;
         }
-        if(!transitionUIs){
+        if (!transitionUIs) {
             return [];
         }
         //Find the transition UI for the provided action
-        for(var index=0;index<transitionUIs.length; index++){
+        for (var index = 0; index < transitionUIs.length; index++) {
             transition = transitionUIs[index];
-            if(transition.action.toLowerCase() === action.toLowerCase()){
+            if (transition.action.toLowerCase() === action.toLowerCase()) {
                 transitionMappedToAction = transition;
             }
         }
