@@ -299,6 +299,7 @@ var LifecycleUtils = {};
         options = options || {};
         this.lifecycleName = options.name ? options.name : null;
         this.currentState = null;
+        this.previousState = null;
         this.rawAPIDefinition = null;
         this.stateMap = null;
         this.dagreD3GraphObject = null;
@@ -392,7 +393,7 @@ var LifecycleUtils = {};
             g.setNode(key, {
                 label: state.id,
                 shape: 'rect',
-                labelStyle: 'font-size: 10px;font-weight: lighter;fill: rgb(242, 242, 247);'
+                labelStyle: 'font-size: 12px;font-weight: lighter;fill: rgb(242, 242, 247);'
             });
         }
         //Add the edges
@@ -534,6 +535,7 @@ var LifecycleUtils = {};
             data: JSON.stringify(data),
             contentType: 'application/json',
             success: function(data) {
+                that.previousState = that.currentState;
                 that.currentState = data.data.newState;
                 var traversableStates  = data.data.traversableStates ||[];
                 //If next states are not returned then lifecycle
@@ -578,6 +580,7 @@ var LifecycleUtils = {};
             url: this.urlFetchState(),
             success: function(data) {
                 var data = data.data;
+                that.previousState = that.currentState;
                 that.currentState = data.id.toLowerCase();
                 that.isLCActionsPermitted = data.isLCActionsPermitted;
                 for (var index = 0; index < data.checkItems.length; index++) {
@@ -693,5 +696,24 @@ var LifecycleUtils = {};
             }
         }
         return transitionMappedToAction;
+    };
+    LifecycleImpl.prototype.highlightCurrentState = function(){
+        var currentStateNode = this.stateNode(this.currentState);
+        var previousStateNode;
+        selectNode(currentStateNode.elem);
+        if(this.previousState){
+            previousStateNode = this.stateNode(this.previousState);
+            unselectNode(previousStateNode.elem);
+        }
+    };
+    var selectNode = function(elem){
+        var rect = $(elem).find('rect');
+        rect.css('fill','#698FF3');
+        rect.css('stroke','#698FF3');
+    };
+    var unselectNode = function(elem){
+        var rect = $(elem).find('rect');
+        rect.css('fill','#474849');
+        rect.css('stroke','#474849');
     };
 }());

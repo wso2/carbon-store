@@ -95,11 +95,8 @@ var api = {};
         if (!data.nextState) {
             return errorMsg(msg(400,'State change requires a nextState to be provided either as a query string or in the body of the request'));
         }
-        log.info('comment: '+data.comment);
         options.nextState = data.nextState;
         options.comment = data.comment;
-        log.info('Next state '+options.nextState);
-        log.info('Lifecycle '+options.lifecycle);
         //Call the state change api
         success = lifecycleAPI.changeState(options, req, res, session);
         if (success) {
@@ -107,7 +104,11 @@ var api = {};
             result.newState = data.nextState;
             result.traversableStates = lifecycleAPI.traversableStates(options,req,res,session);
         }
-        return successMsg(msg(200, 'The assets state was changed', result));
+        if(success){
+            return successMsg(msg(200, 'The assets state was changed', result));
+        } else{
+            return errorMsg(msg(500,'The asset state was not changed'));
+        }
     };
     api.updateCheckList = function(req, res, session, options) {
         var success;

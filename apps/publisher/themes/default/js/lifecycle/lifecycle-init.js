@@ -196,6 +196,7 @@ $(function() {
         if (!stateNode) {
             return;
         }
+        LifecycleAPI.lifecycle().highlightCurrentState();
     };
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
         options = options || {};
@@ -204,6 +205,7 @@ $(function() {
         if (impl) {
             impl.render();
             renderStateInformation();
+            hightlightCurrentStateNode();
             if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
                 //Do not display a message since at this point we do not
                 //have the permission details
