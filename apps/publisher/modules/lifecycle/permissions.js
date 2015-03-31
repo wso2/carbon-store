@@ -9,14 +9,14 @@ var permissions={};
      * @return {Boolean}			  True if the user can perform life-cycle actions           
      */
     var isLCActionsPermitted = function(username, resourcePath, userManager) {
-    	log.info('###Checking permissions ###');
+    	//log.info('###Checking permissions ###');
         var roles = userManager.getRoleListOfUser(username);;
         var action = 'authorize';
         var role;
         for (var index in roles) {
         	role=roles[index];
             var isAuthorized = userManager.isAuthorized(role, resourcePath, action);
-            log.info('Role: '+role+' resource: '+resourcePath+'action: '+action);
+            //log.info('Role: '+role+' resource: '+resourcePath+'action: '+action);
             if (isAuthorized) {
                 return true;
             }

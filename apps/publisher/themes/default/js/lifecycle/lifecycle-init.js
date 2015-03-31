@@ -59,7 +59,7 @@ $(function() {
                 //Get the comment
                 var commentContainer = config(constants.INPUT_TEXTAREA_LC_COMMENT);
                 var comment = $(id(commentContainer)).val() || null;
-                LifecycleAPI.lifecycle().invokeAction(action,comment);
+                LifecycleAPI.lifecycle().invokeAction(action, comment);
             });
         });
     };
@@ -114,6 +114,10 @@ $(function() {
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
+    var unrenderLCActions = function(){
+        var container = config(constants.CONTAINER_LC_ACTION_AREA);
+        $(id(container)).html('');
+    };
     var renderChecklistItems = function() {
         var container = config(constants.CONTAINER_CHECKLIST_AREA);
         var impl = LifecycleAPI.lifecycle();
@@ -123,7 +127,11 @@ $(function() {
             renderPartial(constants.CONTAINER_CHECKLIST_AREA, constants.CONTAINER_CHECKLIST_AREA, data, wireChecklistHandlers);
         }
     };
-    var renderTransitionUI = function(action){
+    var unrenderChecklistItems = function(){
+        var container = config(constants.CONTAINER_CHECKLIST_AREA);
+        $(id(container)).html('');
+    };
+    var renderTransitionUI = function(action) {
         // var container = config(constants.CONTAINER_TRANSITION_UI_AREA);
         // var impl = LifecycleAPI.lifecycle();
         // var data = {};
@@ -138,7 +146,7 @@ $(function() {
         //     renderPartial(constants.CONTAINER_TRANSITION_UI_AREA,constants.CONTAINER_TRANSITION_UI_AREA,data); 
         // }
     };
-    var unrenderTransitionUI = function(){
+    var unrenderTransitionUI = function() {
         // var container = config(constants.CONTAINER_TRANSITION_UI_AREA);
         // $(id(container)).html('');
     };
@@ -182,10 +190,10 @@ $(function() {
         container.html('');
         container.attr('style', '');
     };
-    var hightlightCurrentStateNode  = function(){
+    var hightlightCurrentStateNode = function() {
         var currentState = LifecycleAPI.lifecycle().currentState;
         var stateNode = LifecycleAPI.lifecycle().stateNode(currentState);
-        if(!stateNode){
+        if (!stateNode) {
             return;
         }
     };
@@ -195,9 +203,14 @@ $(function() {
         var impl = LifecycleAPI.lifecycle(lifecycleName);
         if (impl) {
             impl.render();
+            renderStateInformation();
+            if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
+                //Do not display a message since at this point we do not
+                //have the permission details
+                return;
+            }
             renderLCActions();
             renderChecklistItems();
-            renderStateInformation();
         }
     });
     //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
@@ -205,20 +218,36 @@ $(function() {
     //renderChecklistItems();
     //});
     LifecycleAPI.event(constants.EVENT_STATE_CHANGE, function() {
-        renderLCActions();
-        renderChecklistItems();
         renderStateInformation();
         hightlightCurrentStateNode();
+        unrenderLCActions();
+        unrenderChecklistItems();
+        if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
+            LifecycleAPI.notify("You do not have permission to change the state.", {
+                type: constants.NOTIFICATION_WARN,
+                global: true
+            });
+            return;
+        }
+        renderLCActions();
+        renderChecklistItems();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_START, function() {
         blockChecklist();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS, function() {
         unblockChecklist();
-        renderChecklistItems();
-        renderStateInformation();
-        renderLCActions();
         hightlightCurrentStateNode();
+        renderStateInformation();
+        if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
+            LifecycleAPI.notify("You do not have permission to change the state.", {
+                type: constants.NOTIFICATION_WARN,
+                global: true
+            });
+            return;
+        }
+        renderChecklistItems();
+        renderLCActions();
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START, function() {
         blockChecklist();
@@ -226,7 +255,7 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS, function() {
         unblockChecklist();
     });
-    LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED,function(){
+    LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED, function() {
         unblockChecklist();
         LifecycleAPI.notify("Unable to update the check list");
     });
@@ -236,9 +265,10 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
         //unrenderTransitionUI();
         unblockLCActions();
+        LifecycleAPI.notify('Successfully performed the lifecycle action');
         LifecycleAPI.lifecycle().fetchHistory();
     });
-    LifecycleAPI.event(constants.EVENT_ACTION_FAILED,function(){
+    LifecycleAPI.event(constants.EVENT_ACTION_FAILED, function() {
         unblockLCActions();
         //unrenderTransitionUI();
         LifecycleAPI.notify("Unable to perform the action.Please try again later!");

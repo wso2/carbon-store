@@ -530,6 +530,12 @@ var LifecycleUtils = {};
             contentType: 'application/json',
             success: function(data) {
                 that.currentState = data.data.newState;
+                var traversableStates  = data.data.traversableStates ||[];
+                //If next states are not returned then lifecycle
+                //actions are not permitted
+                if(traversableStates.length === 0){
+                    that.isLCActionsPermitted = false;
+                }
                 LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
                 LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
             },

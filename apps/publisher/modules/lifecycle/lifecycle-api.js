@@ -412,10 +412,28 @@ var error = '';
         var am = assetApi.createUserAssetManager(session, options.type);
         return am.listAllAttachedLifecycles(options.id);
     };
+    api.traversableStates = function(options,req,res,session){
+        var am = getAssetManager(options,session);
+        var tenantId = storeModule.server.current(session).tenantId;
+        var asset = getAsset(options,am);
+        //Check if the user can perform lifecycle operations
+        if(!isLCActionsPermitted(asset, options, req, res, session)){
+            return [];
+        }
+        var lcApi = lifecycleModule.api;
+        var lcName = resolveLifecycle(options, asset);
+        var nextStates = lcApi.getLifecycle(lcName, tenantId);
+        return nextStates;
+    };
     var parseHistory = function(history) {
         var xmlHistoryContent = new XML(history.content);
         var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent) || {};
         return historyContent;
+    };
+    var getAssetManager = function(options,session){
+        var assetApi = rxtModule.asset;
+        var am = assetApi.createUserAssetManager(session, options.type);
+        return am;
     };
     var addComment = function(options, req, res, session) {
         if(!options.comment){

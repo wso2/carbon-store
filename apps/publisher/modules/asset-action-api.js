@@ -105,6 +105,7 @@ var api = {};
         if (success) {
             //Obtain the next states
             result.newState = data.nextState;
+            result.traversableStates = lifecycleAPI.traversableStates(options,req,res,session);
         }
         return successMsg(msg(200, 'The assets state was changed', result));
     };
