@@ -198,6 +198,10 @@ $(function() {
         }
         LifecycleAPI.lifecycle().highlightCurrentState();
     };
+    var clearComments = function(){
+        var container = config(constants.INPUT_TEXTAREA_LC_COMMENT);
+        $(id(container)).val('');
+    };
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
         options = options || {};
         var lifecycleName = options.lifecycle;
@@ -269,6 +273,7 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
         //unrenderTransitionUI();
         unblockLCActions();
+        clearComments();
         LifecycleAPI.notify(config(constants.MSG_SUCCESS_STATE_CHANGE), {
             type: 'success'
         });
