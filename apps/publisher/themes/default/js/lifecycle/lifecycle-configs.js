@@ -22,5 +22,10 @@ LifecycleAPI.configs({
 	"apiChangeState":"/change-state",
 	"apiFetchState" :"/state",
 	"apiUpdateChecklist":"/update-checklist",
-	"apiFetchHistory":"/lifecycle-history"
+	"apiFetchHistory":"/lifecycle-history",
+	"msgCannotChangeState":"You do not have permission to change states",
+	"msgStateChangedSuccess":"State updated successfully",
+	"msgStateChangeError":"State could not be updated",
+	"msgChecklistUpdateSuccess":"Checklist updated successfully",
+	"msgChecklistUpdateError":"Checklist was not updated"
 });

@@ -114,7 +114,7 @@ $(function() {
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
-    var unrenderLCActions = function(){
+    var unrenderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         $(id(container)).html('');
     };
@@ -127,7 +127,7 @@ $(function() {
             renderPartial(constants.CONTAINER_CHECKLIST_AREA, constants.CONTAINER_CHECKLIST_AREA, data, wireChecklistHandlers);
         }
     };
-    var unrenderChecklistItems = function(){
+    var unrenderChecklistItems = function() {
         var container = config(constants.CONTAINER_CHECKLIST_AREA);
         $(id(container)).html('');
     };
@@ -223,7 +223,7 @@ $(function() {
         unrenderLCActions();
         unrenderChecklistItems();
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
-            LifecycleAPI.notify("You do not have permission to change the state.", {
+            LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
                 type: constants.NOTIFICATION_WARN,
                 global: true
             });
@@ -240,7 +240,7 @@ $(function() {
         hightlightCurrentStateNode();
         renderStateInformation();
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
-            LifecycleAPI.notify("You do not have permission to change the state.", {
+            LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
                 type: constants.NOTIFICATION_WARN,
                 global: true
             });
@@ -257,7 +257,9 @@ $(function() {
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED, function() {
         unblockChecklist();
-        LifecycleAPI.notify("Unable to update the check list");
+        LifecycleAPI.notify(config(constants.MSG_ERROR_CHECKLIST_UPDATE), {
+            type: 'error'
+        });
     });
     LifecycleAPI.event(constants.EVENT_ACTION_START, function() {
         blockLCActions();
@@ -265,13 +267,17 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
         //unrenderTransitionUI();
         unblockLCActions();
-        LifecycleAPI.notify('Successfully performed the lifecycle action');
+        LifecycleAPI.notify(config(constants.MSG_SUCCESS_STATE_CHANGE), {
+            type: 'success'
+        });
         LifecycleAPI.lifecycle().fetchHistory();
     });
     LifecycleAPI.event(constants.EVENT_ACTION_FAILED, function() {
         unblockLCActions();
         //unrenderTransitionUI();
-        LifecycleAPI.notify("Unable to perform the action.Please try again later!");
+        LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
+            type: 'error'
+        });
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
         renderHistory();

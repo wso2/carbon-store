@@ -71,6 +71,11 @@ var LifecycleUtils = {};
     constants.NOTIFICATION_ERROR = 'error';
     constants.NOTIFICATION_WARN = 'warn';
     constants.NOTIFICATION_SUCCESS = 'success';
+    constants.MSG_WARN_CANNOT_CHANGE_STATE ='msgCannotChangeState';
+    constants.MSG_SUCCESS_STATE_CHANGE = 'msgStateChangedSuccess';
+    constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
+    constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
+    constants.MSG_ERROR_CHECKLIST_UPDATE = 'msgChecklistUpdateError';
     var id = function(name) {
         return '#' + name;
     };
