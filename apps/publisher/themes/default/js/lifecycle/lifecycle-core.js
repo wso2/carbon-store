@@ -568,6 +568,7 @@ var LifecycleUtils = {};
             success: function(data) {
                 var data = data.data;
                 that.currentState = data.id.toLowerCase();
+                that.isLCActionsPermitted = data.isLCActionsPermitted;
                 for (var index = 0; index < data.checkItems.length; index++) {
                     data.checkItems[index].index = index;
                 }
@@ -578,6 +579,9 @@ var LifecycleUtils = {};
                 LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED);
             }
         })
+    };
+    LifecycleImpl.prototype.userPermited= function(){
+        return this.isLCActionsPermitted;
     };
     LifecycleImpl.prototype.processHistory = function(data) {
         console.log('### Processing history ###');

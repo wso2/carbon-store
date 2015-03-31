@@ -328,7 +328,7 @@ var error = '';
         }
         //Update the state of the check items
         state.checkItems = setCheckItemState(state.checkItems, asset, am, lcName);
-        //state.isCurrentUserAbleToChangeState = isLCActionsPermitted(asset,options,req,res,session);
+        state.isLCActionsPermitted = isLCActionsPermitted(asset,options,req,res,session);
         return state;
     };
     /**
@@ -478,10 +478,10 @@ var error = '';
         });
         return lifecycleComments;
     };
-    var userPermittedToPerformActions = function(asset,options,req,res,session){
-        // var user = storeModule.server.current(session);
-        // var userManager = storeModule.userManager(user.tenantId);
-        // var permissions = require('/modules/lifecycle/permissions.js').permissions;
-        // return permissions.isLCActionsPermitted(user.username,asset.path,userManager);
+    var isLCActionsPermitted = function(asset,options,req,res,session){
+        var user = storeModule.server.current(session);
+        var userManager = storeModule.server.userManager(user.tenantId);
+        var permissions = require('/modules/lifecycle/permissions.js').permissions;
+        return permissions.isLCActionsPermitted(user.username,asset.path,userManager);
     };
 }(api));
