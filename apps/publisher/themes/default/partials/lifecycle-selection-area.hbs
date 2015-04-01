@@ -1,24 +1,18 @@
 <div>
-    {{#if assets.hasMultipleLifecycles}}
-    <label class="float-left"><h3>Available lifecycles </h3></label>
-    <select id='lifecycle-selector' class='form-control input-small'>
-        {{#each assets.availableLifecycles}}
-        <option {{#if active}} selected{{else}} {{/if}}>{{name}} </option>
-        {{/each}}
-    </select>
-    {{/if}}
-</div>
 {{#if assets.hasMultipleLifecycles}}
+    <label class="float-left"><h3>Available lifecycles </h3></label>
 <div>
     <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Other lifecycles
     <span class="fa fa-angle-down pull-right"></span></a>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+    <ul id='lifecycle-selection' class="dropdown-menu lifecycle-selection-box" role="menu" aria-labelledby="dropdownMenu1">
     	{{#each assets.availableLifecycles}}
         <li><a tabindex="-1" href="#">{{name}}</a></li>
         {{/each}}
     </ul>
 </div>
 {{/if}}
+
+</div>
 {{!--
 <option>SampleLifeCycle2</option>
 <option>MobileAppLifeCycle</option>

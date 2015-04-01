@@ -309,6 +309,16 @@ $(function() {
         LifecycleAPI.lifecycle(selectedLC).load();
         LifecycleAPI.lifecycle(selectedLC).fetchHistory();
     });
+
+    $( constants.UI_LIFECYCLE_SELECT_BOX).click(function(e) {
+        e.preventDefault();
+        var selectedLC = $(this).text();
+        //Call unload to make sure that the UI elements can de render
+        LifecycleAPI.unloadActiveLifecycle();
+        //Load the new lifecycle
+        LifecycleAPI.lifecycle(selectedLC).load();
+        LifecycleAPI.lifecycle(selectedLC).fetchHistory();
+    });
     var init = function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();
