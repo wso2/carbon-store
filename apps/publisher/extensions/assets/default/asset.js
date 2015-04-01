@@ -61,8 +61,14 @@ asset.manager = function (ctx) {
         get: function (id) {
             return this._super.get.call(this, id);
         },
-        invokeLcAction: function (asset, action) {
-            var success = this._super.invokeLcAction.call(this, asset, action);
+        invokeLcAction: function (asset, action,lcName) {
+            var success;
+            if(lcName){
+                success = this._super.invokeLcAction.call(this, asset, action,lcName);
+            }
+            else{
+                success = this._super.invokeLcAction.call(this, asset, action);
+            }
             //trigger notification on LC state change
             notifier.notifyEvent(storeConstants.LC_STATE_CHANGE_EVENT, asset.type, asset.attributes.overview_name, COMMENT, asset.path, ctx.tenantId);
             return success;
