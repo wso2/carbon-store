@@ -133,9 +133,9 @@ asset.server = function (ctx) {
                     path: 'lifecycle.jag'
                 },
                 {
-                    title:'New lifecycle ',
-                    url:'new-lifecycle',
-                    path:'new-lifecycle.jag'
+                    title:'Old lifecycle ',
+                    url:'old-lifecycle',
+                    path:'old-lifecycle.jag'
                 },
                 {
                     title:'Statistics',
