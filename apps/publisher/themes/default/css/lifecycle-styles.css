@@ -1,22 +1,24 @@
-body {
-    font: 300 14px'Helvetica Neue', Helvetica;
+.node circle{    color: #333;
+    fill: #fff;
 }
 .node rect {
     /*
   stroke: #698FF3;
   fill: #698FF3;
  */
-  stroke: #474849;
-    fill: #474849;
+    color: #333;
+  stroke: #fff;
+    fill: #fff;
+    stroke-width: 1px;
 }
 .edgePath path {
     /* stroke: #698FF3;
   fill: #698FF3;
   */
 
-  stroke: #474849;
-  fill:#474849;
-    stroke-width: 1.5px;
+  stroke: #9d9c9c;
+  fill:#9d9c9c;
+    stroke-width: 1px;
 }
 text {
     /*font-size: 10px;*/
@@ -24,7 +26,8 @@ text {
     /*fill: rgb(242, 242, 247);*/
 }
 #lifecycle-selector{ width: 400px; }
-#lifecycle-rendering-area{border:1px solid #e8e8e8; margin: 16px; width: 55%; background-image: url("../img/grid.png");  }
+#lifecycle-rendering-area{border:1px solid #e8e8e8; margin: 16px; width: 50%;
+ background-image:url("../img/grid.png"); }
 .border-box{border:1px solid #333;width: 50%; background-color: #fafafa; }
 #lifecycle-history-container{float: left; background-color: #f9f9f9; border:1px solid #ccc; height: 100%; min-height: 500px; width: 100%; }
 .btn-default{background-color: #3a9ecf; border-radius:0px; border: 0px; padding: 12px 25px; color: #ffffff; }
@@ -40,6 +43,9 @@ text {
 .margin-right-double{margin-right: 20px;}
 .margin-top-double{margin-top: 20px;}
 .margin-bottom-double{margin-bottom: 20px;}
-.float-left h3 {margin: 0px; padding-right: 10px;}
-.blue{color: #cdcdcd !important;}
+.float-left h3 {margin: 0px; padding-right: 10px; padding-left:6px;}
+.blue{color: #9b9b9b;}
 #lifecycle-comment{width:100%;  min-height: 117px;  }
+.comment-title{font-style: italic; font-weight: bold; color: #333;}
+.comment{font-style: italic;}
+

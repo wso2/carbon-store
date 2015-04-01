@@ -1,5 +1,9 @@
 {{#each history}}
-	{{#if targetState}}
-        <div class="history-entry">{{time}} 04-05-2015       {{user}} moved asset from {{state}} to  {{targetState}}  {{#if hasComment}} with  user comment: {{comment}} {{/if}}</div>
-	{{/if}}
+{{#if targetState}}
+<div class="history-entry"><span class="margin-right-double">{{time}} 04-05-2015</span>
+<span> {{user}} moved asset from {{state}} to {{targetState}} </span>
+ <br> <span class="comment-title"> {{#if hasComment}} comment:</span>
+
+<span> {{comment}} {{/if}}</span></div>
+{{/if}}
 {{/each}}

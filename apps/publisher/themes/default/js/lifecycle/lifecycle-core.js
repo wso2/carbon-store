@@ -391,9 +391,9 @@ var LifecycleUtils = {};
         for (var key in stateMap.states) {
             state = stateMap.states[key];
             g.setNode(key, {
-                label: state.id,
+                label: state.id.toUpperCase(),
                 shape: 'rect',
-                labelStyle: 'font-size: 12px;font-weight: lighter;fill: rgb(242, 242, 247);'
+                labelStyle: 'font-size: 12px;font-weight: lighter;fill: rgb(51, 51, 51);'
             });
         }
         //Add the edges
@@ -403,8 +403,9 @@ var LifecycleUtils = {};
             for (var index = 0; index < state.transitions.length; index++) {
                 transition = state.transitions[index];
                 g.setEdge(source, transition.target, {
-                    label: transition.event,
-                    lineInterpolate: 'basis'
+                    label: transition.event.toUpperCase(),
+                    lineInterpolate: 'basis',
+                    labelStyle:'font-size: 12px;font-weight: lighter;fill: rgb(255, 255, 255);'
                 });
             }
         }
@@ -414,7 +415,7 @@ var LifecycleUtils = {};
         // Set some general styles
         g.nodes().forEach(function(v) {
             var node = g.node(v);
-            node.rx = node.ry = 5;
+            node.rx = node.ry = 0;
         });
     };
     LifecycleImpl.prototype.queryDefinition = function() {
@@ -708,12 +709,12 @@ var LifecycleUtils = {};
     };
     var selectNode = function(elem){
         var rect = $(elem).find('rect');
-        rect.css('fill','#698FF3');
-        rect.css('stroke','#698FF3');
+        rect.css('fill','#3a9ecf');
+        rect.css('stroke','#3a9ecf');
     };
     var unselectNode = function(elem){
         var rect = $(elem).find('rect');
-        rect.css('fill','#474849');
-        rect.css('stroke','#474849');
+        rect.css('fill','#f9f9f9');
+        rect.css('stroke','#f9f9f9');
     };
 }());
