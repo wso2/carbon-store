@@ -33,7 +33,7 @@ var LifecycleUtils = {};
     constants.API_FETCH_HISTORY = 'apiFetchHistory';
     constants.API_UPDATE_CHECKLIST = 'apiUpdateChecklist';
     constants.UI_LIFECYCLE_SELECT_ID = '#lifecycle-selector';
-    constants.UI_LIFECYCLE_SELECT_BOX ='ul.lifecycle-selection-box li a';
+    constants.UI_LIFECYCLE_SELECT_BOX = 'ul.lifecycle-selection-box li a';
     constants.CONTAINER_SVG = 'svgContainer';
     constants.CONTAINER_GRAPH = 'graphContainer';
     constants.CONTAINER_LC_ACTION_AREA = 'lifecycleActionArea';
@@ -72,7 +72,7 @@ var LifecycleUtils = {};
     constants.NOTIFICATION_ERROR = 'error';
     constants.NOTIFICATION_WARN = 'warn';
     constants.NOTIFICATION_SUCCESS = 'success';
-    constants.MSG_WARN_CANNOT_CHANGE_STATE ='msgCannotChangeState';
+    constants.MSG_WARN_CANNOT_CHANGE_STATE = 'msgCannotChangeState';
     constants.MSG_SUCCESS_STATE_CHANGE = 'msgStateChangedSuccess';
     constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
@@ -291,7 +291,7 @@ var LifecycleUtils = {};
         $(id(container)).html('');
         renderPartial(partial, container, {
             msg: msg
-        },function(container){
+        }, function(container) {
             $(id(container)).fadeIn(5000);
         });
     };
@@ -406,7 +406,7 @@ var LifecycleUtils = {};
                 g.setEdge(source, transition.target, {
                     label: transition.event.toUpperCase(),
                     lineInterpolate: 'basis',
-                    labelStyle:'font-size: 12px;font-weight: lighter;fill: rgb(255, 255, 255);'
+                    labelStyle: 'font-size: 12px;font-weight: lighter;fill: rgb(255, 255, 255);'
                 });
             }
         }
@@ -539,10 +539,10 @@ var LifecycleUtils = {};
             success: function(data) {
                 that.previousState = that.currentState;
                 that.currentState = data.data.newState;
-                var traversableStates  = data.data.traversableStates ||[];
+                var traversableStates = data.data.traversableStates || [];
                 //If next states are not returned then lifecycle
                 //actions are not permitted
-                if(traversableStates.length === 0){
+                if (traversableStates.length === 0) {
                     that.isLCActionsPermitted = false;
                 }
                 LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
@@ -596,7 +596,7 @@ var LifecycleUtils = {};
             }
         })
     };
-    LifecycleImpl.prototype.userPermited= function(){
+    LifecycleImpl.prototype.userPermited = function() {
         return this.isLCActionsPermitted;
     };
     LifecycleImpl.prototype.processHistory = function(data) {
@@ -699,23 +699,23 @@ var LifecycleUtils = {};
         }
         return transitionMappedToAction;
     };
-    LifecycleImpl.prototype.highlightCurrentState = function(){
+    LifecycleImpl.prototype.highlightCurrentState = function() {
         var currentStateNode = this.stateNode(this.currentState);
         var previousStateNode;
         selectNode(currentStateNode.elem);
-        if(this.previousState){
+        if ((this.previousState) && (this.previousState !== this.currentState)) {
             previousStateNode = this.stateNode(this.previousState);
             unselectNode(previousStateNode.elem);
         }
     };
-    var selectNode = function(elem){
+    var selectNode = function(elem) {
         var rect = $(elem).find('rect');
-        rect.css('fill','#3a9ecf');
-        rect.css('stroke','#3a9ecf');
+        rect.css('fill', '#3a9ecf');
+        rect.css('stroke', '#3a9ecf');
     };
-    var unselectNode = function(elem){
+    var unselectNode = function(elem) {
         var rect = $(elem).find('rect');
-        rect.css('fill','#f9f9f9');
-        rect.css('stroke','#f9f9f9');
+        rect.css('fill', '#f9f9f9');
+        rect.css('stroke', '#f9f9f9');
     };
 }());
