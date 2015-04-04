@@ -55,11 +55,44 @@ $(function() {
                 var action;
                 e.preventDefault();
                 action = $(this).data('action');
-                //renderTransitionUI(action);
+                if(renderTransitionInputs(action)){
+                    console.log('Deferred executing action till transition inputs are provided');
+                    return;
+                }
                 //Get the comment
                 var commentContainer = config(constants.INPUT_TEXTAREA_LC_COMMENT);
                 var comment = $(id(commentContainer)).val() || null;
                 LifecycleAPI.lifecycle().invokeAction(action, comment);
+            });
+        });
+    };
+    var obtainTransitionInputs = function(){
+        var container = id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM));
+        var query =container+' :input';
+        var fields = $(query)||[];
+        var data = {};
+        var name;
+        var value;
+        var field;
+        for(var index = 0; index< fields.length; index++){
+            field = fields[index];
+            name = $(field).attr('name');
+            value = $(field).val();
+            data[name] = value;
+        }
+        return data;
+    };
+    var wireTransitionInputActions = function(container) {
+        $(id(container)).children('a').each(function() {
+            $(this).on('click', function(e) {
+                e.preventDefault();
+                var action = $(this).data('action');
+                var inputs = {};
+                var commentContainer = config(constants.INPUT_TEXTAREA_LC_COMMENT);
+                var comment = $(id(commentContainer)).val() || null;
+                //Obtain the inputs from the transition input form
+                inputs = obtainTransitionInputs();
+                LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
             });
         });
     };
@@ -71,6 +104,30 @@ $(function() {
                 LifecycleAPI.lifecycle().updateChecklist(index, state);
             });
         });
+    };
+    var renderTransitionInputs = function(action) {
+        var impl = LifecycleAPI.lifecycle();
+        if (!impl) {
+            throw 'Unable to obtain a reference to the current lifecycle';
+        }
+        //Check if the lifecycle has transition inputs for the action
+        var transitionInputMap = impl.transitionInputs(action);
+        //If there are no inputs do nothing
+        if ((!transitionInputMap)||(transitionInputMap.inputs.length>0)) {
+            return false;
+        }
+        var actionData = {};
+        actionData.label = action.toUpperCase();
+        actionData.action = action;
+        actionData.style = 'btn-default';
+        var inputs = transitionInputMap.inputs;
+        //Hide the lifecycle actions
+        $(id(config(constants.CONTAINER_LC_ACTION_AREA))).hide();
+        //Render the inputs 
+        renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, inputs);
+        //Render the actions
+        renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,actionData,wireTransitionInputActions);
+        return true;
     };
     var renderStateInformation = function() {
         var container = config(constants.CONTAINER_INFORMATION_AREA);
@@ -198,7 +255,7 @@ $(function() {
         }
         LifecycleAPI.lifecycle().highlightCurrentState();
     };
-    var clearComments = function(){
+    var clearComments = function() {
         var container = config(constants.INPUT_TEXTAREA_LC_COMMENT);
         $(id(container)).val('');
     };
@@ -255,6 +312,11 @@ $(function() {
         renderChecklistItems();
         renderLCActions();
     });
+    LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED,function(){
+        unrenderChecklistItems();
+        $(id(config(constants.CONTAINER_CHECKLIST_OVERLAY))).hide();
+        LifecycleAPI.notify("Failed to obtain state information ",{type:"error",global:true});
+    });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START, function() {
         blockChecklist();
     });
@@ -309,8 +371,7 @@ $(function() {
         LifecycleAPI.lifecycle(selectedLC).load();
         LifecycleAPI.lifecycle(selectedLC).fetchHistory();
     });
-
-    $( constants.UI_LIFECYCLE_SELECT_BOX).click(function(e) {
+    $(constants.UI_LIFECYCLE_SELECT_BOX).click(function(e) {
         e.preventDefault();
         var selectedLC = $(this).text();
         //Call unload to make sure that the UI elements can de render

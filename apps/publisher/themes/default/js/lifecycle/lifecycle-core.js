@@ -46,6 +46,9 @@ var LifecycleUtils = {};
     constants.CONTAINER_TRANSITION_UI_AREA = 'lifecycleTransitionUIArea';
     constants.CONTAINER_LC_NOTIFICATIONS_AREA = 'lifecycleNotificationsArea';
     constants.CONTAINER_LC_GLOBAL_NOTIFICATIONS_AREA = 'lifecycleGlobalNotificationsArea';
+    constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA = 'lifecycleTransitionInputsFieldsArea';
+    constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA = 'lifecycleTransitionInputsActionsArea';
+    constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM = 'lifecycleTRansitionInputsFieldsForm';
     constants.TEMPLATE_NOTIFICATION_ERROR = 'lifecycleTemplateNotficationError';
     constants.TEMPLATE_NOTIFICATION_INFO = 'lifecycleTemplateNotificationInfo';
     constants.TEMPLATE_NOTIFICATION_WARN = 'lifecycleTemplateNotificationWarn';
@@ -131,6 +134,30 @@ var LifecycleUtils = {};
             delete transition.forEvent;
         }
     };
+    var processTransitionInputs = function(stateDetails, datamodel) {
+        if (!stateDetails.hasOwnProperty('datamodel')) {
+            stateDetails.datamodel = {};
+        }
+        var transitions;
+        var transition;
+        var entry;
+        var executions;
+        var execution;
+        var form;
+        var forms;
+        var map;
+        forms = stateDetails.datamodel.transitionInputs = {};
+        executions = datamodel.execution || [];
+        for (var index = 0; index < executions.length; index++) {
+            execution = executions[index];
+            if (execution.transitionInputs) {
+                form = execution.transitionInputs[0];
+                map = forms[execution.forEvent.toLowerCase()] = {};
+                map.action = execution.forEvent;
+                map.inputs = form.input;
+            }
+        }
+    };
     var processDataModel = function(stateDetails, datamodel) {
         switch (datamodel.name) {
             case 'checkItems':
@@ -138,6 +165,9 @@ var LifecycleUtils = {};
                 break;
             case 'transitionUI':
                 processTransitionUI(stateDetails, datamodel);
+                break;
+            case 'transitionExecution':
+                processTransitionInputs(stateDetails, datamodel);
                 break;
             default:
                 break;
@@ -583,6 +613,10 @@ var LifecycleUtils = {};
             success: function(data) {
                 var data = data.data;
                 that.previousState = that.currentState;
+                if (!data.id) {
+                    LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED);
+                    return;
+                }
                 that.currentState = data.id.toLowerCase();
                 that.isLCActionsPermitted = data.isLCActionsPermitted;
                 for (var index = 0; index < data.checkItems.length; index++) {
@@ -698,6 +732,24 @@ var LifecycleUtils = {};
             }
         }
         return transitionMappedToAction;
+    };
+    LifecycleImpl.prototype.transitionInputs = function(action) {
+        var currentState = this.currentState;
+        var state = this.state(currentState);
+        var stateDataModel = state.datamodel || {};
+        var transitionInputs = stateDataModel.transitionInputs || {};
+        var targetAction = action.toLowerCase();
+        if (transitionInputs.hasOwnProperty(targetAction)) {
+            return transitionInputs[targetAction];
+        }
+        return null;
+        // return {
+        //     "action": "Promote",
+        //     "inputs": [{
+        //         "name": "id",
+        //         "type": "text"
+        //     }]
+        // };
     };
     LifecycleImpl.prototype.highlightCurrentState = function() {
         var currentStateNode = this.stateNode(this.currentState);

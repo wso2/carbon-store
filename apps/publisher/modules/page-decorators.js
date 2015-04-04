@@ -59,6 +59,7 @@ var pageDecorators = {};
             }
             modifiedLifecycles.push({"active":false,"name":"SampleLifeCycle2"});
             modifiedLifecycles.push({"active":false,"name":"MobileAppLifeCycle"});
+            modifiedLifecycles.push({"active":false,"name":"MockLifecycle"});
             page.assets.availableLifecycles = modifiedLifecycles;
             page.assets.hasMultipleLifecycles = true;//(lifecycles.length > 1) ? true : false;
         }

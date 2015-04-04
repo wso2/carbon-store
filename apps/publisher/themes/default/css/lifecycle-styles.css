@@ -48,4 +48,21 @@ text {
 #lifecycle-comment{width:100%;  min-height: 117px;  }
 .comment-title{font-style: italic; font-weight: bold; color: #333;}
 .comment{font-style: italic;}
-
+.alert-danger {
+color: #a94442;
+background-color: #f2dede;
+border-left:3px solid #a30300;
+border-radius: 0px;
+}
+.alert-warning {
+color: #8a6d3b;
+background-color: #fcf8e3;
+border-left:3px solid #8a6d3b;
+border-radius: 0px;
+}
+.alert-success {
+color: #3c763d;
+background-color: #dff0d8;
+border-left:3px solid #3c763d;
+border-radius: 0px;
+}
