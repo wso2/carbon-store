@@ -169,6 +169,9 @@ asset.renderer = function(ctx) {
             },
             embedLinks: function(page, meta) {
                 return decoratorApi.embedLinks(ctx,page, meta);
+            },
+            populateAssetVersionDetails:function(page,meta){
+                return decoratorApi.populateAssetVersionDetails(ctx,page,this);
             }
         }
     };
