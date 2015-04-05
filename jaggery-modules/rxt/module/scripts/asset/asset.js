@@ -611,6 +611,26 @@ var asset = {};
         });
         return items;
     };
+    var getLifecycleName = function(artifact){
+        if(!artifact){
+            return null;
+        }
+        return artifact.lifecycle;
+    }
+    /**
+     * Determines if there is a lifecycle argument provided
+     * when the function is invoked
+     * @param  {Array} args  The function arguments array
+     * @param  {Object} artifact  The artifact instance
+     * @param  {Number} index The index at which the lifecycle name must be checked
+     * @return {String|NULL}       If the lifecycle name is provided it is returned else NULL
+     */
+    var resolveLCName = function(args,artifact,index){
+        if((args.length-1) < index){
+            return getLifecycleName(artifact);
+        }
+        return args[index];
+    };
     /**
      * Attachs a lifecycle to the provided asset.The type of
      * lifecycle will be read from the configuration if a lifecycle is not provided.If a lifecycle cannot be found
@@ -645,6 +665,7 @@ var asset = {};
     };
     AssetManager.prototype.invokeDefaultLcAction = function(asset) {
         var success = false;
+        var lifecycleName = resolveLCName(arguments,asset,1);
         if (!asset) {
             log.error('Failed to invoke default  lifecycle action as an asset object was not provided.');
             return success;
@@ -654,7 +675,7 @@ var asset = {};
             log.warn('Failed to invoke default action of lifecycle as one was not provided');
             return success;
         }
-        success = this.invokeLcAction(asset, defaultAction);
+        success = this.invokeLcAction(asset, defaultAction,lifecycleName);
         return success;
     };
     /**
@@ -665,6 +686,7 @@ var asset = {};
      */
     AssetManager.prototype.invokeLcAction = function(asset, action) {
         var success = false;
+        var lifecycleName = resolveLCName(arguments,asset,2);
         if (!action) {
             log.error('Failed to invokeAction as an action was not provided for asset: ' + stringify(asset));
             return success;
@@ -674,7 +696,7 @@ var asset = {};
             return success;
         }
         try {
-            this.am.promoteLifecycleState(action, asset);
+            this.am.promoteLifecycleState(action, asset,lifecycleName);
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
@@ -691,6 +713,7 @@ var asset = {};
      */
     AssetManager.prototype.invokeLifecycleCheckItem = function(asset, checkItemIndex, checkItemState) {
         var success = false;
+        var lifecycleName = resolveLCName(arguments,asset,3);
         if (!asset) {
             log.warn('Unable to locate asset details in order to invoke check item state change');
             return success;
@@ -701,7 +724,7 @@ var asset = {};
             return success;
         }
         //Obtain the number of check items for this state
-        var checkItems = this.getLifecycleCheckItems(asset);
+        var checkItems = this.getLifecycleCheckItems(asset,lifecycleName);
         //Check if the check item index is valid
         if ((checkItemIndex < 0) || (checkItemIndex > checkItems.length)) {
             log.error('The provided check item index ' + checkItemIndex + ' is not valid.It must be between 0 and ' + checkItems.length);
@@ -712,9 +735,9 @@ var asset = {};
         //TODO: We could invoke getCheckLifecycleCheckItems and check the item index to see if the operation was successfull.
         try {
             if (checkItemState == true) {
-                this.am.checkItem(checkItemIndex, asset);
+                this.am.checkItem(checkItemIndex, asset,lifecycleName);
             } else {
-                this.am.uncheckItem(checkItemIndex, asset);
+                this.am.uncheckItem(checkItemIndex, asset,lifecycleName);
             }
         } catch (e) {
             log.error(e);
@@ -729,12 +752,24 @@ var asset = {};
      */
     AssetManager.prototype.getLifecycleCheckItems = function(asset) {
         var checkItems = [];
+        var lifecycleName = resolveLCName(arguments,asset,1);
         try {
-            checkItems = this.am.getCheckListItemNames(asset);
+            checkItems = this.am.getCheckListItemNames(asset,lifecycleName);
         } catch (e) {
             log.error(e);
         }
         return checkItems;
+    };
+    AssetManager.prototype.getLifecycleState = function(asset,lifecycle){
+        return this.am.getLifecycleState(asset,lifecycle);
+    };
+    AssetManager.prototype.getLifecycleHistory = function(id){
+        var artifact = this.am.get(id);
+        var historyXML = this.am.getLifecycleHistory(artifact);
+        return historyXML;
+    };
+    AssetManager.prototype.listAllAttachedLifecycles = function(id){
+        return this.am.listAllAttachedLifecycles(id);
     };
     AssetManager.prototype.createVersion = function(options, newVersion) {};
     AssetManager.prototype.getName = function(asset) {

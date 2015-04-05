@@ -1,0 +1,55 @@
+<% require('/modules/publisher.js').exec(function(ctx) {
+    var storeAPI = require('store');
+    var assetAPI = require('rxt').asset;
+    var am = assetAPI.createUserAssetManager(session, 'servicex');
+    var afm = am.am;
+    var manager = afm.manager;
+    var q = {};
+    var log = new Log();
+
+
+    q.propertyName = 'default';
+    q.rightPropertyValue = true;
+    q.rightOp = 'eq';
+    q.leftOp = 'na';
+    //q.overview_name='wso2';
+    var defaultPaging = {
+        'start': 0,
+        'count': 1000,
+        'sortOrder': 'desc',
+        'sortBy': 'overview_createdtime',
+        'paginationLimit': 1000
+    };
+    var result =afm.search(q,defaultPaging);
+    log.info(result);
+     
+     
+     
+	// var HashMap = java.util.HashMap;
+ //    var ArrayList = java.util.ArrayList;
+ //    var map = new HashMap();
+
+ //    var propList = new ArrayList();
+ //    propList.add('default');
+ //    var rightPropertyList = new ArrayList();
+ //    rightPropertyList.add('true');
+ //    var rightOpList = ArrayList();
+ //    rightOpList.add('eq');
+ //    var leftOpList = ArrayList();
+ //    leftOpList.add('na');
+
+ //    map.put('propertyName',propList);
+ //    map.put('rightPropertyValue',rightPropertyList);
+ //    map.put('rightOp',rightOpList);
+ //    map.put('leftOp',leftOpList);
+
+ //    var artifacts = manager.findGenericArtifacts(map);
+ //    log.info(artifacts);
+
+
+
+// var URL = 'https://na9.salesforce.com/services/data/v26.0/query/?q=SELECT+Id+FROM+Opportunity+WHERE+CreatedDate+>=+2015-02-01T00:00:00Z';
+// var url = encodeURI(URL);
+// var result = get(url);
+// log.info(result);
+}, request, response, session); %>

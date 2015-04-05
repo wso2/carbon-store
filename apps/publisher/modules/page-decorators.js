@@ -33,11 +33,41 @@ var pageDecorators = {};
         if (!values) {
             return;
         }
-
         for (var index = 0; index < values.length; index++) {
             categoryValues.push(values[index].value);
         }
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
+    };
+    pageDecorators.populateAttachedLifecycles = function(ctx, page, utils) {
+        var am = assetManager(ctx);
+        //Check if an asset exists
+        if ((page.assets) && (page.assets.id)) {
+            var lifecycles = am.listAllAttachedLifecycles(page.assets.id);
+            var lifecycle;
+            var modifiedLifecycles = [];
+            var entry ;
+            for (var index = 0; index < lifecycles.length; index++) {
+                lifecycle = lifecycles[index];
+                entry = {};
+                entry.active = false;
+                entry.name = lifecycle;
+                if(page.assets.lifecycle ===  lifecycle){
+                    entry.active = true;
+                }
+                modifiedLifecycles.push(entry);
+            }
+            modifiedLifecycles.push({"active":false,"name":"SampleLifeCycle2"});
+            modifiedLifecycles.push({"active":false,"name":"MobileAppLifeCycle"});
+            modifiedLifecycles.push({"active":false,"name":"MockLifecycle"});
+            page.assets.availableLifecycles = modifiedLifecycles;
+            page.assets.hasMultipleLifecycles = true;//(lifecycles.length > 1) ? true : false;
+        }
+    };
+    var assetManager = function(ctx) {
+        var rxt = require('rxt');
+        var type = ctx.assetType;
+        var am = rxt.asset.createUserAssetManager(ctx.session, type);
+        return am;
     };
 }(pageDecorators));

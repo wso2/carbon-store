@@ -19,30 +19,26 @@
  */
 var caramel;
 require('/modules/publisher.js').exec(function(ctx) {
-    var log = new Log();
-    var rxtModule = require('rxt');
-    var asset = rxtModule.asset;
     caramel = require('caramel');
-    var am;
+    var ui = require('rxt').ui;
+    var asset = require('rxt').asset;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var options = uriMatcher.match('/{context}/asts/{type}/{pageName}/{+id}') || uriMatcher.match('/{context}/asts/{type}/{pageName}');
-    var page;
-    var output;
-    var asset;
-    if (!options.id) {
-        ctx.response.sendError(400, 'Cannot render the lifecycle details without an asset id');
-        return;
+    if (!options) {
+        response.sendError(400, 'Could not locate an endpoint for your request.Make sure that you provide an id');
+    } else if (!options.id) {
+        response.sendError(400, 'An id must be provided when viewing details of a particular asset');
+    } else {
+        var type = options.type;
+        var am = asset.createUserAssetManager(session, type);
+        var page = ui.buildPage(session, request);
+        var assets = am.get(options.id);
+        if (assets == null) {
+            response.sendError(404, 'The asset with id: ' + options.id + ' could not be located.');
+        } else {
+            //print(assets);
+            var output = am.render(assets, page).lifecycle();
+            caramel.render(output);
+        }
     }
-    am = asset.createUserAssetManager(ctx.session, options.type);
-    try {
-        asset = am.get(options.id);
-    }
-    catch(e){
-        log.error(e);
-        ctx.response.sendError(404,'Asset was not found');
-        return;
-    }
-    page = rxtModule.ui.buildPage(ctx.session, ctx.request);
-    output = am.render(asset,page)._custom();
-    caramel.render(output);
 }, request, response, session); %>

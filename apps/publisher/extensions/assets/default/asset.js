@@ -69,8 +69,14 @@ asset.manager = function (ctx) {
         get: function (id) {
             return this._super.get.call(this, id);
         },
-        invokeLcAction: function (asset, action) {
-            var success = this._super.invokeLcAction.call(this, asset, action);
+        invokeLcAction: function (asset, action,lcName) {
+            var success;
+            if(lcName){
+                success = this._super.invokeLcAction.call(this, asset, action,lcName);
+            }
+            else{
+                success = this._super.invokeLcAction.call(this, asset, action);
+            }
             //trigger notification on LC state change
             notifier.notifyEvent(storeConstants.LC_STATE_CHANGE_EVENT, asset.type, asset.name, COMMENT, asset.path, ctx.tenantId);
             return success;
@@ -87,6 +93,10 @@ asset.server = function (ctx) {
                 {
                     url: 'assets',
                     path: 'assets.jag'
+                },
+                {
+                    url:'asset',
+                    path:'asset.jag'
                 },
                 {
                     url:'statistics',
@@ -129,6 +139,11 @@ asset.server = function (ctx) {
                     title: 'Lifecycle',
                     url: 'lifecycle',
                     path: 'lifecycle.jag'
+                },
+                {
+                    title:'Old lifecycle ',
+                    url:'old-lifecycle',
+                    path:'old-lifecycle.jag'
                 },
                 {
                     title:'Statistics',
@@ -262,7 +277,7 @@ asset.renderer = function (ctx) {
             var tables = page.assets.tables;
             for (var index in tables) {
                 var table = tables[index];
-                if (table.name == 'overview') {
+                if ((table.name == 'overview') &&(table.fields.provider)) {
                     table.fields.provider.value = page.cuser.username;
                 }
             }
@@ -323,6 +338,11 @@ asset.renderer = function (ctx) {
                 ribbon.query = 'Query';
                 ribbon.breadcrumb = assetTypes;
                 return page;
+            },
+            populateAttachedLifecycles: function(page){
+                if(page.assets.id){
+                    require('/modules/page-decorators.js').pageDecorators.populateAttachedLifecycles(ctx,page,this);
+                }
             }
         }
     };
