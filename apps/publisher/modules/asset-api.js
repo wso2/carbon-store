@@ -415,6 +415,13 @@ var result;
         }
         return result;
     };
+    api.setDefaultAsset = function(options,req,res,session){
+        var asset = rxtModule.asset;
+        //var assetManager = asset.creat
+    };
+    api.getGroup = function(options,req,res,session){
+
+    };
     /**
      * The function deletes an asset by id
      * @param options  Object containing parameters id, type

@@ -343,6 +343,11 @@ asset.renderer = function (ctx) {
                 if(page.assets.id){
                     require('/modules/page-decorators.js').pageDecorators.populateAttachedLifecycles(ctx,page,this);
                 }
+            },
+            populateAssetVersionDetails: function(page){
+                if(page.assets.id){
+                    require('/modules/page-decorators.js').pageDecorators.populateAssetVersionDetails(ctx, page, this);
+                }
             }
         }
     };

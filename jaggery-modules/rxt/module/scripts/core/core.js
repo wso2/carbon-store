@@ -330,6 +330,9 @@ var core = {};
         }
         return tables;
     };
+    RxtManager.prototype.getMediaType = function(type){
+        return '';
+    };
     /**
      * Returns the name of the attribute that is used as the name property of assets of a given RXT type
      * @example

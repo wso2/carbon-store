@@ -179,12 +179,49 @@ var asset = {};
      * @lends AssetManager.prototype
      */
     AssetManager.prototype.create = function(options) {
+        var isDefault =false;
+        if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT))&&(options[constants.Q_PROP_DEFAULT] === true)){
+            delete options[constants.Q_PROP_DEFAULT];
+            isDefault = true;
+        }
         var id = this.am.add(options);
+        options.id = id;
+        //If the default flag was provided then make this
+        //asset the default asset
+        if(isDefault){
+            this.setAsDefaultAsset(options);
+        }
         if (!id) {
             log.warn('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
             return;
         }
-        options.id = id;
+    };
+    /**
+     * Makes the provided asset the default asset by retrieving the group of assets it
+     * belongs to and removing the default property from any existing assets.The provided
+     * asset is then made the default asset by setting the default property
+     * to true
+     * @param {[Object]} currentAsset A JSON object representing the current asset
+     */
+    AssetManager.prototype.setAsDefaultAsset = function(currentAsset){
+        //Obtain group the asset belongs to
+        var group = this.getAssetGroup(currentAsset.path);
+        var asset;
+        //Go through each asset in the group and remove the default property
+        //if it is present 
+        for(var index =0 ; index<group.length; index++){
+            asset = group[index];
+            //Omit the current asset 
+            if(asset.id !== currentAsset.id){
+                var properties = this.registry.properties(asset.path);
+                //Check if the default property is present and remove it
+                if(properties.hasOwnProperty(constants.PROP_DEFAULT)){
+                    this.registry.removeProperty(asset.path,constants.PROP_DEFAULT);
+                }
+            }
+        }
+        //Make the current asset the default asset
+        this.registry.addProperty(currentAsset.path,constants.PROP_DEFAULT,true);
     };
     /**
      * Updates an existing asset instance.The provided asset instance must have the id property as well as all
@@ -192,7 +229,14 @@ var asset = {};
      * @param  {Object} options A JSON object of the asset instance to be updated
      */
     AssetManager.prototype.update = function(options) {
+        var isDefault = false;
+        if((options.hasOwnProperty(constants.Q_PROP_DEFAULT))&&(options[constants.Q_PROP_DEFAULT] === true)){
+            isDefault = false;
+        }
         this.am.update(options);
+        if(isDefault){
+            this.setAsDefaultAsset(options);
+        }
     };
     /**
      * Removes the asset instance with the provided id
@@ -266,6 +310,7 @@ var asset = {};
      * @throws An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.
      */
     AssetManager.prototype.list = function(paging) {
+        log.info('[group] list method called');
         var paging = paging || this.defaultPaging;
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
@@ -306,13 +351,82 @@ var asset = {};
      * @return {Array}        An array of asset instances filtered by the query object
      */
     AssetManager.prototype.search = function(query, paging) {
-        var paging = paging || this.defaultPaging;
+        var assets = [];
+        paging = paging || this.defaultPaging;
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
-        var assets = this.am.search(query, paging);
+        //Check if a group by property is present in the query
+        if((query.hasOwnProperty(constants.Q_PROP_GROUP))&&(query[constants.Q_PROP_GROUP] === true)){
+            //Delete the group property as it is not used in the
+            //search
+            log.info('[group] group search');
+            delete query[constants.Q_PROP_GROUP];
+            return this.searchByGroup(query,paging);
+        }
+        log.info('[group] non group search');
+        assets = this.am.search(query, paging);
         addAssetsMetaData(assets, this);
         return assets;
+    };
+    /**
+     * Executes a queryto retrieve a set of assets bound by a paging object and
+     * then grouped
+     * @param  {[type]} query  A JSON object representing a query to be executed
+     * @param  {[type]} paging A paging object
+     * @return {[type]}        An array of asset instances filtered by the query object
+     *                         and grouped
+     */
+    AssetManager.prototype.searchByGroup = function(query, paging) {
+        query = query ||{};
+        var assets = [];
+        paging = paging || this.defaultPaging;
+        query.propertyName = constants.PROP_DEFAULT;
+        query.rightPropertyValue = true;
+        query.rightOp = 'eq';
+        query.leftOp = 'na';
+        assets = this.am.search(query,paging);
+        addAssetMetaData(assets);
+        return assets;
+    };
+    /**
+     * Retrieves the set of assets that have the same name
+     * @param  {[type]} name   [description]
+     * @param  {[type]} paging [description]
+     * @return {[type]}        [description]
+     */
+    AssetManager.prototype.getAssetGroup = function(name, paging) {
+        //Obtain the field which is used as the name field
+        var nameField = this.rxtManager.getNameAttribute(this.type);
+        var query = {};
+        var assets = [];
+        query.mediaType = this.rxtManager.getMediaType(this.type);
+        query.resourcePath = name;
+        paging = paging || this.defaultPaging;
+        assets = this.am.search(query, paging);
+        addAssetMetaData(assets);
+        return assets;
+    };
+    AssetManager.prototype.setDefaultAssetInfo = function(asset){
+        //log.info('[group] setting default asset info ');
+        //Obtain all of the properties of the asset
+        if((!asset)||(!asset.path)){
+            throw 'Unable to determine if the provided asset is the default asset since resource path was not found';
+        }
+        var properties = this.registry.properties(asset.path);
+        var isDefault = false;
+        if((properties.hasOwnProperty(constants.PROP_DEFAULT)) && (properties[constants.PROP_DEFAULT]===true)){
+            isDefault = true;
+        }
+        asset[constants.Q_PROP_DEFAULT] = isDefault;
+        //log.info('[group] finished setting default asset info');
+        return asset;
+    };
+    AssetManager.prototype.isDefaultAsset = function(asset){
+        if(asset.hasOwnProperty(constants.Q_PROP_DEFAULT)){
+            return asset[constants.Q_PROP_DEFAULT];
+        }
+        return false;
     };
     /**
      * Returns the assets that have been recently added.A user can optionally define a query and the count of assets to be returned.The default count
@@ -411,7 +525,6 @@ var asset = {};
         }
         return tagz;
     };
-
     /**
      * Returns the list of assets that have the provided tag
      * attached to it.If a paging value is provided then it is used,else
@@ -420,7 +533,7 @@ var asset = {};
      * @param  {Object} paging  A paging object
      * @return {Array}          An array of assets that have the tag applied to them
      */
-    AssetManager.prototype.tagged = function (tagName, paging) {
+    AssetManager.prototype.tagged = function(tagName, paging) {
         //TODO instead of this logic need to request for a search by tag api from artifact level
         var assetz;
         var assets = [];
@@ -432,13 +545,13 @@ var asset = {};
                 tag = tagName;
             try {
                 assetz = this.am.search(null, paging);
-                assetz.forEach(function (asset) {
+                assetz.forEach(function(asset) {
                     var tags = registry.tags(asset.path);
                     if (tags.indexOf(tag) === -1) {
                         return;
                     }
                     //TODO: remove String casting when new carbon modules is pointed
-                    if(states.indexOf(String(asset.lifecycleState)) === -1) {
+                    if (states.indexOf(String(asset.lifecycleState)) === -1) {
                         return;
                     }
                     assets.push(asset);
@@ -611,8 +724,8 @@ var asset = {};
         });
         return items;
     };
-    var getLifecycleName = function(artifact){
-        if(!artifact){
+    var getLifecycleName = function(artifact) {
+        if (!artifact) {
             return null;
         }
         return artifact.lifecycle;
@@ -625,8 +738,8 @@ var asset = {};
      * @param  {Number} index The index at which the lifecycle name must be checked
      * @return {String|NULL}       If the lifecycle name is provided it is returned else NULL
      */
-    var resolveLCName = function(args,artifact,index){
-        if((args.length-1) < index){
+    var resolveLCName = function(args, artifact, index) {
+        if ((args.length - 1) < index) {
             return getLifecycleName(artifact);
         }
         return args[index];
@@ -665,7 +778,7 @@ var asset = {};
     };
     AssetManager.prototype.invokeDefaultLcAction = function(asset) {
         var success = false;
-        var lifecycleName = resolveLCName(arguments,asset,1);
+        var lifecycleName = resolveLCName(arguments, asset, 1);
         if (!asset) {
             log.error('Failed to invoke default  lifecycle action as an asset object was not provided.');
             return success;
@@ -675,7 +788,7 @@ var asset = {};
             log.warn('Failed to invoke default action of lifecycle as one was not provided');
             return success;
         }
-        success = this.invokeLcAction(asset, defaultAction,lifecycleName);
+        success = this.invokeLcAction(asset, defaultAction, lifecycleName);
         return success;
     };
     /**
@@ -686,7 +799,7 @@ var asset = {};
      */
     AssetManager.prototype.invokeLcAction = function(asset, action) {
         var success = false;
-        var lifecycleName = resolveLCName(arguments,asset,2);
+        var lifecycleName = resolveLCName(arguments, asset, 2);
         if (!action) {
             log.error('Failed to invokeAction as an action was not provided for asset: ' + stringify(asset));
             return success;
@@ -696,7 +809,7 @@ var asset = {};
             return success;
         }
         try {
-            this.am.promoteLifecycleState(action, asset,lifecycleName);
+            this.am.promoteLifecycleState(action, asset, lifecycleName);
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
@@ -713,7 +826,7 @@ var asset = {};
      */
     AssetManager.prototype.invokeLifecycleCheckItem = function(asset, checkItemIndex, checkItemState) {
         var success = false;
-        var lifecycleName = resolveLCName(arguments,asset,3);
+        var lifecycleName = resolveLCName(arguments, asset, 3);
         if (!asset) {
             log.warn('Unable to locate asset details in order to invoke check item state change');
             return success;
@@ -724,7 +837,7 @@ var asset = {};
             return success;
         }
         //Obtain the number of check items for this state
-        var checkItems = this.getLifecycleCheckItems(asset,lifecycleName);
+        var checkItems = this.getLifecycleCheckItems(asset, lifecycleName);
         //Check if the check item index is valid
         if ((checkItemIndex < 0) || (checkItemIndex > checkItems.length)) {
             log.error('The provided check item index ' + checkItemIndex + ' is not valid.It must be between 0 and ' + checkItems.length);
@@ -735,9 +848,9 @@ var asset = {};
         //TODO: We could invoke getCheckLifecycleCheckItems and check the item index to see if the operation was successfull.
         try {
             if (checkItemState == true) {
-                this.am.checkItem(checkItemIndex, asset,lifecycleName);
+                this.am.checkItem(checkItemIndex, asset, lifecycleName);
             } else {
-                this.am.uncheckItem(checkItemIndex, asset,lifecycleName);
+                this.am.uncheckItem(checkItemIndex, asset, lifecycleName);
             }
         } catch (e) {
             log.error(e);
@@ -752,23 +865,23 @@ var asset = {};
      */
     AssetManager.prototype.getLifecycleCheckItems = function(asset) {
         var checkItems = [];
-        var lifecycleName = resolveLCName(arguments,asset,1);
+        var lifecycleName = resolveLCName(arguments, asset, 1);
         try {
-            checkItems = this.am.getCheckListItemNames(asset,lifecycleName);
+            checkItems = this.am.getCheckListItemNames(asset, lifecycleName);
         } catch (e) {
             log.error(e);
         }
         return checkItems;
     };
-    AssetManager.prototype.getLifecycleState = function(asset,lifecycle){
-        return this.am.getLifecycleState(asset,lifecycle);
+    AssetManager.prototype.getLifecycleState = function(asset, lifecycle) {
+        return this.am.getLifecycleState(asset, lifecycle);
     };
-    AssetManager.prototype.getLifecycleHistory = function(id){
+    AssetManager.prototype.getLifecycleHistory = function(id) {
         var artifact = this.am.get(id);
         var historyXML = this.am.getLifecycleHistory(artifact);
         return historyXML;
     };
-    AssetManager.prototype.listAllAttachedLifecycles = function(id){
+    AssetManager.prototype.listAllAttachedLifecycles = function(id) {
         return this.am.listAllAttachedLifecycles(id);
     };
     AssetManager.prototype.createVersion = function(options, newVersion) {};
@@ -907,6 +1020,8 @@ var asset = {};
         page.assets.thumbnail = am.getThumbnail(assets);
         page.assets.banner = am.getBanner(assets);
         page.assetMeta.categories = am.getCategories();
+        page.assets[constants.Q_PROP_DEFAULT] = am.isDefaultAsset(assets);
+        //am.setDefaultAssetInfo(page.assets);
         page.assetMeta.searchFields = am.getSearchableFields();
         return page;
     };
@@ -957,6 +1072,7 @@ var asset = {};
         asset.thumbnail = am.getThumbnail(asset);
         asset.banner = am.getBanner(asset);
         asset.rating = 0;
+        am.setDefaultAssetInfo(asset);
     };
     /**
      * Combines page details with the asset details combined with the rxt template.If an array of assets

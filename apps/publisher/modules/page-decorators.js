@@ -64,6 +64,18 @@ var pageDecorators = {};
             page.assets.hasMultipleLifecycles = true;//(lifecycles.length > 1) ? true : false;
         }
     };
+    pageDecorators.populateAssetVersionDetails = function(ctx,page,utils){
+        if((page.assets)&&(page.assets.id)){
+            var am = assetManager(ctx);
+            var info = page.assets;
+            //page.assetVersions = am.getGroup(page.assets.path);
+            info.versions = [];
+            info.versions.push({name:"apples",id:"112"});
+            info.versions.push({name:"oranges",id:"113"});
+            info.isDefault = am.isDefaultAsset(page.assets);
+            info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
+        }
+    };
     var assetManager = function(ctx) {
         var rxt = require('rxt');
         var type = ctx.assetType;
