@@ -428,6 +428,21 @@ var core = {};
         }
         return null;
     };
+    RxtManager.prototype.getProviderAttribute = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return timestamp attribute');
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return timestamp attribute';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.providerAttribute)) {
+            return rxtDefinition.meta.providerAttribute;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate timestamp attribute for type: ' + type + '.Check if a timestamp property is defined in the rxt configuration.');
+        }
+        return null;   
+    }
+
     /**
      * Returns the name of the lifecycle that is attached to assets of a given RXT type
      * If no lifecycle is specified then an empty string is returned.
