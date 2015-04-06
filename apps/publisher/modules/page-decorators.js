@@ -55,7 +55,6 @@ var pageDecorators = {};
             var lifecycle;
             var modifiedLifecycles = [];
             var entry ;
-            log.info(lifecycles);
             for (var index = 0; index < lifecycles.length; index++) {
                 lifecycle = lifecycles[index];
                 entry = {};
