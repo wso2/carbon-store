@@ -57,11 +57,11 @@ var pageDecorators = {};
                 }
                 modifiedLifecycles.push(entry);
             }
-            modifiedLifecycles.push({"active":false,"name":"SampleLifeCycle2"});
-            modifiedLifecycles.push({"active":false,"name":"MobileAppLifeCycle"});
-            modifiedLifecycles.push({"active":false,"name":"MockLifecycle"});
+            //modifiedLifecycles.push({"active":false,"name":"SampleLifeCycle2"});
+            //modifiedLifecycles.push({"active":false,"name":"MobileAppLifeCycle"});
+            //modifiedLifecycles.push({"active":false,"name":"MockLifecycle"});
             page.assets.availableLifecycles = modifiedLifecycles;
-            page.assets.hasMultipleLifecycles = true;//(lifecycles.length > 1) ? true : false;
+            page.assets.hasMultipleLifecycles = (lifecycles.length > 1) ? true : false;
         }
     };
     var assetManager = function(ctx) {
