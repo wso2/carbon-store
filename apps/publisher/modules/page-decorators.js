@@ -43,10 +43,19 @@ var pageDecorators = {};
         var am = assetManager(ctx);
         //Check if an asset exists
         if ((page.assets) && (page.assets.id)) {
-            var lifecycles = am.listAllAttachedLifecycles(page.assets.id);
+            var lifecycles;// = am.listAllAttachedLifecycles(page.assets.id);
+            //TODO:Temp fix since the listAllAttachedLifecycles method does not
+            //return all attached lifecycles
+            var resource = am.am.registry.get(page.assets.path);
+            if(!resource){
+                log.error('Unable to retrieve the attached lifecycle details');
+                return;
+            }
+            lifecycles = resource.aspects();
             var lifecycle;
             var modifiedLifecycles = [];
             var entry ;
+            log.info(lifecycles);
             for (var index = 0; index < lifecycles.length; index++) {
                 lifecycle = lifecycles[index];
                 entry = {};
@@ -57,11 +66,8 @@ var pageDecorators = {};
                 }
                 modifiedLifecycles.push(entry);
             }
-            modifiedLifecycles.push({"active":false,"name":"SampleLifeCycle2"});
-            modifiedLifecycles.push({"active":false,"name":"MobileAppLifeCycle"});
-            modifiedLifecycles.push({"active":false,"name":"MockLifecycle"});
             page.assets.availableLifecycles = modifiedLifecycles;
-            page.assets.hasMultipleLifecycles = true;//(lifecycles.length > 1) ? true : false;
+            page.assets.hasMultipleLifecycles = (lifecycles.length > 1) ? true : false;
         }
     };
     pageDecorators.populateAssetVersionDetails = function(ctx,page,utils){
