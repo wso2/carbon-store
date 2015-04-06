@@ -71,8 +71,8 @@
 /* sorting */
 .dropdown-menu {
     position: absolute;
-    top: 50px;
-    left: 0;
+    top: 244px;
+	left: 251px;
     z-index: 1000;
     display: none;
     float: left;
@@ -82,14 +82,9 @@
     font-size: 14px;
     text-align: left;
     list-style: none;
-    background-color: transparent;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    border: 0px solid #ccc;
-    border: 0px solid rgba(0,0,0,.15);
+    background-color: white;
     border-radius: 0px;
-    -webkit-box-shadow: 0 0px 0px rgba(0,0,0,.175);
-    box-shadow: 0 0px 0px rgba(0,0,0,.175);
+    width: 230px;
 }
 .dropdown-menu-content {
     background-color: #232323;
