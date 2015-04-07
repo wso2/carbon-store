@@ -227,13 +227,8 @@ var asset = {};
         var asset;
         //Go through each asset in the group and remove the default property
         //if it is present 
-        log.info('grouping count: '+group.length);
-        log.info('checking for previous versions ');
-        log.info('current asset id: '+currentAsset.id);
         for (var index = 0; index < group.length; index++) {
             asset = group[index];
-            log.info('asset: '+asset.id);
-            log.info(asset);
             //Omit the current asset 
             if (asset.id !== currentAsset.id) {
                 var properties = this.registry.properties(asset.path);
@@ -243,8 +238,6 @@ var asset = {};
                 }
             }
         }
-        log.info('Current Asset');
-        log.info(currentAsset);
         //Make the current asset the default asset
         this.registry.addProperty(currentAsset.path, constants.PROP_DEFAULT, true);
     };
@@ -256,11 +249,16 @@ var asset = {};
     AssetManager.prototype.update = function(options) {
         var isDefault = false;
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
-            isDefault = false;
+            isDefault = true;
         }
         this.am.update(options);
+        var asset = this.am.get(options.id);
+        if(!this.rxtManager.isGroupingEnabled(this.type)){
+            log.info('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            return;
+        }
         if (isDefault) {
-            this.setAsDefaultAsset(options);
+            this.setAsDefaultAsset(asset);
         }
     };
     /**

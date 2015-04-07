@@ -241,9 +241,11 @@ var result;
         var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
         var asset = null;
+        var meta;
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
         } else {
+            meta = extractMetaProps(assetReq);
             asset = am.importAssetFromHttpRequest(assetReq);
         }
         var original = null;
@@ -268,6 +270,8 @@ var result;
                 asset.name = am.getName(asset);
             }
             try {
+                //Set any meta properties provided by the API call (e.g. _default)
+                setMetaProps(asset,meta);
                 am.update(asset);
             } catch (e) {
                 asset = null;
