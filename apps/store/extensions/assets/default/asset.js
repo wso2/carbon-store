@@ -131,7 +131,11 @@ asset.configure = function() {
                 size: 10
             },
             thumbnail: 'images_thumbnail',
-            banner: 'images_banner'
+            banner: 'images_banner',
+            versionAttribute:'overview_version',
+            providerAttribute:'overview_provider',
+            timestamp:'overview_createdtime',
+            groupingEnabled:true
         }
     };
 };
