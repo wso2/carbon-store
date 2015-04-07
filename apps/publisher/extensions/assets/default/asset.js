@@ -186,7 +186,8 @@ asset.configure = function() {
             banner: 'images_banner',
             versionAttribute: 'overview_version',
             providerAttribute: 'overview_provider',
-            timestamp: 'overview_createdtime'
+            timestamp: 'overview_createdtime',
+            groupingEnabled:true
         }
     };
 };

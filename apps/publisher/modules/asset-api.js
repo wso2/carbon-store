@@ -164,6 +164,23 @@ var result;
             }
         }
     };
+    var extractMetaProps = function(asset){
+        var meta = {};
+        for(var key in asset){
+            if(key.charAt(0)==='_'){
+                meta[key] = asset[key];
+            }
+        }
+        if(meta.hasOwnProperty(constants.Q_PROP_DEFAULT)){
+            meta[constants.Q_PROP_DEFAULT] = true;
+        }
+        return meta;
+    };
+    var setMetaProps = function(asset,meta){
+        for(var key in meta){
+            asset[key] = meta[key];
+        }
+    }
     /**
      * api to create a new asset
      * @param  options incoming values
@@ -179,12 +196,17 @@ var result;
         var server = require('store').server;
         var user = server.current(session);
         var asset = null;
+        var meta;
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
         } else {
+            meta = extractMetaProps(assetReq);
             asset = am.importAssetFromHttpRequest(assetReq);
+            setMetaProps(asset,meta);
         } //generate asset object
         try {
+            //log.info(asset);
+            //throw 'This is to stop asset creation!';
             am.create(asset);
             putInStorage(asset, am,user.tenantId);//save to the storage
             am.update(asset);

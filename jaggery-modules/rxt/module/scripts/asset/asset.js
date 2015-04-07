@@ -162,6 +162,16 @@ var asset = {};
         this.am = new carbon.registry.ArtifactManager(this.registry, this.type);
     };
     /**
+     * Checks if there are any other asset versions
+     * @param  {[type]}  asset [description]
+     * @return {Boolean}       [description]
+     */
+    var isOnlyAssetVersion = function(asset, am) {
+        var versions = am.getAssetGroup(asset);
+        log.info('total version count: '+versions.length);
+        return (versions.length < 1) ? true : false;
+    };
+    /**
      * Creates a new asset instance by calling the underlying artifact manager on
      * a JSON object representing the asset.If the asset is added successfully the
      * an id property is added to the options object and is updated with the id
@@ -183,13 +193,21 @@ var asset = {};
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             delete options[constants.Q_PROP_DEFAULT];
             isDefault = true;
+            log.info('default asset is set to true');
         }
         var id = this.am.add(options);
+        var asset;
         options.id = id;
-        //If the default flag was provided then make this
+        if (!this.rxtManager.isGroupingEnabled(this.type)) {
+            log.info('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            return;
+        }
+        asset = this.get(id);
+        //If the default flag is true or if there are no other versions of this asset make this
         //asset the default asset
-        if (isDefault) {
-            this.setAsDefaultAsset(options);
+        if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
+            log.info('default asset:' + this.getName(asset) + ' ' + this.getVersion(asset));
+            this.setAsDefaultAsset(asset);
         }
         if (!id) {
             log.warn('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
@@ -205,12 +223,17 @@ var asset = {};
      */
     AssetManager.prototype.setAsDefaultAsset = function(currentAsset) {
         //Obtain group the asset belongs to
-        var group = this.getAssetGroup(currentAsset.path);
+        var group = this.getAssetGroup(currentAsset);
         var asset;
         //Go through each asset in the group and remove the default property
         //if it is present 
+        log.info('grouping count: '+group.length);
+        log.info('checking for previous versions ');
+        log.info('current asset id: '+currentAsset.id);
         for (var index = 0; index < group.length; index++) {
             asset = group[index];
+            log.info('asset: '+asset.id);
+            log.info(asset);
             //Omit the current asset 
             if (asset.id !== currentAsset.id) {
                 var properties = this.registry.properties(asset.path);
@@ -220,6 +243,8 @@ var asset = {};
                 }
             }
         }
+        log.info('Current Asset');
+        log.info(currentAsset);
         //Make the current asset the default asset
         this.registry.addProperty(currentAsset.path, constants.PROP_DEFAULT, true);
     };
@@ -420,7 +445,7 @@ var asset = {};
         if (typeof target === 'string') {
             name = target;
         } else if (typeof target === 'object') {
-            name = target[nameField];
+            name = this.getName(target);//target[nameField];
         } else {
             throw 'Cannot get the asset group when target is not a string or an object.';
         }
@@ -434,7 +459,7 @@ var asset = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
         query[nameField] = name;
-        log.info('Executing query: '+stringify(query));
+        log.info('Executing query: ' + stringify(query));
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
         addAssetsMetaData(assets, this);
@@ -453,7 +478,7 @@ var asset = {};
         }
         return false;
     };
-    AssetManager.prototype.compareVersions = function(a1,a2){
+    AssetManager.prototype.compareVersions = function(a1, a2) {
         var a1Version = this.getVersion(a1);
         var a2Version = this.getVersion(a2);
         return a1Version.localeCompare(a2Version);
@@ -1017,7 +1042,7 @@ var asset = {};
         var asset = {};
         var attributes = {};
         var tables = this.rxtManager.listRxtTypeTables(this.type);
-        var table;getThumbnail
+        var table;
         var fields;
         var field;
         if (options.id) {

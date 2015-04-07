@@ -93,7 +93,7 @@ var pageDecorators = {};
                 }
             }
             info.isDefault = am.isDefaultAsset(page.assets);
-            info.hasMultipleVersions = (info.versions.length > 1) ? true : false;
+            info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
     };
     var assetManager = function(ctx) {

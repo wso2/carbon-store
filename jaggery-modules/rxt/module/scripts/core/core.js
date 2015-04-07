@@ -511,6 +511,18 @@ var core = {};
         log.warn('Unable to locate the lifecycle meta property to determine whether comments are required ' + type + '.Make sure the lifecycle meta property is present in the configuratio callback of the asset.js');
         return false;
     };
+    RxtManager.prototype.isGroupingEnabled = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if grouping of assets is required';
+        }
+        if (rxtDefinition.meta) {
+            return rxtDefinition.meta.groupingEnabled || false;
+        }
+        log.warn('Unable to locate the  meta property to determine whether asset grouping is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        return false;
+    };
     /**
      * Returns all fields that match field type provided in the RXT definition
      * @example
