@@ -413,19 +413,31 @@ var asset = {};
      * @param  {[type]} paging [description]
      * @return {[type]}        [description]
      */
-    AssetManager.prototype.getAssetGroup = function(name, paging) {
+    AssetManager.prototype.getAssetGroup = function(target, paging) {
+        var name;
         //Obtain the field which is used as the name field
         var nameField = this.rxtManager.getNameAttribute(this.type);
-        if(!nameField){
-            throw 'Unable to locate the name attribute for '+this.type;
+        if (typeof target === 'string') {
+            name = target;
+        } else if (typeof target === 'object') {
+            name = target[nameField];
+        } else {
+            throw 'Cannot get the asset group when target is not a string or an object.';
+        }
+        if (!name) {
+            throw 'Please provide a name in order to retrieve the asset group';
+        }
+        if (!nameField) {
+            throw 'Unable to locate the name attribute for ' + this.type;
         }
         var query = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
         query[nameField] = name;
+        log.info('Executing query: '+stringify(query));
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
-        addAssetsMetaData(assets,this);
+        addAssetsMetaData(assets, this);
         return assets;
     };
     /**
@@ -434,15 +446,20 @@ var asset = {};
      * @param  {Object} properties A properties JSON object
      * @return {Boolean}           True if the default property is present and is true
      */
-    var defaultPropTrue = function(properties){
+    var defaultPropTrue = function(properties) {
         var defaultProp = properties[constants.PROP_DEFAULT];
-        if((defaultProp)&&(defaultProp.length >0)){
+        if ((defaultProp) && (defaultProp.length > 0)) {
             return defaultProp[0];
         }
         return false;
     };
+    AssetManager.prototype.compareVersions = function(a1,a2){
+        var a1Version = this.getVersion(a1);
+        var a2Version = this.getVersion(a2);
+        return a1Version.localeCompare(a2Version);
+    };
     /**
-     * Enriches an asset object with information on whether it is the default 
+     * Enriches an asset object with information on whether it is the default
      * asset
      * @param {[type]} asset [description]
      */
@@ -454,7 +471,7 @@ var asset = {};
         }
         var properties = this.registry.properties(asset.path);
         var isDefault = false;
-        if ((properties.hasOwnProperty(constants.PROP_DEFAULT)) && (defaultPropTrue(properties)) ) {
+        if ((properties.hasOwnProperty(constants.PROP_DEFAULT)) && (defaultPropTrue(properties))) {
             isDefault = true;
         }
         asset[constants.Q_PROP_DEFAULT] = isDefault;
@@ -1000,7 +1017,7 @@ var asset = {};
         var asset = {};
         var attributes = {};
         var tables = this.rxtManager.listRxtTypeTables(this.type);
-        var table;
+        var table;getThumbnail
         var fields;
         var field;
         if (options.id) {
@@ -1110,7 +1127,9 @@ var asset = {};
         asset.thumbnail = am.getThumbnail(asset);
         asset.banner = am.getBanner(asset);
         asset.rating = 0;
+        asset.version = am.getVersion(asset);
         am.setDefaultAssetInfo(asset);
+        //am.setAssetVersionInfo(asset);
     };
     /**
      * Combines page details with the asset details combined with the rxt template.If an array of assets
