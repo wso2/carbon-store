@@ -168,7 +168,6 @@ var asset = {};
      */
     var isOnlyAssetVersion = function(asset, am) {
         var versions = am.getAssetGroup(asset);
-        log.info('total version count: '+versions.length);
         return (versions.length < 1) ? true : false;
     };
     /**
@@ -193,20 +192,19 @@ var asset = {};
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             delete options[constants.Q_PROP_DEFAULT];
             isDefault = true;
-            log.info('default asset is set to true');
         }
         var id = this.am.add(options);
         var asset;
         options.id = id;
         if (!this.rxtManager.isGroupingEnabled(this.type)) {
-            log.info('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
             return;
         }
         asset = this.get(id);
         //If the default flag is true or if there are no other versions of this asset make this
         //asset the default asset
         if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
-            log.info('default asset:' + this.getName(asset) + ' ' + this.getVersion(asset));
+            log.debug('default asset:' + this.getName(asset) + ' ' + this.getVersion(asset));
             this.setAsDefaultAsset(asset);
         }
         if (!id) {
@@ -254,7 +252,7 @@ var asset = {};
         this.am.update(options);
         var asset = this.am.get(options.id);
         if(!this.rxtManager.isGroupingEnabled(this.type)){
-            log.info('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
             return;
         }
         if (isDefault) {
@@ -333,7 +331,6 @@ var asset = {};
      * @throws An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.
      */
     AssetManager.prototype.list = function(paging) {
-        log.info('[group] list method called');
         var paging = paging || this.defaultPaging;
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
@@ -383,12 +380,12 @@ var asset = {};
         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             //Delete the group property as it is not used in the
             //search
-            log.info('[group] group search');
+            log.debug('performing a  group search');
             delete query[constants.Q_PROP_GROUP];
             query = addWildcard(query);
             return this.searchByGroup(query, paging);
         }
-        log.info('[group] non group search');
+        log.debug('performing a non group search');
         //query = addWildcard(query);
         assets = this.am.search(query, paging);
         addAssetsMetaData(assets, this);
@@ -403,7 +400,7 @@ var asset = {};
         if ((q.hasOwnProperty(constants.Q_PROP_WILDCARD)) && (q[constants.Q_PROP_WILDCARD] === false)) {
             return;
         }
-        log.info('[search] enabling wildcard search');
+        log.debug('[search] enabling wildcard search');
         delete q[constants.Q_PROP_WILDCARD];
         for (var key in q) {
             q[key] = '*' + q[key] + '*';
@@ -457,7 +454,6 @@ var asset = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
         query[nameField] = name;
-        log.info('Executing query: ' + stringify(query));
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
         addAssetsMetaData(assets, this);
