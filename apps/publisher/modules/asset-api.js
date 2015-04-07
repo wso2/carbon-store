@@ -99,7 +99,6 @@ var result;
             }
             return;
         }
-
         for (var index in resourceFields) {
             key = resourceFields[index];
             if (files[key]) {
@@ -164,20 +163,20 @@ var result;
             }
         }
     };
-    var extractMetaProps = function(asset){
+    var extractMetaProps = function(asset) {
         var meta = {};
-        for(var key in asset){
-            if(key.charAt(0)==='_'){
+        for (var key in asset) {
+            if (key.charAt(0) === '_') {
                 meta[key] = asset[key];
             }
         }
-        if(meta.hasOwnProperty(constants.Q_PROP_DEFAULT)){
+        if (meta.hasOwnProperty(constants.Q_PROP_DEFAULT)) {
             meta[constants.Q_PROP_DEFAULT] = true;
         }
         return meta;
     };
-    var setMetaProps = function(asset,meta){
-        for(var key in meta){
+    var setMetaProps = function(asset, meta) {
+        for (var key in meta) {
             asset[key] = meta[key];
         }
     }
@@ -202,13 +201,13 @@ var result;
         } else {
             meta = extractMetaProps(assetReq);
             asset = am.importAssetFromHttpRequest(assetReq);
-            setMetaProps(asset,meta);
+            setMetaProps(asset, meta);
         } //generate asset object
         try {
             //log.info(asset);
             //throw 'This is to stop asset creation!';
             am.create(asset);
-            putInStorage(asset, am,user.tenantId);//save to the storage
+            putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
             log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
@@ -271,7 +270,7 @@ var result;
             }
             try {
                 //Set any meta properties provided by the API call (e.g. _default)
-                setMetaProps(asset,meta);
+                setMetaProps(asset, meta);
                 am.update(asset);
             } catch (e) {
                 asset = null;
@@ -323,6 +322,25 @@ var result;
         return q;
     }
     /**
+     * Checks if the user has provided a grouping query parameter and then
+     * changes the query to do a group search
+     * @param {[type]} q          [description]
+     * @param {[type]} type       [description]
+     * @param {[type]} req        [description]
+     * @param {[type]} rxtManager [description]
+     */
+    var addGroupingStateToQuery = function(q, type, req, rxtManager) {
+        if (!rxtManager.isGroupingEnabled(type)) {
+            return q;
+        }
+        //Check if grouping is enabled for the asset type
+        var groupQuery = req.getParameter('group');
+        if (groupQuery) {
+            q[constants.Q_PROP_DEFAULT] = groupQuery;
+        }
+        return q;
+    };
+    /**
      * The function search for assets
      * @param req      The request
      * @param res      The response
@@ -356,7 +374,13 @@ var result;
                 }
                 assets = assetManager.search(query, paging); // asset manager back-end call with search-query
             } else {
-                assets = assetManager.list(paging); // asset manager back-end call for asset listing
+                //If grouping is enabled then do a group search
+                if (rxtManager.isGroupingEnabled(options.type)) {
+                    log.info('Doing group search!');
+                    assets = assetManager.searchByGroup();
+                } else {
+                    assets = assetManager.list(paging); // asset manager back-end call for asset listing
+                }
             }
             var expansionFieldsParam = (request.getParameter('fields') || '');
             if (expansionFieldsParam) { //if field expansion is requested
@@ -441,13 +465,11 @@ var result;
         }
         return result;
     };
-    api.setDefaultAsset = function(options,req,res,session){
+    api.setDefaultAsset = function(options, req, res, session) {
         var asset = rxtModule.asset;
         //var assetManager = asset.creat
     };
-    api.getGroup = function(options,req,res,session){
-
-    };
+    api.getGroup = function(options, req, res, session) {};
     /**
      * The function deletes an asset by id
      * @param options  Object containing parameters id, type
