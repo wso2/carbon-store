@@ -3,7 +3,7 @@
     <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select a version <span class="fa fa-angle-down pull-right"></span></a>
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
         {{#each versions}}
-        <li><a tabindex="-1" href="#">{{name}}</a></li>
+        <li><a tabindex="-1" href='{{url ""}}{{assetURL}}'>{{version}}</a></li>
         {{/each}}
     </ul>
 </div>
