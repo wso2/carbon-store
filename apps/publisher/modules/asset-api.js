@@ -336,7 +336,7 @@ var result;
         //Check if grouping is enabled for the asset type
         var groupQuery = req.getParameter('group');
         if (groupQuery) {
-            q[constants.Q_PROP_DEFAULT] = groupQuery;
+            q[constants.Q_PROP_GROUP] = groupQuery;
         }
         return q;
     };
