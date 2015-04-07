@@ -179,8 +179,8 @@ var asset = {};
      * @lends AssetManager.prototype
      */
     AssetManager.prototype.create = function(options) {
-        var isDefault =false;
-        if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT))&&(options[constants.Q_PROP_DEFAULT] === true)){
+        var isDefault = false;
+        if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             delete options[constants.Q_PROP_DEFAULT];
             isDefault = true;
         }
@@ -188,7 +188,7 @@ var asset = {};
         options.id = id;
         //If the default flag was provided then make this
         //asset the default asset
-        if(isDefault){
+        if (isDefault) {
             this.setAsDefaultAsset(options);
         }
         if (!id) {
@@ -203,25 +203,25 @@ var asset = {};
      * to true
      * @param {[Object]} currentAsset A JSON object representing the current asset
      */
-    AssetManager.prototype.setAsDefaultAsset = function(currentAsset){
+    AssetManager.prototype.setAsDefaultAsset = function(currentAsset) {
         //Obtain group the asset belongs to
         var group = this.getAssetGroup(currentAsset.path);
         var asset;
         //Go through each asset in the group and remove the default property
         //if it is present 
-        for(var index =0 ; index<group.length; index++){
+        for (var index = 0; index < group.length; index++) {
             asset = group[index];
             //Omit the current asset 
-            if(asset.id !== currentAsset.id){
+            if (asset.id !== currentAsset.id) {
                 var properties = this.registry.properties(asset.path);
                 //Check if the default property is present and remove it
-                if(properties.hasOwnProperty(constants.PROP_DEFAULT)){
-                    this.registry.removeProperty(asset.path,constants.PROP_DEFAULT);
+                if (properties.hasOwnProperty(constants.PROP_DEFAULT)) {
+                    this.registry.removeProperty(asset.path, constants.PROP_DEFAULT);
                 }
             }
         }
         //Make the current asset the default asset
-        this.registry.addProperty(currentAsset.path,constants.PROP_DEFAULT,true);
+        this.registry.addProperty(currentAsset.path, constants.PROP_DEFAULT, true);
     };
     /**
      * Updates an existing asset instance.The provided asset instance must have the id property as well as all
@@ -230,11 +230,11 @@ var asset = {};
      */
     AssetManager.prototype.update = function(options) {
         var isDefault = false;
-        if((options.hasOwnProperty(constants.Q_PROP_DEFAULT))&&(options[constants.Q_PROP_DEFAULT] === true)){
+        if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             isDefault = false;
         }
         this.am.update(options);
-        if(isDefault){
+        if (isDefault) {
             this.setAsDefaultAsset(options);
         }
     };
@@ -357,36 +357,54 @@ var asset = {};
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
         //Check if a group by property is present in the query
-        if((query.hasOwnProperty(constants.Q_PROP_GROUP))&&(query[constants.Q_PROP_GROUP] === true)){
+        if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             //Delete the group property as it is not used in the
             //search
             log.info('[group] group search');
             delete query[constants.Q_PROP_GROUP];
-            return this.searchByGroup(query,paging);
+            query = addWildcard(query);
+            return this.searchByGroup(query, paging);
         }
         log.info('[group] non group search');
+        //query = addWildcard(query);
         assets = this.am.search(query, paging);
         addAssetsMetaData(assets, this);
         return assets;
     };
     /**
-     * Executes a queryto retrieve a set of assets bound by a paging object and
-     * then grouped
+     * Adds wild card search pattern to all
+     * query properties
+     * @param {Object} q Query object
+     */
+    var addWildcard = function(q) {
+        if ((q.hasOwnProperty(constants.Q_PROP_WILDCARD)) && (q[constants.Q_PROP_WILDCARD] === false)) {
+            return;
+        }
+        log.info('[search] enabling wildcard search');
+        delete q[constants.Q_PROP_WILDCARD];
+        for (var key in q) {
+            q[key] = '*' + q[key] + '*';
+        }
+        return q;
+    };
+    /**
+     * Executes a query to retrieve a set of assets bound by a paging object and
+     * then grouped by default property
      * @param  {[type]} query  A JSON object representing a query to be executed
      * @param  {[type]} paging A paging object
      * @return {[type]}        An array of asset instances filtered by the query object
      *                         and grouped
      */
     AssetManager.prototype.searchByGroup = function(query, paging) {
-        query = query ||{};
+        query = query || {};
         var assets = [];
         paging = paging || this.defaultPaging;
         query.propertyName = constants.PROP_DEFAULT;
         query.rightPropertyValue = true;
         query.rightOp = 'eq';
         query.leftOp = 'na';
-        assets = this.am.search(query,paging);
-        addAssetMetaData(assets);
+        assets = this.am.strictSearch(query, paging);
+        addAssetsMetaData(assets, this);
         return assets;
     };
     /**
@@ -398,32 +416,52 @@ var asset = {};
     AssetManager.prototype.getAssetGroup = function(name, paging) {
         //Obtain the field which is used as the name field
         var nameField = this.rxtManager.getNameAttribute(this.type);
+        if(!nameField){
+            throw 'Unable to locate the name attribute for '+this.type;
+        }
         var query = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
-        query.resourcePath = name;
+        query[nameField] = name;
         paging = paging || this.defaultPaging;
-        assets = this.am.search(query, paging);
-        addAssetMetaData(assets);
+        assets = this.am.strictSearch(query, paging);
+        addAssetsMetaData(assets,this);
         return assets;
     };
-    AssetManager.prototype.setDefaultAssetInfo = function(asset){
+    /**
+     * Checks if the provided properties list has a default property
+     * and if it does checks the truth value
+     * @param  {Object} properties A properties JSON object
+     * @return {Boolean}           True if the default property is present and is true
+     */
+    var defaultPropTrue = function(properties){
+        var defaultProp = properties[constants.PROP_DEFAULT];
+        if((defaultProp)&&(defaultProp.length >0)){
+            return defaultProp[0];
+        }
+        return false;
+    };
+    /**
+     * Enriches an asset object with information on whether it is the default 
+     * asset
+     * @param {[type]} asset [description]
+     */
+    AssetManager.prototype.setDefaultAssetInfo = function(asset) {
         //log.info('[group] setting default asset info ');
         //Obtain all of the properties of the asset
-        if((!asset)||(!asset.path)){
+        if ((!asset) || (!asset.path)) {
             throw 'Unable to determine if the provided asset is the default asset since resource path was not found';
         }
         var properties = this.registry.properties(asset.path);
         var isDefault = false;
-        if((properties.hasOwnProperty(constants.PROP_DEFAULT)) && (properties[constants.PROP_DEFAULT]===true)){
+        if ((properties.hasOwnProperty(constants.PROP_DEFAULT)) && (defaultPropTrue(properties)) ) {
             isDefault = true;
         }
         asset[constants.Q_PROP_DEFAULT] = isDefault;
-        //log.info('[group] finished setting default asset info');
         return asset;
     };
-    AssetManager.prototype.isDefaultAsset = function(asset){
-        if(asset.hasOwnProperty(constants.Q_PROP_DEFAULT)){
+    AssetManager.prototype.isDefaultAsset = function(asset) {
+        if (asset.hasOwnProperty(constants.Q_PROP_DEFAULT)) {
             return asset[constants.Q_PROP_DEFAULT];
         }
         return false;

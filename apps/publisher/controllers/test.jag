@@ -8,10 +8,15 @@
     var log = new Log();
 
 
-    q.propertyName = 'default';
-    q.rightPropertyValue = true;
-    q.rightOp = 'eq';
-    q.leftOp = 'na';
+    //q.propertyName = 'default';
+    //q.rightPropertyValue = true;
+    //q.rightOp = 'eq';
+    //q.leftOp = 'na';
+    q._group = true;
+    //q._wildcard = true;
+    q.overview_provider='org.wso2';
+
+    //q.resourcePath = '/_system/governance/servicesx/org.wso2/test-wso2-service/1.0.0';
     //q.overview_name='wso2';
     var defaultPaging = {
         'start': 0,
@@ -20,7 +25,9 @@
         'sortBy': 'overview_createdtime',
         'paginationLimit': 1000
     };
-    var result =afm.search(q,defaultPaging);
+    
+    var result = am.search(q,defaultPaging);//am.getAssetGroup(q.overview_name,defaultPaging);//am.search(q,defaultPaging);
+
     log.info(result);
      
      

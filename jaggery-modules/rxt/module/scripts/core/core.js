@@ -331,7 +331,18 @@ var core = {};
         return tables;
     };
     RxtManager.prototype.getMediaType = function(type){
-        return '';
+        var rxtDefinition = this.rxtMap[type];
+        if(!rxtDefinition){
+            log.error('Unable to locate the rxt definition for type: '+type+' in order to return tables');
+            throw 'Unable to locate the rxt definition for type: '+type+' in order to return tables';
+        }
+        if(!rxtDefinition.type){
+            log.error('Unable to locate media type (type) attribute in RXT definition of type '+type+'.Please check your'
+            + ' rxt definition.');
+            throw 'Unable to locate media type (type) attribute in RXT definition of type '+type+'.Please check your'
+            + ' rxt definition.';
+        }
+        return rxtDefinition.type;
     };
     /**
      * Returns the name of the attribute that is used as the name property of assets of a given RXT type
