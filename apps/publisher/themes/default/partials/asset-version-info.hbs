@@ -1,7 +1,7 @@
 {{#if hasMultipleVersions}}
-<div class="form-group wr-filter-category">
+<div class="form-group wr-version-selection">
     <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select a version <span class="fa fa-angle-down pull-right"></span></a>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+    <ul class="dropdown-menu version-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
         {{#each versions}}
         <li><a tabindex="-1" href="#">{{name}}</a></li>
         {{/each}}
