@@ -124,6 +124,8 @@ var pageDecorators = {};
             //     am = asset.createUserAssetManager(ctx.session, type);
             // }
             if (query) {
+                query = replaceNameQuery(query,ctx.rxtManager,type);
+                query = replaceCategoryQuery(query,ctx.rxtManager,type);
                 assets = am.recentAssets({
                     q: query
                 });
@@ -145,6 +147,36 @@ var pageDecorators = {};
         }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
+    };
+    var replaceCategoryQuery = function(q, rxtManager, type) {
+        //Determine if a category was provided
+        if (!q.hasOwnProperty('category')) {
+            return q;
+        }
+        var categoryField = rxtManager.getCategoryField(type);
+        var categoryValue;
+        if (!categoryField) {
+            return q;
+        }
+        categoryValue = q.category;
+        delete q.category;
+        q[categoryField] = categoryValue;
+        return q;
+    };
+    var replaceNameQuery = function(q, rxtManager, type) {
+        //Determine if a name was provided
+        if (!q.hasOwnProperty('name')) {
+            return q;
+        }
+        var nameField = rxtManager.getNameAttribute(type);
+        var nameValue;
+        if (!nameField) {
+            return q;
+        }
+        nameValue = q.name;
+        delete q.name;
+        q[nameField] = nameValue;
+        return q;
     };
     var addSubscriptionDetails = function(assets, am, session) {
         for (var index = 0; index < assets.length; index++) {
