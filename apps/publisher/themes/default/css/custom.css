@@ -225,7 +225,7 @@ header {
 .wr-asset-type-switcher {
 	float:left;
 	padding-right:0;
-    position: absolute;
+    /* position: absolute; */
     top:0;
     left: 0;
 }
@@ -236,6 +236,15 @@ header {
     font-size:18px;
     font-weight: 100;
     text-transform: uppercase;
+    padding-left:15px;
+    padding-right:20px;
+    background-color:#2374c8;
+    border-right:1px solid #3084db;
+}
+
+.wr-asset-type-switcher a.switcher-link:hover {
+    background-color:#1965b2;
+    text-decoration: none;
 }
 
 a.ctrl-asset-type-switcher {
@@ -256,10 +265,15 @@ a.ctrl-asset-type-switcher:hover {
 	float:left;
 }
 
+.wr-asset-type-switcher .ast-type-item {
+    float:left;
+    display:inline-block;
+}
+
 .wr-asset-type-switcher span.btn-asset {
 	width:54px;
 	height:54px;
-	margin-right:15px;	
+	margin-right:0px;	
 	display:inline-block;
 	background:#222 url('../img/icons/ico-menu.png') 1em 1em no-repeat;
 }
@@ -396,6 +410,62 @@ h3.ast-name:after {
 	color:#aaa;
 }
 
+/* action buttons */
+a.cu-btn {
+    color:#fff;
+    text-decoration: none;
+    border:0px solid #ff0000;
+    padding:17px 10px 16px 45px;
+    margin:0 0 0 0px !important;
+    font-weight:100;
+    display:inline-block;   
+    text-transform: uppercase;
+    background-size: 26px 26px; 
+    border:0px solid #ff0000;
+    padding-left:45px !important;
+}
+
+a.cu-btn:hover {
+    background-color:#1965b2 !important;
+    color:#fafafa !important;
+}
+
+.btn-add-new {
+    background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
+}
+
+.btn-stats {
+    background:url('../img/icons/ico-stats.png') 0.8em 1em no-repeat;
+}
+
+.btn-edit {
+    background:url('../img/icons/ico-edit.png') 0.8em 1em no-repeat;
+}
+
+.btn-overview {
+    background:url('../img/icons/ico-overview.png') 0.8em 1em no-repeat;
+}
+
+.btn-lifecycle {
+     background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;   
+}
+
+a.cu-ico-right-button {
+    display:inline-block;
+    color:#fff;
+    font-size:13px;
+    padding:5px 36px 5px 0px;
+}
+
+a.cu-ico-button-user {
+    background:url('../images/icons/ico-user.png') right  no-repeat;
+}
+
+a.cu-ico-button-stats {
+    background:url('../images/icons/ico-meter.png') right  no-repeat;
+}
+
+
 /* filter */
 a.filter-item {
 	color:#e4e4e4;
@@ -448,7 +518,7 @@ a.cu-ico-button-stats {
 
 /* filter */
 .wr-filters {
-	padding:20px 30px 15px 35px;
+	padding:20px 30px 15px 30px;
 }
 
 .wr-secondary-bar {
@@ -490,7 +560,7 @@ a.cu-ico-button-stats {
 
 /* search */
 .wr-search {
-    margin-left:0px;
+    margin-left:4px;
 }
 .wr-search input {
     background:#bbb;
@@ -672,8 +742,8 @@ h2 span.fa-stack{
     border: none;
     border-radius: 0;
 }
-.navbar-themed .navbar-collapse{
-    margin-left: 150px;
+.navbar-themed .navbar-collapse {
+    /* margin-left: 150px; */
     border:none;
 }
 .navbar-themed .navbar-nav > li{
@@ -709,4 +779,19 @@ h2 span.fa-stack{
 }
 .collapse-stack-icons.fa-stack i:first-child{
     text-indent: 4px;
+}
+
+/* ovrds */
+.ovrd-wr-asst-listing {
+    margin-right:0;
+    margin-left:0;
+}
+
+.wr-action-btn-bar ul.nav li {
+    padding-left:0;
+    padding-right:0;
+}
+
+#navbar {
+    float:left;
 }
