@@ -1,7 +1,7 @@
 <!-- secondary header - app bar -->
 
 <nav class="navbar navbar-default navbar-themed">
-    <div class="container-fluid">
+    <div>
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
@@ -18,19 +18,20 @@
             <a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}{{ribbon.currentUrl}}'>{{rxt.pluralLabel}}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
+            
+            <div class="wr-action-btn-bar">
             <ul class="nav navbar-nav">
+                
                 {{#each leftNav}}
                 <li>
-                    <a href='{{url ""}}{{this.url}}' >
-                        <span class="fa-stack fa-lg menu-stack-icons">
-                          <i class="icon wso2ico-c-add"></i>
-                          <i class="icon wso2ico-c-add"></i>
-                        </span>
+                    <a href='{{url ""}}{{this.url}}' class="cu-btn {{this.iconClass}}">                     
                         {{this.name}}
                     </a>
                 </li>
                 {{/each}}
+
             </ul>
+            </div> 
 
         </div><!--/.nav-collapse -->
     </div>

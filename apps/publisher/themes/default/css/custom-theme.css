@@ -7,6 +7,7 @@
 	z-index: 1060;
 	display: none;
 	max-width: 451px;
+	min-width: 188px !important;
 	padding: 1px;
 	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 	font-size: 14px;
@@ -165,8 +166,8 @@ a.ctrl-filter-category:hover {
 	border:0px solid #237bd5;
 	background:#237bd5;
 	top:59px;
-	left:35px;
-	width:226px;
+	left:30px;
+	width:230px;
 	padding-top:0;
 	padding-bottom:0;
 	color:#fff;	
@@ -213,7 +214,7 @@ a.ctrl-filter-category:hover {
   color: #555;
   background-color: #fff;
   background-image: none;
-  border: 0px solid #ccc;
+  border: 1px solid #ccc;
   border-radius: 0px;
   -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,.075);
   /* box-shadow: inset 0 0px 0px rgba(0,0,0,.075); */
