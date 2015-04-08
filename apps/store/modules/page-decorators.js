@@ -283,6 +283,33 @@ var pageDecorators = {};
         }
         return page;
     };
+    pageDecorators.populateAssetVersionDetails = function(ctx, page, utils) {
+        if ((page.assets) && (page.assets.id)) {
+            var am = getAssetManager(ctx);
+            var info = page.assets;
+            info.versions = [];
+            var versions;
+            var asset;
+            var entry;
+            versions = am.getAssetGroup(page.assets.name || {});
+            versions.sort(function(a1, a2) {
+                return am.compareVersions(a1, a2);
+            });
+            for (var index = 0; index < versions.length; index++) {
+                asset = versions[index];
+                if (asset.id !== page.assets.id) {
+                    entry = {};
+                    entry.id = asset.id;
+                    entry.name = asset.name;
+                    entry.version = asset.version;
+                    entry.assetURL = utils.buildAssetPageUrl(ctx.assetType, '/details/' + entry.id);
+                    info.versions.push(entry);
+                }
+            }
+            info.isDefault = am.isDefaultAsset(page.assets);
+            info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
+        }
+    };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;
         var am;

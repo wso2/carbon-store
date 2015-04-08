@@ -184,7 +184,10 @@ asset.configure = function() {
             },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
-            versionAttribute: 'overview_version'
+            versionAttribute: 'overview_version',
+            providerAttribute: 'overview_provider',
+            timestamp: 'overview_createdtime',
+            groupingEnabled:true
         }
     };
 };
@@ -322,6 +325,11 @@ asset.renderer = function(ctx) {
             populateAttachedLifecycles: function(page) {
                 if (page.assets.id) {
                     require('/modules/page-decorators.js').pageDecorators.populateAttachedLifecycles(ctx, page, this);
+                }
+            },
+            populateAssetVersionDetails: function(page) {
+                if (page.assets.id) {
+                    require('/modules/page-decorators.js').pageDecorators.populateAssetVersionDetails(ctx, page, this);
                 }
             }
         }

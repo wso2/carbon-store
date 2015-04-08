@@ -33,17 +33,6 @@ require('/modules/publisher.js').exec(function(ctx) {
     var am = asset.createUserAssetManager(ctx.session, type);
     var page = ui.buildPage(ctx.session, ctx.request);
     var assets;
-    //Determine if a category field is provided
-    // PAGING.sortBy = (sortBy || PAGING.sortBy);
-    // PAGING.sortOrder = (sort || PAGING.sortOrder);
-    // PAGING.query = (q || '');
-    // //page.paging = PAGING;
-    //  if (q) {
-    //      assets = am.search(q, PAGING);
-    //  } else {
-    //      assets = am.search(null, PAGING);
-    //  }
-    //options.q = q;
     assets  = assetApi.search(options,ctx.request,ctx.response,ctx.session)||[];
     var output = am.render(assets, page).list();
     caramel.render(output);
