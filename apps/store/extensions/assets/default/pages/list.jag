@@ -71,13 +71,41 @@ require('/modules/store.js').exec(function(ctx) {
             return q;
         }
         //Check if grouping is enabled for the asset type
-        var groupQuery = req.getParameter('group');
-        log.info('groupQuery '+groupQuery);
-        groupQuery =Boolean(groupQuery);
-        log.info('after cast '+groupQuery);
+        var groupQuery = req.getParameter('group')||'';
+        groupQuery = (groupQuery.toLowerCase() === 'true')?true:false;
         if (groupQuery) {
             q[constants.Q_PROP_GROUP] = groupQuery;
         }
+        return q;
+    };
+    var replaceCategoryQuery = function(q, rxtManager, type) {
+        //Determine if a category was provided
+        if (!q.hasOwnProperty('category')) {
+            return q;
+        }
+        var categoryField = rxtManager.getCategoryField(type);
+        var categoryValue;
+        if (!categoryField) {
+            return q;
+        }
+        categoryValue = q.category;
+        delete q.category;
+        q[categoryField] = categoryValue;
+        return q;
+    };
+    var replaceNameQuery = function(q, rxtManager, type) {
+        //Determine if a name was provided
+        if (!q.hasOwnProperty('name')) {
+            return q;
+        }
+        var nameField = rxtManager.getNameAttribute(type);
+        var nameValue;
+        if (!nameField) {
+            return q;
+        }
+        nameValue = q.name;
+        delete q.name;
+        q[nameField] = nameValue;
         return q;
     };
     var tenantResources = tenantApi.createTenantAwareAssetResources(ctx.session, options);
@@ -89,8 +117,10 @@ require('/modules/store.js').exec(function(ctx) {
     } else if (q) {
         var qString = '{' + q + '}';
         var query = parse(qString);
+        query = replaceNameQuery(query,rxtManager,type);
+        query = replaceCategoryQuery(query,rxtManager,type);
         query = addGroupingStateToQuery(query, type, ctx.request, rxtManager);
-        log.info(query);
+        log.info('list page search query: '+stringify(query));
         assets = am.search(query, PAGING);
     } else {
         if (PAGING.sortOrder == 'popular') {
