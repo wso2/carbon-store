@@ -124,6 +124,8 @@ var pageDecorators = {};
             //     am = asset.createUserAssetManager(ctx.session, type);
             // }
             if (query) {
+                query = replaceNameQuery(query,ctx.rxtManager,type);
+                query = replaceCategoryQuery(query,ctx.rxtManager,type);
                 assets = am.recentAssets({
                     q: query
                 });
@@ -145,6 +147,36 @@ var pageDecorators = {};
         }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
+    };
+    var replaceCategoryQuery = function(q, rxtManager, type) {
+        //Determine if a category was provided
+        if (!q.hasOwnProperty('category')) {
+            return q;
+        }
+        var categoryField = rxtManager.getCategoryField(type);
+        var categoryValue;
+        if (!categoryField) {
+            return q;
+        }
+        categoryValue = q.category;
+        delete q.category;
+        q[categoryField] = categoryValue;
+        return q;
+    };
+    var replaceNameQuery = function(q, rxtManager, type) {
+        //Determine if a name was provided
+        if (!q.hasOwnProperty('name')) {
+            return q;
+        }
+        var nameField = rxtManager.getNameAttribute(type);
+        var nameValue;
+        if (!nameField) {
+            return q;
+        }
+        nameValue = q.name;
+        delete q.name;
+        q[nameField] = nameValue;
+        return q;
     };
     var addSubscriptionDetails = function(assets, am, session) {
         for (var index = 0; index < assets.length; index++) {
@@ -282,6 +314,33 @@ var pageDecorators = {};
             page.embedLinks = '<iframe width="450" height="120" src="' + assetUrl + '" frameborder="0" allowfullscreen></iframe>';
         }
         return page;
+    };
+    pageDecorators.populateAssetVersionDetails = function(ctx, page, utils) {
+        if ((page.assets) && (page.assets.id)) {
+            var am = getAssetManager(ctx);
+            var info = page.assets;
+            info.versions = [];
+            var versions;
+            var asset;
+            var entry;
+            versions = am.getAssetGroup(page.assets.name || {});
+            versions.sort(function(a1, a2) {
+                return am.compareVersions(a1, a2);
+            });
+            for (var index = 0; index < versions.length; index++) {
+                asset = versions[index];
+                if (asset.id !== page.assets.id) {
+                    entry = {};
+                    entry.id = asset.id;
+                    entry.name = asset.name;
+                    entry.version = asset.version;
+                    entry.assetURL = utils.buildAssetPageUrl(ctx.assetType, '/details/' + entry.id);
+                    info.versions.push(entry);
+                }
+            }
+            info.isDefault = am.isDefaultAsset(page.assets);
+            info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
+        }
     };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;

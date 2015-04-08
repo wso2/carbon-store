@@ -50,7 +50,10 @@ var constants = {};
     constants.ASSET_DEFAULT_SORT_ORDER='DESC';
     constants.Q_SORT_ORDER_ASCENDING = 'ASC';
     constants.Q_SORT_ORDER_DESCENDING = 'DESC'
-
+    constants.Q_PROP_DEFAULT = '_default';
+    constants.Q_PROP_GROUP ='_group';
+    constants.Q_PROP_WILDCARD = '_wildcard'
+    constants.PROP_DEFAULT = 'default';
     /**
      * URL Patterns
      */

@@ -131,7 +131,11 @@ asset.configure = function() {
                 size: 10
             },
             thumbnail: 'images_thumbnail',
-            banner: 'images_banner'
+            banner: 'images_banner',
+            versionAttribute:'overview_version',
+            providerAttribute:'overview_provider',
+            timestamp:'overview_createdtime',
+            groupingEnabled:false
         }
     };
 };
@@ -169,6 +173,9 @@ asset.renderer = function(ctx) {
             },
             embedLinks: function(page, meta) {
                 return decoratorApi.embedLinks(ctx,page, meta);
+            },
+            populateAssetVersionDetails:function(page,meta){
+                return decoratorApi.populateAssetVersionDetails(ctx,page,this);
             }
         }
     };

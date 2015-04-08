@@ -4,6 +4,14 @@
                     {{renderTable . mode="edit"}}
             {{/each}}
     </div>
+    <div class="control-group">
+        <h3>Versioning</h3>
+        <div class="checkbox">
+            <label>
+                <input type='checkbox' name="_default"> {{t "Make this the default"}}                
+            </label>
+        </div>
+    </div>
      <div class="form-group">
          <div class="col-sm-offset-2 col-sm-10">
              <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
@@ -14,6 +22,5 @@
 
 
     <div id="saveButtons" class="form-actions">
-
     </div>   
 </form>

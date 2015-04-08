@@ -29,7 +29,7 @@ var request = {};
     var decodes = function(encodedURI) {
         return decodeURIComponent(encodedURI);
     };
-    request.getQueryOptions = function(queryString) {
+    request.getQueryOptions = function(queryString,opt) {
         var opt={};
         var sep = opt.sep || '&',
             assign = opt.assign || '=',
