@@ -154,7 +154,7 @@ var createQuery = function(options) {
     options = options || {};
     var searchUrl = caramel.url('/asts/' + store.publisher.type + '/list');
     var q = {};
-    var name = $('#searchQueryTextBox').val();
+    var name = $('#inp_searchAsset').val();
     var category = options.category || undefined;
     var searchQueryString = '?';
     if (name) {
