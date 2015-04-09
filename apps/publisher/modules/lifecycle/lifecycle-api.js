@@ -426,6 +426,11 @@ var error = '';
         return nextStates;
     };
     var parseHistory = function(history) {
+        history = history || {};
+        if(!history.content){
+            log.warn('Attempt to parse a history resource which does not have content');
+            return {};
+        }
         var xmlHistoryContent = new XML(history.content);
         var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent) || {};
         return historyContent;
