@@ -1,0 +1,333 @@
+.auth-user {
+	display:none;
+}
+
+.wr-auth-container {
+	padding-right:0px;
+}
+
+.auth-img {
+	float: left;
+	display:inline-block;
+	border-left:1px solid #9bb6f6;
+	height:50px;
+	padding-top:8px;
+	padding-bottom:8px;
+	padding-left:10px;
+	padding-right:10px;
+	font-size:12px;
+	color:#fff;
+	text-decoration: none;
+}
+
+.auth-img:hover {
+	background:#86a7f4;
+}
+
+.auth-img img {
+	margin-left:5px;
+}
+
+.auth-img span {
+	display:inline-block;
+	padding-top:8px;
+}
+
+/* sticky footer styles */
+.footer {  height: 40px; background-color: #fff; padding-top:5px; color:#444;font-weight: 100; padding-left:20px;font-size:12px;letter-spacing: 1px}
+
+/* misc */
+br.c-both {	clear:both;}
+
+.register {
+    width:auto;
+    height:50px;
+    background-image:url(../img/icons/rigister.png);
+    background-repeat:no-repeat;
+    background-position:left;
+    color:#fff
+}
+
+a.register:hover {
+    width:auto;
+    background-image:url(../img/icons/rigister-hover.png);
+    background-repeat:no-repeat;
+    background-position:left;
+    background-color:#282828;
+    color:#3a9ecf;
+}
+
+a.register:active {
+    width:auto;
+    background-image:url(../img/icons/rigister-hover.png);
+    background-repeat:no-repeat;
+    background-position:left;
+    background-color:#282828;
+    color:#3a9ecf;
+}
+
+a.register:focus {
+    width:auto;
+    background-image:url(../img/icons/rigister-hover.png);
+    background-repeat:no-repeat;
+    background-position:left;
+   color:#3a9ecf;
+}
+
+.login {
+    width:auto;
+    height:50px;
+    background-image:url(../img/icons/login.png);
+    background-repeat:no-repeat;
+    background-position:left;
+    padding-left:42px;
+    color:#fff
+}
+
+a.login:hover {
+    width:auto;
+    background-image:url(../img/icons/login-hover.png);
+    background-repeat:no-repeat;
+    background-position:left;
+    color:#3a9ecf;
+}
+
+a.login:active {
+    width:auto;
+    background-image:url(../img/icons/rigister-hover.png);
+    background-repeat:no-repeat;
+    background-position:left;
+    color:#3a9ecf;
+}
+
+a.login:focus {
+    width:auto;
+    background-image:url(../img/icons/rigister-hover.png);
+    background-repeat:no-repeat;
+    background-position:left;
+    background-color:#282828;
+    color:#3a9ecf;
+}
+
+.more {
+    color:#000;
+    float:right;
+    background-image:url(../img/icons/more-icon.png);
+    background-position:center left;
+    background-repeat:no-repeat;
+    text-transform:uppercase;
+    padding:23px 3px 16px 36px;
+}
+
+a.more:hover {
+    color:#3a9ecf;
+    text-decoration:none;
+    background-image:url(../img/icons/more-icon-hover-blue.png);
+    background-position:center left;
+    background-repeat:no-repeat
+}
+
+a.more:active {
+    background-color:none
+}
+
+a.more:focus {
+    border:none
+}
+
+.search-area {
+    width:40%;
+    height:45px ;
+    padding-left:10px;
+    float:left;
+    margin-top:4px;
+    border: 0px;
+}
+
+.back-button {
+    background:none repeat scroll 0 0 #333;
+    border:0 none;
+    color:#fff;
+    float:left;
+    height:45px;
+    padding-left:10px;
+    padding-right:10px;
+    width:50px;
+    margin-top:5px
+}
+
+.title {
+    width:auto;
+    padding:0 20px;
+    height:59px;
+    border-bottom:3px solid #3a9ecf;
+    float:left;
+    padding-top:14px;
+    font-size:22px
+}
+
+hr {
+    float:left;
+    width:100%;
+    margin:0
+}
+
+.truncate {
+    width:100%;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.truncate-text {
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis
+}
+
+.asset-item-wrapper {
+    min-width:190px;
+    height:auto;
+    float:left;
+    margin:30px 20px;
+    border:1px solid #d8d8d8;
+    padding:0
+}
+
+.asset-item-icon {
+    height:150px;
+    float:left;
+    overflow:hidden
+}
+.more-list {
+    background-image:url(../img/icons/list-more-icon.png);
+    background-position:center center;
+    background-repeat:no-repeat;
+    float:right;
+    height:58px;
+    opacity:.5;
+    width:37px;
+    margin-top: -18px;
+}
+
+a.more-list:hover {
+    background-color:#cccccc;
+    background-image:url(../img/icons/list-more-icon.png);
+    background-position:center center;
+    background-repeat:no-repeat;
+    float:right;
+    height:58px;
+    opacity:.5;
+    padding-right:22px
+}
+.wr-filter-category {float:left;}
+.list-image{float: left; margin:0.2%; width: 3%;}
+.list-td{ padding-top: 1%; }
+.overflow{overflow: hidden; height:729px;}
+.ro-text {  visibility: visible;  }
+.ro-search{visibility: hidden; display: none; }
+/*  _____________________________________________________________________________
+
+	 TYPOGRAPHY & COLOR
+    _____________________________________________________________________________  */
+
+
+.font-small{font-size:12px;}
+.font-medium{font-size:14px;}
+.font-large{font-size:16px;}
+.font-extra-large{font-size:20px ;}
+
+.uppercase{text-transform:uppercase;}
+.capitalize{text-transform:capitalize;}
+.lowercase{text-transform:lowercase;}
+
+
+.blue-bg{background-color: #3a9ecf ;}
+.grey-bg{background-color: #222222 ;}
+.off-white-bg{}
+
+.light-blue{color:#3a9ecf;}
+.black{color:#000;}
+.grey{color:#333;}
+.white{color:#FFF;}
+
+.bold{font-weight:bold;}
+.no-underline{text-decoration:none;}
+
+.center{text-align:center;}
+.right{text-align:right;}
+.left{text-align:left;}
+.justify{text-align:justify;}
+
+.middle{vertical-align: middle;}
+
+/*  ____________________________________________________________________________
+
+	 COLUMNS
+    _____________________________________________________________________________  */
+
+.col-row{width:100%; float:left; }
+.col-x-large{width:80%; }
+.col-large{width:75%; }
+.col-medium{width:50%; }
+.col-small{width:25%; }
+.col-x-small{width:20%; }
+
+/*  ____________________________________________________________________________
+
+	 PADDING & MARGIN
+    _____________________________________________________________________________  */
+.padding-left {padding-left:10px;}
+.padding-right  {padding-right:10px;}
+.padding-top  {padding-top:10px;}
+.padding-bottom  {padding-bottom:10px;}
+.padding{padding:10px;}
+.padding-none{ padding:0px ;}
+
+.padding-left-double {padding-left:20px;}
+.padding-right-double  {padding-right:20px;}
+.padding-top-double  {padding-top:20px;}
+.padding-bottom-double  {padding-bottom:20px;}
+.padding-double{padding:20px;}
+
+.margin-left {margin-left:10px;}
+.margin-right  {margin-right:10px;}
+.margin-top  {margin-top:10px;}
+.margin-bottom  {margin-bottom:10px;}
+.margin{margin:10px;}
+.margin-none{margin: 0px ;}
+
+.float-left{float:left;}
+.float-right{float:right;}
+.clear{ clear:both;}
+
+.relative{ position:relative;}
+
+
+/*  _____________________________________________________________________________
+
+	 LOGIN & REGISTER
+    _____________________________________________________________________________  */
+
+.boarder-bottom-blue{border-bottom: 3px solid #006596;}
+input::-moz-placeholder, textarea::-moz-placeholder  {
+    padding: 10px 5px 12px 8px;
+    color: #aba8a8;
+    font-size: 18px;
+}
+input::-webkit-input-placeholder{
+
+    color: #aba8a8;
+    font-size: 18px;
+}
+input:-ms-input-placeholder{
+    padding: 10px 5px 12px 8px;
+    color: #aba8a8;
+    font-size: 18px;
+}
+input {
+    border: 1px solid #d2d2d2;
+    padding: 10px 5px 12px 8px;
+    height: 50px ;
+}
+.boarder-all{border: 1px solid #d8d8d8; background: #FFF;}

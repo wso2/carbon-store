@@ -15,6 +15,24 @@
  */
 
 $(function () {
+
+    $("[data-toggle=popover]").popover();
+
+    $("#advanced-search-btn").popover({
+        html : true,
+        content: function() {
+            return $('#advanced-search').html();
+        }
+    });
+
+    $("#category-dropdown").popover({
+        html : true,
+        placement: 'bottom',
+        content: function() {
+            return $('#category-dropdown-content').html();
+        }
+    });
+    //$('.selectpicker').selectpicker();
     History.Adapter.bind(window, 'statechange', function () {
         var state = History.getState();
         if (state.data.id === 'sort-assets') {
@@ -52,60 +70,6 @@ $(function () {
         }
     });
 
-    /*
-     var search = function () {
-     var url;
-     currentPage = 1;
-     if (store.asset) {
-     url = caramel.url('/assets/' + store.asset.type + '/?query=' + $('#search').val());
-     caramel.data({
-     title: null,
-     header: ['sort-assets'],
-     body: ['assets', 'pagination']
-     }, {
-     url: url,
-     success: function (data, status, xhr) {
-     //TODO: Integrate a new History.js library to fix this
-     if ($.browser.msie == true && $.browser.version < 10) {
-     renderAssets(data);
-     } else {
-     History.pushState({
-     id: 'sort-assets',
-     context: data
-     }, document.title, url);
-     }
-     },
-     error: function (xhr, status, error) {
-     theme.loaded($('#assets-container').parent(), '<p>Error while retrieving data.</p>');
-     }
-     });
-     theme.loading($('#assets-container').parent());
-     } else if ($('#search').val().length > 0 && $('#search').val() != undefined) {
-     url = caramel.url('/assets/all/?query=' + $('#search').val());
-     caramel.data({
-     title: null,
-     body: ['top-assets']
-     }, {
-     url: url,
-     success: function (data, status, xhr) {
-     //TODO: Integrate a new History.js library to fix this
-     if ($.browser.msie == true && $.browser.version < 10) {
-     renderAssets(data);
-     } else {
-     History.pushState({
-     id: 'top-assets',
-     context: data
-     }, document.title, url);
-     }
-     },
-     error: function (xhr, status, error) {
-     theme.loaded($('#assets-container').parent(), '<p>Error while retrieving data.</p>');
-     }
-     });
-     theme.loading($('#assets-container').parent());
-     }
-     };
-     */
 
     var buildParams = function (query) {
         return 'q=' + query;
@@ -140,8 +104,8 @@ $(function () {
         var url, searchVal = getSearchFields('#search-dropdown-cont');//$('#search').val();
         //var url, searchVal = test($('#search').val());
         currentPage = 1;
-        var path = window.location.href;//current page path
         if (store.asset) {
+            var path = window.location.href;//current page path
             if(path.match('/t/')){
                 var regex = '/t/{1}([0-9A-Za-z-\\.@:%_\+~#=]+)';
                 var domain = path.match(regex)[1];
@@ -172,13 +136,7 @@ $(function () {
             });
             theme.loading($('#assets-container').parent());
         } else if (searchVal.length > 0 && searchVal != undefined) {
-            if(path.match('/t/')){
-                var regex = '/t/{1}([0-9A-Za-z-\\.@:%_\+~#=]+)';
-                var domain = path.match(regex)[1];
-                url = caramel.url('/t/'+ domain +'/?' + buildParams(searchVal));
-            } else {
-                url = caramel.url('/?' + buildParams(searchVal));
-            }
+            url = caramel.url('/?' + buildParams(searchVal));
             window.location = url;
             //TODO: The top assets page should render results without causing a page reload
             /*caramel.data({
@@ -208,14 +166,10 @@ $(function () {
         $('.search-bar h2').find('.page').text(' / Search: "' + searchVal + '"');
     };
 
-    $('#search-dropdown-cont').ontoggle = function ($, divobj, state) {
-        var icon = $('#search-dropdown-arrow').find('i'), cls = icon.attr('class');
-        icon.removeClass().addClass(cls == 'icon-sort-down' ? 'icon-sort-up' : 'icon-sort-down');
-    }
 
     $('#search').keypress(function (e) {
         if (e.keyCode === 13) {
-            if ($('#search-dropdown-cont').is(':visible')) {
+            if ($('#advanced-search-btn').is(":visible")) {
                 $('#search').val('');
                 makeQuery();
             }
@@ -225,29 +179,8 @@ $(function () {
             $('#search-dropdown-cont').toggle();
         }
 
-    })
-        .click(function (e) {
-            if ($('#search-dropdown-cont').hasClass('search-dropdown-cont-single')) {
-                $(this).animate({width: '1170px'}, 100);
-            } else {
-                $(this).animate({width: '500px'}, 100);
-            }
-            e.stopPropagation();
-        });
-    /*
-     .blur(function(){
-     $(this).animate({width:'100%'});
-     })*/
-
-
-    $(document).click(function () {
-        $('#search').animate({width: '100%'});
     });
-    /*
-     $('#search').blur(function(){
-     $(this).fadeOut();
-     $('#search-button').fadeIn("fast");
-     });*/
+
 
     $('#search-button').click(function () {
         if ($('#search').val() == '') return;
@@ -322,67 +255,7 @@ $(function () {
             $('#search-button2').trigger('click');
         }
     });
-    /*
-     $('#search').keypress(function (e) {
-     if (e.keyCode === 13) {
-     search();
-     }
-     });
 
-     $('#search-button').click(function () {
-     search();
-     return false;
-     });*/
-    /*
-     var test = function (que) {
-     var map = {};
-     var key = "";
-     var value = "";
-     var isKey = true;
-     for (var i = 0; i < que.length; i++) {
-     if (isKey) {
-     for (; i < que.length; i++) {
-     if (que.charAt(i) == ":") {
-     isKey = false;
-     break;
-     }
-     key += que.charAt(i);
-     }
-     } else if (que.charAt(i) != " ") {
-     if (que.charAt(i) == "\"") {
-     i++;
-     for (; i < que.length; i++) {
-     if (que.charAt(i) == "\"") {
-     break;
-     }
-     value += que.charAt(i);
-     }
-     } else {
-     for (; i < que.length; i++) {
-     if (que.charAt(i) == " ") {
-     break;
-     }
-     value += que.charAt(i);
-     }
-     }
-     isKey = true;
-     } else {
-
-     }
-     if (isKey) {
-     map[key] = value;
-     key = "";
-     value = "";
-     }
-
-     }
-     var query = "";
-     for (var searchKey in map) {
-     query += searchKey + "=" + map[searchKey] + "&";
-     }
-     return query.substring(0, query.length - 1);
-     };
-     */
 
     var makeQuery = function () {
 
@@ -435,9 +308,5 @@ $(function () {
         search();
         $('#search-dropdown-cont input').val('');
         return false;
-    });
-
-    $('#container-search').affix({
-        offset: { top: $('.navbar').offset().top + 80}
     });
 });

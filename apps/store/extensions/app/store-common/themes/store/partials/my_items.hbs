@@ -6,19 +6,19 @@
         <div class="top-asset-slideshow-cont">
         <div class="html_carousel">
         <div id="asset-in-{{key}}">
-        
+
             {{#each value.assets}}
             {{#attributes}}
             <!--div class="row-fluid"-->
             <div class="store-my-item">
-            
+
                 <div class="store-my-item-thumbnail">
                     {{#if ../isPublished}}
                         <a href="{{url "/asts/"}}{{../../type}}/details/{{../../id}}"><img src="{{#if ../../thumbnail}}{{url ""}}/storage/{{../../../type}}/{{../../../id}}/{{../../../thumbnail}}{{/if}}"></a>
                     {{else}}
                         <img src="{{#if ../../thumbnail}}{{url ""}}/storage/{{../../../type}}/{{../../../id}}/{{../../../thumbnail}}{{/if}}">
                     {{/if}}
-                    
+
                 </div>
                 <div class="store-my-item-info">
                     <a class="asset-title" href="{{url "/asts/"}}{{../type}}/details/{{../id}}">
@@ -36,14 +36,14 @@
                             <a class="btn btn-mini asset-remove-btn" type="{{../../type}}" data-aid="{{../../id}}" data-toggle="tooltip" title="{{t "Remove"}} {{../../type}}">
                                 <i class="icon-remove"></i>
                             </a>
-                        </div> 
-                    {{else}}  
+                        </div>
+                    {{else}}
                         <small class="bookmark-assert-provider">by {{overview_provider}}</small>
                         <span class="label label-unavailable">Currently Unavailable</span>
                     {{/if}}
-                    
+
                 </div>
-            
+
             </div>
             <!--/div-->
             {{/attributes}}
