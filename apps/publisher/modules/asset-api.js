@@ -376,7 +376,6 @@ var result;
             } else {
                 //If grouping is enabled then do a group search
                 if (rxtManager.isGroupingEnabled(options.type)) {
-                    log.info('Doing group search!');
                     assets = assetManager.searchByGroup();
                 } else {
                     assets = assetManager.list(paging); // asset manager back-end call for asset listing
