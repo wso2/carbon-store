@@ -797,15 +797,15 @@ span.ico-sort-desc {
 }
 
 :-moz-placeholder { /* Firefox 18- */
-   color: #fff;
+   color: #333;
 }
 
 ::-moz-placeholder {  /* Firefox 19+ */
-   color: #fff;
+   color: #333;
 }
 
 :-ms-input-placeholder {
-   color: #fff;
+   color: #333;
 }
 
 .wr-operations .operation {
