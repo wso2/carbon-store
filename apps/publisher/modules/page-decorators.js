@@ -39,6 +39,10 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
     };
+    pageDecorators.populateLifecycleFeatureDetails = function(ctx,page){
+        page.lifecycleFeature = {};
+        page.lifecycleFeature.isEnabled = ctx.rxtManager.isGroupingEnabled(ctx.assetType);
+    };
     pageDecorators.populateAttachedLifecycles = function(ctx, page, utils) {
         var am = assetManager(ctx);
         //Check if an asset exists
