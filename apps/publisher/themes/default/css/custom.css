@@ -167,18 +167,22 @@ body {
 
 /* application top level header */
 h1 {
-    color: #222222;
-    font-size: 38px;
-    font-weight: 200;
+    color: #444;
+    font-size: 24px;
+    margin-bottom:20px;
+    padding-bottom:20px;
+    font-weight: 400;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    border-bottom:0px solid #f0f0f0;
+    text-transform: uppercase;
 }
 a.collapsing-h2 h2 {
     margin:0 0 20px 0;
     color: #222222;
-    font-size: 28px;
+    font-size: 22px;
     font-weight: 200;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    border-bottom:solid 1px #ccc;
+    border-bottom:solid 1px #f0f0f0;
     padding-bottom:10px;
 }
 a.collapsing-h2{
@@ -432,6 +436,15 @@ a.cu-btn:hover {
     color:#fafafa !important;
 }
 
+i.cu-btn-exp-col {
+    display:inline-block;
+    width:27px;
+    height:27px;
+    background-size: 26px 26px;     
+    padding-left:35px;
+    font-style: normal;
+}
+
 .btn-add-new {
     background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
 }
@@ -449,7 +462,11 @@ a.cu-btn:hover {
 }
 
 .btn-lifecycle {
-     background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;   
+    background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;   
+}
+
+.btn-collapsed {
+    background:url('../img/icons/ico-collapsed.png') no-repeat;      
 }
 
 a.cu-ico-right-button {
@@ -520,7 +537,7 @@ a.cu-ico-button-stats {
 
 /* filter */
 .wr-filters {
-	padding:20px 30px 15px 30px;
+	padding:20px 30px 15px 15px;
 }
 
 .wr-secondary-bar {
@@ -785,8 +802,7 @@ h2 span.fa-stack{
 
 /* ovrds */
 .ovrd-wr-asst-listing {
-    margin-right:0;
-    margin-left:0;
+
 }
 
 .wr-action-btn-bar ul.nav li {
@@ -796,4 +812,8 @@ h2 span.fa-stack{
 
 #navbar {
     float:left;
+}
+
+.wr-main-content {
+    margin-left:20px;
 }
