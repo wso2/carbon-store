@@ -25,7 +25,7 @@ var api = {};
     var tenantApi = require('/modules/tenant-api.js').api;
     //PrivilegedCarbonContext = org.wso2.carbon.context.PrivilegedCarbonContext;
     /**
-     * Checks if the resource of a given asset can be accessed 
+     * Checks if the resource of a given asset can be accessed
      * @param  {String}  type         The type of the asset
      * @param  {String}  assetId      The asset UUID
      * @param  {String}  resourceName The resource path
@@ -51,13 +51,16 @@ var api = {};
         // } else {
         //     am = rxt.asset.createAnonAssetManager(session, type, tenantId);
         // }
-        am = rxt.asset.createAnonAssetManager(session, type, tenantId);
+        var tenantResources = tenantApi.createTenantAwareAssetResources(session, {
+            type: type
+        });
+        am = tenantResources.am;//rxt.asset.createAnonAssetManager(session, type, tenantId);
         //Attempt to retrieve the asset details
         try {
             asset = am.get(assetId);
         } catch (e) {
             //log.error('Unable to obtain asset ' + assetId + ' type: ' + type+' for user in tenant '+tenantId, e);
-            log.error('Unable to obtain asset ' + assetId + ' type: ' + type+' for user in tenant '+tenantId);
+            log.error('Unable to obtain asset ' + assetId + ' type: ' + type + ' for user in tenant ' + tenantId);
         }
         if (asset) {
             return true;
