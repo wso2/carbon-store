@@ -1,17 +1,15 @@
 {{#if hasMultipleVersions}}
-<div class="form-group wr-filter-category">
-    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select a version <span class="fa fa-angle-down pull-right"></span></a>
-    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-        {{#each versions}}
-        <li><a tabindex="-1" href='{{url ""}}{{assetURL}}'>{{version}}</a></li>
-        {{/each}}
-    </ul>
+<div style="text-wrap">
+    <label>versions: </label>
+    {{#each versions}}
+        <a href='{{url ""}}{{assetURL}}'>v{{version}}</a>
+    {{/each}}
 </div>
 {{/if}}
 <div>
     {{#if isDefault}}
-    This is the default version
+    <span class="label label-info">default version</span>
     {{else}}
-    This not the default version
+    <span class="label label-default">sub version</span>
     {{/if}}
 </div>

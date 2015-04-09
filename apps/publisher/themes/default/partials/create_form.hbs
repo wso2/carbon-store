@@ -4,6 +4,7 @@
             {{renderTable .}}
         {{/each}}
     </div>
+    {{#if lifecycleFeature.isEnabled}}
     <div class="control-group">
         <h3>Versioning</h3>
         <div class="checkbox">
@@ -12,6 +13,7 @@
             </label>
         </div>
     </div>
+    {{/if}}
     <div class="form-group" id="saveButtons">
         <div class="col-sm-offset-2 col-sm-10">
             <input type='submit' id="btn-create-asset" class="btn btn-primary" name="addNewAssetButton" value='{{t "Create"}}'>

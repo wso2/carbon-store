@@ -331,6 +331,9 @@ asset.renderer = function(ctx) {
                 if (page.assets.id) {
                     require('/modules/page-decorators.js').pageDecorators.populateAssetVersionDetails(ctx, page, this);
                 }
+            },
+            populateLifecycleFeatureDetails : function(page){
+                require('/modules/page-decorators.js').pageDecorators.populateLifecycleFeatureDetails(ctx,page);
             }
         }
     };
