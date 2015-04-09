@@ -184,16 +184,18 @@ a.collapsing-h2 h2 {
 a.collapsing-h2{
     text-decoration: none;
 }
+
 h2.app-title {
-	font-weight:100;
-	font-size:20px;
-	margin:0;
-	padding:0;
-	color:#fff;
+    font-weight:500;
+    font-size:17px;
+    margin:0;
+    padding:3px 0 0 0;
+    color:#fafafa;
+    text-transform: uppercase;
 }
 
 .wr-global-header {
-	background:#5d5d5d;
+    background:#444444;
 }
 
 .app-logo {
