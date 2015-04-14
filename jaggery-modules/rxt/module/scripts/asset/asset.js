@@ -372,6 +372,7 @@ var asset = {};
      */
     AssetManager.prototype.search = function(query, paging) {
         var assets = [];
+        query = query || {};
         paging = paging || this.defaultPaging;
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
@@ -416,8 +417,8 @@ var asset = {};
      *                         and grouped
      */
     AssetManager.prototype.searchByGroup = function(query, paging) {
-        query = query || {};
         var assets = [];
+        query = query || {};
         paging = paging || this.defaultPaging;
         query.propertyName = constants.PROP_DEFAULT;
         query.rightPropertyValue = true;
