@@ -428,6 +428,21 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
+    var createGroupingQuery = function(query,target,groupingAttributes){
+        query = query || {};
+        var attribute;
+        if(groupingAttributes.length === 0) {
+            log.error('Cannot creating grouping query as no grouping attributes were specified');
+            throw 'Cannot creating grouping query as no grouping attributes were specified';
+        }
+
+        attribute = groupingAttributes[0];
+        query[attribute] = target;
+        // for(var index = 0; index < groupingAttributes.length; index++){
+        //     attribute = groupingAttributes[index];
+        // }
+        return query;
+    };
     /**
      * Retrieves the set of assets that have the same name
      * @param  {[type]} name   [description]
@@ -437,7 +452,8 @@ var asset = {};
     AssetManager.prototype.getAssetGroup = function(target, paging) {
         var name;
         //Obtain the field which is used as the name field
-        var nameField = this.rxtManager.getNameAttribute(this.type);
+        var groupingAttributes = this.rxtManager.groupingAttributes(this.type);
+        //var nameField = this.rxtManager.getNameAttribute(this.type);
         if (typeof target === 'string') {
             name = target;
         } else if (typeof target === 'object') {
@@ -454,7 +470,8 @@ var asset = {};
         var query = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
-        query[nameField] = name;
+        //query[nameField] = name;
+        query = createGroupingQuery(query,name,groupingAttributes);
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
         addAssetsMetaData(assets, this);
