@@ -1601,3 +1601,7 @@ circle:hover {
 .rxt-table-heading {
     padding-left: 10px;
 }
+
+.ui-operation-overlay {
+    background: white;
+}
