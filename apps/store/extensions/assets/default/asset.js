@@ -135,7 +135,10 @@ asset.configure = function() {
             versionAttribute:'overview_version',
             providerAttribute:'overview_provider',
             timestamp:'overview_createdtime',
-            groupingEnabled:false
+            grouping:{
+                groupingEnabled:false,
+                groupingAttributes:['overview_name']
+            }
         }
     };
 };
