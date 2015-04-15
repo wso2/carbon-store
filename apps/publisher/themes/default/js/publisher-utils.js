@@ -18,19 +18,49 @@
  */
 var PublisherUtils = {};
 (function() {
-	var SUCCESS_ICON ='glyphicon glyphicon-ok';
-	var FAILURE_ICON ='glyphicon glyphicon-remove';
+    var SUCCESS_ICON = 'glyphicon glyphicon-ok';
+    var FAILURE_ICON = 'glyphicon glyphicon-remove';
+    var OVERLAY_CONTAINER_ID = 'ui-asset-operations-overlay';
+    var OVERLAY_CONTAINER_HTML = '<div id="' + OVERLAY_CONTAINER_ID + '"></div>';
+    var getID;
 
+    getID = PublisherUtils.getID = function(container) {
+        return '#' + container;
+    };
+    PublisherUtils.blockButtons = function(options) {
+        options = options || {};
+        var container = options.container || '';
+        var msg = options.msg || 'Performing requested action';
+        if (!container) {
+            return;
+        }
+        createOverlay(container);
+        blockUI(OVERLAY_CONTAINER_ID, msg);
+    };
+    PublisherUtils.unblockButtons = function(options) {
+        options = options || {};
+        var container = options.container || 'Finished performing requested action';
+        unblockUI(OVERLAY_CONTAINER_ID);
+    };
+    PublisherUtils.resolveCurrentPageAssetType = function(){
+        if((!store)&&(!store.publisher)){
+            return 'asset';
+        }
+        if(!store.publisher.type){
+            return 'asset';
+        }
+        return store.publisher.type;
+    };
     var spinnerURL = function() {
         return caramel.url('/themes/default/img/preloader-40x40.gif');
     };
     var createLoadingIcon = function() {
         return '<img src="' + spinnerURL() + '" />';
     };
-    var blockUI = function(overlayContainer, msg) {
-        var container = $('.' + overlayContainer);
+    var blockUI = function(container, msg) {
+        var container = $(getID(container));
         container.html('<img src="' + spinnerURL() + '" />' + msg);
-        container.css('position', 'absolute');
+        container.css('position', 'relative');
         container.css('z-index', 2);
         container.css('display', 'block');
         container.css('background-color', 'white');
@@ -39,49 +69,21 @@ var PublisherUtils = {};
         container.css('left', 0);
         container.css('right', 0);
     };
-    var unblockUI = function(overlayContainer, msg) {
-        var container = $('.' + overlayContainer);
+    var unblockUI = function(container, msg) {
+        var container = $(getID(container));
         container.html('');
         container.attr('style', '');
-        //container.html(msg);
     };
-    PublisherUtils.blockButton = function(options) {
-        options = options || {};
-        var id = '#' + options.id || '';
-        var overlayContainer = options.overlayContainer || null;
-        var existingText;
-        var msg = options.msg || 'Performing requested action';
-        if (!id) {
+    var createOverlay = function(parentContainerId) {
+        var container = $(getID(OVERLAY_CONTAINER_ID))[0];
+        if (container) {
             return;
         }
-        //existingText = $(id).val();
-        //$(id).data('originalText', existingText);
-        //$(id).val(msg);
-        $(id).attr('disabled', true);
-        if (overlayContainer) {
-            blockUI(overlayContainer, msg);
-        }
-    };
-    PublisherUtils.successUnblockButton = function(options) {
-        options = options || {};
-        var id = '#' + options.id;
-        var overlayContainer = options.overlayContainer || null;
-        var msg = options.msg || 'Action successfully performed';
-        if (!id) {
+        //Create a container 
+        var parentContainer = $(getID(parentContainerId));
+        if (!parentContainer[0]) {
             return;
         }
-        $(id).attr('disabled', false);
-        if (overlayContainer) {
-            unblockUI(overlayContainer);
-        }
-    };
-    PublisherUtils.failureUnblockButton = function(options) {
-    	options = options || {};
-    	var id = '#'+options.id;
-    	var overlayContainer = options.overlayContainer || null;
-    	//var msg = options.msg || 'Failed to perform action';
-    	//msg = '<span class="'+FAILURE_ICON+'"></span>Asset created!';
-    	$(id).attr('disabled', false);
-    	unblockUI(overlayContainer);
+        parentContainer.append(OVERLAY_CONTAINER_HTML);
     };
 }());

@@ -464,7 +464,7 @@ var asset = {};
         if (!name) {
             throw 'Please provide a name in order to retrieve the asset group';
         }
-        if (!nameField) {
+        if (groupingAttributes.length === 0) {
             throw 'Unable to locate the name attribute for ' + this.type;
         }
         var query = {};
