@@ -172,9 +172,11 @@ asset.configure = function() {
             lifecycle: {
                 name: 'SampleLifeCycle2',
                 commentRequired: false,
+                defaultLifecycleEnabled:true,
                 defaultAction: 'Promote',
                 deletableStates: [],
-                publishedStates: ['Published']
+                publishedStates: ['Published'],
+                lifecycleEnabled: true
             },
             ui: {
                 icon: 'icon-cog'
@@ -187,18 +189,25 @@ asset.configure = function() {
             versionAttribute: 'overview_version',
             providerAttribute: 'overview_provider',
             timestamp: 'overview_createdtime',
-            grouping:{
-                groupingEnabled:false,
-                groupingAttributes:['overview_name']
+            grouping: {
+                groupingEnabled: false,
+                groupingAttributes: ['overview_name']
             }
         }
     };
 };
 asset.renderer = function(ctx) {
     var type = ctx.assetType;
+    var isAssetWithLifecycle = function(asset){
+        if((asset.lifecycle)&&(asset.lifecycleState)){
+            return true;
+        }
+        log.warn('asset: '+asset.name+' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        return false;
+    };
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
-        navList.push('Add ' + type,'btn-add-new', util.buildUrl('create'));
+        navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
         navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
@@ -206,9 +215,13 @@ asset.renderer = function(ctx) {
     var buildDefaultLeftNav = function(page, util) {
         var id = page.assets.id;
         var navList = util.navList();
+        var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
         navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
-        navList.push('Life Cycle' , 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+        //Only render the view if the asset has a 
+        if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
+            navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+        }
         return navList.list();
     };
     var buildAddLeftNav = function(page, util) {
@@ -335,8 +348,8 @@ asset.renderer = function(ctx) {
                     require('/modules/page-decorators.js').pageDecorators.populateAssetVersionDetails(ctx, page, this);
                 }
             },
-            populateLifecycleFeatureDetails : function(page){
-                require('/modules/page-decorators.js').pageDecorators.populateLifecycleFeatureDetails(ctx,page);
+            populateLifecycleFeatureDetails: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.populateLifecycleFeatureDetails(ctx, page);
             }
         }
     };

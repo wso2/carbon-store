@@ -23,15 +23,18 @@ asset.manager = function(ctx) {
      * @return {[type]}       The provided query object 
      */
     var buildPublishedQuery = function(query) {
+        query = query || {};
+        var isLCEnabled = ctx.rxtManager.isLifecycleEnabled(ctx.assetType);
+        //If lifecycles are not enabled then do nothing
+        if(!isLCEnabled){
+            log.warn('lifecycles disabled,not adding published states to search query');
+            return query;
+        }
         //Get all of the published assets
         var publishedStates = ctx.rxtManager.getPublishedStates(ctx.assetType) || [];
         //Determine if there are any published states
         if (publishedStates.length == 0) {
             return query;
-        }
-        //If there is no query then build a new one
-        if (!query) {
-            query = {};
         }
         //TODO: Even though an array is sent in only the first search value is accepted
         query.lcState=[publishedStates[0]];
@@ -116,7 +119,8 @@ asset.configure = function() {
                 commentRequired: false,
                 defaultAction: 'Promote',
                 deletableStates: [],
-                publishedStates: ['Published']
+                publishedStates: ['Published'],
+                lifecycleEnabled:true
             },
             ui: {
                 icon: 'icon-cog'
