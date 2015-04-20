@@ -372,6 +372,7 @@ var asset = {};
      */
     AssetManager.prototype.search = function(query, paging) {
         var assets = [];
+        query = query || {};
         paging = paging || this.defaultPaging;
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
@@ -416,8 +417,8 @@ var asset = {};
      *                         and grouped
      */
     AssetManager.prototype.searchByGroup = function(query, paging) {
-        query = query || {};
         var assets = [];
+        query = query || {};
         paging = paging || this.defaultPaging;
         query.propertyName = constants.PROP_DEFAULT;
         query.rightPropertyValue = true;
@@ -427,6 +428,33 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
+    var createGroupingQuery = function(query,groupingAttributeValues){
+        query = query || {};
+        // var attribute;
+        // if(groupingAttributeValu.length === 0) {
+        //     log.error('Cannot creating grouping query as no grouping attributes were specified');
+        //     throw 'Cannot creating grouping query as no grouping attributes were specified';
+        // }
+        //attribute = groupingAttributes[0];
+        //query[attribute] = target;
+        for(var key in groupingAttributeValues){
+            query [key] = groupingAttributeValues[key];
+        }
+        return query;
+    };
+    var getGroupAttributeValues = function(asset,attributes){
+        //Handle cases where the full asset is provided
+        if(asset.hasOwnProperty('attributes')){
+            asset = asset.attributes;
+        }
+        var values = {};
+        for(var groupAttrKey in attributes){
+            if(asset.hasOwnProperty(groupAttrKey)){
+                values[groupAttrKey] = asset[groupAttrKey];
+            }
+        }
+        return values;
+    };
     /**
      * Retrieves the set of assets that have the same name
      * @param  {[type]} name   [description]
@@ -434,26 +462,27 @@ var asset = {};
      * @return {[type]}        [description]
      */
     AssetManager.prototype.getAssetGroup = function(target, paging) {
-        var name;
+        var groupingAttributeValues = {};
         //Obtain the field which is used as the name field
-        var nameField = this.rxtManager.getNameAttribute(this.type);
+        var groupingAttributes = this.rxtManager.groupingAttributes(this.type);
+        //var nameField = this.rxtManager.getNameAttribute(this.type);
         if (typeof target === 'string') {
-            name = target;
+            log.error('getAssetGroup no longer supports querying by by name.Please provide an asset instance');
+            //name = target;
+            throw 'getAssetGroup no longer supports querying by name.Please provide an asset instance';
         } else if (typeof target === 'object') {
-            name = this.getName(target);//target[nameField];
+            groupingAttributeValues = getGroupAttributeValues(asset,groupingAttributes); //this.getName(target);//target[nameField];
         } else {
-            throw 'Cannot get the asset group when target is not a string or an object.';
+            throw 'Cannot get the asset group when target is not an object';
         }
-        if (!name) {
-            throw 'Please provide a name in order to retrieve the asset group';
-        }
-        if (!nameField) {
-            throw 'Unable to locate the name attribute for ' + this.type;
+        if (groupingAttributes.length === 0) {
+            throw 'No grouping attributes have been provided for type: '+this.type;
         }
         var query = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
-        query[nameField] = name;
+        //query[nameField] = name;
+        query = createGroupingQuery(query,groupingAttributeValues);
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
         addAssetsMetaData(assets, this);

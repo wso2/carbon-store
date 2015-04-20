@@ -323,7 +323,7 @@ var pageDecorators = {};
             var versions;
             var asset;
             var entry;
-            versions = am.getAssetGroup(page.assets.name || {});
+            versions = am.getAssetGroup(page.assets || {});
             versions.sort(function(a1, a2) {
                 return am.compareVersions(a1, a2);
             });

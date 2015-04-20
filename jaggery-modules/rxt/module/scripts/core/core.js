@@ -330,17 +330,15 @@ var core = {};
         }
         return tables;
     };
-    RxtManager.prototype.getMediaType = function(type){
+    RxtManager.prototype.getMediaType = function(type) {
         var rxtDefinition = this.rxtMap[type];
-        if(!rxtDefinition){
-            log.error('Unable to locate the rxt definition for type: '+type+' in order to return tables');
-            throw 'Unable to locate the rxt definition for type: '+type+' in order to return tables';
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return tables');
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return tables';
         }
-        if(!rxtDefinition.type){
-            log.error('Unable to locate media type (type) attribute in RXT definition of type '+type+'.Please check your'
-            + ' rxt definition.');
-            throw 'Unable to locate media type (type) attribute in RXT definition of type '+type+'.Please check your'
-            + ' rxt definition.';
+        if (!rxtDefinition.type) {
+            log.error('Unable to locate media type (type) attribute in RXT definition of type ' + type + '.Please check your' + ' rxt definition.');
+            throw 'Unable to locate media type (type) attribute in RXT definition of type ' + type + '.Please check your' + ' rxt definition.';
         }
         return rxtDefinition.type;
     };
@@ -439,7 +437,7 @@ var core = {};
         }
         return null;
     };
-    RxtManager.prototype.getProviderAttribute = function(type){
+    RxtManager.prototype.getProviderAttribute = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return timestamp attribute');
@@ -451,9 +449,8 @@ var core = {};
         if (log.isDebugEnabled()) {
             log.debug('Unable to locate timestamp attribute for type: ' + type + '.Check if a timestamp property is defined in the rxt configuration.');
         }
-        return null;   
+        return null;
     }
-
     /**
      * Returns the name of the lifecycle that is attached to assets of a given RXT type
      * If no lifecycle is specified then an empty string is returned.
@@ -511,17 +508,74 @@ var core = {};
         log.warn('Unable to locate the lifecycle meta property to determine whether comments are required ' + type + '.Make sure the lifecycle meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isGroupingEnabled = function(type){
+    RxtManager.prototype.isGroupingEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
             throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if grouping of assets is required';
         }
-        if (rxtDefinition.meta) {
-            return rxtDefinition.meta.groupingEnabled || false;
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.grouping)) {
+            return rxtDefinition.meta.grouping.groupingEnabled || false;
         }
         log.warn('Unable to locate the  meta property to determine whether asset grouping is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
+    };
+    RxtManager.prototype.isLifecycleEnabled = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if lifecycles are enabled';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
+            return rxtDefinition.meta.lifecycle.lifecycleEnabled || false;
+        }
+        log.warn('Unable to locate the  meta property to determine whether lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        return false;
+    };
+    RxtManager.prototype.isDefaultLifecycleEnabled =  function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if default lifecycles are enabled';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
+            return rxtDefinition.meta.lifecycle.defaultLifecycleEnabled || false;
+        }
+        log.warn('Unable to locate the  meta property to determine whether default lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        return false;
+    };
+    RxtManager.prototype.isLifecycleViewEnabled = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        var isLCEnabled = this.isLifecycleEnabled(type);
+        var isLCViewEnabled = false;
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if lifecycles are enabled';
+        }
+
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
+            //Check if the lifecycleViewEnabled property is found,if not then check if lifecycleEnabled
+            if(!rxtDefinition.meta.lifecycle.lifecycleViewEnabled){
+                isLCViewEnabled = isLCEnabled;
+            }
+            else  {
+                isLCViewEnabled = rxtDefinition.meta.lifecycle.lifecycleViewEnabled;
+            }
+        }
+        //log.warn('Unable to locate the  meta property to determine whether lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        return isLCViewEnabled;
+    };
+    RxtManager.prototype.groupingAttributes = function(type) {
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine grouping attributes';
+        }
+        if((rxtDefinition.meta) && (rxtDefinition.meta.grouping)){
+            return rxtDefinition.meta.grouping.groupingAttributes ||[];
+        }
+        log.warn('Unable to locate the  meta property to determine grouping attributes for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        return [];
     };
     /**
      * Returns all fields that match field type provided in the RXT definition

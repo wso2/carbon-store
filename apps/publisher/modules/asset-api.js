@@ -38,6 +38,10 @@ var result;
         }
         return rawFields;
     };
+    var getRxtManager =  function(session,type) {
+        var context = rxtModule.core.createUserAssetContext(session, type);
+        return context.rxtManager;
+    };
     /**
      * The function filter the requested fields from assets objects and build new asset object with requested fields
      * @param  options   The object contains array of required fields and array of assets for filtering fields
@@ -196,6 +200,9 @@ var result;
         var user = server.current(session);
         var asset = null;
         var meta;
+        var rxtManager = getRxtManager(session,options.type);
+        var isLCEnabled = false;
+        var isDefaultLCEnabled = false;
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
         } else {
@@ -213,6 +220,16 @@ var result;
             log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
             return null;
         }
+        //Check if lifecycles are enabled
+        isLCEnabled = rxtManager.isLifecycleEnabled(options.type);
+        if(!isLCEnabled) {
+            return asset;
+        }
+        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
+        if(!isDefaultLCEnabled){
+            return asset;
+        }
+        //Continue attaching the lifecycle
         var isLcAttached = am.attachLifecycle(asset);
         //Check if the lifecycle was attached
         if (isLcAttached) {
