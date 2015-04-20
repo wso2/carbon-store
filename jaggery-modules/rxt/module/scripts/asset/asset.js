@@ -197,18 +197,19 @@ var asset = {};
         var asset;
         options.id = id;
         if (!this.rxtManager.isGroupingEnabled(this.type)) {
-            log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            log.info('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
             return;
         }
         asset = this.get(id);
+
         //If the default flag is true or if there are no other versions of this asset make this
         //asset the default asset
         if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
-            log.debug('default asset:' + this.getName(asset) + ' ' + this.getVersion(asset));
+            log.info('default asset:' + this.getName(asset) + ' ' + this.getVersion(asset));
             this.setAsDefaultAsset(asset);
         }
         if (!id) {
-            log.warn('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
+            log.info('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
             return;
         }
     };
@@ -448,7 +449,9 @@ var asset = {};
             asset = asset.attributes;
         }
         var values = {};
-        for(var groupAttrKey in attributes){
+        var groupAttrKey;
+        for(var index in attributes){
+            groupAttrKey = attributes[index];
             if(asset.hasOwnProperty(groupAttrKey)){
                 values[groupAttrKey] = asset[groupAttrKey];
             }
@@ -471,7 +474,7 @@ var asset = {};
             //name = target;
             throw 'getAssetGroup no longer supports querying by name.Please provide an asset instance';
         } else if (typeof target === 'object') {
-            groupingAttributeValues = getGroupAttributeValues(asset,groupingAttributes); //this.getName(target);//target[nameField];
+            groupingAttributeValues = getGroupAttributeValues(target,groupingAttributes); //this.getName(target);//target[nameField];
         } else {
             throw 'Cannot get the asset group when target is not an object';
         }

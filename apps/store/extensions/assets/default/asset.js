@@ -140,7 +140,7 @@ asset.configure = function() {
             providerAttribute:'overview_provider',
             timestamp:'overview_createdtime',
             grouping:{
-                groupingEnabled:false,
+                groupingEnabled:true,
                 groupingAttributes:['overview_name']
             }
         }
@@ -183,6 +183,9 @@ asset.renderer = function(ctx) {
             },
             populateAssetVersionDetails:function(page,meta){
                 return decoratorApi.populateAssetVersionDetails(ctx,page,this);
+            },
+            populateGroupingFeatureDetails: function(page,meta){
+                return decoratorApi.populateGroupingFeatureDetails(ctx,page,this);
             }
         }
     };
