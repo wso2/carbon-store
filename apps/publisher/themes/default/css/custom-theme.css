@@ -161,7 +161,7 @@ a.ctrl-filter-category:hover {
 	border:0px solid #237bd5;
 	background:#237bd5;
 	top:59px;
-	left:30px;
+	left:15px;
 	width:230px;
 	padding-top:0;
 	padding-bottom:0;
@@ -194,35 +194,31 @@ a.ctrl-filter-category:hover {
 	color:#fff;
 }
 
-/* forms */
-.form-control {
-    border-radius: 0px;
+/* input */
+.form-control, .custom-form-right select, .custom-form-right textarea {
+	display: block;
+	width: 100%;
+	height: 34px;
+	padding: 6px 12px;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #999 !important;
+	border-radius: 0px;
+	-webkit-box-shadow: inset 0 0px 0px rgba(0, 0, 0, .075);
+	box-shadow: inset 0 0px 0px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 
-.form-control {
-  display: block;
-  width: 100%;
-  height: 34px;
-  padding: 6px 12px;
-  font-size: 14px;
-  line-height: 1.42857143;
-  color: #555;
-  background-color: #fff;
-  background-image: none;
-  border: 1px solid #ccc;
-  border-radius: 0px;
-  -webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,.075);
-  /* box-shadow: inset 0 0px 0px rgba(0,0,0,.075); */
-  -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-  -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-  transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-}
-
-.form-control:focus {
-  border-color: #66afe9;
-  outline: 0;
-  /* -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6); */
-  box-shadow: inset 0 0px 0px rgba(0,0,0,.075),0 0 0px rgba(102,175,233,.6);
+.form-control:focus, .custom-form-right select, .custom-form-right textarea {
+	border-color: #555;
+	outline: 0;
+	-webkit-box-shadow: inset 0 0px 0px rgba(0,0,0,.075), 0 0 0px rgba(102, 175, 233, .6);
+	box-shadow: inset 0 0px 0px rgba(0,0,0,.075), 0 0 0px rgba(102, 175, 233, .6);
 }
 
 
@@ -252,6 +248,15 @@ a.ctrl-filter-category:hover {
 .wr-version-selection .dropdown-menu li a:hover {
     background:#61a3e6;
 }
+
+
+/* forms */
+.custom-form-label  {
+	font-weight:300;
+	font-size:14px;
+}
+
+
 
 
 /* testing */
