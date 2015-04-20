@@ -65,14 +65,17 @@ require('/modules/publisher.js').exec(function (ctx) {
 
     switch (method) {
         case 'POST':// POST endpoints
-            var newAsset;
+            var result;
             if (uriMatcher.match(CREATE_URL)) {//to create asset
                 try {
-                    newAsset = assetApi.create(options, req, res, session);
+                    result = assetApi.create(options, req, res, session);
                     //If the asset is successfully created then return the asset
-                    if (newAsset) {
+                    if ('CREATED'.equals(result.status)) {
                         response = responseProcessor.buildSuccessResponse(res,
-                                constants.STATUS_CODES.CREATED, newAsset)
+                                constants.STATUS_CODES.CREATED, result)
+                    } else if ('WORKFLOW_INVOKED'.equals(result.status)) {
+                        response = responseProcessor.buildSuccessResponse(res,
+                                constants.STATUS_CODES.ACCEPTED, result)
                     } else {
                         response = responseProcessor.buildErrorResponse(res,
                                 constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'Failed to create asset of type: ' +

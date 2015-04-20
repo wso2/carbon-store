@@ -212,6 +212,30 @@ var asset = {};
             return;
         }
     };
+
+    /**
+     * Check whether the workflows are enabled
+     * @param options
+     */
+    AssetManager.prototype.initiateCreate = function (options) {
+        //if workflows are enabled
+        var server = require('store').server;
+        var user = require('store').user;
+        var userDetails = server.current(session);
+        var tenantId = userDetails.tenantId;
+        var configs = user.configs(tenantId);
+        var workflowsEnabled = false;
+        if (!configs.workflows.enabled && !configs.workflows.ASSET_CREATION.enabled) {
+            return workflowsEnabled;
+        } else {
+            workflowsEnabled = true;
+            var workflowManager = require('rxt').workflows;
+            var workflow = workflowManager.get(configs.workflows.ASSET_CREATION.execFile, tenantId, this.type);
+            workflow.execute();
+            return workflowsEnabled;
+        }
+
+    }
     /**
      * Makes the provided asset the default asset by retrieving the group of assets it
      * belongs to and removing the default property from any existing assets.The provided

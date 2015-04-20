@@ -76,5 +76,17 @@
     },
     "router": {
         "RENDERER": "/modules/router.caramel-renderer.js"
-    }
+    },
+    "workflows": {
+        "enabled": false,
+        "USER_SIGN_UP": {
+            "enabled": false,
+            "execFile": "user-signup-workflow"
+        },
+        "ASSET_CREATION": {
+            "enabled": false,
+            "execFile": "asset-creation-workflow"
+        }
+
+   }
 }

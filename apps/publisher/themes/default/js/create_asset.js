@@ -29,8 +29,16 @@ $(function(){
 				});
 			},
 			success:function(){
-				var options=obtainFormMeta('#form-asset-create');
-				window.location=options.redirectUrl;
+                var options = obtainFormMeta('#form-asset-create');
+                console.log(JSON.stringify(options));
+                if (options.jqxhr.status == 201) {
+                    window.location = options.redirectUrl;
+                } else if (options.jqxhr.status == 202) {
+                    alert('Invoked the asset creation workflow')
+                    window.location = options.redirectUrl;
+                }
+                //alert('Aww snap! '+JSON.stringify(options));
+
 			},
 			error:function(){
 				alert('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');

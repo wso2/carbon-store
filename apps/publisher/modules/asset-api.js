@@ -210,35 +210,37 @@ var result;
             asset = am.importAssetFromHttpRequest(assetReq);
             setMetaProps(asset, meta);
         } //generate asset object
-        try {
-            //log.info(asset);
-            //throw 'This is to stop asset creation!';
-            am.create(asset);
-            putInStorage(asset, am, user.tenantId); //save to the storage
-            am.update(asset);
-        } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
-            return null;
-        }
-        //Check if lifecycles are enabled
-        isLCEnabled = rxtManager.isLifecycleEnabled(options.type);
-        if(!isLCEnabled) {
-            return asset;
-        }
-        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
-        if(!isDefaultLCEnabled){
-            return asset;
-        }
-        //Continue attaching the lifecycle
-        var isLcAttached = am.attachLifecycle(asset);
-        //Check if the lifecycle was attached
-        if (isLcAttached) {
-            var synched = am.synchAsset(asset);
-            if (synched) {
-                am.invokeDefaultLcAction(asset);
-            } else {
-                log.warn('Failed to invoke default action as the asset could not be synched.')
+        var workflowEnabled = am.initiateCreate(asset);
+        //am.create(asset);      // change this to initialCreate, inside intialCreate check whether wf are enabled--> pass some object --> based on that call put in storage
+        if (!workflowEnabled) {
+            try {
+                am.create(asset);
+                putInStorage(asset, am, user.tenantId);//save to the storage
+                am.update(asset);
             }
+            catch (e) {
+                log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
+                return null;
+            }
+            var isLcAttached = am.attachLifecycle(asset);
+            //Check if the lifecycle was attached
+            if (isLcAttached) {
+                var synched = am.synchAsset(asset);
+                if (synched) {
+                    am.invokeDefaultLcAction(asset);
+                } else {
+                    log.warn('Failed to invoke default action as the asset could not be synched.')
+                }
+            }
+            asset.status = 'CREATED';
+            return asset;
+
+        } else {
+            //store in a temporary location
+            log.info('store in a temporary location');
+            asset.status = 'WORKFLOW_INVOKED'
+            return asset;
+
         }
         return asset;
     };
