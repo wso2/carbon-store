@@ -4,24 +4,44 @@
        <groupId>org.wso2.carbon.store</groupId>
        <artifactId>social-feature</artifactId>
        <version>1.2.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+       <relativePath>../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.carbon.social.feature</artifactId>
+    <artifactId>org.wso2.carbon.social.db.adapter.feature</artifactId>
     <packaging>pom</packaging>
-    <version>1.2.1-SNAPSHOT</version>
-    <name>WSO2 Carbon - Social - Feature</name>
-
-
+    <name>WSO2 Carbon - Social - Adapter Feature</name>
     <build>
         <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <!--version>${maven.resourcesplugin.version}</version-->
+                <executions>
+                    <execution>
+                        <id>copy-p2.inf</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>p2.inf</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.wso2.maven</groupId>
                 <artifactId>carbon-p2-plugin</artifactId>
                 <!--version>${carbon.p2.plugin.version}</version-->
                 <executions>
-
                     <execution>
                         <id>4-p2-feature-generation</id>
                         <phase>package</phase>
@@ -29,25 +49,29 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>org.wso2.carbon.social</id>
+                            <id>org.wso2.carbon.social.db.adapter</id>
                             <propertiesFile>../../../etc/feature.properties</propertiesFile>
+                            <adviceFile>
+                                <properties>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:composite</propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:false</propertyDef>
+                                </properties>
+                            </adviceFile>
+                            <bundles>
+                                <bundleDef>org.wso2.carbon.store:org.wso2.carbon.social.db.adapter:${carbon.social.version}</bundleDef>
+                            </bundles>
+
                             <importFeatures>
                                 <importFeatureDef>org.wso2.carbon.core.server:${carbon.kernel.version}</importFeatureDef>
                             </importFeatures>
-                            <includedFeatures>
-                                <includedFeatureDef>org.wso2.carbon.store:org.wso2.carbon.social.core.feature:${carbon.social.version}</includedFeatureDef>
-                                <includedFeatureDef>org.wso2.carbon.store:org.wso2.carbon.social.sql.feature:${carbon.social.version}</includedFeatureDef>
-                                <includedFeatureDef>org.wso2.carbon.store:org.wso2.carbon.social.db.adapter.feature:${carbon.social.version}</includedFeatureDef>
-                            </includedFeatures>
+
                         </configuration>
                     </execution>
-
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <!--version>1.1</version-->
                 <executions>
                     <execution>
                         <id>clean resources</id>
@@ -65,8 +89,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <!--properties>
-        <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
-    </properties-->
 </project>
