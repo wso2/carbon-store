@@ -647,7 +647,7 @@ var app = {};
         }
         var apiHandlers = extensionResource.apiHandlers;
         if (!apiHandlers) {
-            log.warn('There are no apiHandlers defined for tenant ' + tenanId);
+            log.warn('There are no apiHandlers defined for tenant ' + ctx.tenantId);
             return true;
         }
         ctx.req = req;

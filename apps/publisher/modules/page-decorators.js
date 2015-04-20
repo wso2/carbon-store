@@ -39,15 +39,15 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
     };
-    pageDecorators.populateLifecycleFeatureDetails = function(ctx,page){
-        page.lifecycleFeature = {};
-        page.lifecycleFeature.isEnabled = ctx.rxtManager.isGroupingEnabled(ctx.assetType);
+    pageDecorators.populateGroupingFeatureDetails = function(ctx, page) {
+        page.groupingFeature = {};
+        page.groupingFeature.isEnabled = ctx.rxtManager.isGroupingEnabled(ctx.assetType);
     };
     pageDecorators.populateAttachedLifecycles = function(ctx, page, utils) {
         var am = assetManager(ctx);
         //Check if an asset exists
         if ((page.assets) && (page.assets.id)) {
-            var lifecycles;// = am.listAllAttachedLifecycles(page.assets.id);
+            var lifecycles; // = am.listAllAttachedLifecycles(page.assets.id);
             //TODO:Temp fix since the listAllAttachedLifecycles method does not
             //return all attached lifecycles
             var resource = am.am.registry.get(page.assets.path);
@@ -80,8 +80,9 @@ var pageDecorators = {};
             info.versions = [];
             var versions;
             var asset;
+            var assetInstance = am.get(page.assets.id);
             var entry;
-            versions = am.getAssetGroup(page.assets|| {});
+            versions = am.getAssetGroup(assetInstance || {});
             versions.sort(function(a1, a2) {
                 return am.compareVersions(a1, a2);
             });

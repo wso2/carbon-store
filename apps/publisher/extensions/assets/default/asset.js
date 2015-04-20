@@ -348,8 +348,8 @@ asset.renderer = function(ctx) {
                     require('/modules/page-decorators.js').pageDecorators.populateAssetVersionDetails(ctx, page, this);
                 }
             },
-            populateLifecycleFeatureDetails: function(page) {
-                require('/modules/page-decorators.js').pageDecorators.populateLifecycleFeatureDetails(ctx, page);
+            populateGroupingFeatureDetails: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.populateGroupingFeatureDetails(ctx, page);
             }
         }
     };

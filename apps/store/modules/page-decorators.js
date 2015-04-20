@@ -315,6 +315,10 @@ var pageDecorators = {};
         }
         return page;
     };
+    pageDecorators.populateGroupingFeatureDetails = function(ctx, page) {
+        page.groupingFeature = {};
+        page.groupingFeature.isEnabled = ctx.rxtManager.isGroupingEnabled(ctx.assetType);
+    };
     pageDecorators.populateAssetVersionDetails = function(ctx, page, utils) {
         if ((page.assets) && (page.assets.id)) {
             var am = getAssetManager(ctx);

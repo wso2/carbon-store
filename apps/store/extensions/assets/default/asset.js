@@ -183,6 +183,9 @@ asset.renderer = function(ctx) {
             },
             populateAssetVersionDetails:function(page,meta){
                 return decoratorApi.populateAssetVersionDetails(ctx,page,this);
+            },
+            populateGroupingFeatureDetails: function(page,meta){
+                return decoratorApi.populateGroupingFeatureDetails(ctx,page,this);
             }
         }
     };
