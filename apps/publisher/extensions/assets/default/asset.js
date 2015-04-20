@@ -190,7 +190,7 @@ asset.configure = function() {
             providerAttribute: 'overview_provider',
             timestamp: 'overview_createdtime',
             grouping: {
-                groupingEnabled: true,
+                groupingEnabled: false,
                 groupingAttributes: ['overview_name']
             }
         }
