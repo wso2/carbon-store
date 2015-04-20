@@ -119,6 +119,17 @@ $(function () {
     var getSearchFields = function (containerId) {
         var q = {};
         var output = '';
+        var searchQuery ='';
+        //Check if the user has only entered a search term in the search box and not
+        //used the advanced search
+        if(!$('#search-dropdown-cont').is(':visible')){
+            searchQuery = $('#search').val();
+            if(searchQuery !== ''){
+                output = '"name":"'+searchQuery+'"';
+            }
+            return output;
+        }
+
         $inputs = $(containerId + ' :input');
         $inputs.each(function () {
             if ((this.name != undefined) && (this.name != '') && (this.value) && (this.value != '')) {
@@ -128,7 +139,7 @@ $(function () {
         });
         //Check if the the user has only entered text
         if (output === '') {
-            var searchQuery = $('#search').val();
+            searchQuery = $('#search').val();
             if (searchQuery !== '') {
                 output = '"overview_name":"' + searchQuery + '"';
             }

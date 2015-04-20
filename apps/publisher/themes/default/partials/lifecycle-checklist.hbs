@@ -1,0 +1,7 @@
+{{#if checklist}}
+<h3>Check lists</h3>
+{{#each checklist}}
+	<div class="checkbox"><label> <input type="checkbox" data-index="{{index}}" {{#if checked}} checked {{else}} {{/if}}> {{name}}</label></div>
+{{/each}}
+
+{{/if}}

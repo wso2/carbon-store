@@ -1,0 +1,13 @@
+{{#if hasMultipleVersions}}
+<label>Other versions: </label>
+{{#each versions}}
+    <a href='{{url ""}}{{assetURL}}'>v{{version}}</a>
+{{/each}}
+{{/if}}
+<div>
+    {{#if isDefault}}
+    <span class="label label-info">default version</span>
+    {{else}}
+    <span class="label label-default">sub version</span>
+    {{/if}}
+</div>

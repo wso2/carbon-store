@@ -33,11 +33,77 @@ var pageDecorators = {};
         if (!values) {
             return;
         }
-
         for (var index = 0; index < values.length; index++) {
             categoryValues.push(values[index].value);
         }
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
+    };
+    pageDecorators.populateLifecycleFeatureDetails = function(ctx,page){
+        page.lifecycleFeature = {};
+        page.lifecycleFeature.isEnabled = ctx.rxtManager.isGroupingEnabled(ctx.assetType);
+    };
+    pageDecorators.populateAttachedLifecycles = function(ctx, page, utils) {
+        var am = assetManager(ctx);
+        //Check if an asset exists
+        if ((page.assets) && (page.assets.id)) {
+            var lifecycles;// = am.listAllAttachedLifecycles(page.assets.id);
+            //TODO:Temp fix since the listAllAttachedLifecycles method does not
+            //return all attached lifecycles
+            var resource = am.am.registry.get(page.assets.path);
+            if (!resource) {
+                log.error('Unable to retrieve the attached lifecycle details');
+                return;
+            }
+            lifecycles = resource.aspects();
+            var lifecycle;
+            var modifiedLifecycles = [];
+            var entry;
+            for (var index = 0; index < lifecycles.length; index++) {
+                lifecycle = lifecycles[index];
+                entry = {};
+                entry.active = false;
+                entry.name = lifecycle;
+                if (page.assets.lifecycle === lifecycle) {
+                    entry.active = true;
+                }
+                modifiedLifecycles.push(entry);
+            }
+            page.assets.availableLifecycles = modifiedLifecycles;
+            page.assets.hasMultipleLifecycles = (lifecycles.length > 1) ? true : false;
+        }
+    };
+    pageDecorators.populateAssetVersionDetails = function(ctx, page, utils) {
+        if ((page.assets) && (page.assets.id)) {
+            var am = assetManager(ctx);
+            var info = page.assets;
+            info.versions = [];
+            var versions;
+            var asset;
+            var entry;
+            versions = am.getAssetGroup(page.assets|| {});
+            versions.sort(function(a1, a2) {
+                return am.compareVersions(a1, a2);
+            });
+            for (var index = 0; index < versions.length; index++) {
+                asset = versions[index];
+                if (asset.id !== page.assets.id) {
+                    entry = {};
+                    entry.id = asset.id;
+                    entry.name = asset.name;
+                    entry.version = asset.version;
+                    entry.assetURL = utils.buildAssetPageUrl(ctx.assetType, '/details/' + entry.id);
+                    info.versions.push(entry);
+                }
+            }
+            info.isDefault = am.isDefaultAsset(page.assets);
+            info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
+        }
+    };
+    var assetManager = function(ctx) {
+        var rxt = require('rxt');
+        var type = ctx.assetType;
+        var am = rxt.asset.createUserAssetManager(ctx.session, type);
+        return am;
     };
 }(pageDecorators));

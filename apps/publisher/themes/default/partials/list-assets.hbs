@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 <div class="row">
-    <div class="col-lg-6 col-md-12 col-sm-9 col-xs-12 wr-filters">
+    <div class="col-lg-10 col-md-10 col-sm-11 col-xs-12 wr-filters">
       {{#if assetCategoryDetails.hasCategories}}
       <div class="wr-filter-category">
           <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select Category ... <span class="fa fa-angle-down pull-right"></span></a>
@@ -28,7 +28,7 @@
 
       <div class="wr-search">
         <div>
-        <form class="form-group" id="assetSearchForm" action='{{url ""}}{{meta.landingPage}}' style="margin-left:-4px">
+        <form class="form-group" id="assetSearchForm" action='{{url "/asts/"}}{{rxt.shortName}}/list' style="margin-left:-4px">
           <input type="text" name="query" class="" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{paging.query}}" /><a type="button" href="#" class="btn-search" id="searchButton"><span class="fa fa-search"></span></a>
           <input type="hidden" name="sortby" value="{{paging.sortBy}}"/>
           <input type="hidden" name="sort" value="{{paging.sortOrder}}"/>
@@ -36,7 +36,7 @@
         </div>
       </div>       
     </div>
-    <div class="col-lg-6 col-md-4 col-sm-3 col-xs-12  wr-filters">
+    <div class="col-lg-2 col-md-2 col-sm-1 col-xs-12  wr-filters">
         <div class="wr-filter-sort pull-right">
             <!--<a href="#" class="ico-filter ctrl-filter-grid"><img src="{{url "/themes/default/img/icons/ico-grid.png"}}" /></a>-->
             <!--<a href="#" class="ico-filter ctrl-filter-list"><img src="{{url "/themes/default/img/icons/ico-list.png"}}" /></a>-->
@@ -53,7 +53,7 @@
         </div>
     </div>
 </div>
-<div class="row">
+<div class="row ovrd-wr-asst-listing">
     <div class="col-md-12">
         <!-- content -->
         <div class="ast-container" id="list_assets_table_body">
@@ -61,9 +61,8 @@
                 {{> list_assets_table_body assets}}
             {{else}}
                 <div class="emptyAssets-MsgDiv">
-                    <i class="icon-frown largeMsgIcon"></i>
-
-                    <p class="emptyAssets">Sorry. I couldn't find anything for you</p>
+                    
+                    <p class="emptyAssets">We are sorry! we couldn't find anything for you ...</p>
 
                 </div>
             {{/if}}

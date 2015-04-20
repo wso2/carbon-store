@@ -13,34 +13,28 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-
-asset.manager = function (ctx) {
-
+asset.manager = function(ctx) {
     var notifier = require('store').notificationManager;
     var storeConstants = require('store').storeConstants;
     var COMMENT = 'User comment';
     var carbon = require('carbon');
     var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
     var log = new Log('default-asset');
-
     return {
-        create: function (options) {
+        create: function(options) {
             var ref = require('utils').time;
-
             //Check if the options object has a createdtime attribute and populate it
             if ((options.attributes) && ctx.rxtManager.getRxtField(ctx.assetType, 'overview_createdtime')) {
                 options.attributes.overview_createdtime = ref.getCurrentTime();
             }
             this._super.create.call(this, options);
-
             var asset = this.get(options.id); //TODO avoid get: expensive operation
             var assetPath = asset.path;
             var user = ctx.username;
             var userRoles = ctx.userManager.getRoleListOfUser(user);
-
-            try{
+            try {
                 social.warmUpRatingCache(ctx.assetType + ':' + options.id);
-            }catch(e){
+            } catch (e) {
                 log.warn("Unable to publish the asset: " + ctx.assetType + ":" + options.id + " to social cache. This may affect on sort by popularity function.");
             }
             //Check whether the user has admin role
@@ -54,92 +48,90 @@ asset.manager = function (ctx) {
             notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
             notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
         },
-        update: function (options) {
+        update: function(options) {
             this._super.update.call(this, options);
             var asset = this.get(options.id); //TODO avoid get: expensive operation
             //trigger notification on asset update
             notifier.notifyEvent(storeConstants.ASSET_UPDATE_EVENT, asset.type, asset.name, null, asset.path, ctx.tenantId);
         },
-        search: function (query, paging) {
+        search: function(query, paging) {
             return this._super.search.call(this, query, paging);
         },
-        list: function (paging) {
+        list: function(paging) {
             return this._super.list.call(this, paging);
         },
-        get: function (id) {
+        get: function(id) {
             return this._super.get.call(this, id);
         },
-        invokeLcAction: function (asset, action) {
-            var success = this._super.invokeLcAction.call(this, asset, action);
+        invokeLcAction: function(asset, action, lcName) {
+            var success;
+            if (lcName) {
+                success = this._super.invokeLcAction.call(this, asset, action, lcName);
+            } else {
+                success = this._super.invokeLcAction.call(this, asset, action);
+            }
             //trigger notification on LC state change
             notifier.notifyEvent(storeConstants.LC_STATE_CHANGE_EVENT, asset.type, asset.name, COMMENT, asset.path, ctx.tenantId);
             return success;
         }
     };
 };
-asset.server = function (ctx) {
+asset.server = function(ctx) {
     var type = ctx.type;
     return {
-        onUserLoggedIn: function () {
-        },
+        onUserLoggedIn: function() {},
         endpoints: {
-            apis: [
-                {
-                    url: 'assets',
-                    path: 'assets.jag'
-                },
-                {
-                    url:'statistics',
-                    path:'statistics.jag'
-                }
-            ],
-            pages: [
-                {
-                    title: 'Asset: ' + type,
-                    url: 'asset',
-                    path: 'asset.jag'
-
-                },
-                {
-                    title: 'Assets ' + type,
-                    url: 'assets',
-                    path: 'assets.jag'
-                },
-                {
-                    title: 'Create ' + type,
-                    url: 'create',
-                    path: 'create.jag'
-                },
-                {
-                    title: 'Update ' + type,
-                    url: 'update',
-                    path: 'update.jag'
-                },
-                {
-                    title: 'Details ' + type,
-                    url: 'details',
-                    path: 'details.jag'
-                },
-                {
-                    title: 'List ' + type,
-                    url: 'list',
-                    path: 'list.jag'
-                },
-                {
-                    title: 'Lifecycle',
-                    url: 'lifecycle',
-                    path: 'lifecycle.jag'
-                },
-                {
-                    title:'Statistics',
-                    url:'statistics',
-                    path:'statistics.jag'
-                }
-            ]
+            apis: [{
+                url: 'assets',
+                path: 'assets.jag'
+            }, {
+                url: 'asset',
+                path: 'asset.jag'
+            }, {
+                url: 'statistics',
+                path: 'statistics.jag'
+            }],
+            pages: [{
+                title: 'Asset: ' + type,
+                url: 'asset',
+                path: 'asset.jag'
+            }, {
+                title: 'Assets ' + type,
+                url: 'assets',
+                path: 'assets.jag'
+            }, {
+                title: 'Create ' + type,
+                url: 'create',
+                path: 'create.jag'
+            }, {
+                title: 'Update ' + type,
+                url: 'update',
+                path: 'update.jag'
+            }, {
+                title: 'Details ' + type,
+                url: 'details',
+                path: 'details.jag'
+            }, {
+                title: 'List ' + type,
+                url: 'list',
+                path: 'list.jag'
+            }, {
+                title: 'Lifecycle',
+                url: 'lifecycle',
+                path: 'lifecycle.jag'
+            }, {
+                title: 'Old lifecycle ',
+                url: 'old-lifecycle',
+                path: 'old-lifecycle.jag'
+            }, {
+                title: 'Statistics',
+                url: 'statistics',
+                path: 'statistics.jag'
+            }]
         }
     };
 };
-asset.configure = function () {
+asset.configure = function() {
     return {
         table: {
             overview: {
@@ -153,8 +145,7 @@ asset.configure = function () {
                             label: 'Name'
                         },
                         updatable: false,
-                        validation: function () {
-                        }
+                        validation: function() {}
                     },
                     version: {
                         name: {
@@ -181,9 +172,11 @@ asset.configure = function () {
             lifecycle: {
                 name: 'SampleLifeCycle2',
                 commentRequired: false,
+                defaultLifecycleEnabled:true,
                 defaultAction: 'Promote',
                 deletableStates: [],
-                publishedStates: ['Published']
+                publishedStates: ['Published'],
+                lifecycleEnabled: true
             },
             ui: {
                 icon: 'icon-cog'
@@ -193,34 +186,50 @@ asset.configure = function () {
             },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
-            versionAttribute:'overview_version'
+            versionAttribute: 'overview_version',
+            providerAttribute: 'overview_provider',
+            timestamp: 'overview_createdtime',
+            grouping: {
+                groupingEnabled: false,
+                groupingAttributes: ['overview_name']
+            }
         }
     };
 };
-asset.renderer = function (ctx) {
+asset.renderer = function(ctx) {
     var type = ctx.assetType;
+    var isAssetWithLifecycle = function(asset){
+        if((asset.lifecycle)&&(asset.lifecycleState)){
+            return true;
+        }
+        log.warn('asset: '+asset.name+' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        return false;
+    };
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
-        navList.push('Add ' + type,'fa-plus', util.buildUrl('create'));
-        navList.push('Statistics', 'fa-area-chart', '/asts/' + type + '/statistics');
+        navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
+        navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
     };
     var buildDefaultLeftNav = function(page, util) {
         var id = page.assets.id;
         var navList = util.navList();
-        navList.push('Edit', 'fa-pencil', util.buildUrl('update') + '/' + id);
-        navList.push('Overview', 'fa-list-alt', util.buildUrl('details') + '/' + id);
-        navList.push('Life Cycle' , 'fa-recycle', util.buildUrl('lifecycle') + '/' + id);
+        var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
+        navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+        navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
+        //Only render the view if the asset has a 
+        if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
+            navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+        }
         return navList.list();
     };
-    var buildAddLeftNav = function (page, util) {
+    var buildAddLeftNav = function(page, util) {
         return [];
     };
-    var isActivatedAsset = function (assetType) {
+    var isActivatedAsset = function(assetType) {
         var app = require('rxt').app;
-
-        var activatedAssets = app.getActivatedAssets(ctx.tenantId);//ctx.tenantConfigs.assets;
+        var activatedAssets = app.getActivatedAssets(ctx.tenantId); //ctx.tenantConfigs.assets;
         //return true;
         if (!activatedAssets) {
             throw 'Unable to load all activated assets for current tenant: ' + ctx.tenatId + '.Make sure that the assets property is present in the tenant config';
@@ -233,55 +242,60 @@ asset.renderer = function (ctx) {
         return false;
     };
     return {
-        list: function (page) {
+        list: function(page) {
             var assets = page.assets;
             for (var index in assets) {
                 var asset = assets[index];
-                if (asset.attributes.overview_createdtime) {
-                    var value = asset.attributes.overview_createdtime;
+                var timestampAttribute = ctx.rxtManager.getTimeStampAttribute(ctx.assetType);
+                if (asset.attributes.hasOwnProperty(timestampAttribute)) {
+                    var value = asset.attributes[timestampAttribute];
                     var date = new Date();
                     date.setTime(value);
-                    asset.attributes.overview_createdtime = date.toUTCString();
+                    asset.attributes[timestampAttribute] = date.toUTCString();
                 }
             }
-            require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page,this);
+            require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page, this);
         },
-        details: function (page) {
+        details: function(page) {
             var tables = page.assets.tables;
+            //TODO:This cannot be hardcoded
+            var timestampAttribute = 'createdtime'; //ctx.rxtManager.getTimeStampAttribute(this.assetType);
             for (var index in tables) {
                 var table = tables[index];
-                if (table.name == 'overview') {
-                    var value = table.fields.createdtime.value;
+                if ((table.name == 'overview') && (table.fields.hasOwnProperty(timestampAttribute))) {
+                    var value = table.fields[timestampAttribute].value || '';
                     var date = new Date();
                     date.setTime(value);
-                    table.fields.createdtime.value = date.toUTCString();
-                }
-            }
-        },
-        create: function (page) {
-            var tables = page.assets.tables;
-            for (var index in tables) {
-                var table = tables[index];
-                if (table.name == 'overview') {
-                    table.fields.provider.value = page.cuser.username;
+                    table.fields[timestampAttribute].value = date.toUTCString();
                 }
             }
         },
-        update: function (page) {
+        create: function(page) {
             var tables = page.assets.tables;
+            var providerAttribute = 'provider';
             for (var index in tables) {
                 var table = tables[index];
-                if (table.name == 'overview') {
-                    var value = table.fields.createdtime.value;
+                if ((table.name == 'overview') && (table.fields.hasOwnProperty(providerAttribute))) {
+                    table.fields[providerAttribute].value = page.cuser.username;
+                }
+            }
+        },
+        update: function(page) {
+            var tables = page.assets.tables;
+            var timestampAttribute = 'createdtime';
+            for (var index in tables) {
+                var table = tables[index];
+                if ((table.name == 'overview') && (table.fields.hasOwnProperty(timestampAttribute))) {
+                    var value = table.fields[timestampAttribute].value;
                     var date = new Date();
                     date.setTime(value);
-                    table.fields.createdtime.value = date.toUTCString();
+                    table.fields[timestampAttribute].value = date.toUTCString();
                 }
             }
         },
         pageDecorators: {
-            leftNav: function (page) {
-                if(log.isDebugEnabled()){
+            leftNav: function(page) {
+                if (log.isDebugEnabled()) {
                     log.debug('Using default leftNav');
                 }
                 switch (page.meta.pageName) {
@@ -300,7 +314,7 @@ asset.renderer = function (ctx) {
                 }
                 return page;
             },
-            ribbon: function (page) {
+            ribbon: function(page) {
                 var ribbon = page.ribbon = {};
                 var DEFAULT_ICON = 'icon-cog';
                 var assetTypes = [];
@@ -323,6 +337,19 @@ asset.renderer = function (ctx) {
                 ribbon.query = 'Query';
                 ribbon.breadcrumb = assetTypes;
                 return page;
+            },
+            populateAttachedLifecycles: function(page) {
+                if (page.assets.id) {
+                    require('/modules/page-decorators.js').pageDecorators.populateAttachedLifecycles(ctx, page, this);
+                }
+            },
+            populateAssetVersionDetails: function(page) {
+                if (page.assets.id) {
+                    require('/modules/page-decorators.js').pageDecorators.populateAssetVersionDetails(ctx, page, this);
+                }
+            },
+            populateLifecycleFeatureDetails: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.populateLifecycleFeatureDetails(ctx, page);
             }
         }
     };

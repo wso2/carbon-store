@@ -241,7 +241,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var output = '';
                 var ref = require('utils').reflection;
                 var buttonName=field.name?field.name.label:'Cannot locate name';
-                output+='<tr><td colspan="3"><a class="btn" onClick="addOptionTextRow(this)">Add '+buttonName+'</a></td></tr>';
+                output+='<tr><td colspan="3"><a class="btn-inline-form btn-add-dark" onClick="addOptionTextRow(this)">Add '+buttonName+'</a></td></tr>';
                 if (values) {
                     //If there is only a single entry then the registry API will send a string
                     //In order to uniformly handle these scenarios we must make it an array
@@ -254,17 +254,17 @@ var engine = caramel.engine('handlebars', (function() {
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
                         output += '<tr>';
-                        output += '<td>' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                        output += '<td><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                        output+='<td><a class="btn" onClick="removeOptionTextRow(this)" >Delete</a>';
+                        output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
+                        output += '<td valign="top"><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
+                        output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
                         output += '</tr>';
                     }
                 } else {
                     output += '<tr>';
                     var index='0';
-                    output += '<td>' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                    output += '<td><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                    output+='<td><a class="btn" onClick="removeOptionTextRow(this)" >Delete</a>';
+                    output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
+                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
+                    output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
                     output += '</tr>';
                 }
                 return output;
@@ -279,19 +279,19 @@ var engine = caramel.engine('handlebars', (function() {
                 var value = field.value || '';
                 switch (field.type) {
                     case 'options':
-                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
                         break;
                     case 'text':
-                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
                         break;
                     case 'text-area':
-                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full">'+value+'</textarea></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full">'+value+'</textarea></div>';
                         break;
                     case 'file':
-                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     default:
-                        out = '<div class="custom-form-right col-lg-10 col-md-10 col-sm-12 col-xs-12">Normal Field' + field.type + '</div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">Normal Field' + field.type + '</div>';
                         break;
                 }
                 return out;
@@ -301,19 +301,19 @@ var engine = caramel.engine('handlebars', (function() {
                 var value = field.value || '';
                 switch (field.type) {
                     case 'options':
-                        out = '<td>' + renderOptions(field.value, field.values[0].value, field) + '</td>';
+                        out = '<td valign="top">' + renderOptions(field.value, field.values[0].value, field) + '</td>';
                         break;
                     case 'text':
-                        out = '<td><input type="text" class="form-control" value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></td>';
+                        out = '<td valign="top"><input type="text" class="form-control" value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></td>';
                         break;
                     case 'text-area':
-                        out = '<td><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">'+value+'</textarea></td>';
+                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">'+value+'</textarea></td>';
                         break;
                     case 'file':
-                        out = '<td><input type="file" class="form-control" value="' + value + '" ' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<td> valign="top"<input type="file" class="form-control" value="' + value + '" ' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     default:
-                        out = '<td>Normal Field' + field.type + '</td>';
+                        out = '<td valign="top">Normal Field' + field.type + '</td>';
                         break;
                 }
                 return out;
@@ -322,19 +322,19 @@ var engine = caramel.engine('handlebars', (function() {
                 var out = '';
                 switch (field.type) {
                     case 'options':
-                        out = '<td>' + renderOptions(value, field.values[0].value, field) + '</td>';
+                        out = '<td valign="top">' + renderOptions(value, field.values[0].value, field) + '</td>';
                         break;
                     case 'text':
-                        out = '<td><input type="text" value="' + value + '"' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<td valign="top"><input type="text" value="' + value + '"' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     case 'text-area':
-                        out = '<td><input type="text-area" value="' + value + '"' + renderFieldMetaData(field) + '></td>';
+                        out = '<td valign="top"><input type="text-area" value="' + value + '"' + renderFieldMetaData(field) + '></td>';
                         break;
                     case 'file':
-                        out = '<td><input type="text" value="' + value + '"' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<td valign="top"><input type="text" value="' + value + '"' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     default:
-                        out = '<td>Normal Field' + field.type + '</td>';
+                        out = '<td valign="top">Normal Field' + field.type + '</td>';
                         break;
                 }
                 return out;

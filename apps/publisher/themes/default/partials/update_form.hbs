@@ -4,7 +4,17 @@
                     {{renderTable . mode="edit"}}
             {{/each}}
     </div>
-     <div class="form-group">
+    {{#if lifecycleFeature.isEnabled}}
+    <div class="control-group">
+        <h3>Versioning</h3>
+        <div class="checkbox">
+            <label>
+                <input type='checkbox' name="_default"> {{t "Make this the default"}}                
+            </label>
+        </div>
+    </div>
+    {{/if}}
+     <div class="form-group" id="updateButtons">
          <div class="col-sm-offset-2 col-sm-10">
              <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
              <input type="reset" value="Reset" class="btn btn-default">
@@ -14,6 +24,5 @@
 
 
     <div id="saveButtons" class="form-actions">
-
     </div>   
 </form>
