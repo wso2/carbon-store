@@ -37,6 +37,7 @@
                             <includedFeatures>
                                 <includedFeatureDef>org.wso2.carbon.store:org.wso2.carbon.social.core.feature:${carbon.social.version}</includedFeatureDef>
                                 <includedFeatureDef>org.wso2.carbon.store:org.wso2.carbon.social.sql.feature:${carbon.social.version}</includedFeatureDef>
+                                <includedFeatureDef>org.wso2.carbon.store:org.wso2.carbon.social.db.adapter.feature:${carbon.social.version}</includedFeatureDef>
                             </includedFeatures>
                         </configuration>
                     </execution>
