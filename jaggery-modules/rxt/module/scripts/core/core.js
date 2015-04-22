@@ -362,8 +362,8 @@ var core = {};
         if ((rxtDefinition.nameAttribute) && (rxtDefinition.nameAttribute.length > 0)) {
             return rxtDefinition.nameAttribute[0].nameAttribute;
         }
-        log.warn('Unable to locate the name attribute for type: ' + type + '.Check if a nameAttribute is specified in the rxt definition.');
-        return '';
+        log.warn('Unable to locate the name attribute for type: ' + type + '.Check if a nameAttribute is specified in the rxt definition.The default name attribute will be used ');
+        return constants.DEFAULT_NAME_ATTRIBUTE;
     };
     /**
      * Returns the name of the attribute that is used as the thumbnail property of assets of a given RXT type

@@ -54,6 +54,7 @@ var constants = {};
     constants.Q_PROP_GROUP ='_group';
     constants.Q_PROP_WILDCARD = '_wildcard'
     constants.PROP_DEFAULT = 'default';
+    constants.DEFAULT_NAME_ATTRIBUTE = 'overview_name';
     /**
      * URL Patterns
      */
