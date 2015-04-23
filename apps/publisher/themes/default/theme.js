@@ -46,6 +46,13 @@ var engine = caramel.engine('handlebars', (function() {
             //TODO : we don't need to register all partials in the themes dir.
             //Rather register only not overridden partials
             partials(new File(theme.__proto__.resolve.call(theme, 'partials')));
+            var rxtAPI = require('rxt');
+            var appExtensionMediator = rxtAPI.core.defaultAppExtensionMediator();
+            if(appExtensionMediator){
+                var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme,'partials'));
+                log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+                partials(new File(defaultExtensionPartialsPath));
+            }
             partials(new File(theme.resolve('partials')));
             Handlebars.registerHelper('dyn', function(options) {
                 var asset = options.hash.asset,
@@ -455,6 +462,9 @@ var resolve = function(path) {
     var themeResolver = this.__proto__.resolve;
     var asset = require('rxt').asset;
     var app = require('rxt').app;
+    for(var key in this.engine.partials){
+        log.info('key ' +key);
+    }
     var appPath = app.resolve(request, path, this.name, this, themeResolver, session);
     if (!appPath) {
         path = asset.resolve(request, path, this.name, this, themeResolver);

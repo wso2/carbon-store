@@ -33,6 +33,7 @@ var core = {};
     var DEFAULT_MEDIA_TYPE = 'application/vnd.wso2.registry-ext-type+xml';
     var ASSET_PATH = '/_system/governance/repository/components/org.wso2.carbon.governance/types/';
     var RXT_MAP = 'rxt.manager.map';
+    var DEF_APP_EXTENSION_MEDIATOR = 'default.app.extension';
     var EMPTY = '';
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
     var DEFAULT_TENANT = -1234;
@@ -873,6 +874,16 @@ var core = {};
             configs = createTenantRxtMap(tenantId, rxtMap);
         }
         return configs;
+    };
+    core.defaultAppExtensionMediator = function(){
+        var mediator ;
+        if(arguments.length === 1) {
+            mediator = arguments[0];
+            application.put(DEF_APP_EXTENSION_MEDIATOR,mediator);
+            return;
+        }
+        
+        return application.get(DEF_APP_EXTENSION_MEDIATOR);
     };
     /**
      * Returns an instance of an RxtManager based on the tenant ID.If an RxtManager instance is

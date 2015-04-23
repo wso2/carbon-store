@@ -1686,6 +1686,7 @@ var asset = {};
     asset.resolve = function(request, path, themeName, themeObj, themeResolver) {
         var log = new Log();
         var resPath = path;
+        var appExtensionMediator = core.defaultAppExtensionMediator()|| {resolveCaramelResources:function(path){return path;}};
         path = '/' + path;
         //Determine the type of the asset
         var uriMatcher = new URIMatcher(request.getRequestURI());
@@ -1706,8 +1707,9 @@ var asset = {};
             if (resFile.isExists()) {
                 return extensionResPath;
             }
-            //log.info('Resource not present in extensions directory, using : ' + themeResolver.call(themeObj, path));
-            return themeResolver.call(themeObj, path);
+            var basePath = themeResolver.call(themeObj, path);
+            basePath = appExtensionMediator.resolveCaramelResources(basePath);
+            return basePath;//themeResolver.call(themeObj, path);
         }
         //Check if type has a similar path in its extension directory
         var extensionPath = '/extensions/assets/' + uriOptions.type + '/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;
@@ -1718,6 +1720,7 @@ var asset = {};
         //If an extension directory does not exist then use theme directory
         extensionPath = pathOptions.root + '/' + pathOptions.suffix;
         var modPath = themeResolver.call(themeObj, extensionPath);
+        modPath = appExtensionMediator.resolveCaramelResources(modPath);
         return modPath;
     };
 }(asset, core))
