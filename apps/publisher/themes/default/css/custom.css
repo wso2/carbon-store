@@ -607,7 +607,12 @@ a.cu-ico-button-stats {
 	background:#f0f0f0;
 }
 
-
+.datepicker{
+    position: absolute;
+}
+.bootstrap-timepicker .add-on{
+    background: #ccc;
+}
 /* Sticky footer styles
 -------------------------------------------------- */
 

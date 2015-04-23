@@ -80,6 +80,8 @@ var asset = {};
         return result;
     };
     var setField = function(field, attrName, data, attributes, table) {
+
+
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
@@ -109,8 +111,14 @@ var asset = {};
             attrName = table.name + '_entry';
             var items = processOptionTextList(list);
             attributes[attrName] = items;
-        } else {
-            if (data[attrName]) {
+        }else if(field.type == 'checkbox'){
+            if(data[attrName] == null || data[attrName] == undefined){
+                attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
+            }else{
+                attributes[attrName] = "on";  //We set it's value to on
+            }
+        }else {
+            if (data[attrName] != null) {
                 attributes[attrName] = data[attrName];
             } else {
                 log.debug(attrName + ' will not be saved.');
@@ -1064,7 +1072,6 @@ var asset = {};
         return this.rxtManager.listRxtFieldsOfType(this.type, 'file');
     };
     AssetManager.prototype.importAssetFromHttpRequest = function(options) {
-        var tables = this.rxtManager.listRxtTypeTables(this.type);
         var asset = {};
         var attributes = {};
         var tables = this.rxtManager.listRxtTypeTables(this.type);

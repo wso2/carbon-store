@@ -20,25 +20,45 @@ $(function(){
 	var obtainFormMeta=function(formId){
 		return $(formId).data();
 	};
-	$(document).ready(function(){
-		$('#form-asset-create').ajaxForm({
-			beforeSubmit:function(){
-				PublisherUtils.blockButtons({
-					container:'saveButtons',
-					msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
-				});
-			},
-			success:function(){
-				var options=obtainFormMeta('#form-asset-create');
-				window.location=options.redirectUrl;
-			},
-			error:function(){
-				alert('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
-				PublisherUtils.unblockButtons({
-					container:'saveButtons'
-				});
-			}
-		});
-	});
+    $('#form-asset-create').ajaxForm({
+        beforeSubmit:function(){
+            PublisherUtils.blockButtons({
+                container:'saveButtons',
+                msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
+            });
+        },
+        success:function(){
+            var options=obtainFormMeta('#form-asset-create');
+            window.location=options.redirectUrl;
+        },
+        error:function(){
+            alert('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
+            PublisherUtils.unblockButtons({
+                container:'saveButtons'
+            });
+        }
+    });
+
+    $('#form-asset-create input[type="text"]').each(
+        function(){
+            if($(this).attr('data-render-options') == "date-time"){
+                var dateField = this;
+                $(this).DatePicker({
+                    mode: 'single',
+                    position: 'right',
+                    onBeforeShow: function(el){
+                        if($(dateField).val())
+                            $(dateField).DatePickerSetDate($(dateField).val(), true);
+                    },
+                    onChange: function(date, el) {
+                        $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
+                        if($('#closeOnSelect input').attr('checked')) {
+                            $(el).DatePickerHide();
+                        }
+                    }
+                });
+            }
+        }
+    );
 
 });

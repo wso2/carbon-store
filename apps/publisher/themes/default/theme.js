@@ -290,6 +290,25 @@ var engine = caramel.engine('handlebars', (function() {
                     case 'file':
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
+                    case 'date':
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        break;
+                    case 'checkbox':
+                        var checkboxString = "";
+                        if(options.hash.mode == "edit"){
+                            if(value == "on"){
+                                checkboxString = 'checked="checked"';
+                            }else{
+                                checkboxString = '';
+                            }
+                        }else{
+                            value="on";
+                        }
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="checkbox" ' + renderFieldMetaData(field, null, options) + ' '+checkboxString+' ></div>';
+                        break;
+                    case 'password':
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        break;
                     default:
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">Normal Field' + field.type + '</div>';
                         break;

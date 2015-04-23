@@ -207,12 +207,13 @@ var result;
             asset = parse(request.getParameter("asset"));
         } else {
             meta = extractMetaProps(assetReq);
+
             asset = am.importAssetFromHttpRequest(assetReq);
             setMetaProps(asset, meta);
         } //generate asset object
         try {
-            //log.info(asset);
             //throw 'This is to stop asset creation!';
+
             am.create(asset);
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
@@ -256,6 +257,8 @@ var result;
         var server = require('store').server;
         var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
+
+
         var asset = null;
         var meta;
         if (request.getParameter("asset")) {

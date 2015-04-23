@@ -21,26 +21,49 @@ $(function() {
     var obtainFormMeta = function(formId) {
         return $(formId).data();
     };
-    $(document).ready(function() {
-        $('#form-asset-update').ajaxForm({
-            beforeSubmit:function(){
-                PublisherUtils.blockButtons({
-                    container:'updateButtons',
-                    msg:'Updating '+PublisherUtils.resolveCurrentPageAssetType()+' instance'
-                });
-            },
-            success: function() {
-                alert('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
-                PublisherUtils.unblockButtons({
-                    container:'updateButtons'
-                });
-            },
-            error: function() {
-                alert('Unable to update the '+PublisherUtils.resolveCurrentPageAssetType());
-                PublisherUtils.unblockButtons({
-                    container:'updateButtons'
+
+    $('#form-asset-update').ajaxForm({
+        beforeSubmit:function(){
+            PublisherUtils.blockButtons({
+                container:'updateButtons',
+                msg:'Updating '+PublisherUtils.resolveCurrentPageAssetType()+' instance'
+            });
+        },
+        success: function() {
+            alert('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
+            PublisherUtils.unblockButtons({
+                container:'updateButtons'
+            });
+        },
+        error: function() {
+            alert('Unable to update the '+PublisherUtils.resolveCurrentPageAssetType());
+            PublisherUtils.unblockButtons({
+                container:'updateButtons'
+            });
+        }
+    });
+
+    $('#form-asset-update input[type="text"]').each(
+        function(){
+            if($(this).attr('data-render-options') == "date-time"){
+                var dateField = this;
+                $(this).DatePicker({
+                    mode: 'single',
+                    position: 'right',
+                    onBeforeShow: function(el){
+                        if($(dateField).val())
+                            $(dateField).DatePickerSetDate($(dateField).val(), true);
+                    },
+                    onChange: function(date, el) {
+                        $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
+                        if($('#closeOnSelect input').attr('checked')) {
+                            $(el).DatePickerHide();
+                        }
+                    }
                 });
             }
-        });
-    });
+        }
+    );
+
+
 });
