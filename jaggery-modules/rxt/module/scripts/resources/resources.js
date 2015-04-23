@@ -268,6 +268,7 @@ var resources = {};
         var mediatorImpl;
         var ignore = false;
         var found = false; //Assume that no default extensions will be found
+        log.info('loading default asset app extensions');
         if(!dir.isDirectory()){
             log.error('Unable to read the app extension directory');
             return;
@@ -301,6 +302,7 @@ var resources = {};
 
             }
         }
+        log.info('finished loading default asset app extensions');
     };
     function DefaultAppExtensionMediatorImpl(path){
         this.path = path;
