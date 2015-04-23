@@ -34,6 +34,9 @@
     var appExtensionPath = function(dir){
         return dir.getPath()+'/app.js';
     };
+    var assetExtensionPath = function(dir){
+        return dir.getPath()+'/asset.js';
+    }
     var evalExtensionScript = function(dir){
         var file = new File(appExtensionPath(dir));
         var content = readScriptContent(file);
@@ -124,6 +127,8 @@
     };
     function DefaultAppExtensionMediatorImpl(path){
         this.path = path;
+        this.assetExtension = {};
+        this.init();
     }
     DefaultAppExtensionMediatorImpl.prototype.resolveCaramelResources = function(resourcePath,theme,caramelThemeResolver) {
         var file;
@@ -134,11 +139,39 @@
         }
         return caramelThemeResolver(theme, resourcePath);
     };
+    DefaultAppExtensionMediatorImpl.prototype.init = function(){
+        var extensionDir = new File(this.path);
+        var scriptFile = new File(assetExtensionPath(extensionDir));
+        var content = readScriptContent(scriptFile);
+        var extension = {};
+        var script = 'function(asset,log) { '+content+' } ';
+        var l = new Log();
+        var ptr = eval(script);
+        ptr.call(this,extension,l);
+        this.assetExtension = extension || {};
+        //log.info(this.assetExtension.renderer().pageDecorators);
+    };
+    DefaultAppExtensionMediatorImpl.prototype.manager = function(){
+        return this.assetExtension.manager;
+    };
+    DefaultAppExtensionMediatorImpl.prototype.renderer = function(){
+        return this.assetExtension.renderer;
+    };
     function DefaultAppExtensionMediator(impl) {
         this.impl = impl;
     }
-    DefaultAppExtensionMediator.prototype.manager = function() {};
-    DefaultAppExtensionMediator.prototype.renderer = function() {};
+    DefaultAppExtensionMediator.prototype.manager = function() {
+        if(!this.impl){
+            return null;
+        }
+        return this.impl.manager();
+    };
+    DefaultAppExtensionMediator.prototype.renderer = function() {
+        if(!this.impl){
+            return null;
+        }
+        return this.impl.renderer();
+    };
     DefaultAppExtensionMediator.prototype.configs = function() {};
     DefaultAppExtensionMediator.prototype.resolveCaramelResources = function(resourcePath,theme,caramelThemeResolver) {
         var file;
