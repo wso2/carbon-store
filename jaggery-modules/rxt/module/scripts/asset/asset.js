@@ -1436,11 +1436,17 @@ var asset = {};
         var assetResourcesTemplate = core.assetResources(tenantId, type);
         var context = core.createAssetContext(session, type, tenantId);
         var assetResources = {}; //Assume there will not be any asset managers to override the default implementations
+        var defaultAppExtensionMediator = core.defaultAppExtensionMediator();
         //Check if there are any asset managers defined at the type level
         if (!assetResourcesTemplate.manager) {
             //Check if a default manager exists
             if (assetResourcesTemplate._default.manager) {
                 assetResources = assetResourcesTemplate._default.manager(context);
+            }
+            //Check if there is a default manager provided by an app default asset extension
+            if(defaultAppExtensionMediator){
+                log.debug('using custom default asset extension to load an asset manager');
+                assetResources = defaultAppExtensionMediator.manager()?defaultAppExtensionMediator.manager()(context) : assetResources;
             }
         } else {
             assetResources = assetResourcesTemplate.manager(context);

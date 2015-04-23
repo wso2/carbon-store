@@ -253,6 +253,9 @@ var resources = {};
     DefaultAppExtensionMediatorImpl.prototype.renderer = function(){
         return this.assetExtension.renderer;
     };
+    DefaultAppExtensionMediatorImpl.prototype.configs = function(){
+        return this.assetExtension.configs;
+    };
     DefaultAppExtensionMediatorImpl.prototype.resolveCaramelResources = function(resourcePath,theme,caramelThemeResolver) {
         var file;
         var fullPath = this.path + '/' + resourcePath;
@@ -266,7 +269,6 @@ var resources = {};
         this.impl = impl;
     }
     DefaultAppExtensionMediator.prototype.manager = function() {
-        log.info('renderer called');
         if(!this.impl){
             return null;
         }
@@ -278,7 +280,12 @@ var resources = {};
         }
         return this.impl.renderer();
     };
-    DefaultAppExtensionMediator.prototype.configs = function() {};
+    DefaultAppExtensionMediator.prototype.configs = function() {
+        if(!this.impl){
+            return null;
+        }
+        return this.impl.configs();
+    };
     DefaultAppExtensionMediator.prototype.resolveCaramelResources = function(resourcePath,theme,caramelThemeResolver) {
         var file;
         var fullPath = this.path + '/' + resourcePath;
