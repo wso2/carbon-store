@@ -28,14 +28,18 @@ app.server = function(ctx) {
                 path: 'lifecycles.jag',
                 secured: true
             }, {
+                url: 'asset',
+                path: 'asset.jag',
+                secured: true
+            }, {
                 url: 'authenticate',
                 path: 'authenticate.jag'
             }, {
                 url: 'logout',
                 path: 'logout.jag'
-            },{
-                url:'statistics',
-                path:'statistics.jag'
+            }, {
+                url: 'statistics',
+                path: 'statistics.jag'
             }]
         }
     };

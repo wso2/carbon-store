@@ -1,0 +1,11 @@
+<h3>Transition Inputs</h3>
+<form id='lifecycle-transition-inputs-field-form' class="form-horizontal">
+{{#each .}}
+	<div class="form-group">
+		<label class="col-sm-2 form-label">{{name}}</label>
+		<div class="col-sm-10">
+			<input class="form-control" type='{{type}}' name='{{name}}' />
+		</div>
+	</div>
+{{/each}}
+</form>

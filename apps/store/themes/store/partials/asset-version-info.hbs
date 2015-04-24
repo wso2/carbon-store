@@ -1,0 +1,17 @@
+{{#if groupingFeature.isEnabled}}
+{{#if assets.hasMultipleVersions}}
+<div style="text-wrap">
+    <label>versions: </label>
+    {{#each assets.versions}}
+        <a href='{{url ""}}{{assetURL}}'>v{{version}}</a>
+    {{/each}}
+</div>
+<div>
+    {{#if assets.isDefault}}
+    <span class="label label-info">default version</span>
+    {{else}}
+    <span class="label label-default">sub version</span>
+    {{/if}}
+</div>
+{{/if}}
+{{/if}}

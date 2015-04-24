@@ -18,6 +18,7 @@
 
 package org.wso2.carbon.social.sql;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -31,6 +32,8 @@ import org.wso2.carbon.social.core.ActivityBrowser;
 import org.wso2.carbon.social.core.SocialActivityException;
 import org.wso2.carbon.social.sql.Constants;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -40,23 +43,14 @@ import java.util.List;
 
 import org.wso2.carbon.social.sql.SocialUtil;
 
+/**
+ * 
+ * SQLActivityBrowser class is responsible for activity retrieving.
+ * 
+ */
+
 public class SQLActivityBrowser implements ActivityBrowser {
 	private static final Log log = LogFactory.getLog(SQLActivityBrowser.class);
-
-	//TODO think about oracle and other db support
-	public static final String COMMENT_SELECT_SQL_DESC = "SELECT "
-			+ Constants.BODY_COLUMN + ", " + Constants.ID_COLUMN + " FROM "
-			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
-			+ Constants.CONTEXT_ID_COLUMN + "= ? AND "
-			+ Constants.TENANT_DOMAIN_COLUMN + "= ? " + "ORDER BY "
-			+ Constants.ID_COLUMN + " DESC LIMIT ?,?";
-
-	public static final String COMMENT_SELECT_SQL_ASC = "SELECT "
-			+ Constants.BODY_COLUMN + ", " + Constants.ID_COLUMN + " FROM "
-			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
-			+ Constants.CONTEXT_ID_COLUMN + "= ? AND "
-			+ Constants.TENANT_DOMAIN_COLUMN + "= ? " + "ORDER BY "
-			+ Constants.ID_COLUMN + " ASC LIMIT ?,?";
 
 	public static final String SELECT_CACHE_SQL = "SELECT "
 			+ Constants.RATING_TOTAL + "," + Constants.RATING_COUNT + " FROM "
@@ -71,21 +65,14 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	public static final String TOP_COMMENTS_SELECT_SQL = "SELECT "
 			+ Constants.BODY_COLUMN + " FROM "
 			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + "WHERE "
-			+ Constants.CONTEXT_ID_COLUMN + " = ? AND " + Constants.LIKES_COLUMN
-			+ " > ?";
+			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
+			+ Constants.LIKES_COLUMN + " > ?";
 
 	public static final String SELECT_LIKE_STATUS = "SELECT "
 			+ Constants.ID_COLUMN + " FROM "
 			+ Constants.SOCIAL_LIKES_TABLE_NAME + " WHERE "
 			+ Constants.USER_COLUMN + " = ? AND " + Constants.CONTEXT_ID_COLUMN
 			+ " = ? AND " + Constants.LIKE_VALUE_COLUMN + " = ?";
-
-	public static final String POPULAR_COMMENTS_SELECT_SQL = "SELECT "
-			+ Constants.BODY_COLUMN + ", " + Constants.ID_COLUMN + " FROM "
-			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
-			+ Constants.CONTEXT_ID_COLUMN + "= ? AND "
-			+ Constants.TENANT_DOMAIN_COLUMN + "= ? ORDER BY "
-			+ Constants.LIKES_COLUMN + " DESC LIMIT ?,?";
 
 	public static final String POLL_COMMENTS_SQL = "SELECT "
 			+ Constants.BODY_COLUMN + ", " + Constants.ID_COLUMN + " FROM "
@@ -94,9 +81,21 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			+ Constants.TENANT_DOMAIN_COLUMN + " =? AND " + Constants.ID_COLUMN
 			+ " > ? OREDR BY " + Constants.ID_COLUMN + " DESC";
 
+	public static final String POPULAR_ASSETS_SELECT_SQL = "SELECT PAYLOAD_CONTEXT_ID FROM SOCIAL_RATING_CACHE WHERE PAYLOAD_CONTEXT_ID LIKE ? AND TENANT_DOMAIN =? ORDER BY rating_average DESC LIMIT ?,?";
+
 	private JsonParser parser = new JsonParser();
 
+	public static Object obj = null;
+	public static Class<?> cls = null;
+
 	@Override
+	/**
+	 * Retrieve average rating of a target
+	 * 
+	 * @param targetId
+	 * @return average rating JsonObject 
+	 * @throws SocialActivityException 
+	 */
 	public JsonObject getRating(String targetId) throws SocialActivityException {
 		Connection connection = null;
 		PreparedStatement statement;
@@ -142,6 +141,16 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	}
 
 	@Override
+	/**
+	 * Retrieve paginated ordered activities of a given target.
+	 * 
+	 * @param targetId
+	 * @param order
+	 * @param offset
+	 * @param limit
+	 * @return activity JsonObject
+	 * @throws SocialActivityException 
+	 */
 	public JsonObject getSocialObject(String targetId, String order,
 			int offset, int limit) throws SocialActivityException {
 
@@ -161,39 +170,44 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		return jsonObj;
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
+	/**
+	 * Retrieve paginated ordered activities List of a given target.
+	 * 
+	 * @param targetId
+	 * @param order
+	 * @param offset
+	 * @return limit
+	 * @return List<Activity>
+	 * @throws SocialActivityException 
+	 */
 	public List<Activity> listActivities(String targetId, String order,
 			int offset, int limit) throws SocialActivityException {
 		Connection connection = null;
 		List<Activity> activities = null;
-		PreparedStatement statement;
+		// PreparedStatement statement;
 		ResultSet resultSet;
 		String tenantDomain = SocialUtil.getTenantDomain();
 		limit = SocialUtil.getActivityLimit(limit);
 		String errorMsg = "Unable to retrieve activities. ";
-		String SQL;
-
-		if ("NEWEST".equals(order)) {
-			SQL = COMMENT_SELECT_SQL_DESC;
-		} else if ("OLDEST".equals(order)) {
-			SQL = COMMENT_SELECT_SQL_ASC;
-		} else {
-			SQL = POPULAR_COMMENTS_SELECT_SQL;
-		}
 
 		try {
-			if (log.isDebugEnabled()) {
-				log.debug("Executing: " + SQL);
-			}
 			connection = DSConnection.getConnection();
-			statement = connection.prepareStatement(SQL);
 
-			statement.setString(1, targetId);
-			statement.setString(2, tenantDomain);
-			statement.setInt(3, offset);
-			statement.setInt(4, limit);
+			if (obj == null) {
+				cls = SocialUtil.loadQueryAdaptorClass();
+				obj = SocialUtil.getQueryAdaptorObject(cls);
+			}
 
-			resultSet = statement.executeQuery();
+			Class[] param = { Connection.class, String.class, String.class,
+					String.class, int.class, int.class };
+
+			Method method = cls.getDeclaredMethod("getPaginatedActivitySet",
+					param);
+			resultSet = (ResultSet) method.invoke(obj, connection, targetId,
+					tenantDomain, order, limit, offset);
+
 			activities = new ArrayList<Activity>();
 			while (resultSet.next()) {
 				JsonObject body = (JsonObject) parser.parse(resultSet
@@ -212,25 +226,42 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
 			throw new SocialActivityException(message, e);
+		} catch (IllegalAccessException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (NoSuchMethodException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (SecurityException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (IllegalArgumentException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (InvocationTargetException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
 		} finally {
 			DSConnection.closeConnection(connection);
 		}
-		/*if (activities != null) {
-			return activities;
-		} else {
-			return Collections.emptyList();
-		}*/
+		/*
+		 * if (activities != null) { return activities; } else { return
+		 * Collections.emptyList(); }
+		 */
 		return activities;
 	}
 
-	/*@Override
-	public List<Activity> listActivitiesChronologically(String targetId,
-			String order, int offset, int limit) {
-		List<Activity> activities;
-			activities = listActivities(targetId, order, offset,
-					limit);
-		return activities;
-	}*/
+	/*
+	 * @Override public List<Activity> listActivitiesChronologically(String
+	 * targetId, String order, int offset, int limit) { List<Activity>
+	 * activities; activities = listActivities(targetId, order, offset, limit);
+	 * return activities; }
+	 */
 
 	@SuppressWarnings("unused")
 	private String getTenant(JsonObject body) {
@@ -249,6 +280,14 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	}
 
 	@Override
+	/**
+	 * Retrieve targets with average rating, greater than the given value.
+	 * 
+	 * @param avgRating
+	 * @param limit
+	 * @return top assets JsonObject
+	 * @throws SocialActivityException 
+	 */
 	public JsonObject getTopAssets(double avgRating, int limit)
 			throws SocialActivityException {
 		Connection connection = null;
@@ -304,6 +343,14 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	}
 
 	@Override
+	/**
+	 * Retrieve comments belongs to a particular target with likes greater than the given value.
+	 * 
+	 * @param targetId
+	 * @param likes
+	 * @return top comments JsonObject
+	 * @throws SocialActivityException 
+	 */
 	public JsonObject getTopComments(String targetId, int likes)
 			throws SocialActivityException {
 		Connection connection = null;
@@ -324,7 +371,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			resultSet = statement.executeQuery();
 			jsonObj.add(Constants.COMMENTS, comments);
 
-			if (resultSet.next()) {
+			while (resultSet.next()) {
 				JsonObject body = (JsonObject) parser.parse(resultSet
 						.getString(Constants.BODY_COLUMN));
 				int id = resultSet.getInt(Constants.ID_COLUMN);
@@ -352,7 +399,17 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	}
 
 	@Override
-	public boolean isUserlikedActivity(String userId, String targetId, int like) throws SocialActivityException {
+	/**
+	 * Retrieve comments belongs to a particular target with likes greater than the given value.
+	 * 
+	 * @param userId
+	 * @param targetId
+	 * @param like (1 for LIKE 0 for DISLIKE)
+	 * @return boolean
+	 * @throws SocialActivityException 
+	 */
+	public boolean isUserlikedActivity(String userId, String targetId, int like)
+			throws SocialActivityException {
 		Connection connection = null;
 		String errorMsg = "Error while checking user like activity. ";
 
@@ -377,18 +434,27 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
 			throw new SocialActivityException(message, e);
-		} catch(DataSourceException e){
+		} catch (DataSourceException e) {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
 			throw new SocialActivityException(message, e);
-		}finally {
+		} finally {
 			DSConnection.closeConnection(connection);
 		}
 		return false;
 	}
 
 	@Override
-	public JsonObject pollNewestComments(String targetId, int id) throws SocialActivityException {
+	/**
+	 * Poll for latest comments.
+	 * 
+	 * @param targetId
+	 * @param id
+	 * @return latest comments JsonObject
+	 * @throws SocialActivityException 
+	 */
+	public JsonObject pollNewestComments(String targetId, int id)
+			throws SocialActivityException {
 		Connection connection = null;
 		PreparedStatement statement;
 		ResultSet resultSet;
@@ -407,7 +473,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			resultSet = statement.executeQuery();
 			jsonObj.add(Constants.COMMENTS, comments);
 
-			if (resultSet.next()) {
+			while (resultSet.next()) {
 				JsonObject body = (JsonObject) parser.parse(resultSet
 						.getString(Constants.BODY_COLUMN));
 				int activityId = resultSet.getInt(Constants.ID_COLUMN);
@@ -420,11 +486,11 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
 			throw new SocialActivityException(message, e);
-		} catch(DataSourceException e){
+		} catch (DataSourceException e) {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
 			throw new SocialActivityException(message, e);
-		}finally {		
+		} finally {
 			DSConnection.closeConnection(connection);
 		}
 		if (comments.size() > 0) {
@@ -432,6 +498,94 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		} else {
 			return null;
 		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	/**
+	 * Get paginated targets according to the average rating.
+	 * 
+	 * @param type
+	 * @param tenantId
+	 * @param limit
+	 * @param offset
+	 * @return JsonObject
+	 * @throws SocialActivityException 
+	 */
+	public JsonObject getPopularAssets(String type, String tenantId, int limit,
+			int offset) throws SocialActivityException {
+		Connection connection = null;
+		String errorMsg = "Unable to retrieve top assets. ";
+
+		ResultSet resultSet;
+		JsonArray assets = new JsonArray();
+		JsonObject jsonObj = new JsonObject();
+		String tenantDomain = SocialUtil.getTenantDomain();
+
+		try {
+			if (log.isDebugEnabled()) {
+				log.debug("Executing: " + POPULAR_ASSETS_SELECT_SQL);
+			}
+			connection = DSConnection.getConnection();
+
+			if (obj == null) {
+				cls = SocialUtil.loadQueryAdaptorClass();
+				obj = SocialUtil.getQueryAdaptorObject(cls);
+			}
+
+			Class[] param = { Connection.class, String.class, String.class,
+					int.class, int.class };
+
+			Method method = cls.getDeclaredMethod("getPopularTargetSet", param);
+			resultSet = (ResultSet) method.invoke(obj, connection, type,
+					tenantDomain, limit, offset);
+
+			jsonObj.add(Constants.ASSETS, assets);
+			Gson gson = new Gson();
+
+			while (resultSet.next()) {
+				String targetId = resultSet
+						.getString(Constants.CONTEXT_ID_COLUMN);
+				assets.add(parser.parse(gson.toJson(targetId)));
+			}
+			resultSet.close();
+		} catch (SQLException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (DataSourceException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (NoSuchMethodException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (SecurityException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (IllegalAccessException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (IllegalArgumentException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (InvocationTargetException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} finally {
+			DSConnection.closeConnection(connection);
+		}
+		if (assets.size() > 0) {
+			return jsonObj;
+		} else {
+			return null;
+		}
+
 	}
 
 }

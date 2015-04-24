@@ -29,6 +29,7 @@ require('/modules/publisher.js').exec(function(ctx) {
     var am = asset.createUserAssetManager(ctx.session, type);
     var page = ui.buildPage(ctx.session, ctx.request);
     var assets = am.get(id);
+
     var output = am.render(assets, page).update();
     caramel.render(output);
 }, request, response, session);

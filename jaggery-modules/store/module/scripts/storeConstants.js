@@ -21,10 +21,11 @@ var storeConstants = {};
 
     var subscriptionConstants = Packages.org.wso2.carbon.store.notifications.management.Constants;
 
-    storeConstants.EMAIL_TEMPLATE_LC = "<html><h2>Notification for <%=assetType%>:'<%=assetName%>'</h2><h3>Event:lifecycle state changed</h3><p><b>Comment:</b><%=msg%></p></html>";
-    storeConstants.EMAIL_TEMPLATE_UPDATE = "<html><h2>Notification for <%=assetType%>:'<%=assetName%>'</h2><h3>Event:<%=assetType%> updated</h3></html>";
-    storeConstants.EMAIL_TEMPLATE_VERSION = "<html><h2>Notification for <%=assetType%>:'<%=assetName%>'</h2><h3>Event:new version created</h3></html>";
-    storeConstants.EMAIL_TEMPLATE_DEFAULT = "<html><h2>Notification</h2><p><b>Message:</b><%=msg%></p></html>";
+    storeConstants.EMAIL_TEMPLATE_LC = 'lifecycle-state-changed';
+    storeConstants.EMAIL_TEMPLATE_UPDATE = 'asset-updated';
+    storeConstants.EMAIL_TEMPLATE_VERSION = 'new-version-created';
+    storeConstants.EMAIL_TEMPLATE_DEFAULT = 'asset-default';
+
 
     storeConstants.PRIVATE_ROLE_ENDPOINT = "role://Internal/private_";
     storeConstants.ADMIN_ROLE_ENDPOINT = "role://admin";

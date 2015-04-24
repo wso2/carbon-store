@@ -193,6 +193,7 @@ var installer = function () {
         var artifactManager = context.artifactManager;
         var artifact = context.artifact;
         var name = artifact.attributes.overview_name;
+        var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
 
 
         //Add the asset
@@ -219,7 +220,12 @@ var installer = function () {
 
         context['currentAsset'] = assets[0] || null;
         //log.debug('added asset: ' + stringify(context.currentAsset));
+        try{
+            social.warmUpRatingCache(context.currentAsset.type + ':' + context.currentAsset.id);
+        }catch(e){
+            log.warn("Unable to publish the asset: " + context.currentAsset.type + ":" + context.currentAsset.id + " to social cache. This may affect on sort by popularity function.");
 
+        }
         //addToSocialCache(context.currentAsset);
         //log.debug('finished');
     }
