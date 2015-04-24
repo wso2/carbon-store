@@ -248,8 +248,8 @@ var resources = {};
         return module;
     };
 
-    function DefaultAppExtensionMediatorImpl(path) {
-        this.path = path;
+    function DefaultAppExtensionMediatorImpl(path,name) {
+        this.path = '/extensions/app/'+name+'/';//path;
         this.assetExtension = {};
         this.init();
     }
@@ -353,7 +353,7 @@ var resources = {};
                     log.info('found an app extension which overrides the default asset extension: ' + extensionDir.getName());
                     found = true;
                     //Build a mediator
-                    mediatorImpl = new DefaultAppExtensionMediatorImpl(extensionDir.getPath());
+                    mediatorImpl = new DefaultAppExtensionMediatorImpl(extensionDir.getPath(),extensionDir.getName());
                     mediator = new DefaultAppExtensionMediator(mediatorImpl);
                     core.defaultAppExtensionMediator(mediator);
                 }
