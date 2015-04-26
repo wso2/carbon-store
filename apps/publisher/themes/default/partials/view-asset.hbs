@@ -6,13 +6,13 @@
                         <img src='{{url ""}}/storage/{{../rxt.shortName}}/{{id}}/{{thumbnail}}' class="" alt="Thumb"/>
                     </div>
                     <div class="col-lg-10">
-                        <h1>{{name}}</h1>
+                        <h1 class="asset-name">{{name}}</h1>
                         {{#if lifecycleState}} 
                         <i class="fa fa-circle"></i> {{lifecycleState}}
                         {{/if}}
                         <div class="well-description">{{tables.0.fields.createdtime.value}}</div>
                         <div class="well-description">{{tables.0.fields.description.value}}</div>
-                        <div> 
+                        <div class="padding-bottom-lg">
                             {{> asset-version-info ..}}
                         </div>
                     </div>
