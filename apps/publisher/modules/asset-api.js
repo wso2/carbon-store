@@ -26,6 +26,7 @@ var result;
     var log = new Log('asset_api');
     var exceptionModule = utils.exception;
     var constants = rxtModule.constants;
+    var CONTENT_TYPE_JSON = 'application/json';
     /**
      *
      * @param  fieldParam   The raw string comes as field parameter of the request
@@ -183,7 +184,22 @@ var result;
         for (var key in meta) {
             asset[key] = meta[key];
         }
-    }
+    };
+    var processContentType = function(contentType){
+        var comps =  contentType.split(';');
+        return comps [0];
+    };
+    var processRequestBody = function(req,assetReq){
+        var contentType = processContentType(req.getContentType());
+        if(contentType !== CONTENT_TYPE_JSON){
+            return assetReq;
+        }
+        var params = req.getContent();
+        for(var key in params){
+            assetReq[key] = params[key];
+        }
+        return assetReq;
+    };
     /**
      * api to create a new asset
      * @param  options incoming values
@@ -203,6 +219,7 @@ var result;
         var rxtManager = getRxtManager(session,options.type);
         var isLCEnabled = false;
         var isDefaultLCEnabled = false;
+        assetReq = processRequestBody(req,assetReq);
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
         } else {
