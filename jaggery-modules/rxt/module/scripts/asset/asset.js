@@ -118,7 +118,7 @@ var asset = {};
                 attributes[attrName] = "on";  //We set it's value to on
             }
         }else {
-            if (data[attrName] != null) {
+            if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g,"") != "") {
                 attributes[attrName] = data[attrName];
             } else {
                 log.debug(attrName + ' will not be saved.');

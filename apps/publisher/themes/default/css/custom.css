@@ -175,6 +175,9 @@ h1 {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     border-bottom:0px solid #f0f0f0;
 }
+a{
+    cursor: pointer;
+}
 a.collapsing-h2 h2 {
     margin:0 0 20px 0;
     color: #222222;
@@ -804,6 +807,9 @@ h2 span.fa-stack{
 }.margin-top-lg{
     margin-top:20px;
 }
+ .add-unbounded-row{
+     padding:0 0 20px 0;
+ }
 .width-full{
     width:100%;
 }
@@ -909,4 +915,7 @@ h2 span.fa-stack{
 .cu-data-table td textarea {
     width:400px !important;
     height:34px !important;
+}
+.decorated-table-heading tr th{
+    background: #ccc;
 }

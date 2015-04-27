@@ -65,5 +65,26 @@ $(function() {
         }
     );
 
+    var removeUnboundRow = function(link){
+        var table = link.closest('table');
+        if($('tr',table).length == 2){
+            table.hide();
+        }
+        link.closest('tr').remove();
+    };
 
+    $('.js-add-unbounded-row').click(function(){
+        var tableName = $(this).attr('data-name');
+        var table = $('#table_'+tableName);
+        var referenceRow = $('#table_reference_'+tableName);
+
+        table.show().append(referenceRow.clone().removeAttr('id'));
+    });
+    $('.js-unbounded-table').on('click','a',function(event){
+        removeUnboundRow($(event.target));
+
+    });
+
+    $('#tmp_refernceTableForUnbounded').detach().attr('id','refernceTableForUnbounded').appendTo('body');
+    $('#tmp_refernceTableForUnbounded').remove();
 });
