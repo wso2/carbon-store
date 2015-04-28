@@ -12,7 +12,7 @@
                         {{/if}}
                         <div class="well-description">{{tables.0.fields.createdtime.value}}</div>
                         <div class="well-description">{{tables.0.fields.description.value}}</div>
-                        <div class="padding-bottom-lg">
+                        <div class="version-info-container padding-bottom-lg">
                             {{> asset-version-info ..}}
                         </div>
                     </div>
@@ -37,6 +37,6 @@
 
 
 {{/with}}
-
+{{> sidebar-container . }}
 
 

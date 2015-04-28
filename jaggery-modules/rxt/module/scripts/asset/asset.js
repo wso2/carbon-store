@@ -1443,11 +1443,17 @@ var asset = {};
         var assetResourcesTemplate = core.assetResources(tenantId, type);
         var context = core.createAssetContext(session, type, tenantId);
         var assetResources = {}; //Assume there will not be any asset managers to override the default implementations
+        var defaultAppExtensionMediator = core.defaultAppExtensionMediator();
         //Check if there are any asset managers defined at the type level
         if (!assetResourcesTemplate.manager) {
             //Check if a default manager exists
             if (assetResourcesTemplate._default.manager) {
                 assetResources = assetResourcesTemplate._default.manager(context);
+            }
+            //Check if there is a default manager provided by an app default asset extension
+            if(defaultAppExtensionMediator){
+                log.debug('using custom default asset extension to load an asset manager');
+                assetResources = defaultAppExtensionMediator.manager()?defaultAppExtensionMediator.manager()(context) : assetResources;
             }
         } else {
             assetResources = assetResourcesTemplate.manager(context);
@@ -1474,10 +1480,18 @@ var asset = {};
         var customRenderer = (assetResources.renderer) ? assetResources.renderer(context) : {};
         var renderer = new AssetRenderer(asset.getAssetPageUrl(type), asset.getBaseUrl());
         var defaultRenderer = assetResources._default.renderer ? assetResources._default.renderer(context) : {};
+        var defaultAppExtensionMediator = core.defaultAppExtensionMediator();
+        var customDefaultRenderer = {};
+        if(defaultAppExtensionMediator){
+            customDefaultRenderer = defaultAppExtensionMediator.renderer()?defaultAppExtensionMediator.renderer()(context):{};                
+        }
+        
         reflection.override(renderer, defaultRenderer);
+        reflection.override(renderer, customDefaultRenderer);
         reflection.override(renderer, customRenderer);
         //Override the page decorators
         overridePageDecorators(renderer, defaultRenderer);
+        overridePageDecorators(renderer, customDefaultRenderer);
         overridePageDecorators(renderer, customRenderer);
         return renderer;
     };
@@ -1693,6 +1707,7 @@ var asset = {};
     asset.resolve = function(request, path, themeName, themeObj, themeResolver) {
         var log = new Log();
         var resPath = path;
+        var appExtensionMediator = core.defaultAppExtensionMediator()|| {resolveCaramelResources:function(path){return path;}};
         path = '/' + path;
         //Determine the type of the asset
         var uriMatcher = new URIMatcher(request.getRequestURI());
@@ -1713,8 +1728,9 @@ var asset = {};
             if (resFile.isExists()) {
                 return extensionResPath;
             }
-            //log.info('Resource not present in extensions directory, using : ' + themeResolver.call(themeObj, path));
-            return themeResolver.call(themeObj, path);
+            var basePath = themeResolver.call(themeObj, path);
+            basePath = appExtensionMediator.resolveCaramelResources(basePath);
+            return basePath;//themeResolver.call(themeObj, path);
         }
         //Check if type has a similar path in its extension directory
         var extensionPath = '/extensions/assets/' + uriOptions.type + '/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;
@@ -1725,6 +1741,7 @@ var asset = {};
         //If an extension directory does not exist then use theme directory
         extensionPath = pathOptions.root + '/' + pathOptions.suffix;
         var modPath = themeResolver.call(themeObj, extensionPath);
+        modPath = appExtensionMediator.resolveCaramelResources(modPath);
         return modPath;
     };
 }(asset, core))

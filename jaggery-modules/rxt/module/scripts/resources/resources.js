@@ -41,8 +41,8 @@ var resources = {};
     var getDefaultAssetTypeScriptPath = function(options, type) {
         return '/extensions/assets/' + type + '/asset.js';
     };
-    var getAssetExtensionPath = function(type){
-        return constants.ASSET_EXTENSION_ROOT+'/'+type;
+    var getAssetExtensionPath = function(type) {
+        return constants.ASSET_EXTENSION_ROOT + '/' + type;
     };
     var addToConfigs = function(tenantId, type, assetResource) {
         var configs = core.configs(tenantId);
@@ -55,7 +55,7 @@ var resources = {};
         var file = new File(path);
         var content = '';
         if (!file.isExists()) {
-            if(log.isDebugEnabled()){
+            if (log.isDebugEnabled()) {
                 log.debug('Unable to locate default asset script at path ' + path);
             }
             return content;
@@ -99,7 +99,7 @@ var resources = {};
             };
         }
         return assetResource;
-    }
+    };
     var evalAssetScript = function(scriptContent, assetResource, path, type) {
         var module = 'function(asset,log){' + scriptContent + '};';
         var modulePtr = null;
@@ -121,6 +121,7 @@ var resources = {};
     };
     var buildDefaultResources = function(options, type, assetResource) {
         var asset = {};
+        var ref = require('utils').reflection;
         asset.manager = null;
         asset.renderer = null;
         asset.server = null;
@@ -128,6 +129,21 @@ var resources = {};
         asset = loadDefaultAssetScript(options, type, asset);
         assetResource._default = asset;
         assetResource.configure = asset.configure;
+        var ptr = assetResource.configure;
+        assetResource.configure = function() {
+            var originalConfigs = ptr();
+            var defaultAppExtensionMediator = core.defaultAppExtensionMediator();
+            var customDefaultConfigs;
+            var temp; 
+            if (defaultAppExtensionMediator) {
+                customDefaultConfigs = defaultAppExtensionMediator.configs() ? defaultAppExtensionMediator.configs() : function() {
+                    return {}
+                };
+                temp = customDefaultConfigs();
+                ref.copyAllPropValues(temp, originalConfigs);
+            }
+            return originalConfigs;
+        };
     };
     var buildAssetResources = function(options, type, assetResource) {
         var asset = {};
@@ -157,8 +173,8 @@ var resources = {};
      * @param  {[type]} tenantId [description]
      * @return {[type]}          [description]
      */
-    var loadDefaultAssetArtifacts = function(tenantId){
-        loadAssetArtifacts('default',tenantId);
+    var loadDefaultAssetArtifacts = function(tenantId) {
+        loadAssetArtifacts('default', tenantId);
     };
     var loadResources = function(options, tenantId, sysRegistry) {
         var manager = core.rxtManager(tenantId);
@@ -180,9 +196,170 @@ var resources = {};
             }
             addToConfigs(tenantId, type, asset);
             //Load any artifacts
-            loadAssetArtifacts(type,tenantId);
+            loadAssetArtifacts(type, tenantId);
         }
         loadDefaultAssetArtifacts(tenantId);
+    };
+    var matchFile = function(fileName, dir) {
+        var files = dir.listFiles();
+        var found = false;
+        for (var index = 0;
+            (index < files.length) && (!found); index++) {
+            if (files[index].getName() === fileName) {
+                found = true;
+            }
+        }
+        return found;
+    };
+    var hasAppScript = function(dir) {
+        return matchFile('app.js', dir);
+    };
+    var hasAssetScript = function(dir) {
+        return matchFile('asset.js', dir);
+    };
+    var readScriptContent = function(file) {
+        var content = '';
+        try {
+            file.open('r');
+            content = file.readAll();
+        } catch (e) {
+            log.error('Unable to read contents of ' + file.getPath() + ' ' + file.getName(), e);
+        } finally {
+            file.close();
+        }
+        return content;
+    };
+    var appExtensionPath = function(dir) {
+        return dir.getPath() + '/app.js';
+    };
+    var assetExtensionPath = function(dir) {
+        return dir.getPath() + '/asset.js';
+    }
+    var evalExtensionScript = function(dir) {
+        var file = new File(appExtensionPath(dir));
+        var content = readScriptContent(file);
+        var script = 'function(app,log){' + content + '}';
+        var module = {};
+        var l = new Log(file.getName());
+        var ptr;
+        module.dependencies = [];
+        ptr = eval(script);
+        ptr.call(this, module, l);
+        return module;
+    };
+
+    function DefaultAppExtensionMediatorImpl(path,name) {
+        this.path = '/extensions/app/'+name+'/';//path;
+        this.assetExtension = {};
+        this.init();
+    }
+    DefaultAppExtensionMediatorImpl.prototype.init = function() {
+        var extensionDir = new File(this.path);
+        var scriptFile = new File(assetExtensionPath(extensionDir));
+        var content = readScriptContent(scriptFile);
+        var extension = {};
+        var script = 'function(asset,log) { ' + content + ' \n } ';
+        var l = new Log();
+        var ptr = eval(script);
+        ptr.call(this, extension, l);
+        this.assetExtension = extension || {};
+        //log.info(this.assetExtension.renderer().pageDecorators);
+    };
+    DefaultAppExtensionMediatorImpl.prototype.manager = function() {
+        return this.assetExtension.manager;
+    };
+    DefaultAppExtensionMediatorImpl.prototype.renderer = function() {
+        return this.assetExtension.renderer;
+    };
+    DefaultAppExtensionMediatorImpl.prototype.configs = function() {
+        return this.assetExtension.configure;
+    };
+    DefaultAppExtensionMediatorImpl.prototype.resolveCaramelResources = function(resourcePath, theme, caramelThemeResolver) {
+        var file;
+        var fullPath = this.path + '/' + resourcePath;
+        file = new File(fullPath);
+        if (file.isExists()) {
+            return fullPath;
+        }
+        return caramelThemeResolver(theme, resourcePath);
+    };
+
+    function DefaultAppExtensionMediator(impl) {
+        this.impl = impl;
+    }
+    DefaultAppExtensionMediator.prototype.manager = function() {
+        if (!this.impl) {
+            return null;
+        }
+        return this.impl.manager();
+    };
+    DefaultAppExtensionMediator.prototype.renderer = function() {
+        if (!this.impl) {
+            return null;
+        }
+        return this.impl.renderer();
+    };
+    DefaultAppExtensionMediator.prototype.configs = function() {
+        if (!this.impl) {
+            return null;
+        }
+        return this.impl.configs();
+    };
+    DefaultAppExtensionMediator.prototype.resolveCaramelResources = function(resourcePath, theme, caramelThemeResolver) {
+        var file;
+        var fullPath = this.path + '/' + resourcePath;
+        theme = theme || {};
+        caramelThemeResolver = caramelThemeResolver || function(theme, path) {
+            return path
+        };
+        if (!this.impl) {
+            return caramelThemeResolver(theme, path);
+        }
+        return this.impl.resolveCaramelResources(resourcePath, theme, caramelThemeResolver);
+    };
+    var loadDefaultAppExtensions = function() {
+        //Go through each app extension 
+        var dirPath = '/extensions/app';
+        var dir = new File(dirPath);
+        var extensionDir;
+        var extensionDirs;
+        var extension;
+        var dependencies;
+        var mediator;
+        var mediatorImpl;
+        var ignore = false;
+        var found = false; //Assume that no default extensions will be found
+        log.info('loading default asset app extensions');
+        if (!dir.isDirectory()) {
+            log.error('Unable to read the app extension directory');
+            return;
+        }
+        extensionDirs = dir.listFiles() || [];
+        extensionDir;
+        for (var index = 0; index < extensionDirs.length; index++) {
+            extensionDir = extensionDirs[index];
+            log.info('checking extension: ' + extensionDir.getName());
+            //Check if there is an asset script
+            if (hasAppScript(extensionDir)) {
+                //Get the extension details
+                extension = evalExtensionScript(extensionDir);
+                dependencies = extension.dependencies || [];
+                ignore = extension.ignoreExtension || false;
+                if (((dependencies.indexOf(constants.DEFAULT_APP_EXTENSION) > -1) && (!ignore)) && (found)) {
+                    log.error('An extension which overrides the default asset extension was already loaded, thus app extension: ' + extensionDir.getName() + ' will be ignored.Please make sure that there is only one app extension which declares a dependency to "default".');
+                }
+                //Check if "default" is one of the dependencies
+                if (((dependencies.indexOf(constants.DEFAULT_APP_EXTENSION) > -1) && (!ignore)) && (!found)) {
+                    log.info('found an app extension which overrides the default asset extension: ' + extensionDir.getName());
+                    found = true;
+                    //Build a mediator
+                    mediatorImpl = new DefaultAppExtensionMediatorImpl(extensionDir.getPath(),extensionDir.getName());
+                    mediator = new DefaultAppExtensionMediator(mediatorImpl);
+                    core.defaultAppExtensionMediator(mediator);
+                }
+            }
+        }
+        log.info('finished loading default asset app extensions');
     };
     var init = function(tenantId) {
         var server = require('store').server;
@@ -193,6 +370,7 @@ var resources = {};
         }
         options = options.rxt;
         var sysRegistry = server.systemRegistry(tenantId);
+        loadDefaultAppExtensions(); //TODO:Add support for tenants
         loadResources(options, tenantId, sysRegistry);
     };
     resources.manager = function(tenantId) {

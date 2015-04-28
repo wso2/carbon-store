@@ -36,25 +36,20 @@
         </div>
       </div>       
     </div>
-    <div class="col-lg-2 col-md-2 col-sm-1 col-xs-12  wr-filters">
-        <div class="wr-filter-sort pull-right">
-            <!--<a href="#" class="ico-filter ctrl-filter-grid"><img src="{{url "/themes/default/img/icons/ico-grid.png"}}" /></a>-->
-            <!--<a href="#" class="ico-filter ctrl-filter-list"><img src="{{url "/themes/default/img/icons/ico-list.png"}}" /></a>-->
-            <a href="#" class="ico-filter ctrl-filter-sort dropdown-toggle" data-toggle="dropdown"><img src="{{url "/themes/default/img/icons/ico-sort.png"}}" /></a>
-            <div class="dropdown-menu">
-                <div class="cu-arrow"></div>
-                <div class="dropdown-menu-content">
-                    <a class="filter-item" href="?sortby=overview_name&sort=ASC">Name</a>
-                    <a class="filter-item"  href="?sortby=overview_version&sort=ASC">Version</a>
-                    <a class="filter-item" href="?sortby=overview_provider&sort=ASC">Status</a>
-                    <a class="filter-item" href="?sortby=overview_createdtime&sort=DESC">Date/Time Created</a>
-                </div>
-            </div>
-        </div>
+    <div class="col-lg-2 col-md-2 col-sm-1 col-xs-12 wr-filters">
+        <div class="dropdown pull-right">
+            <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+                <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
+            </a>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                <li role="presentation"><a class="filter-item" href="?sortby=overview_name&sort=ASC">Name</a></li>
+                <li role="presentation"><a class="filter-item" href="?sortby=overview_version&sort=ASC">Version</a></li>
+                <li role="presentation"><a class="filter-item" href="?sortby=overview_provider&sort=ASC">Status</a></li>
+                <li role="presentation"><a class="filter-item" href="?sortby=overview_createdtime&sort=DESC">Date/Time Created</a></li>
+            </ul>
     </div>
 </div>
-<div class="row ovrd-wr-asst-listing">
-    <div class="col-md-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
         <!-- content -->
         <div class="ast-container" id="list_assets_table_body">
             {{#if assets}}
@@ -67,7 +62,7 @@
                 </div>
             {{/if}}
         </div>
-</div>
+    </div>
 </div>
 
 

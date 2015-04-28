@@ -25,6 +25,7 @@ var api = {};
     var ACTION_UPDATE_CHECKLIST = 'update-checklist';
     var ACTION_LC_HISTORY = 'lifecycle-history';
     var HTTP_ERROR_NOT_IMPLEMENTED = 501;
+    var CONTENT_TYPE_JSON = 'application/json';
     var MSG_ERROR_NOT_IMPLEMENTED = 'The provided action is not supported by this endpoint';
     var lifecycleAPI = require('/modules/lifecycle/lifecycle-api.js').api;
     var utils = require('utils');
@@ -45,14 +46,18 @@ var api = {};
     var errorMsg = function(obj) {
         obj.success = false;
         return obj;
-    }
+    };
     var validateOptions = function(options) {
         if (!options.type) {
             var error = 'Unable to obtain state information without knowing the type of asset of id: ' + options.id;
-            log.error(errorMsg);
+            log.error(error);
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.BAD_REQUEST);
         }
-    }
+    };
+    var parseContentType = function(contentTypString) {
+        var comps = contentTypString.split(';');
+        return comps[0];
+    };
     /**
      * Allows request data to be sent in either the request body or
      * as url encoded query parameters
@@ -61,11 +66,12 @@ var api = {};
      */
     var obtainData = function(req) {
         var data = {};
-        if (req.getContentType() === 'application/json') {
+        var contentType = parseContentType(req.getContentType());
+        if (contentType === CONTENT_TYPE_JSON) {
             try {
                 data = req.getContent();
             } catch (e) {
-                log.debug('Unable to obtain content from request', e);
+                log.error('Unable to obtain content from request', e);
             }
         }
         var params = req.getAllParameters('UTF-8');
@@ -91,9 +97,10 @@ var api = {};
         if (req.getMethod() !== 'POST') {
             return errorMsg(msg(405, 'State must be changed by a POST'));
         }
-        data = obtainData(req);       
+        data = obtainData(req);
         if (!data.nextState) {
-            return errorMsg(msg(400,'State change requires a nextState to be provided either as a query string or in the body of the request'));
+            log.error('State change requires a nextState to be provided either as a query string or in the body of the request');
+            return errorMsg(msg(400, 'State change requires a nextState to be provided either as a query string or in the body of the request'));
         }
         options.nextState = data.nextState;
         options.comment = data.comment;
@@ -102,12 +109,12 @@ var api = {};
         if (success) {
             //Obtain the next states
             result.newState = data.nextState;
-            result.traversableStates = lifecycleAPI.traversableStates(options,req,res,session);
+            result.traversableStates = lifecycleAPI.traversableStates(options, req, res, session);
         }
-        if(success){
+        if (success) {
             return successMsg(msg(200, 'The assets state was changed', result));
-        } else{
-            return errorMsg(msg(500,'The asset state was not changed'));
+        } else {
+            return errorMsg(msg(500, 'The asset state was not changed'));
         }
     };
     api.updateCheckList = function(req, res, session, options) {
@@ -128,7 +135,7 @@ var api = {};
         var history = lifecycleAPI.getHistory(options, req, res, session);
         //var xmlHistoryContent = new XML(history.content);
         //var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent)||{};
-        return successMsg(msg(200, 'Lifecycle history retrieved successfully', history.item ||[]));
+        return successMsg(msg(200, 'Lifecycle history retrieved successfully', history.item || []));
     };
     api.resolve = function(req, res, session, options) {
         var action = options.action;

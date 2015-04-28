@@ -1,15 +1,23 @@
 {{#if groupingFeature.isEnabled}}
-{{#if assets.hasMultipleVersions}}
-<label>Other versions: </label>
-{{#each assets.versions}}
-    <a href='{{url ""}}{{assetURL}}'>v{{version}}</a>
-{{/each}}
-<div>
-    {{#if assets.isDefault}}
-    <span class="label label-info">default version</span>
-    {{else}}
-    <span class="label label-default">sub version</span>
+    {{#if assets.hasMultipleVersions}}
+    <label>Versions: </label>
+    <div class="dropdown version-list-dropdown">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+        {{assets.version}}
+        {{#if assets.isDefault}}
+            - <span class="label label-info">default version</span>
+        {{/if}}
+        <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+        {{#each assets.versions}}
+        <li role="presentation"><a role="menuitem" tabindex="-1" href='{{url ""}}{{assetURL}}' {{#if selected}}class="active-version"{{/if}}>v{{version}}{{#if isDefault}} - <span class="label label-info">default</span> {{/if}}</a></li>
+        {{/each}}
+    </ul>
+    </div>
+
+    <div class="default-version-section">
+
+    </div>
     {{/if}}
-</div>
-{{/if}}
 {{/if}}
