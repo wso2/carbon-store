@@ -86,18 +86,25 @@ var pageDecorators = {};
             versions.sort(function(a1, a2) {
                 return am.compareVersions(a1, a2);
             });
+            info.isDefault = am.isDefaultAsset(page.assets);
+
             for (var index = 0; index < versions.length; index++) {
                 asset = versions[index];
-                if (asset.id !== page.assets.id) {
-                    entry = {};
-                    entry.id = asset.id;
-                    entry.name = asset.name;
-                    entry.version = asset.version;
-                    entry.assetURL = utils.buildAssetPageUrl(ctx.assetType, '/details/' + entry.id);
-                    info.versions.push(entry);
+                entry = {};
+                entry.id = asset.id;
+                entry.name = asset.name;
+                entry.version = asset.version;
+                entry.isDefault = am.isDefaultAsset(asset);
+
+                if (asset.id == page.assets.id) {
+                    entry.selected = true;
+                    info.version = asset.version;
+                }else{
+                    entry.selected = false;
                 }
+                entry.assetURL = utils.buildAssetPageUrl(ctx.assetType, '/details/' + entry.id);
+                info.versions.push(entry);
             }
-            info.isDefault = am.isDefaultAsset(page.assets);
             info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
     };
