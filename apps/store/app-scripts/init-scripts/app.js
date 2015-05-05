@@ -67,6 +67,7 @@ lifecycle.core.init();
 
 var store = require('/modules/store.js');
 store.init(configs);
+rxt.server.init(pubConfig);
 
 
 /*
