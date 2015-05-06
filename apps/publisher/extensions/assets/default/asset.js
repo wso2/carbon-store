@@ -312,6 +312,13 @@ asset.renderer = function(ctx) {
                         page.leftNav = buildDefaultLeftNav(page, this);
                         break;
                 }
+                if(page.leftNav){
+                    for(var navItem in page.leftNav){
+                        if(page.leftNav[navItem].name){
+                            page.leftNav[navItem].id = page.leftNav[navItem].name.replace(/\s/g,"");
+                        }
+                    }
+                }
                 return page;
             },
             ribbon: function(page) {
