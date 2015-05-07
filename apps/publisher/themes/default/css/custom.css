@@ -175,6 +175,15 @@ h1 {
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     border-bottom:0px solid #f0f0f0;
 }
+h1.asset-name {
+    color: #444;
+    font-size: 27px;
+    margin-bottom:0px;
+    padding-bottom:0px;
+    font-weight: 400;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    border-bottom:0px solid #f0f0f0;
+}
 a.collapsing-h2 h2 {
     margin:0 0 20px 0;
     color: #222222;
@@ -885,6 +894,29 @@ h2 span.fa-stack{
     color:#333;
     background:url('../img/icons/ico-alert-info.png') no-repeat;
     padding-left:39px;
+    margin-bottom:20px;
+}
+.success-MsgDiv {
+    border-bottom:1px solid #3399ff;
+    font-weight:100;
+    font-size:18px;
+    padding-bottom:10px;
+    padding-top:3px;
+    color:#333;
+    background:url('../img/icons/ico-alert-success.png') no-repeat;
+    padding-left:39px;
+    margin-bottom:20px;
+}
+.error-MsgDiv {
+    border-bottom:1px solid #ff3333;
+    font-weight:100;
+    font-size:18px;
+    padding-bottom:10px;
+    padding-top:3px;
+    color:#333;
+    background:url('../img/icons/ico-alert-error.png') no-repeat;
+    padding-left:39px;
+    margin-bottom:20px;
 }
 
 /* custome tables */
@@ -909,4 +941,10 @@ h2 span.fa-stack{
 .cu-data-table td textarea {
     width:400px !important;
     height:34px !important;
+}
+
+#saveButtons{
+    margin-top:30px;
+    padding-top:10px;
+    border-top:1px solid #f5f5f5;
 }
