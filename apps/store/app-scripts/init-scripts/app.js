@@ -67,7 +67,7 @@ lifecycle.core.init();
 
 var store = require('/modules/store.js');
 store.init(configs);
-
+rxt.server.init(configs);
 
 /*
 var url='https://localhost:9443/admin',
