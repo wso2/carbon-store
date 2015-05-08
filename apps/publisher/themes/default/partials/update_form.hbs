@@ -5,7 +5,7 @@
             {{/each}}
     </div>
     {{#if groupingFeature.isEnabled}}
-    <div class="control-group">
+     <div class="control-group">
         <h3>Versioning</h3>
         <div class="checkbox">
             <label>
@@ -14,15 +14,17 @@
         </div>
     </div>
     {{/if}}
-     <div class="form-group" id="updateButtons">
+     <div class="clearfix"></div>
+     <div id="updateButtons" class="form-actions">
+     <div class="form-group">
          <div class="col-sm-offset-2 col-sm-10">
              <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
              <input type="reset" value="Reset" class="btn btn-default">
              <input type="hidden" value="{{rxt.shortName}}" name="{{rxt.shortName}}" id="meta-asset-type">
          </div>
      </div>
+     </div>
 
 
-    <div id="saveButtons" class="form-actions">
-    </div>   
+
 </form>
