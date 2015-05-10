@@ -24,6 +24,9 @@ var api = {};
     var ACTION_CHECKLIST = 'checklist';
     var ACTION_UPDATE_CHECKLIST = 'update-checklist';
     var ACTION_LC_HISTORY = 'lifecycle-history';
+    var ACTION_ADD_TAGS = 'add-tags';
+    var ACTION_REMOVE_TAGS = 'remove-tags';
+    var ACTION_RETRIEVE_TAGS = 'tags';
     var HTTP_ERROR_NOT_IMPLEMENTED = 501;
     var CONTENT_TYPE_JSON = 'application/json';
     var MSG_ERROR_NOT_IMPLEMENTED = 'The provided action is not supported by this endpoint';
@@ -137,6 +140,15 @@ var api = {};
         //var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent)||{};
         return successMsg(msg(200, 'Lifecycle history retrieved successfully', history.item || []));
     };
+    api.addTags = function(req,res,session,options){
+        return successMsg(msg(200,'Tags added successfully'));
+    };
+    api.removeTags = function(req,res,session,options){
+        return successMsg(msg(200,'Tags removed successfully'));
+    };
+    api.tags = function(req,res,session,options) {
+        return successMsg(msg(200,'Tags of the asset retrieved successfully',[]));
+    };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
         var result = errorMsg(msg(HTTP_ERROR_NOT_IMPLEMENTED, MSG_ERROR_NOT_IMPLEMENTED));
@@ -152,6 +164,15 @@ var api = {};
                 break;
             case ACTION_LC_HISTORY:
                 result = api.lifecycleHistory(req, res, session, options);
+                break;
+            case ACTION_ADD_TAGS:
+                result = api.addTags(req, res, session, options);
+                break;
+            case ACTION_REMOVE_TAGS:
+                result = api.removeTags(req, res, session, options);
+                break;
+            case ACTION_RETRIEVE_TAGS:
+                result = api.tags(req,res,session,options);
                 break;
             default:
                 break;
