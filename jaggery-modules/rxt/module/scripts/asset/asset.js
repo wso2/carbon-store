@@ -80,8 +80,6 @@ var asset = {};
         return result;
     };
     var setField = function(field, attrName, data, attributes, table) {
-
-
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
@@ -111,13 +109,13 @@ var asset = {};
             attrName = table.name + '_entry';
             var items = processOptionTextList(list);
             attributes[attrName] = items;
-        }else if(field.type == 'checkbox'){
-            if(data[attrName] == null || data[attrName] == undefined){
+        } else if (field.type == 'checkbox') {
+            if (data[attrName] == null || data[attrName] == undefined) {
                 attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
-            }else{
-                attributes[attrName] = "on";  //We set it's value to on
+            } else {
+                attributes[attrName] = "on"; //We set it's value to on
             }
-        }else {
+        } else {
             if (data[attrName] != null) {
                 attributes[attrName] = data[attrName];
             } else {
@@ -209,7 +207,6 @@ var asset = {};
             return;
         }
         asset = this.get(id);
-
         //If the default flag is true or if there are no other versions of this asset make this
         //asset the default asset
         if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
@@ -260,7 +257,7 @@ var asset = {};
         }
         this.am.update(options);
         var asset = this.am.get(options.id);
-        if(!this.rxtManager.isGroupingEnabled(this.type)){
+        if (!this.rxtManager.isGroupingEnabled(this.type)) {
             log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
             return;
         }
@@ -437,7 +434,7 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
-    var createGroupingQuery = function(query,groupingAttributeValues){
+    var createGroupingQuery = function(query, groupingAttributeValues) {
         query = query || {};
         // var attribute;
         // if(groupingAttributeValu.length === 0) {
@@ -446,21 +443,21 @@ var asset = {};
         // }
         //attribute = groupingAttributes[0];
         //query[attribute] = target;
-        for(var key in groupingAttributeValues){
-            query [key] = groupingAttributeValues[key];
+        for (var key in groupingAttributeValues) {
+            query[key] = groupingAttributeValues[key];
         }
         return query;
     };
-    var getGroupAttributeValues = function(asset,attributes){
+    var getGroupAttributeValues = function(asset, attributes) {
         //Handle cases where the full asset is provided
-        if(asset.hasOwnProperty('attributes')){
+        if (asset.hasOwnProperty('attributes')) {
             asset = asset.attributes;
         }
         var values = {};
         var groupAttrKey;
-        for(var index in attributes){
+        for (var index in attributes) {
             groupAttrKey = attributes[index];
-            if(asset.hasOwnProperty(groupAttrKey)){
+            if (asset.hasOwnProperty(groupAttrKey)) {
                 values[groupAttrKey] = asset[groupAttrKey];
             }
         }
@@ -482,18 +479,18 @@ var asset = {};
             //name = target;
             throw 'getAssetGroup no longer supports querying by name.Please provide an asset instance';
         } else if (typeof target === 'object') {
-            groupingAttributeValues = getGroupAttributeValues(target,groupingAttributes); //this.getName(target);//target[nameField];
+            groupingAttributeValues = getGroupAttributeValues(target, groupingAttributes); //this.getName(target);//target[nameField];
         } else {
             throw 'Cannot get the asset group when target is not an object';
         }
         if (groupingAttributes.length === 0) {
-            throw 'No grouping attributes have been provided for type: '+this.type;
+            throw 'No grouping attributes have been provided for type: ' + this.type;
         }
         var query = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
         //query[nameField] = name;
-        query = createGroupingQuery(query,groupingAttributeValues);
+        query = createGroupingQuery(query, groupingAttributeValues);
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
         addAssetsMetaData(assets, this);
@@ -681,8 +678,80 @@ var asset = {};
      * @param {String} id  A UUID representing an asset instance
      * @param {String} tag  The name of the tag
      */
-    AssetManager.prototype.addTag = function(id, tag) {};
-    AssetManager.prototype.untag = function(id, tag) {};
+    AssetManager.prototype.addTags = function(id, tags) {
+        var asset = this.get(id);
+        var tagged; //Assume that the tag will not be applied
+        var utilsAPI = require('utils');
+        //If the user has provided a single tag then it should be 
+        //assigned to an array to keep the registry invocation uniform
+        if (!utilsAPI.reflection.isArray(tags)) {
+            tags = [tags];
+        }
+        if (!asset) {
+            log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
+        }
+        try {
+            this.registry.tag(asset.path, tags);
+            tagged = true;
+        } catch (e) {
+            log.error('Unable to add tags: ' + stringify(tags), e);
+        }
+        return tagged;
+    };
+    AssetManager.prototype.removeTags = function(id, tags) {
+        var asset = this.get(id);
+        var tag;
+        var untagged; //Assume that the tags will not be removed
+        var utilsAPI = require('utils');
+        if (!utilsAPI.reflection.isArray(tags)) {
+            tags = [tags];
+        }
+        if (!asset) {
+            log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
+        }
+        try{
+            for(var index =0; index< tags.length; index++){
+                tag = tags[index];
+                this.registry.untag(asset.path,tag);
+            }
+            //TODO: Make the untagging process atomic
+            untagged = true;
+        } catch(e){
+            log.error('One or more tags were not untagged ',e);
+        }
+        return untagged;
+    };
+    /**
+     * Returns the set of tags applied to an asset
+     * TODO: This method should be called in the tags method
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    AssetManager.prototype.getTags = function(id){
+        var asset = this.get(id);
+        var tags;
+        if (!asset) {
+            log.error('Unable to retrieve tags of asset: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to retrieve the tags of the asset : ' + id + ' as the asset path was not located');
+        }
+        try{
+            tags = this.registry.tags(asset.path)||[];
+        } catch(e){
+            log.error('Unable to retrieve the tags of the provided asset ',e);
+        }
+        return tags;
+    };
     /**
      * The method returns the rating value of a given asset
      * @param  {String} id A UUID representing an asset instance
@@ -1451,9 +1520,9 @@ var asset = {};
                 assetResources = assetResourcesTemplate._default.manager(context);
             }
             //Check if there is a default manager provided by an app default asset extension
-            if(defaultAppExtensionMediator){
+            if (defaultAppExtensionMediator) {
                 log.debug('using custom default asset extension to load an asset manager');
-                assetResources = defaultAppExtensionMediator.manager()?defaultAppExtensionMediator.manager()(context) : assetResources;
+                assetResources = defaultAppExtensionMediator.manager() ? defaultAppExtensionMediator.manager()(context) : assetResources;
             }
         } else {
             assetResources = assetResourcesTemplate.manager(context);
@@ -1482,10 +1551,9 @@ var asset = {};
         var defaultRenderer = assetResources._default.renderer ? assetResources._default.renderer(context) : {};
         var defaultAppExtensionMediator = core.defaultAppExtensionMediator();
         var customDefaultRenderer = {};
-        if(defaultAppExtensionMediator){
-            customDefaultRenderer = defaultAppExtensionMediator.renderer()?defaultAppExtensionMediator.renderer()(context):{};                
+        if (defaultAppExtensionMediator) {
+            customDefaultRenderer = defaultAppExtensionMediator.renderer() ? defaultAppExtensionMediator.renderer()(context) : {};
         }
-        
         reflection.override(renderer, defaultRenderer);
         reflection.override(renderer, customDefaultRenderer);
         reflection.override(renderer, customRenderer);
@@ -1707,7 +1775,11 @@ var asset = {};
     asset.resolve = function(request, path, themeName, themeObj, themeResolver) {
         var log = new Log();
         var resPath = path;
-        var appExtensionMediator = core.defaultAppExtensionMediator()|| {resolveCaramelResources:function(path){return path;}};
+        var appExtensionMediator = core.defaultAppExtensionMediator() || {
+            resolveCaramelResources: function(path) {
+                return path;
+            }
+        };
         path = '/' + path;
         //Determine the type of the asset
         var uriMatcher = new URIMatcher(request.getRequestURI());
@@ -1730,7 +1802,7 @@ var asset = {};
             }
             var basePath = themeResolver.call(themeObj, path);
             basePath = appExtensionMediator.resolveCaramelResources(basePath);
-            return basePath;//themeResolver.call(themeObj, path);
+            return basePath; //themeResolver.call(themeObj, path);
         }
         //Check if type has a similar path in its extension directory
         var extensionPath = '/extensions/assets/' + uriOptions.type + '/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;

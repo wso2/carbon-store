@@ -33,6 +33,7 @@ var api = {};
     var lifecycleAPI = require('/modules/lifecycle/lifecycle-api.js').api;
     var utils = require('utils');
     var rxtModule = require('rxt');
+    var tagsAPI = require('/modules/tags-api.js').api;
     var exceptionModule = utils.exception;
     var constants = rxtModule.constants;
     var msg = function(code, message, data) {
@@ -140,14 +141,52 @@ var api = {};
         //var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent)||{};
         return successMsg(msg(200, 'Lifecycle history retrieved successfully', history.item || []));
     };
-    api.addTags = function(req,res,session,options){
-        return successMsg(msg(200,'Tags added successfully'));
+    api.addTags = function(req, res, session, options) {
+        var success;
+        if(req.getMethod() !== 'POST'){
+            return errorMsg(msg(405, 'Tags must be added by a POST'));
+        }
+        try {
+            success = tagsAPI.addTags(req, res, session, options);
+        } catch (e) {
+            log.error(e);
+        }
+        if (success) {
+            return successMsg(msg(200, 'Tags added successfully'));
+        }
+        return errorMsg(msg(500, 'Tags were not added'));
     };
-    api.removeTags = function(req,res,session,options){
-        return successMsg(msg(200,'Tags removed successfully'));
+    api.removeTags = function(req, res, session, options) {
+        var success;
+        if(req.getMethod() !== 'DELETE'){
+            return errorMsg(msg(405, 'Tags must be removed using a DELETE'));
+        }
+        try {
+            success = tagsAPI.removeTags(req, res, session, options);
+        } catch (e) {
+            log.error(e);
+        }
+        if (success) {
+            return successMsg(msg(200, 'Tags removed successfully'));
+        }
+        return errorMsg(msg(500, 'Tags were not removed'));
     };
-    api.tags = function(req,res,session,options) {
-        return successMsg(msg(200,'Tags of the asset retrieved successfully',[]));
+    api.tags = function(req, res, session, options) {
+        var tags = [];
+        var success;
+        if(req.getMethod() !== 'GET'){
+            return errorMsg(msg(405, 'Tags must be retrieved using a GET'));
+        }
+        try {
+            tags = tagsAPI.tags(req,res,session,options);
+            success = true;
+        } catch(e){
+            log.error(e);
+        }
+        if (success) {
+            return successMsg(msg(200, 'Tags of the asset retrieved successfully', tags));
+        }
+        return errorMsg(msg(500, 'Tags were not retrieved'));
     };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
@@ -172,7 +211,7 @@ var api = {};
                 result = api.removeTags(req, res, session, options);
                 break;
             case ACTION_RETRIEVE_TAGS:
-                result = api.tags(req,res,session,options);
+                result = api.tags(req, res, session, options);
                 break;
             default:
                 break;
