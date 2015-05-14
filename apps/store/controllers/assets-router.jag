@@ -64,12 +64,21 @@ var handlePageEndpoint = function (request, session, uriParams) {
     var user = server.current(session);
     var endPoints = asset.getAssetPageEndpoints(session, type);
     var endpoint;
-    for (var index in endPoints) {
-        if (endPoints[index].url == page) {
-            endpoint = asset.getAssetPageEndpoint(type, endPoints[index].path);
+    var endpointDetails;
+    var found;
+    for (var index = 0; ((index< endPoints.length)&&(!found)); index++) {
+        endpointDetails = endPoints[index];
+        if (endpointDetails.url == page) {
+            found = true;
+            endpoint = asset.getAssetPageEndpoint(type, endpointDetails.path);
         }
     }
     if (endpoint) {
+        if((endpointDetails.secured)&&(!user)){
+            var app = rxt.app.getContext()
+            response.sendRedirect(app + "/login");
+            return;
+        }
         request.getMappedPath = mapper(endpoint);
         include(endpoint);
     }
@@ -81,11 +90,6 @@ var handlePageEndpoint = function (request, session, uriParams) {
 //Check if the user is logged
 var server = require('store').server;
 var user = server.current(session);
-
-// if(!user){
-// 	//response.sendRedirect('/store/login');//TODO:Remove this
-// }
-// 	else{
 
 //Check if options have been provided
 if (matcher.match(apiEndpoint)) {
