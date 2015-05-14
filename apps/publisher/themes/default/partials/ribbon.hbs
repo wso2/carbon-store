@@ -10,6 +10,13 @@
                 <span class="icon-bar"></span>
             </button>
         </div>
+
+        <div id="navbar" class="navbar-collapse collapse">
+
+            <div class="wr-action-btn-bar">
+                <ul class="nav navbar-nav" id="nav">
+
+                    <li>
         <div class="wr-asset-type-switcher">
             <a id="popoverExampleTwo" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="#" data-original-title="" title="">
                 <span class="btn-asset"></span>
@@ -17,21 +24,22 @@
 
             <a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}{{ribbon.currentUrl}}'>{{rxt.pluralLabel}}</a>
         </div>
-        <div id="navbar" class="navbar-collapse collapse">
-            
-            <div class="wr-action-btn-bar">
-            <ul class="nav navbar-nav">
-                
-                {{#each leftNav}}
-                <li>
-                    <a href='{{url ""}}{{this.url}}' class="cu-btn {{this.iconClass}}">                     
-                        {{this.name}}
-                    </a>
-                </li>
-                {{/each}}
+                    </li>
 
-            </ul>
-            </div> 
+                    {{#each leftNav}}
+                    <li>
+                        <a href='{{url ""}}{{this.url}}' class="cu-btn no-right-pad">
+                            <span class="fa-stack fa-lg">
+                              <i class="fa {{this.iconClass}} fa-stack-1x"></i>
+                              <i class="fw fw-ring fw-stack-2x"></i>
+                            </span>
+                            {{this.name}}
+                        </a>
+                    </li>
+                    {{/each}}
+
+                </ul>
+            </div>
 
         </div><!--/.nav-collapse -->
     </div>
