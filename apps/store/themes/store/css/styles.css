@@ -843,6 +843,7 @@ select, textarea, input[type="text"], input[type="password"], input[type="dateti
     height: 20px;
     width: 84px;
     overflow: hidden;
+    margin-left:10px;
 }
 .asset-rating > div {
     background: url('../img/store-stars.png') no-repeat bottom left;

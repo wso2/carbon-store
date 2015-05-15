@@ -42,7 +42,7 @@ a .icon-stack,a .icon-spin{display:inline-block;text-decoration:none;}
 a .icon-rotate-90:before,a .icon-rotate-180:before,a .icon-rotate-270:before,a .icon-flip-horizontal:before,a .icon-flip-vertical:before{display:inline-block;}
 .icon-glass:before{content:"\f000";}
 .icon-music:before{content:"\f001";}
-.icon-search:before{content:"\f002";}
+.icon-search:before{content:"\f002"; font-size: 20px;}
 .icon-envelope-alt:before{content:"\f003";}
 .icon-heart:before{content:"\f004";}
 .icon-star:before{content:"\f005";}

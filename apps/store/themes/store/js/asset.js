@@ -1,13 +1,25 @@
 $(function () {
-    var $tab = $('#tab-reviews');
-    $('a').click(function(){
-        var tab = $(this).data("type");
-        if(tab=="comments"){
-            $tab.css({position:'static', visibility:'visible'});
-        }else{
-            $tab.css({position:'static', visibility:'hidden'});
-        }
-    });
+
+    $('#myTab a').click(function (e) {
+        e.preventDefault()
+        $(this).tab('show')
+    })
+
+
+
+
+
+    //var $tab = $('#tab-reviews');
+    //
+    //
+    //$('a').click(function(){
+    //    var tab = $(this).data("type");
+    //    if(tab=="comments"){
+    //        $tab.css({position:'static', visibility:'visible', display:'block'});
+    //    }else{
+    //        $tab.css({position:'static', visibility:'hidden', display:'none'});
+    //    }
+    //});
 
     var SOCIAL_CONTAINER_ID='#socialIfr';
     var SOCIAL_PARAM_SCRIPT_TYPE='scriptType';

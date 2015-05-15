@@ -3,88 +3,140 @@
 </script>
 <div class="asset-description">
     {{#with assets}}
-    {{#with attributes}}
-    <div class="asset-description-header">
-        <div class="row">
-            <div class="span9">
-                <div class="asset-banner">
-                    <img src="{{#if images_banner}}{{tenantedUrl ""}}/storage/{{../../../rxt.shortName}}/{{../../id}}/{{../../banner}}{{/if}}">
+
+
+        {{#with attributes}}
+            <div class="asset-description-header">
+                <div class="col-lg-12 white-bg left">
+                    <h3>Gadget Details</h3>
                 </div>
-                <div class="asset-introduction-box">
-                    <img src="{{#if images_thumbnail}}{{tenantedUrl ""}}/storage/{{../../../rxt.shortName}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
-                    <h3>{{overview_name}}</h3>
-                    <small> {{t "Version"}} {{overview_version}}</small>
-                    <small> {{t "by"}} {{overview_provider}} </small>
-                    <span class="asset-rating pull-left">
-                    <div style="width:{{../ratingPx}}px"></div>
-                    </span>
-                    <span class = "pull-left rating-count"><i class="icon-user"></i> {{../count}}</span>
-                    <div class="clearfix"></div>
-                    {{>asset-utilization ../..}}
-                    <div>
-                        {{> asset-version-info ../..}}
+            </div>
+            <!-- asset details folder-->
+            <div class="asset-detailss-header ">
+                <!-- aset details -->
+             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 white-bg">
+                <div class=" details-image white-bg">
+                    <img class="img-responsive" src="{{#if images_thumbnail}}{{tenantedUrl ""}}/storage/{{../../../rxt.shortName}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
+                </div>
+                <div class="details-container">
+                    <div class="col-lg-9">
+                        <h4 class="margin-none ">{{overview_name}}</h4>
+                        <p class="grey padding-none margin-none">{{t "Version"}} {{overview_version}}</p>
+                        <p class="light-blue padding-none margin-none">{{t "by"}} {{overview_provider}}</p>
+                    </div>
+                    <div class="col-lg-5  padding-top right asset-rating margin-left-double">
                     </div>
                 </div>
+                 {{>asset-utilization ../..}}
+                 {{> asset-version-info ../..}}
+             </div>
+                <!-- end of asset details-->
             </div>
-        </div>
-    </div>
-    <div class="assetp-properties">
-        <ul class="nav nav-tabs" id="assetp-tabs" data-aid="{{../path}}">
-            <li class="active">
-                <a href="#tab-properties" data-toggle="tab" data-type="basic">{{t "Description"}}</a>
-            </li>
-            <li>
-                <a href="#tab-reviews" data-toggle="tab" data-type="comments">{{t "User Reviews"}}</a>
-            </li>
-            <li>
-                <a href="#tab-share" data-toggle="tab" data-type="basic">{{t "Share"}}</a>
-            </li>
-        </ul>
-        <div class="tab-content">
-            <div class="tab-pane active" id="tab-properties">
-                <div class="content">
-                    {{>overview .}}
+            <div class="asset-details-wrapper ">
+                <div class="white-bg padding-double">
+                    <h4>Stacked Line Chart</h4>
+                    <p>{{>overview .}}</p><br><br>
+                    <hr>
+                    <div>
+                        <div class="tags">#tag1</div><div class="tags">#tag1</div><div class="tags">#tag1</div>
+                    </div>
+
                 </div>
-            </div>
-            <div class="tab-pane" id="tab-share">
-                <div class="content">
-                    {{>share ../..}}
+            </div><!-- description column-->
+            <!-- asset description -->
+                <div class="assetp-properties">
+
+                    <ul class="nav nav-tabs" id="assetp-tabs" data-aid="{{../path}}">
+                        <li class="active">
+                            <a href="#tab-properties" data-toggle="tab" data-type="basic">{{t "Description"}}</a>
+                        </li>
+                        <li>
+                            <a href="#tab-reviews" data-toggle="tab" data-type="comments">{{t "User Reviews"}}</a>
+                        </li>
+                        <li>
+                            <a href="#tab-share" data-toggle="tab" data-type="basic">{{t "Share"}}</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div class="tab-pane active" id="tab-properties">
+                            <div class="content">
+                                {{>overview .}}
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-share">
+                            <div class="content">
+                                {{>share ../..}}
+                            </div>
+                        </div>
+                        <div class="tab-pane" id="tab-reviews">
+                             {{#if ../../features.social.enabled}}
+                                <iframe name="socialIfr" id="socialIfr"
+                                    src="{{../../../features.social.keys.socialAppUrl}}?target={{../../../rxt.shortName}}:{{../../id}}&user={{../../../cuser.username}}&urlDomain={{../../../features.social.keys.urlDomain}}"
+                                    width="100%" height="100%" style="height: 300px;" data-script="{{../../../features.social.keys.socialScriptSource}}" data-script-type="{{../../../features.social.keys.socialScriptType}}"></iframe>
+                             {{/if}}
+                            {{#if ../../inDashboard}}
+                                 <div id="comment-content" class="content"></div>
+                            {{else}}
+                                <div id="comment-content" class="content user-review"></div>
+                            {{/if}}
+                        </div>
+                    </div>
+
                 </div>
-            </div>
-            <div class="tab-pane" id="tab-reviews">
-                {{#if ../../features.social.enabled}}
-                <iframe name="socialIfr" id="socialIfr"
-                src="{{../../../features.social.keys.socialAppUrl}}?target={{../../../rxt.shortName}}:{{../../id}}&user={{../../../cuser.username}}&urlDomain={{../../../features.social.keys.urlDomain}}"
-                width="100%" height="100%" style="height: 300px;" data-script="{{../../../features.social.keys.socialScriptSource}}" data-script-type="{{../../../features.social.keys.socialScriptType}}"></iframe>
-                {{/if}}
-                {{#if ../../inDashboard}}
-                <div id="comment-content" class="content"></div>
-                {{else}}
-                <div id="comment-content" class="content user-review"></div>
-                {{/if}}
-            </div>
-        </div>
-    </div>
-    {{/with}}
+        {{/with}}
     {{/with}}
 </div>
-<!-- Modal -->
-<!--<div id="modal-add-gadget" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-        <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                <i class="icon-remove"></i>
-                </button>
-                <h3 id="modal-add-gadget-header">Modal header</h3>
-        </div>
-        <div class="modal-body">
-                <code>
-                embed code goes here
-                </code>
-        </div>
-        <div class="modal-footer">
-                <span class="copy-status">
-                </span>
-                <button id="btn-copy-gadget-code" class="btn btn-primary">
-                Copy Gadget Code
-                </button>
-    </div>-->
+
+<div class="ast-container " id="ast-container">
+    <div class="container-fluid ">
+        <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?">Related to {{rxt.pluralLabel}}</a></div><!--title-->
+        <div class="float-right"><a href="#" class="more">See More</a></div>
+        <hr>
+    </div>
+</div>
+<div class="assets-container">
+    <h3 class="asset-type-default asset-title-separator asset-type-{{rxt.shortName}}">
+        <div class="pagination top-asset-slideshow-pag assetSliderPag" id="top-asset-slideshow-pag-{{rxt.shortName}}"></div>
+    </h3>
+    {{#if assets}}
+        <section>
+            {{#each assets}}
+                {{#attributes}}
+                    <div class="ctrl-wr-asset">
+                        <div class="itm-ast">
+                            <a class="ast-img " href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
+                                <img class="img-responsive" src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
+                            </a>
+                            <div class="ast-content">
+                                <div class="ast-title padding">
+                                    <a class="ast-name truncate" href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
+                                    <span class="ast-auth">{{overview_provider}}</span>
+                                </div>
+                                <div class="pull-left asset-rating-container">
+                                        <span class="asset-rating">
+                                            <div style="width:{{../ratingPx}}px"></div>
+                                        </span>
+                                </div>
+                                <div class="pull-right">
+                                    <div class="dropdown dropdown-asset-custom">
+                                        <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="#"></a>
+                                        <ul role="menu" class="dropdown-menu">
+                                            <li>
+                                                {{>top-assets-utilization ..}}
+                                            </li>
+                                            <li><a href="#">Download</a></li>
+                                            <li><a href="#">More Details</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {{/attributes}}
+            {{/each}}
+        </section>
+    {{else}}
+        <div class="top-assets-empty-assert">{{t "We couldn't find anything for you."}}</div>
+    {{/if}}
+</div>

@@ -2,28 +2,42 @@
   Asset utilization icons if the user has subscribed to this asset
 -->
 
-{{#if assets.isSubscribed}}
-  <a id="btn-add-gadget" class="btn disabled" href="#modal-add-gadget"
-               data-toggle="modal"
-               data-aid="{{assets.id}}" data-type="{{assets.type}}"> {{>processed-asset-text}}</a>
-  {{else}}
+<!--<div class="action-container right float-right">
+    <div class="blue-button float-left ">Write a Review</div>
+    <div class="blue-button margin-left float-left">Subscribe</div>
+</div>-->
+<!--<div class="action-container float-right right">
+    <div class="action-sub-container left"><span class="action-icon-button"><img src="/store/themes/store/img/icons/bookmark.png" class="circle"  align="middle"><span class="find-text"> &nbsp; Bookmark</span></span> </div>
+    <div class="action-sub-container left"><span class="action-icon-button"><img src="/store/themes/store/img/icons/view-source.png" class="circle" align="middle"><span class="find-text">  &nbsp; View Source </span></span> </div>
+    <div class="action-sub-container left"><span class="action-icon-button"><img src="/store/themes/store/img/icons/download.png"   class="circle" align="middle"> <span class="find-text"> &nbsp; Download</span></span> </div>
+    <div class="action-sub-container left"><span class="action-icon-button"><img src="/store/themes/store/img/icons/share.png"  class="circle" align="middle"> <span class="find-text"> &nbsp; Share</span></span> </div>
+</div>-->
 
-    {{#if cuser.username}}
+<div class="action-container right float-right">
 
-    <a id="btn-add-gadget" class="btn btn-primary" href="#modal-add-gadget"
-                       data-toggle="modal"
-                       data-aid="{{assets.id}}"
-                       data-type="{{assets.type}}"> {{>process-asset-text }}</a>
+    {{#if assets.isSubscribed}}
+            <a id="btn-add-gadget" class="btn disabled" href="#modal-add-gadget"
+                   data-toggle="modal"
+                   data-aid="{{assets.id}}" data-type="{{assets.type}}"> {{>processed-asset-text}}</a>
     {{else}}
 
-    <a id="btn-add-gadget" class="btn btn-primary" href='{{url ""}}{{getLoginUrl .}}'
-                   data-toggle="modal"
-                   data-aid="{{assets.id}}" data-type="{{assets.type}}"> {{>process-asset-text }}</a>
+        {{#if cuser.username}}
+
+        <a id="btn-add-gadget" class="blue-button margin-left float-left" href="#modal-add-gadget"
+                           data-toggle="modal"
+                           data-aid="{{assets.id}}"
+                           data-type="{{assets.type}}"> {{>process-asset-text }}</a>
+        {{else}}
+
+        <a id="btn-add-gadget" class="blue-button margin-left float-left" href='{{url ""}}{{getLoginUrl .}}'
+                       data-toggle="modal"
+                       data-aid="{{assets.id}}" data-type="{{assets.type}}"> {{>process-asset-text }}</a>
+        {{/if}}
+
+
     {{/if}}
 
-
-{{/if}}
-
+</div>
 
 
 
@@ -31,9 +45,16 @@
   Asset utilization icons that do not need to be secured
 -->
 {{#with assets}}
+  <div class="action-container float-right right">
   {{#attributes }}
-  <a class="btn btn-href" href="{{overview_url}}" target="_blank" data-placement="bottom"
-  data-toggle="tooltip" title="{{>asset-overview-text}}">
-  <i class="{{../../rxt.meta.ui.icon}}"></i></a>
+  <div class="action-sub-container left">
+      <span class="action-icon-button">
+          <span class="find-text">
+        <a class="" href="{{overview_url}}" target="_blank" data-placement="bottom" data-toggle="tooltip" title="{{>asset-overview-text}}"><img src="{{../../rxt.meta.ui.icon_src}}" class="circle"  align="middle"></a>
+          </span>
+      </span>
+  </div>
+
   {{/attributes}}
+  </div>
 {{/with}}

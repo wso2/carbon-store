@@ -15,20 +15,45 @@
 ~  specific language governing permissions and limitations
 ~  under the License.
 -->
-<a href="#" id="search-dropdown-arrow" class="search-dropdown-arrow"><i class="icon-sort-down"></i></a>
-<input type="text" class="span12" id="search" placeholder="Search">
-<a id="search-button" class=""> <i class="icon-search"></i> </a>
-<!-- dropdown -->
-<div id="search-dropdown-cont" class="search-dropdown-cont">
-    <a href="#" id="search-dropdown-close"><i class="icon-remove"></i></a>
+<input id="search" class="search-area" placeholder="Search Gadgets ..." >
+{{#if searchFields}}
+<button id="advanced-search-btn" data-placement="bottom" class="btn btn-default float-left advanced-search-btn" data-original-title="" title="">
+
+</button>
+<div id="advanced-search" style="display: none; background-color:red;" class="search-advance-container padding">
     {{#each searchFields}}
-        <div>
-        	<label>{{name.label}}</label>
-    		{{renderSearchField .}}
-    	</div>
+    <div  >
+        <label class="black uppercase padding-top col-md-2">{{name.label}}</label>
+        {{renderSearchField .}}
+    </div>
     {{/each}}
-    <button id="search-button2" class="btn span3">
+</div>
+{{/if}}
+<!-- Search Filter -->
+
+<div class="wr-filter-category">
+    {{#if assetMeta.categories}}
+    <a aria-expanded="true" data-toggle="dropdown" placement="bottom" class="ico-filter ctrl-filter-category dropdown-toggle" href="#" id="category-dropdown">
+        <span class="ro-text">
+                {{#if selectedCategory}}
+                    {{selectedCategory}}
+                {{else}}
+                    All Categories
+                {{/if}}
+        </span>
+    </a>
+    <div id="category-dropdown-content" style="display: none">
+        <ul aria-labelledby="dropdownMenu1" role="menu" class="dropdown-menu-category">
+                <li><a href="{{tenantedUrl "/asts"}}/{{rxt.shortName}}/list">All Categories</a></li>
+                {{#each assetMeta.categories}}
+                    <li><a href='{{tenantedUrl "/asts"}}/{{../rxt.shortName}}/list?q="overview_category":"{{this}}"'>{{this}}</a></li>
+                {{/each}}
+        </ul>
+    </div>
+    {{/if}}
+    <button class="back-button uppercase float-left" id="search-button" >
         <i class="icon-search"></i>
     </button>
-</div>
-				
+
+
+</div><!--wr-filter-category-->
