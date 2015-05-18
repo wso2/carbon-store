@@ -178,11 +178,14 @@ h1 {
 h1.asset-name {
     color: #444;
     font-size: 27px;
-    margin-bottom:0px;
-    padding-bottom:0px;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
     font-weight: 400;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    border-bottom:0px solid #f0f0f0;
+    border-bottom: 0px solid #f0f0f0;
+}
+a{
+    cursor: pointer;
 }
 a.collapsing-h2 h2 {
     margin:0 0 20px 0;
@@ -690,7 +693,9 @@ a.cu-ico-button-stats {
 :-ms-input-placeholder {  
    color: #fff;  
 }
- 
+.version-list-dropdown{
+    display: inline-block;
+}
 .modal-comment{
     width:100%;
     height: 150px;
@@ -813,6 +818,9 @@ h2 span.fa-stack{
 }.margin-top-lg{
     margin-top:20px;
 }
+ .add-unbounded-row{
+     padding:0 0 20px 0;
+ }
 .width-full{
     width:100%;
 }
@@ -942,9 +950,11 @@ h2 span.fa-stack{
     width:400px !important;
     height:34px !important;
 }
-
 #saveButtons{
     margin-top:30px;
     padding-top:10px;
     border-top:1px solid #f5f5f5;
+
+.decorated-table-heading tr th{
+    background: #ccc;
 }
