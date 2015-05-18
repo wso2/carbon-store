@@ -545,7 +545,7 @@ a.ctrl-filter-category:hover {
 	width: 90%;margin-bottom: 5px;}
 #category-dropdown-content{background-color: #ff0000;}
 .popover{border-radius: 0px;}
-.dropdown-menu > li > a { color: #333;}
+.dropdown-menu > li > a { color: #fff;}
 .nav .open > a, .nav .open > a:hover, .nav .open > a:focus {
 	background-color: #3a9ecf;
 	border-color: #337ab7;  }
