@@ -21,29 +21,19 @@
 /**
  *  Page to select password recovery method: notification or secret questions
  */
+
+var themeModule = require('/modules/theme.js');
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Password updated | WSO2 Enterprise Store</title>
+    <title>Password updated | <% include(themeModule.getThemedUrl('includes/title.jag')); %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Le styles -->
-    <link href="views/css/bootstrap.min.css" rel="stylesheet">
-    <link href="views/css/custom.css" rel="stylesheet">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="views/js/html5.js"></script>
-    <script src="js/respond.min.js"></script>
-    <link rel="stylesheet" href="css/ie.css" type="text/css">
-    <![endif]-->
-
-    <!-- Fav and touch icons -->
-    <link rel="shortcut icon" href="views/images/favicon.png" type="image/x-icon"/>
+    <% include(themeModule.getThemedUrl('includes/header_file_imports.jag')); %>
 
 </head>
 

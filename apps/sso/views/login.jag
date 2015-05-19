@@ -179,14 +179,8 @@ var themeModule = require('/modules/theme.js');
                 </div>
             </div>
 </div>
-<!-- /container -->
 
-<!-- Le javascript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="<%=themeModule.getThemedUrl('views/js/jquery-1.11.1.min.js')%>"></script>
-<script src="<%=themeModule.getThemedUrl('views/js/bootstrap.min.js')%>"></script>
-<script src="<%=themeModule.getThemedUrl('views/js/jquery.validate.min.js')%>"></script>
+ <% include(themeModule.getThemedUrl('includes/footer_file_imports.jag')); %>
 <script type="text/javascript">
     $(function () {
         var ENTER_KEY = 13;
@@ -231,13 +225,13 @@ var themeModule = require('/modules/theme.js');
         }, "Only alphanumeric characters and '-' allowed");
 
          $('#signInLink').click(function(){
-            $('#registerForm').hide('slow');
-            $('#loginForm').show('slow');
+            $('#registerForm').fadeOut();
+            $('#loginForm').fadeIn();
         });
 
         $('#registerLink').click(function(){
-            $('#registerForm').show('slow');
-            $('#loginForm').hide('slow');
+            $('#registerForm').fadeIn();
+            $('#loginForm').fadeOut();
         });
     });
 </script>
