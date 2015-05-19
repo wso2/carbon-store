@@ -23,42 +23,24 @@ var e = request.getParameter('authFailure');
 var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();
 var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
-
+var themeModule = require('/modules/theme.js');
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Sign in or Register | WSO2 Enterprise Store</title>
+    <title>Sign in or Register | <% include(themeModule.getThemedUrl('includes/title.jag')); %></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- Le styles -->
-    <link href="views/css/bootstrap.min.css" rel="stylesheet">
-    <link href="views/css/custom.css" rel="stylesheet">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-    <script src="js/respond.min.js"></script>
-    <link rel="stylesheet" href="css/ie.css" type="text/css">
-    <![endif]-->
-
-    <!-- Fav and touch icons -->
-    <link rel="shortcut icon" href="http://wso2.com/files/favicon.ico" type="image/x-icon"/>
+    <% include(themeModule.getThemedUrl('includes/header_file_imports.jag')); %>
 
 </head>
 
 <body>
 <div class="container col-lg-12 col-md-12 col-sm-12">
-        <header>
-            <div class="row wr-global-header">
-                <div class="col-lg-12 app-logo">
-                    <a href="home.html"><img src="views/images/logo.png" /><h2 class="app-title">Enterprise Store</h2></a>
-                </div>
-            </div>
-        </header>
+        <% include(themeModule.getThemedUrl('includes/header.jag')); %>
         <div class="row">
             <div class="col-md-12">
 
@@ -93,7 +75,7 @@ var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
                                 <% if(isPasswordRecoveryEnabled){ %>
                                     <a href="recovery-option">Forgot your password?</a>
                                 <% }%>
-                                <a id="registerLink" href="#">Create an account</a>
+                                <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
                             </div>
                         </div>
                     </form>
@@ -202,9 +184,9 @@ var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="views/js/jquery-1.11.1.min.js"></script>
-<script src="views/js/bootstrap.min.js"></script>
-<script src="views/js/jquery.validate.js"></script>
+<script src="<%=themeModule.getThemedUrl('views/js/jquery-1.11.1.min.js')%>"></script>
+<script src="<%=themeModule.getThemedUrl('views/js/bootstrap.min.js')%>"></script>
+<script src="<%=themeModule.getThemedUrl('views/js/jquery.validate.min.js')%>"></script>
 <script type="text/javascript">
     $(function () {
         var ENTER_KEY = 13;

@@ -82,99 +82,61 @@ if (idDTO) {
 
     <!-- Le styles -->
     <link href="views/css/bootstrap.min.css" rel="stylesheet">
-    <link href="views/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="views/css/styles.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="views/css/font-awesome.min.css">
+    <link href="views/css/custom.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-     <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <script src="views/js/html5.js"></script>
     <script src="js/respond.min.js"></script>
     <link rel="stylesheet" href="css/ie.css" type="text/css">
     <![endif]-->
 
     <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-    <link rel="shortcut icon" href="http://wso2.com/files/favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="views/images/favicon.png" type="image/x-icon"/>
 
   </head>
 
   <body>
 
-    <div class="container">
-    	<div class="row">
-    		<div class="span8 offset2">
-    			<div class="row">
-					<div class="span8 form-header">
-						<img src="views/img/logo-banner.png">
-					</div>
-				</div>
-        <div id="form-cont" class="row">
-            <div class="span8">
-                <div class="form-forgot-password row-fluid">
-                    <div class="span12">
-                        <div class="row-fluid">
-                                <form id="challengeForm">
-                                    <h2 class="form-forgot-password-heading">Challenges</h2>
-                                    <p>Answer the following question to verify that you own your account</p>
-                                    <div id="challengeFormError" class="alert alert-error" style="display:none"></div>
-                                    <div class="control">
-                                        <label><%=question%></label>
-                                        <input id="answer" name="answer" type="text" class="input-block-level required">
-                                    </div>
-                                    <input id="action" name="action" type="hidden" value="verifyChallenge">
-                                    <button id="resetPassword"  class="btn btn-large"
-                                            type="button">Continue</button>
-                                </form>
-								    	</div>
+<div class="container col-lg-12 col-md-12 col-sm-12">
+    <% include("includes/header.jag"); %>
+    <div class="row">
+        <div class="col-md-12">
 
-								</div>
-							</div>
-						</div> 
-			      	</div>
-				</div>
-    		</div>
+            <!-- content -->
+            <div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
+                     <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Challenges</h2>
 
-    		<div class="row row-footer span8 offset2 sso-footer">
+                     <div class="boarder-all ">
+                        <div class="clear"></div>
+                        <span class="padding-double float-left font-large">Answer the following question to verify that you own your account</span>
+                                                            <div id="challengeFormError" class="alert alert-error" style="display:none"></div>
 
-                <div class="footer row-fluid">
-                    <div class="span12">
-                        <div class="row-fluid">
-                            <div class="span6">
-                                <span> &copy; 2013 WSO2 Inc. All Rights Reserved. </span>
-                            </div>
-                            <div class="span6 pull-right">
-                                <ul>
-                                    <li>
-                                        <a href="/publisher"><i class="icon-check-sign"></i> Publisher</a>
-                                    </li>
-                                    <li>
-                                        <a href="/store"><i class="icon-th-large"></i> Store</a>
-                                    </li>
-                                    <li>
-                                        <a href="http://docs.wso2.org/display/ES100/WSO2+Enterprise+Store" target="_blank"><i class="icon-book"></i> Docs</a>
-                                    </li>
-                                    <li>
-                                        <a target="_blank" href="http://www.wso2.com" id="logo-wso2"></a>
-                                    </li>
-                                </ul>
-                            </div>
+                        <!-- validation -->
+                        <div class="wr-input-control padding-double">
+                            <div class="clear"></div>
+                            <form id="challengeForm">
+                                <label><%=question%></label>
+                                <input id="answer" name="answer" type="text" class="padding-double required">
+                                <br><br>
+                                <input id="action" name="action" type="hidden" value="verifyChallenge">
+                                <button id="resetPassword"  class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"
+                                type="button">Continue</button>
+                            </form>
+
+
                         </div>
-                    </div>
-                </div>
-			</div>
-    	</div>
-    </div> <!-- /container -->
-
+            </div>
+         </div>
+     </div>
+ </div>
+</div>
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="views/js/jquery-1.8.3.min.js"></script>
+    <script src="views/js/jquery-1.11.1.min.js"></script>
     <script src="views/js/bootstrap.min.js"></script>
-    <script src="views/js/jquery.validate.js"></script>
+    <script src="views/js/jquery.validate.min.js"></script>
     <script type="text/javascript">
         $(function () {
             var ENTER_KEY = 13;
