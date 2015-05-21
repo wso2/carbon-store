@@ -17,16 +17,19 @@
 -->
 <input id="search" class="search-area" placeholder="Search Gadgets ..." >
 {{#if searchFields}}
-<button id="advanced-search-btn" data-placement="bottom" class="btn btn-default float-left advanced-search-btn" data-original-title="" title="">
-
-</button>
-<div id="advanced-search" style="display: none; background-color:red;" class="search-advance-container padding">
+<button id="advanced-search-btn" data-placement="bottom" class="btn btn-default float-left advanced-search-btn" data-original-title="" title=""></button>
+<div id="advanced-search"  class="search-advance-container padding">
     {{#each searchFields}}
-    <div  >
-        <label class="black uppercase padding-top col-md-2">{{name.label}}</label>
-        {{renderSearchField .}}
-    </div>
+        <div class="search-data-field">
+            <label class="black uppercase padding-top">{{name.label}}</label>
+            {{renderSearchField .}}
+        </div>
     {{/each}}
+    <div>
+    <button id="search-button2" class="btn btn-primary">
+        <i class="fa fa-search"></i>
+    </button>
+    </div>
 </div>
 {{/if}}
 <!-- Search Filter -->
@@ -52,8 +55,7 @@
     </div>
     {{/if}}
     <button class="back-button uppercase float-left" id="search-button" >
-        <i class="icon-search"></i>
+        <i class="fa fa-search"></i>
     </button>
-
 
 </div><!--wr-filter-category-->

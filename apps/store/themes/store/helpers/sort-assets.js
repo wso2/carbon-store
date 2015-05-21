@@ -27,7 +27,6 @@ var format = function (context, paging, navigation, type, selectedCategory) {
 
 var resources = function (page, meta) {
     return {
-        js: ['sort-assets.js'],
-        css: ['sort-assets.css']
+        js: ['sort-assets.js']
     };
 };

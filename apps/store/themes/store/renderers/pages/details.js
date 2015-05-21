@@ -40,11 +40,11 @@ var render = function(theme, data, meta, require) {
         body: [{
             partial: 'asset',
             context: data
-            },
-            {
-                partial: 'recent-assets',
-                context: data
             }
+            //{
+            //    partial: 'recent-assets',
+            //    context: data
+            //}
             //{
             //    partial: 'tags',
             //    context: data

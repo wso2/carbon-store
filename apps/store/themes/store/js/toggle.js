@@ -11,10 +11,4 @@ $(function(){
             return $('#content-filter-types').html();
         }
     });
-
-    $('#nav').affix({
-        offset: {
-            top: $('header').height()
-        }
-    });
 });

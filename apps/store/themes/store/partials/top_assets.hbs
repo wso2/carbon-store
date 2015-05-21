@@ -14,14 +14,11 @@
     <div class="ast-container " id="ast-container">
         <div class="container-fluid ">
             <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?">Recent {{rxt.pluralLabel}}</a></div><!--title-->
-            <div class="float-right"><a href="#" class="more">See More</a></div>
+            <div class="float-right"><a href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?" class="more">See More</a></div>
             <hr>
         </div>
     </div>
     <div class="assets-container">
-        <h3 class="asset-type-default asset-title-separator asset-type-{{rxt.shortName}}">
-            <div class="pagination top-asset-slideshow-pag assetSliderPag" id="top-asset-slideshow-pag-{{rxt.shortName}}"></div>
-        </h3>
         {{#if assets}}
             <section>
                 {{#each assets}}
@@ -43,13 +40,12 @@
                                     </div>
                                     <div class="pull-right">
                                         <div class="dropdown dropdown-asset-custom">
-                                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="#"></a>
+                                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:return 0;"></a>
                                             <ul role="menu" class="dropdown-menu">
                                                 <li>
                                                     {{>top-assets-utilization ..}}
                                                 </li>
-                                                <li><a href="#">Download</a></li>
-                                                <li><a href="#">More Details</a></li>
+                                                <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
                                             </ul>
                                         </div>
                                     </div>

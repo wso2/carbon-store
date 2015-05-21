@@ -51,20 +51,6 @@ var render = function(theme, data, meta, require) {
             //     partial: 'pagination',
             //     context: require('/helpers/pagination.js').format(data.paging)
             // } 
-        ],
-        right: [
-            {
-                partial: 'my-assets-link',
-                context: data
-            },
-            {
-                partial: 'recent-assets',
-                context: data
-            },
-            {
-                partial: 'tags',
-                context: data
-            }
         ]
     });
 };

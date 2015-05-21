@@ -70,7 +70,7 @@ hr.emboss {
 .nav .dropdown-toggle .caret {
     border-bottom-color: #CCCCCC;
     border-top-color: #CCCCCC;
-    margin-top: 13px !important;
+    margin-top: 0px;
 }
 
 .nav .dropdown-toggle:hover .caret {
