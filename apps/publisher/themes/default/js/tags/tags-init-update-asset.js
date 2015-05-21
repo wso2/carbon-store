@@ -17,33 +17,9 @@
  *
  */
 $(function() {
-    var TAG_SELECTBOX = '.tag-ui-selectbox';
-    var EVENT_TAG_ADDED = 'select2:select';
-    var EVENT_TAG_REMOVED = 'select2:unselect';
-    var removeTagsAPI = function(assetId) {
-        return caramel.url('/apis/asset/' + assetId + '/remove-tags?type=' + getAssetType());
-    };
-    var addTagsAPI = function(assetId) {
-        return caramel.url('/apis/asset/' + assetId + '/add-tags?type=' + getAssetType());
-    };
-    var getTagsAPI = function(assetId) {
-        return caramel.url('/apis/asset/' + assetId + '/tags?type=' + getAssetType());
-    };
-    var tagsAPI = function() {
-        return caramel.url('/apis/tags');
-    };
-    var disableSelect2 = function() {
-        $(TAG_SELECTBOX).prop('disabled', true);
-    };
-    var enableSelect2 = function() {
-        $(TAG_SELECTBOX).prop('disabled', false);
-    };
-    var createData = function(data) {
-        var result = {
-            tags: data
-        };
-        return JSON.stringify(result);
-    };
+    var TAG_SELECTBOX = tagsAPI.TAG_SELECTBOX;
+    var EVENT_TAG_ADDED = tagsAPI.EVENT_TAG_ADDED;
+    var EVENT_TAG_REMOVED = tagsAPI.EVENT_TAG_REMOVED;
     var getAssetId = function() {
         return store.publisher.assetId;
     };
@@ -53,34 +29,34 @@ $(function() {
     var tagRemoved = function(e) {
         var tags = e.params.data.text;
         var assetId = getAssetId();
-        disableSelect2();
+        tagsAPI.disableSelect2();
         $.ajax({
-            url: removeTagsAPI(assetId),
+            url: tagsAPI.removeTagsAPI(assetId),
             type: 'DELETE',
-            data: createData(tags),
+            data: tagsAPI.createData(tags),
             contentType: 'application/json',
             success: function() {
-                enableSelect2();
+                tagsAPI.enableSelect2();
             },
             error: function() {
-                enableSelect2();
+                tagsAPI.enableSelect2();
             }
         });
     };
     var tagAdded = function(e) {
         var tags = e.params.data.text;
         var assetId = getAssetId();
-        disableSelect2();
+        tagsAPI.disableSelect2();
         $.ajax({
-            url: addTagsAPI(assetId),
+            url: tagsAPI.addTagsAPI(assetId),
             type: 'POST',
-            data: createData(tags),
+            data: tagsAPI.createData(tags),
             contentType: 'application/json',
             success: function() {
-                enableSelect2();
+                tagsAPI.enableSelect2();
             },
             error: function() {
-                enableSelect2();
+                tagsAPI.enableSelect2();
             }
         });
     };

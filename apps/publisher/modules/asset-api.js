@@ -39,7 +39,7 @@ var result;
         }
         return rawFields;
     };
-    var getRxtManager =  function(session,type) {
+    var getRxtManager = function(session, type) {
         var context = rxtModule.core.createUserAssetContext(session, type);
         return context.rxtManager;
     };
@@ -185,20 +185,24 @@ var result;
             asset[key] = meta[key];
         }
     };
-    var processContentType = function(contentType){
-        var comps =  contentType.split(';');
-        return comps [0];
+    var processContentType = function(contentType) {
+        var comps = contentType.split(';');
+        return comps[0];
     };
-    var processRequestBody = function(req,assetReq){
+    var processRequestBody = function(req, assetReq) {
         var contentType = processContentType(req.getContentType());
-        if(contentType !== CONTENT_TYPE_JSON){
+        if (contentType !== CONTENT_TYPE_JSON) {
             return assetReq;
         }
         var params = req.getContent();
-        for(var key in params){
+        for (var key in params) {
             assetReq[key] = params[key];
         }
         return assetReq;
+    };
+    var processTags = function(assetReq) {
+        var tags = assetReq._tags || '';
+        return tags.split(',');
     };
     /**
      * api to create a new asset
@@ -216,23 +220,24 @@ var result;
         var user = server.current(session);
         var asset = null;
         var meta;
-        var rxtManager = getRxtManager(session,options.type);
+        var tags;
+        var rxtManager = getRxtManager(session, options.type);
         var isLCEnabled = false;
         var isDefaultLCEnabled = false;
         var ctx = rxtModule.core.createUserAssetContext(session,options.type);
-        assetReq = processRequestBody(req,assetReq);
         var createdAsset;
+        assetReq = processRequestBody(req, assetReq);
+        tags = processTags(assetReq);
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
         } else {
             meta = extractMetaProps(assetReq);
-
             asset = am.importAssetFromHttpRequest(assetReq);
             setMetaProps(asset, meta);
         } //generate asset object
         try {
             //throw 'This is to stop asset creation!';
-
+            log.info(asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset,ctx);
@@ -242,13 +247,17 @@ var result;
             log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
             return null;
         }
+        //Attempt to apply tags
+        if (tags.length > 0) {
+            am.addTags(asset.id, tags);
+        }
         //Check if lifecycles are enabled
         isLCEnabled = rxtManager.isLifecycleEnabled(options.type);
-        if(!isLCEnabled) {
+        if (!isLCEnabled) {
             return asset;
         }
         isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
-        if(!isDefaultLCEnabled){
+        if (!isDefaultLCEnabled) {
             return asset;
         }
         //Continue attaching the lifecycle
@@ -278,8 +287,6 @@ var result;
         var server = require('store').server;
         var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
-
-
         var asset = null;
         var meta;
         if (request.getParameter("asset")) {
