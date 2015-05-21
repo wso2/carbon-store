@@ -115,6 +115,12 @@ var pageDecorators = {};
             info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
     };
+    pageDecorators.populateTagDetails = function(ctx,page,utils){
+        var am = assetManager(ctx);
+        log.info('Fetching tags!');
+        page.assetTags = am.getTags(page.assets.id);
+        log.info(page.assetTags);
+    };
     var assetManager = function(ctx) {
         var rxt = require('rxt');
         var type = ctx.assetType;

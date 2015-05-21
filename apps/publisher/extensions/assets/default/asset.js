@@ -382,6 +382,11 @@ asset.renderer = function(ctx) {
             },
             populateGroupingFeatureDetails: function(page) {
                 require('/modules/page-decorators.js').pageDecorators.populateGroupingFeatureDetails(ctx, page);
+            },
+            populateTags: function(page){
+                if(page.assets.id){
+                    require('/modules/page-decorators.js').pageDecorators.populateTagDetails(ctx,page);
+                }
             }
         }
     };
