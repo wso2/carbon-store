@@ -5,12 +5,20 @@
             {{/each}}
     </div>
     {{#if groupingFeature.isEnabled}}
-     <div class="control-group">
-        <h3>Versioning</h3>
-        <div class="checkbox">
-            <label>
-                <input type='checkbox' name="_default"> {{t "Make this the default"}}                
-            </label>
+
+    <div class="control-group">
+        <a class="collapsing-h2" aria-expanded="true" href="#collapseversioning" data-toggle="collapse">
+            <h2>
+                <i class="cu-btn-exp-col btn-collapsed">Versioning</i>
+            </h2>
+        </a>
+        <div id="collapseversioning" class="responsive-form-container collapse in" aria-expanded="true" style="">
+             <div class="form-group">
+                <label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">{{t "Make this the default"}}</label>
+                <div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">
+                    <input type='checkbox' name="_default" />
+                </div>
+            </div>
         </div>
     </div>
     {{/if}}

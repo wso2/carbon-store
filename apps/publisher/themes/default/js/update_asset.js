@@ -43,27 +43,55 @@ $(function() {
         }
     });
 
-    $('#form-asset-update input[type="text"]').each(
-        function(){
-            if($(this).attr('data-render-options') == "date-time"){
-                var dateField = this;
-                $(this).DatePicker({
-                    mode: 'single',
-                    position: 'right',
-                    onBeforeShow: function(el){
-                        if($(dateField).val())
-                            $(dateField).DatePickerSetDate($(dateField).val(), true);
-                    },
-                    onChange: function(date, el) {
-                        $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
-                        if($('#closeOnSelect input').attr('checked')) {
-                            $(el).DatePickerHide();
-                        }
+    var initDatePicker =  function(){
+        console.info('init date picker');
+        if($(this).attr('data-render-options') == "date-time"){
+            var dateField = this;
+            $(this).DatePicker({
+                mode: 'single',
+                position: 'right',
+                onBeforeShow: function(el){
+                    if($(dateField).val().replace(/^\s+|\s+$/g,"")){
+                        $(dateField).DatePickerSetDate($(dateField).val(), true);
                     }
-                });
-            }
+
+                },
+                onChange: function(date, el) {
+                    $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
+                    if($('#closeOnSelect input').attr('checked')) {
+                        $(el).DatePickerHide();
+                    }
+                }
+            });
         }
-    );
+    };
+
+    $('#form-asset-update input[type="text"]').each(initDatePicker);
 
 
+    var removeUnboundRow = function(link){
+        var table = link.closest('table');
+        if($('tr',table).length == 2){
+            table.hide();
+        }
+        link.closest('tr').remove();
+    };
+
+    $('.js-add-unbounded-row').click(function(){
+        var tableName = $(this).attr('data-name');
+        var table = $('#table_'+tableName);
+        var referenceRow = $('#table_reference_'+tableName);
+        var newRow = referenceRow.clone().removeAttr('id');
+        table.show().append(newRow);
+
+        $('input[type="text"]',newRow).each(initDatePicker);
+
+    });
+    $('.js-unbounded-table').on('click','a',function(event){
+        removeUnboundRow($(event.target));
+
+    });
+
+    $('#tmp_refernceTableForUnbounded').detach().attr('id','refernceTableForUnbounded').appendTo('body');
+    $('#tmp_refernceTableForUnbounded').remove();
 });
