@@ -482,6 +482,27 @@ i.cu-btn-exp-col {
     background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;   
 }
 
+.btn-cog {
+    background:url('../img/icons/ico-cog.png') 0.8em 1em no-repeat;
+}
+
+.btn-subscribe {
+    background:url('../img/icons/ico-subscribe.png') 0.8em 1em no-repeat;
+}
+
+.btn-versions {
+    background:url('../img/icons/ico-versions.png') 0.8em 1em no-repeat;
+}
+
+.btn-docs {
+    background:url('../img/icons/ico-docs.png') 0.8em 1em no-repeat;
+}
+
+.btn-users {
+    background:url('../img/icons/ico-users.png') 0.8em 1em no-repeat;
+}
+
+
 .btn-collapsed {
     background:url('../img/icons/ico-collapsed.png') no-repeat;      
 }
