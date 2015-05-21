@@ -80,8 +80,6 @@ var asset = {};
         return result;
     };
     var setField = function(field, attrName, data, attributes, table) {
-
-
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
@@ -111,14 +109,14 @@ var asset = {};
             attrName = table.name + '_entry';
             var items = processOptionTextList(list);
             attributes[attrName] = items;
-        }else if(field.type == 'checkbox'){
-            if(data[attrName] == null || data[attrName] == undefined){
+        } else if (field.type == 'checkbox') {
+            if (data[attrName] == null || data[attrName] == undefined) {
                 attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
-            }else{
-                attributes[attrName] = "on";  //We set it's value to on
+            } else {
+                attributes[attrName] = "on"; //We set it's value to on
             }
-        }else {
-            if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g,"") != "") {
+        } else {
+            if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
             } else {
                 log.debug(attrName + ' will not be saved.');
@@ -209,7 +207,6 @@ var asset = {};
             return;
         }
         asset = this.get(id);
-
         //If the default flag is true or if there are no other versions of this asset make this
         //asset the default asset
         if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
@@ -260,7 +257,7 @@ var asset = {};
         }
         this.am.update(options);
         var asset = this.am.get(options.id);
-        if(!this.rxtManager.isGroupingEnabled(this.type)){
+        if (!this.rxtManager.isGroupingEnabled(this.type)) {
             log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
             return;
         }
@@ -437,7 +434,7 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
-    var createGroupingQuery = function(query,groupingAttributeValues){
+    var createGroupingQuery = function(query, groupingAttributeValues) {
         query = query || {};
         // var attribute;
         // if(groupingAttributeValu.length === 0) {
@@ -446,21 +443,21 @@ var asset = {};
         // }
         //attribute = groupingAttributes[0];
         //query[attribute] = target;
-        for(var key in groupingAttributeValues){
-            query [key] = groupingAttributeValues[key];
+        for (var key in groupingAttributeValues) {
+            query[key] = groupingAttributeValues[key];
         }
         return query;
     };
-    var getGroupAttributeValues = function(asset,attributes){
+    var getGroupAttributeValues = function(asset, attributes) {
         //Handle cases where the full asset is provided
-        if(asset.hasOwnProperty('attributes')){
+        if (asset.hasOwnProperty('attributes')) {
             asset = asset.attributes;
         }
         var values = {};
         var groupAttrKey;
-        for(var index in attributes){
+        for (var index in attributes) {
             groupAttrKey = attributes[index];
-            if(asset.hasOwnProperty(groupAttrKey)){
+            if (asset.hasOwnProperty(groupAttrKey)) {
                 values[groupAttrKey] = asset[groupAttrKey];
             }
         }
@@ -482,18 +479,18 @@ var asset = {};
             //name = target;
             throw 'getAssetGroup no longer supports querying by name.Please provide an asset instance';
         } else if (typeof target === 'object') {
-            groupingAttributeValues = getGroupAttributeValues(target,groupingAttributes); //this.getName(target);//target[nameField];
+            groupingAttributeValues = getGroupAttributeValues(target, groupingAttributes); //this.getName(target);//target[nameField];
         } else {
             throw 'Cannot get the asset group when target is not an object';
         }
         if (groupingAttributes.length === 0) {
-            throw 'No grouping attributes have been provided for type: '+this.type;
+            throw 'No grouping attributes have been provided for type: ' + this.type;
         }
         var query = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
         //query[nameField] = name;
-        query = createGroupingQuery(query,groupingAttributeValues);
+        query = createGroupingQuery(query, groupingAttributeValues);
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
         addAssetsMetaData(assets, this);
@@ -1451,9 +1448,9 @@ var asset = {};
                 assetResources = assetResourcesTemplate._default.manager(context);
             }
             //Check if there is a default manager provided by an app default asset extension
-            if(defaultAppExtensionMediator){
+            if (defaultAppExtensionMediator) {
                 log.debug('using custom default asset extension to load an asset manager');
-                assetResources = defaultAppExtensionMediator.manager()?defaultAppExtensionMediator.manager()(context) : assetResources;
+                assetResources = defaultAppExtensionMediator.manager() ? defaultAppExtensionMediator.manager()(context) : assetResources;
             }
         } else {
             assetResources = assetResourcesTemplate.manager(context);
@@ -1482,10 +1479,9 @@ var asset = {};
         var defaultRenderer = assetResources._default.renderer ? assetResources._default.renderer(context) : {};
         var defaultAppExtensionMediator = core.defaultAppExtensionMediator();
         var customDefaultRenderer = {};
-        if(defaultAppExtensionMediator){
-            customDefaultRenderer = defaultAppExtensionMediator.renderer()?defaultAppExtensionMediator.renderer()(context):{};                
+        if (defaultAppExtensionMediator) {
+            customDefaultRenderer = defaultAppExtensionMediator.renderer() ? defaultAppExtensionMediator.renderer()(context) : {};
         }
-        
         reflection.override(renderer, defaultRenderer);
         reflection.override(renderer, customDefaultRenderer);
         reflection.override(renderer, customRenderer);
@@ -1567,6 +1563,45 @@ var asset = {};
         }
         return defaultCb;
     };
+    var createSessionlessServer = function(type, tenantId) {
+        var content = core.createAnonAssetContext(null, type, tenantId);
+        var assetResources = core.assetResources(tenantId, type);
+        var reflection = require('utils').reflection;
+        var serverCb = assetResources.server;
+        var defaultCb = assetResources._default.server;
+        if (!assetResources._default) {
+            log.warn('A default object has not been defined for the type: ' + type + ' for tenant: ' + tenantId);
+            throw 'A default object has not been defined for the type: ' + type + ' for tenant: ' + tenantId + '.Check if a default folder is present';
+        }
+        //Check if there is a type level server callback
+        if (!serverCb) {
+            defaultCb = defaultCb(context);
+            serverCb = defaultCb;
+        } else {
+            defaultCb = defaultCb(context);
+            serverCb = serverCb(context);
+            //Combine the endpoints 
+            var defaultApiEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.apis)) ? defaultCb.endpoints.apis : [];
+            var defaultPageEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.pages)) ? defaultCb.endpoints.pages : [];
+            var serverApiEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.apis)) ? serverCb.endpoints.apis : [];
+            var serverPageEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.pages)) ? serverCb.endpoints.pages : [];
+            combineEndpoints(defaultApiEndpoints, serverApiEndpoints);
+            combineEndpoints(defaultPageEndpoints, serverPageEndpoints);
+            if (!defaultCb.endpoints) {
+                throw 'No endpoints found for the type: ' + type;
+            }
+            if (!serverCb.endpoints) {
+                serverCb.endpoints = {};
+                log.warn('Creating endpoints object for type: ' + type);
+            }
+            defaultCb.endpoints.apis = defaultApiEndpoints;
+            serverCb.endpoints.apis = defaultApiEndpoints;
+            defaultCb.endpoints.pages = defaultPageEndpoints;
+            serverCb.endpoints.pages = defaultPageEndpoints;
+            reflection.override(defaultCb, serverCb);
+        }
+        return defaultCb;
+    };
     /**
      * Creates an Asset Manager instance using the registry of the currently
      * logged in user.This asset manager can be used to perform CRUD operations on pages
@@ -1614,6 +1649,18 @@ var asset = {};
     };
     asset.createRenderer = function(session, type) {
         return createRenderer(session, type);
+    };
+    asset.getSessionlessAssetEndpoints = function(type, tenantId) {
+        var serverCb = createSessionlessServer(type, tenantId);
+        return serverCb ? serverCb.endpoints : {};
+    };
+    asset.getSessionlessAssetPageEndpoints = function(type, tenantId) {
+        var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
+        return endpoints['pages'] || [];
+    };
+    asset.getSessionlessAssetApiEndpoints = function(type, tenantId) {
+        var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
+        return endpoints['apis'] || [];
     };
     /**
      * Returns a list of all endpoints available to currently
@@ -1707,7 +1754,11 @@ var asset = {};
     asset.resolve = function(request, path, themeName, themeObj, themeResolver) {
         var log = new Log();
         var resPath = path;
-        var appExtensionMediator = core.defaultAppExtensionMediator()|| {resolveCaramelResources:function(path){return path;}};
+        var appExtensionMediator = core.defaultAppExtensionMediator() || {
+            resolveCaramelResources: function(path) {
+                return path;
+            }
+        };
         path = '/' + path;
         //Determine the type of the asset
         var uriMatcher = new URIMatcher(request.getRequestURI());
@@ -1730,7 +1781,7 @@ var asset = {};
             }
             var basePath = themeResolver.call(themeObj, path);
             basePath = appExtensionMediator.resolveCaramelResources(basePath);
-            return basePath;//themeResolver.call(themeObj, path);
+            return basePath; //themeResolver.call(themeObj, path);
         }
         //Check if type has a similar path in its extension directory
         var extensionPath = '/extensions/assets/' + uriOptions.type + '/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;
