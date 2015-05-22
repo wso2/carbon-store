@@ -1,8 +1,32 @@
 <%
 var rxtAPI = require('rxt');
 var log = new Log();
-// //var context = rxtAPI.core.createUserAssetContext(session,'gadget');
-// var um = context.userManager;
+var context = rxtAPI.core.createUserAssetContext(session, 'gadget');
+var um = context.userManager;
+var authorizer = um.authorizer;
+var server = require('store').server;
+var user = um.getUser('user1'); //server.current(session);
+log.info('#### ROLES ####');
+log.info(user.getRoles());
+log.info('###############');
+///_system/governance/permission/es/apps/publisher/pages/splash
+var permissions = ['/permission/es/apps/publisher/pages/splash', 'fake','/permission/admin/configure','/permission/admin/login'];
+var isAuthorized;
+var permission;
+var action = 'ui.execute'; //'http://www.wso2.org/projects/registry/actions/get';
+var role = user.getRoles()[0];
+var isUserAuthorized;
+for (var index = 0; index < permissions.length; index++) {
+    permission = permissions[index];
+    isRoleAuthorized = authorizer.isRoleAuthorized(role, permission, action);
+    isUserAuthorized = authorizer.isUserAuthorized(user.username,permission,action);
+    log.info('### check '+index+' ###');
+    log.info('role: ' + role);
+    log.info('permission: ' + permission);
+    log.info('role authorized: ' + isRoleAuthorized);
+    log.info('user authorized: ' + isUserAuthorized);
+    log.info('#############');
+}
 // var log = new Log();
 // var authorizer = um.authorizer;
 // log.info('Printing authorizer methods ');
@@ -13,16 +37,14 @@ var log = new Log();
 // //log.info(authorizer.allowedUIResourcesForUser('admin','/'));
 // log.info(rxtAPI.app.getApiEndpoints(-1234));
 //rxtAPI.permissions.force(-1234);
-rxtAPI.permissions.isAssetPageAccessible({
-    url:'outer',
-    username:'user2',
-    tenantId:-1234
-});
+// rxtAPI.permissions.isAssetPageAccessible({
+//     url:'outer',
+//     username:'user2',
+//     tenantId:-1234
+// });
 //var server = require('store').server;
 //var systemRegistry = server.systemRegistry(-1234);
 //recursivelyCreatePath('/_system/governance/permission/es/apps/publisher', systemRegistry);
-
-
 // var rxtAPI = require('rxt');
 // var constants = rxtAPI.constants;
 // var core = rxtAPI.core;
