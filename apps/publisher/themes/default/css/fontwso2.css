@@ -1,10 +1,10 @@
 @font-face {
 	font-family: 'fontwso2';
-	src:url('../fonts/fontwso2.eot?3uii6i');
-	src:url('../fonts/fontwso2.eot?#iefix3uii6i') format('embedded-opentype'),
-		url('../fonts/fontwso2.woff?3uii6i') format('woff'),
-		url('../fonts/fontwso2.ttf?3uii6i') format('truetype'),
-		url('../fonts/fontwso2.svg?3uii6i#fontwso2') format('svg');
+	src:url('../font/fontwso2.eot?3uii6i');
+	src:url('../font/fontwso2.eot?#iefix3uii6i') format('embedded-opentype'),
+		url('../font/fontwso2.woff?3uii6i') format('woff'),
+		url('../font/fontwso2.ttf?3uii6i') format('truetype'),
+		url('../font/fontwso2.svg?3uii6i#fontwso2') format('svg');
 	font-weight: normal;
 	font-style: normal;
 }
