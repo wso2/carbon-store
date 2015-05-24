@@ -24,7 +24,7 @@ var server = require('store').server;
 var user = server.current(session);
 var log = new Log("apis_router");
 var responseProcessor = require('utils').response;
-
+var rxtAPI = require('rxt');
 var getPage = function(uri) {
     var comps = uri.split('/');
     return comps.length > 0 ? comps[0] : null;
@@ -50,6 +50,7 @@ if (uriMatcher.match(API_URL)) {
         var file = new File(path);
         if (file.isExists()) {
             request.getMappedPath = mapper(path);
+            rxtAPI.permissions.hasAppAPIPermission(page,tenantId,user.username);
             var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
             if (proceed) {
                 include(path);

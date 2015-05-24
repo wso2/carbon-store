@@ -114,7 +114,7 @@ asset.server = function(ctx) {
             }, {
                 title: 'List ' + type,
                 url: 'list',
-                path: 'list.jag'
+                path: 'list.jag',
             }, {
                 title: 'Lifecycle',
                 url: 'lifecycle',

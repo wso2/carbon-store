@@ -23,7 +23,8 @@
 	var apiEndpoint='/publisher/apis/{+suffix}';	
 	var asset=require('rxt').asset;
 	var ref=require('utils').request;
-	var responseProcessor = require('utils').response; 
+	var responseProcessor = require('utils').response;
+	var rxtAPI = require('rxt'); 
 	response.contentType = 'application/json';
 
 	var getPage=function(uri){
@@ -49,6 +50,8 @@
 					endpoint=asset.getAssetApiEndpoint(type,endPoints[index].path);
 				}
 			}
+			var user = require('store').server.current(session);
+			rxtAPI.hasAssetAPIPermission(type,page,user.tenantId,user.username);
 			if(endpoint){
 				request.getMappedPath=mapper(endpoint);
 				include(endpoint);

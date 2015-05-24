@@ -224,6 +224,7 @@ var permissions = {};
     permissions.ASSET_DELETE = 'ASSET_LIFECYCLE_MANAGEMENT';
     permissions.ASSET_BOOKMARK = 'ASSET_BOOKMARK';
     permissions.ASSET_MYITEMS = 'ASSET_MYITEMS';
+    permissions.APP_STATISTICS = 'APP_STATISTICS';
     var buildEmptyPermissionMap = function() {
         var map = {};
         // for (var index = 0; index < permissionKeySet.length; index++) {
@@ -326,7 +327,6 @@ var permissions = {};
         if (defaultMediator) {
             basePath = defaultMediator.path + '/permissions.js';
             file = new File(path);
-            
             if (file.isExists()) {
                 api = require(path);
                 if (api.hasOwnProperty(PERMISSION_LOAD_HOOK)) {
@@ -372,11 +372,14 @@ var permissions = {};
         }
     };
     var loadPermissions = function(tenantId) {
+        log.info('Loading permissions for tenant '+tenantId);
         //Load the asset extension permissions.js
         loadDefaultAssetPermissions(tenantId);
         loadAssetPermissions(tenantId);
         //Load the app extension permissions.js
         loadAppPermissions(tenantId);
+        log.info('Finished loading permissions for tenant '+tenantId);
+
     };
     var mapToAssetPermission = function(key, type, tenantId, appName) {
         //Get the asset specific map
@@ -462,7 +465,7 @@ var permissions = {};
             log.error('Permission ' + key + ' not was not found');
             return false;
         }
-        log.info('Using mapped permission: '+stringify(permission));
+        log.info('Using mapped permission: ' + stringify(permission));
         return isPermissable(permission, tenantId, username);
     };
     var checkAppPermission = function(key, tenantId, username) {
@@ -472,7 +475,7 @@ var permissions = {};
             log.error('Permission ' + key + ' not was not found');
             return false;
         }
-        log.info('Using mapped permission '+stringify(permission));
+        log.info('Using mapped permission ' + stringify(permission));
         return isPermissable(permission, tenantId, username);
     };
     permissions.hasAssetPermission = function() {
@@ -517,5 +520,132 @@ var permissions = {};
         }
         log.info('Checking permissions for ' + username + ' tenantId ' + tenantId);
         return checkAppPermission(key, tenantId, username);
+    };
+    var locateEndpointDetails = function(endpoints, url) {
+        var endpoint;
+        for (var index = 0; index < endpoints.length; index++) {
+            endpoint = endpoints[index];
+            if (endpoint.url === url) {
+                return endpoint;
+            }
+        }
+        return endpoint;
+    };
+    var assetPageEndpoint = function(type, tenantId, url) {
+        var endpoints = asset.getSessionlessAssetPageEndpoints(type, tenantId);
+        return locateEndpointDetails(endpoints, url);
+    }
+    var assetAPIEndpoint = function(type, tenantId, url) {
+        var endpoints = asset.getSessionlessAssetApiEndpoints(type, tenantId);
+        return locateEndpointDetails(endpoints, url);
+    };
+    permissions.hasAssetPagePermission = function(type, pageURL, tenantId, username) {
+        var details = assetPageEndpoint(type, tenantId, pageURL);
+        var permission;
+        var permissionString;
+        var key;
+        if (!details) {
+            log.error('Unable to locate information on page: ' + pageURL + ' to determine permissions');
+            return true;
+        }
+        key = details.permission;
+        if (!key) {
+            log.error('Permissions not defined for page ' + pageURL);
+            //TODO: Use route permissions to determine if it is accessible
+            return true;
+        }
+        //Locate the mapping
+        permission = key; //Assume that it may be a function
+        permissionString = (typeof permission === 'string') ? true : false;
+        if (permissionString) {
+            permission = mapToAssetPermission(permission, type, tenantId);
+        }
+        if (!permission) {
+            log.error('Unable to locate a mapping for permission ' + key);
+            return true;
+        }
+        return isPermissable(permission, tenantId, username);
+    };
+    permissions.hasAssetAPIPermission = function(type, apiURL, tenantId, username) {
+        var details = assetAPIEndpoint(type, tenantId, apiURL);
+        var permission;
+        var permissionString;
+        var key;
+        if (!details) {
+            log.error('Unable to locate information on api: ' + apiURL + ' to determine permissions');
+            return true;
+        }
+        key = details.permission;
+        if (!key) {
+            log.error('Permissions not defined for page ' + apiURL);
+            //TODO: Use route permissions to determine if it is accessible
+            return true;
+        }
+        //Locate the mapping
+        permission = key; //Assume that a function may be provided
+        permissionString = (typeof permission === 'string') ? true : false;
+        if (permissionString) {
+            permission = mapToAssetPermission(key, type, tenantId);
+        }
+        if (!permission) {
+            log.error('Unable to locate a mapping for permission ' + key);
+            return true;
+        }
+        return isPermissable(permission, tenantId, username);
+    };
+    permissions.hasAppPagePermission = function(pageURL, tenantId, username) {
+        var details = app.getPageEndpoint(tenantId, pageURL);
+        var permission;
+        var permissionString;
+        var key;
+        if (!details) {
+            log.error('Unable to locate information on page: ' + pageURL + ' to determine permissions');
+            return true;
+        }
+        key = details.permission;
+        if (!key) {
+            log.error('Permissions not defined for page ' + pageURL);
+            //TODO: Use route permissions to determine if it is accessible
+            return true;
+        }
+        //Locate the mapping
+        permission = key; //Assume that the key may be a function
+        permissionString = (typeof key === 'string') ? true : false;
+        if (permissionString) {
+            permission = null;
+            permission = mapToAppPermission(key, type, tenantId);
+        }
+        if (!permission) {
+            log.error('Unable to locate a mapping for permission ' + key);
+            return true;
+        }
+        return isPermissable(permission, tenantId, username);
+    };
+    permissions.hasAppAPIPermission = function(apiURL, tenantId, username) {
+        var details = asset.getApiEndpoint(tenantId, apiURL);
+        var permission;
+        var permissionString;
+        var key;
+        if (!details) {
+            log.error('Unable to locate information on api: ' + apiURL + ' to determine permissions');
+            return true;
+        }
+        key = details.permission;
+        if (!key) {
+            log.error('Permissions not defined for page ' + apiURL);
+            //TODO: Use route permissions to determine if it is accessible
+            return true;
+        }
+        //Locate the mapping
+        permission = key; //Assume that the key may be a function
+        permissionString = (typeof permission === 'string') ? true : false;
+        if (permissionString) {
+            permission = mapToAppPermission(key, type, tenantId);
+        }
+        if (!permission) {
+            log.error('Unable to locate a mapping for permission ' + key);
+            return true;
+        }
+        return isPermissable(permission, tenantId, username);
     };
 }(core, asset, app, permissions));
