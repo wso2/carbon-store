@@ -48,6 +48,17 @@ var handleApiEndpoint = function (request, session, uriParams) {
             endpoint = asset.getAssetApiEndpoint(type, endPoints[index].path);
         }
     }
+    var user = require('store').server.current(session);
+    var username = user? user.username:'anon';
+    var carbon = require('carbon');
+    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
+    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+    var isAuthorized = rxt.permissions.hasAssetAPIPermission(type,page,tenantId,username);
+    if(!isAuthorized){
+        log.error('user '+user.username+' does not have permission to access the api '+page);
+        //response.sendError(401,'You do not have access to this page');
+        //return;
+    }
     if (endpoint) {
         request.getMappedPath = mapper(endpoint);
         include(endpoint);
@@ -72,6 +83,16 @@ var handlePageEndpoint = function (request, session, uriParams) {
             found = true;
             endpoint = asset.getAssetPageEndpoint(type, endpointDetails.path);
         }
+    }
+    var username = user? user.username:'anon';
+    var carbon = require('carbon');
+    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
+    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+    var isAuthorized = rxt.permissions.hasAssetPagePermission(type,page,tenantId,username);
+    if(!isAuthorized){
+        log.error('user '+user.username+' does not have permission to access the page '+page);
+        //response.sendError(401,'You do not have access to this page');
+        //return;
     }
     if (endpoint) {
         if((endpointDetails.secured)&&(!user)){

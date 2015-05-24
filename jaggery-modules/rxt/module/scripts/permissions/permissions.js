@@ -181,7 +181,7 @@ var permissions = {};
     };
     permissions.init = function() {
         var event = require('event');
-        event.on('tenantLoad', function() {
+        event.on('tenantLoad', function(tenantId) {
             loadPermissions(tenantId);
         });
     };
@@ -276,7 +276,6 @@ var permissions = {};
         }
     };
     var loadAppPermissions = function(tenantId) {
-        log.info('### Loading app extensions ###');
         var appExtensions = app.getAppResources(tenantId);
         var path;
         var file;
@@ -550,7 +549,7 @@ var permissions = {};
         }
         key = details.permission;
         if (!key) {
-            log.error('Permissions not defined for page ' + pageURL);
+            log.warn('Permissions not defined for page ' + pageURL);
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }
@@ -577,7 +576,7 @@ var permissions = {};
         }
         key = details.permission;
         if (!key) {
-            log.error('Permissions not defined for page ' + apiURL);
+            log.warn('Permissions not defined for api ' + apiURL);
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }
@@ -604,7 +603,7 @@ var permissions = {};
         }
         key = details.permission;
         if (!key) {
-            log.error('Permissions not defined for page ' + pageURL);
+            log.warn('Permissions not defined for page ' + pageURL);
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }
@@ -622,7 +621,7 @@ var permissions = {};
         return isPermissable(permission, tenantId, username);
     };
     permissions.hasAppAPIPermission = function(apiURL, tenantId, username) {
-        var details = asset.getApiEndpoint(tenantId, apiURL);
+        var details = app.getApiEndpoint(tenantId, apiURL);
         var permission;
         var permissionString;
         var key;
@@ -632,7 +631,7 @@ var permissions = {};
         }
         key = details.permission;
         if (!key) {
-            log.error('Permissions not defined for page ' + apiURL);
+            log.warn('Permissions not defined for api ' + apiURL);
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }

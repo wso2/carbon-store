@@ -1564,7 +1564,7 @@ var asset = {};
         return defaultCb;
     };
     var createSessionlessServer = function(type, tenantId) {
-        var content = core.createAnonAssetContext(null, type, tenantId);
+        var context = core.createAnonAssetContext(null, type, tenantId);
         var assetResources = core.assetResources(tenantId, type);
         var reflection = require('utils').reflection;
         var serverCb = assetResources.server;

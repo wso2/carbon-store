@@ -59,6 +59,7 @@ var publisher = require('/modules/publisher.js');
 publisher.init(pubConfig);
 rxt.server.init(pubConfig);
 
+rxt.permissions.init();
 
 
 

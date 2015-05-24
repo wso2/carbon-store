@@ -49,7 +49,12 @@ if (uriMatcher.match(PAGE_URL)) {
         if (file.isExists()) {
             log.debug('Loading endpoint at path: ' + path);
             request.getMappedPath = mapper(path);
-            rxtAPI.permissions.hasAppPagePermission(page,tenantId,user.username);
+            var isAuthorized = rxtAPI.permissions.hasAppPagePermission(page,tenantId,user.username);
+            if(!isAuthorized){
+                log.error('user '+user.username+' does not have permission to access the page '+page);
+                //response.sendError(401,'You do not have access to this page');
+                //return;
+            }
             var proceed = app.execPageHandlers('onPageLoad', request, response, session, page);
             if (proceed) {
                 include(path);

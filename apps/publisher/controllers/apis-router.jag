@@ -50,7 +50,12 @@ if (uriMatcher.match(API_URL)) {
         var file = new File(path);
         if (file.isExists()) {
             request.getMappedPath = mapper(path);
-            rxtAPI.permissions.hasAppAPIPermission(page,tenantId,user.username);
+            var isAuthorized = rxtAPI.permissions.hasAppAPIPermission(page,tenantId,user.username);
+            if(!isAuthorized){
+                log.error('user '+user.username+' does not have permission to access the api '+page);
+                //response.sendError(401,'You do not have access to this page');
+                //return;
+            }
             var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
             if (proceed) {
                 include(path);
