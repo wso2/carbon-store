@@ -77,3 +77,10 @@
 	<div class="loading-inf-scroll"></div>
 
 </div>
+{{#hasAssetPermission . key="ASSET_CREATE" type=rxt.shortName tenantId=cuser.tenantId username=cuser.username}}
+	This is only visible to users with ASSET_LIST permission
+{{/hasAssetPermission}}
+
+{{#hasAppPermission . key="ASSET_CREATE"  tenantId=cuser.tenantId username=cuser.username}}
+	This is an app perm check
+{{/hasAppPermission}}
