@@ -38,7 +38,8 @@ var ui = {};
             rxt: {},
             cuser: {
                 username: options.username,
-                isAnon: options.isAnon
+                isAnon: options.isAnon,
+                tenantId:options.tenantId
             },
             assets: {},
             leftNav: [],
@@ -165,7 +166,8 @@ var ui = {};
             isAnon: false,
             currentPage: pageDetails.currentPage,
             landingPage: landingPage,
-            title: pageDetails.title
+            title: pageDetails.title,
+            tenantId:tenantId
         });
         return page;
     };
@@ -181,7 +183,8 @@ var ui = {};
             isAnon: true,
             currentPage: pageDetails.currentPage,
             landingPage: landingPage,
-            title: pageDetails.title
+            title: pageDetails.title,
+            tenantId:tenantId
         });
         return page;
     };

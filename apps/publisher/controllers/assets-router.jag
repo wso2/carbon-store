@@ -23,7 +23,7 @@
 	var constants=require('rxt').constants;
 	var apiEndpoint=constants.ASSET_API_URL_PATTERN;//'/{context}/asts/{type}/api/{+suffix}';
 	var pageEndpoint=constants.ASSET_PAGE_URL_PATTERN;//'/{context}/asts/{type}/{+suffix}';
-
+	var rxtAPI = require('rxt');
 
 	var getPage=function(uri){
 		var comps=uri.split('/');
@@ -48,6 +48,14 @@
 				endpoint=asset.getAssetApiEndpoint(type,endPoints[index].path);
 			}
 		}
+	    var user = require('store').server.current(session);
+	    var username = user ? user.username : null;
+	    var isAuthorized = rxtAPI.permissions.hasAssetAPIPermission(type,page,user.tenantId,username);
+	    if(!isAuthorized){
+	        log.error('user '+username+' does not have permission to access the api '+page);
+	        response.sendError(401,'You do not have access to this api');
+	        return;
+	    }
 		if(endpoint){
 			request.getMappedPath=mapper(endpoint);
 			include(endpoint);
@@ -69,6 +77,14 @@
 			if(endPoints[index].url==page){
 				endpoint=asset.getAssetPageEndpoint(type,endPoints[index].path);
 			}
+		}
+		var user = require('store').server.current(session);
+		var username = user? user.username : null;
+		var isAuthorized = rxtAPI.permissions.hasAssetPagePermission(type,page,user.tenantId,username);
+		if(!isAuthorized){
+			log.error('user '+username+' does not have permission to access the page '+page);
+			response.sendError(401,'You do not have access to this page');
+			return;
 		}
 		if(endpoint){
 			request.getMappedPath=mapper(endpoint);

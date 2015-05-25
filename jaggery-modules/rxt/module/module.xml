@@ -35,4 +35,8 @@
         <name>workflows</name>
         <path>scripts/workflows/workflows.js</path>
     </script>
+    <script>
+        <name>permissions</name>
+        <path>scripts/permissions/permissions.js</path>
+    </script>
 </module>

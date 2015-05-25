@@ -516,6 +516,52 @@ var engine = caramel.engine('handlebars', (function() {
                 //Check if the table is a normal table
                 return new Handlebars.SafeString(defaultPtr(table));
             });
+            Handlebars.registerHelper('hasAssetPermission',function(context,options){
+                var rxtAPI  = require('rxt');
+                var key = options.hash.key;
+                var type = options.hash.type;
+                var tenantId = options.hash.tenantId;
+                var username = options.hash.username;
+                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var missingParams = (!key) || (!type) || (!tenantId) || (!username);
+                //If the user is forcing the view to render 
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                if(missingParams){
+                    log.error('[hasAssetPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
+                    return ;
+                }
+                isAuthorized = rxtAPI.permissions.hasAssetPermission(key,type,tenantId,username);
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                log.error('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                return ;
+            });
+            Handlebars.registerHelper('hasAppPermission',function(context,options){
+                var rxtAPI  = require('rxt');
+                var key = options.hash.key;
+                var type = options.hash.type;
+                var tenantId = options.hash.tenantId;
+                var username = options.hash.username;
+                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var missingParams = (!key) || (!tenantId) || (!username);
+                //If the user is forcing the view to render 
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                if(missingParams){
+                    log.error('[hasAppPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
+                    return ;
+                }
+                isAuthorized = rxtAPI.permissions.hasAppPermission(key,tenantId,username);
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                log.error('[hasAppPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                return ;
+            });
         },
         render: function(data, meta) {
             if (request.getParameter('debug') == '1') {

@@ -102,7 +102,8 @@ asset.server = function(ctx) {
             }, {
                 title: 'Create ' + type,
                 url: 'create',
-                path: 'create.jag'
+                path: 'create.jag',
+                permission:'ASSET_CREATE'
             }, {
                 title: 'Update ' + type,
                 url: 'update',
@@ -114,11 +115,13 @@ asset.server = function(ctx) {
             }, {
                 title: 'List ' + type,
                 url: 'list',
-                path: 'list.jag'
+                path: 'list.jag',
+                permission:'ASSET_LIST'
             }, {
                 title: 'Lifecycle',
                 url: 'lifecycle',
-                path: 'lifecycle.jag'
+                path: 'lifecycle.jag',
+                permission:'ASSET_LIFECYCLE'
             }, {
                 title: 'Old lifecycle ',
                 url: 'old-lifecycle',
@@ -198,6 +201,7 @@ asset.configure = function() {
 };
 asset.renderer = function(ctx) {
     var type = ctx.assetType;
+    var permissionAPI = require('rxt').permissions;
     var isAssetWithLifecycle = function(asset){
         if((asset.lifecycle)&&(asset.lifecycleState)){
             return true;
@@ -207,8 +211,10 @@ asset.renderer = function(ctx) {
     };
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
-        navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
-        navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
+        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE,ctx.assetType,ctx.session)){
+            navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
+            navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
+        }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
     };
@@ -216,11 +222,17 @@ asset.renderer = function(ctx) {
         var id = page.assets.id;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-        navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+
+        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE,ctx.assetType,ctx.session)){
+            navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+        }
+
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         //Only render the view if the asset has a 
         if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
-            navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+            if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE,ctx.assetType,ctx.session)){
+                navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+            }
         }
         return navList.list();
     };
@@ -329,7 +341,8 @@ asset.renderer = function(ctx) {
                 var assetList = ctx.rxtManager.listRxtTypeDetails();
                 for (var index in assetList) {
                     assetType = assetList[index];
-                    if (isActivatedAsset(assetType.shortName)) {
+                    //Only populate the link if the asset type is activated and the logged in user has permission to that asset
+                    if ((isActivatedAsset(assetType.shortName)) && (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIST,assetType.shortName,ctx.session)) ) {
                         assetTypes.push({
                             url: this.buildBaseUrl(assetType.shortName) + '/list',
                             assetIcon: assetType.ui.icon || DEFAULT_ICON,
