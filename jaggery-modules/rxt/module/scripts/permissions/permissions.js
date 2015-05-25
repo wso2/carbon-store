@@ -33,6 +33,9 @@ var permissions = {};
     var esPermissionRoot = function(appName) {
         return permissionTreeRoot() + '/es/apps' + appName;
     };
+    var esFeaturePermissionRoot = function(){
+        return '/features';
+    };
     var getPermissionNameFromPath = function(path) {
         var components = path.split('/');
         return components[components.length - 1];
@@ -179,6 +182,58 @@ var permissions = {};
             recursivelyCreatePath(fullPath, systemRegistry);
         }
     };
+    var addPermissionsToRole = function(permissionMap,role,tenantId){
+        var server = require('store').server;
+        var um = server.userManager(tenantId);
+        var permission;
+        var action = 'ui.execute';
+        for(var key in permissionMap){
+            if(permissionMap.hasOwnProperty(key)){
+                permission = permissionMap[key];
+                if(typeof permission === 'string'){
+                    try{
+                        um.authorizeRole(role,permission,action);
+                    } catch(e) {
+                        log.error('Unable to assign permission '+permission+' to role '+role);
+                    }
+                }
+            }
+        }
+    };
+    /**
+     * Creates a permission string which defines an asset level feature
+     * @param  {[type]} permission [description]
+     * @param  {[type]} type       [description]
+     * @return {[type]}            [description]
+     */
+    var assetFeaturePermissionString = function(permission,type){
+        //Get the base app
+        var appName = app.getContext();
+        var root = esPermissionRoot(appName);
+        var featureRoot;
+        if(!type){
+            throw 'Unable to create an asset feature permission string without the type';
+        }
+        featureRoot = root + esFeaturePermissionRoot()+'/assets/'+type;
+        if(permission.charAt(0) !== '/'){
+            permission = '/'+permission;
+        }
+        return featureRoot+permission;
+    };
+    var appFeaturePermissionString  = function(permission){
+        //Get the base app
+        var appName = app.getContext();
+        var root = esPermissionRoot(appName);
+        var featureRoot;
+        if(!type){
+            throw 'Unable to create an asset feature permission string without the type';
+        }
+        featureRoot = root + esFeaturePermissionRoot()+'/app';
+        if(permission.charAt(0) !== '/'){
+            permission = '/'+permission;
+        }
+        return featureRoot+permission;
+    };
     permissions.init = function() {
         var event = require('event');
         event.on('tenantLoad', function(tenantId) {
@@ -217,14 +272,17 @@ var permissions = {};
         return isAllowed;
     };
     //var permissionKeySet = ['ASSET_SEARCH', 'ASSET_LIST', 'ASSET_CREATE', 'ASSET_UPDATE', 'ASSET_DELETE', 'ASSET_LIFECYCLE_MANAGEMENT', 'ASSET_BOOKMARK', 'ASSET_MYITEMS'];
-    permissions.ASSET_SEARCH = 'ASSET_SEARCH';
     permissions.ASSET_LIST = 'ASSET_LIST';
+    permissions.ASSET_DETAILS = 'ASSET_DETAILS';
     permissions.ASSET_CREATE = 'ASSET_CREATE';
     permissions.ASSET_UPDATE = 'ASSET_UPDATE';
-    permissions.ASSET_DELETE = 'ASSET_LIFECYCLE_MANAGEMENT';
+    permissions.ASSET_DELETE = 'ASSET_DELETE';
+    permissions.ASSET_SEARCH = 'ASSET_SEARCH';
+    permissions.ASSET_LIFECYCLE = 'ASSET_LIFECYCLE';
     permissions.ASSET_BOOKMARK = 'ASSET_BOOKMARK';
-    permissions.ASSET_MYITEMS = 'ASSET_MYITEMS';
     permissions.APP_STATISTICS = 'APP_STATISTICS';
+    permissions.APP_MYITEMS = 'APP_MYITEMS';
+
     var buildEmptyPermissionMap = function() {
         var map = {};
         // for (var index = 0; index < permissionKeySet.length; index++) {
@@ -240,6 +298,25 @@ var permissions = {};
     };
     var resolveAppPermissionPath = function(extension, tenantId) {
         return '/extensions/app/' + extension + '/permissions.js';
+    };
+    var buildPermissionContext = function(tenantId, options) {
+        options = options || {};
+        var context = {};
+        if (!tenantId) {
+            throw 'Unable to create a permission context without a tenantId';
+        }
+        context = core.createSystemContext(tenantId);
+        context.utils = {};
+        context.utils.addPermission = addPermission;
+        context.utils.assetFeaturePermissionString = assetFeaturePermissionString;
+        context.utils.appFeaturePermissionString = appFeaturePermissionString;
+        context.utils.addPermissionsToRole = addPermissionsToRole;
+        for (var key in options) {
+            if (options.hasOwnProperty(key)) {
+                context[key] = options[key];
+            }
+        }
+        return context;
     };
     var tenantPermissionMap = function(tenantId) {
         var configs = core.configs(tenantId);
@@ -281,9 +358,9 @@ var permissions = {};
         var file;
         var api;
         var server = require('store').server;
-        var userManager = server.userManager(tenantId);
+        //var userManager = server.userManager(tenantId);
         var permissions = assetPermissionMap(DEFAULT_ASSET, tenantId);
-        var context = {};
+        var context = buildPermissionContext(tenantId);
         if (permissions) {
             context.permissions = permissions;
         }
@@ -306,14 +383,14 @@ var permissions = {};
         //First load the permissions file from the default directory
         var basePath;
         var api;
-        var context = {};
+        var context = buildPermissionContext(tenantId);
         var server = require('store').server;
-        var userManager = server.userManager(tenantId);
+        //var userManager = server.userManager(tenantId);
         var file;
         var path;
         basePath = resolveDefaultAssetPermissionPath(tenantId);
         file = new File(basePath);
-        context.userManager = userManager;
+        //context.userManager = userManager;
         context.permissions = {};
         if (file.isExists()) {
             api = require(basePath);
@@ -347,9 +424,9 @@ var permissions = {};
         var api;
         var file;
         var map;
-        var context = {};
-        var server = require('store').server;
-        var userManager = server.userManager(tenantId);
+        var context = buildPermissionContext(tenantId);
+        //var server = require('store').server;
+        //var userManager = server.userManager(tenantId);
         for (var index = 0; index < types.length; index++) {
             type = types[index];
             map = buildEmptyPermissionMap();
@@ -357,7 +434,7 @@ var permissions = {};
             file = new File(path);
             if (file.isExists()) {
                 context.permissions = map;
-                context.userManager = userManager;
+                //context.userManager = userManager;
                 api = require(path);
                 if (api.hasOwnProperty(PERMISSION_LOAD_HOOK)) {
                     api[PERMISSION_LOAD_HOOK](context);
@@ -371,14 +448,13 @@ var permissions = {};
         }
     };
     var loadPermissions = function(tenantId) {
-        log.info('Loading permissions for tenant '+tenantId);
+        log.info('Loading permissions for tenant ' + tenantId);
         //Load the asset extension permissions.js
         loadDefaultAssetPermissions(tenantId);
         loadAssetPermissions(tenantId);
         //Load the app extension permissions.js
         loadAppPermissions(tenantId);
-        log.info('Finished loading permissions for tenant '+tenantId);
-
+        log.info('Finished loading permissions for tenant ' + tenantId);
     };
     var mapToAssetPermission = function(key, type, tenantId, appName) {
         //Get the asset specific map
@@ -418,8 +494,9 @@ var permissions = {};
      * @param  {[type]}  username   The username of the user for which the permissions must be checked
      * @return {Boolean}            True if the user has the permission,else false
      */
-    var isPermissable = function(permission, tenantId, username) {
+    var isPermissable = function(permission, tenantId, username, options) {
         //Determine if the permission is a string or a function
+        options = options || {};
         var isPermissionString = (typeof permission === 'string') ? true : false;
         var isPermissionFunction = (typeof permission === 'function') ? true : false;
         var server = require('store').server;
@@ -439,8 +516,9 @@ var permissions = {};
             log.error('Unable to resolve the permission type (it is neither a string permission or a function');
             return isAuthorized;
         }
-        context = {};
-        context.userManager = userManager;
+        options.username = username;
+        context = buildPermissionContext(tenantId,options);
+        //context.userManager = userManager;
         try {
             result = permission(context) || true;
             if (typeof result === 'string') {
@@ -457,31 +535,37 @@ var permissions = {};
         }
         return isAuthorized;
     };
-    var checkAssetPermission = function(key, type, tenantId, username) {
+    var checkAssetPermission = function(key, type, tenantId, username,options) {
         var permission;
+        options = options || {};
         permission = mapToAssetPermission(key, type, tenantId);
         if (!permission) {
             log.error('Permission ' + key + ' not was not found');
             return false;
         }
+        options.username = username;
         log.info('Using mapped permission: ' + stringify(permission));
-        return isPermissable(permission, tenantId, username);
+        return isPermissable(permission, tenantId, username,options);
     };
-    var checkAppPermission = function(key, tenantId, username) {
+    var checkAppPermission = function(key, tenantId, username,options) {
         var permission;
+        options = options || {};
         permission = mapToAppPermission(key, tenantId);
         if (!permission) {
             log.error('Permission ' + key + ' not was not found');
             return false;
         }
+        options.username = username;
         log.info('Using mapped permission ' + stringify(permission));
-        return isPermissable(permission, tenantId, username);
+        return isPermissable(permission, tenantId, username,options);
     };
     permissions.hasAssetPermission = function() {
         var key = arguments[0];
         var type = arguments[1];
         var tenantId;
         var username;
+        var options = {};
+        options.type = type;
         if (arguments.length === 3) {
             var server = require('store').server;
             var user = server.current(arguments[2]);
@@ -497,7 +581,7 @@ var permissions = {};
             throw 'Unable to resolve permissions without the tenantId and username';
         }
         log.info('Checking permission for ' + username + ' tenantId ' + tenantId);
-        return checkAssetPermission(key, type, tenantId, username);
+        return checkAssetPermission(key, type, tenantId, username,options);
     };
     permissions.hasAppPermission = function() {
         var key = arguments[0];
@@ -543,6 +627,8 @@ var permissions = {};
         var permission;
         var permissionString;
         var key;
+        var options = {};
+        options.type = type;
         if (!details) {
             log.error('Unable to locate information on page: ' + pageURL + ' to determine permissions');
             return true;
@@ -563,13 +649,15 @@ var permissions = {};
             log.error('Unable to locate a mapping for permission ' + key);
             return true;
         }
-        return isPermissable(permission, tenantId, username);
+        return isPermissable(permission, tenantId, username,options);
     };
     permissions.hasAssetAPIPermission = function(type, apiURL, tenantId, username) {
         var details = assetAPIEndpoint(type, tenantId, apiURL);
         var permission;
         var permissionString;
         var key;
+        var options = {};
+        options.type = type;
         if (!details) {
             log.error('Unable to locate information on api: ' + apiURL + ' to determine permissions');
             return true;
@@ -590,7 +678,7 @@ var permissions = {};
             log.error('Unable to locate a mapping for permission ' + key);
             return true;
         }
-        return isPermissable(permission, tenantId, username);
+        return isPermissable(permission, tenantId, username,options);
     };
     permissions.hasAppPagePermission = function(pageURL, tenantId, username) {
         var details = app.getPageEndpoint(tenantId, pageURL);

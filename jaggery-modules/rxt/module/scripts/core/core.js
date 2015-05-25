@@ -1220,4 +1220,20 @@ var core = {};
             session: session
         };
     };
+    core.createSystemContext = function(tenantId){
+        var server = require('store').server;
+        var sysRegistry = server.systemRegistry(tenantId);
+        var userManager = server.userManager(tenantId);
+        //var tenatConfigs = user.configs(tenantId);
+        var serverConfigs = server.configs(tenantId);
+        var rxtManager = core.rxtManager(tenantId);
+        return {
+            userManager : userManager,
+            tenantId : tenantId,
+            systemRegistry : sysRegistry,
+            rxtManager : rxtManager,
+            serverConfigs: serverConfigs,
+            isAnonContext: false
+        }
+    };
 }(core, constants));
