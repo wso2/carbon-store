@@ -13,7 +13,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-asset.manager = function(ctx) {
+asset.manager = function (ctx) {
     var notifier = require('store').notificationManager;
     var storeConstants = require('store').storeConstants;
     var COMMENT = 'User comment';
@@ -21,7 +21,7 @@ asset.manager = function(ctx) {
     var social = carbon.server.osgiService('org.wso2.carbon.social.core.service.SocialActivityService');
     var log = new Log('default-asset');
     return {
-        create: function(options) {
+        create: function (options) {
             var ref = require('utils').time;
             //Check if the options object has a createdtime attribute and populate it
             if ((options.attributes) && ctx.rxtManager.getRxtField(ctx.assetType, 'overview_createdtime')) {
@@ -48,22 +48,22 @@ asset.manager = function(ctx) {
             notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
             notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
         },
-        update: function(options) {
+        update: function (options) {
             this._super.update.call(this, options);
             var asset = this.get(options.id); //TODO avoid get: expensive operation
             //trigger notification on asset update
             notifier.notifyEvent(storeConstants.ASSET_UPDATE_EVENT, asset.type, asset.name, null, asset.path, ctx.tenantId);
         },
-        search: function(query, paging) {
+        search: function (query, paging) {
             return this._super.search.call(this, query, paging);
         },
-        list: function(paging) {
+        list: function (paging) {
             return this._super.list.call(this, paging);
         },
-        get: function(id) {
+        get: function (id) {
             return this._super.get.call(this, id);
         },
-        invokeLcAction: function(asset, action, lcName) {
+        invokeLcAction: function (asset, action, lcName) {
             var success;
             if (lcName) {
                 success = this._super.invokeLcAction.call(this, asset, action, lcName);
@@ -76,68 +76,85 @@ asset.manager = function(ctx) {
         }
     };
 };
-asset.server = function(ctx) {
+asset.server = function (ctx) {
     var type = ctx.type;
     return {
-        onUserLoggedIn: function() {},
+        onUserLoggedIn: function () {
+        },
         endpoints: {
-            apis: [{
-                url: 'assets',
-                path: 'assets.jag'
-            }, {
-                url: 'asset',
-                path: 'asset.jag'
-            }, {
-                url: 'statistics',
-                path: 'statistics.jag'
-            }],
-            pages: [{
-                title: 'Asset: ' + type,
-                url: 'asset',
-                path: 'asset.jag'
-            }, {
-                title: 'Assets ' + type,
-                url: 'assets',
-                path: 'assets.jag'
-            }, {
-                title: 'Create ' + type,
-                url: 'create',
-                path: 'create.jag'
-            }, {
-                title: 'Update ' + type,
-                url: 'update',
-                path: 'update.jag'
-            }, {
-                title: 'Details ' + type,
-                url: 'details',
-                path: 'details.jag'
-            }, {
-                title: 'List ' + type,
-                url: 'list',
-                path: 'list.jag'
-            }, {
-                title: 'Lifecycle',
-                url: 'lifecycle',
-                path: 'lifecycle.jag'
-            }, {
-                title: 'Old lifecycle ',
-                url: 'old-lifecycle',
-                path: 'old-lifecycle.jag'
-            }, {
-                title: 'Statistics',
-                url: 'statistics',
-                path: 'statistics.jag'
-            }]
+            apis: [
+                {
+                    url: 'assets',
+                    path: 'assets.jag'
+                },
+                {
+                    url: 'asset',
+                    path: 'asset.jag'
+                },
+                {
+                    url: 'statistics',
+                    path: 'statistics.jag'
+                }
+            ],
+            pages: [
+                {
+                    title: 'Asset: ' + type,
+                    url: 'asset',
+                    path: 'asset.jag'
+                },
+                {
+                    title: 'Assets ' + type,
+                    url: 'assets',
+                    path: 'assets.jag'
+                },
+                {
+                    title: 'Create ' + type,
+                    url: 'create',
+                    path: 'create.jag'
+                },
+                {
+                    title: 'Update ' + type,
+                    url: 'update',
+                    path: 'update.jag'
+                },
+                {
+                    title: 'Details ' + type,
+                    url: 'details',
+                    path: 'details.jag'
+                },
+                {
+                    title: 'List ' + type,
+                    url: 'list',
+                    path: 'list.jag'
+                },
+                {
+                    title: 'Lifecycle',
+                    url: 'lifecycle',
+                    path: 'lifecycle.jag'
+                },
+                {
+                    title: 'Old lifecycle ',
+                    url: 'old-lifecycle',
+                    path: 'old-lifecycle.jag'
+                },
+                {
+                    title: 'Statistics',
+                    url: 'statistics',
+                    path: 'statistics.jag'
+                }
+            ]
         }
     };
 };
-asset.configure = function() {
+asset.configure = function () {
     return {
         table: {
             overview: {
                 fields: {
                     provider: {
+                        type : "text",
                         readonly: true
+
                     },
                     name: {
                         name: {
@@ -145,15 +162,41 @@ asset.configure = function() {
                             label: 'Name'
                         },
                         updatable: false,
-                        validation: function() {}
+                        validations: {
+                            client: ["FieldValidate", {"name": "alphaNumericChecked", "error_msg": "this is default"}],
+                            server: ["validator2"]
+
+                        }
+
+
+                        //validation: function() {}
                     },
                     version: {
                         name: {
                             label: 'Version'
                         }
+
+                    },
+                    "url": {
+                        "type": "text",
+                        "url": "true",
+                        "name": {
+                            "name": "url",
+                            "label": "URL",
+                            "fullName": "overview_url"
+                        }
                     },
                     createdtime: {
                         hidden: true
+                    },
+                    "description": {
+                        "type": "text-area",
+                        "name": {
+                            "name": "description",
+                            "label": "Description",
+                            "fullName": "overview_description"
+                        }
+
                     }
                 }
             },
@@ -161,9 +204,11 @@ asset.configure = function() {
                 fields: {
                     thumbnail: {
                         type: 'file'
+
                     },
                     banner: {
                         type: 'file'
+
                     }
                 }
             }
@@ -172,7 +217,7 @@ asset.configure = function() {
             lifecycle: {
                 name: 'SampleLifeCycle2',
                 commentRequired: false,
-                defaultLifecycleEnabled:true,
+                defaultLifecycleEnabled: true,
                 defaultAction: 'Promote',
                 deletableStates: [],
                 publishedStates: ['Published'],
@@ -192,27 +237,36 @@ asset.configure = function() {
             grouping: {
                 groupingEnabled: false,
                 groupingAttributes: ['overview_name']
+            },
+            validationMappings : {
+                type : {
+                    text : ['validator1','validator2'],
+                    options : ['validator1']
+                },
+                required : ['validator1','validator2'],
+                updatable : ['validator2'],
+                readonly : ['validator1']
             }
         }
     };
 };
-asset.renderer = function(ctx) {
+asset.renderer = function (ctx) {
     var type = ctx.assetType;
-    var isAssetWithLifecycle = function(asset){
-        if((asset.lifecycle)&&(asset.lifecycleState)){
+    var isAssetWithLifecycle = function (asset) {
+        if ((asset.lifecycle) && (asset.lifecycleState)) {
             return true;
         }
-        log.warn('asset: '+asset.name+' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        log.warn('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
         return false;
     };
-    var buildListLeftNav = function(page, util) {
+    var buildListLeftNav = function (page, util) {
         var navList = util.navList();
         navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
         navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
     };
-    var buildDefaultLeftNav = function(page, util) {
+    var buildDefaultLeftNav = function (page, util) {
         var id = page.assets.id;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
@@ -224,10 +278,10 @@ asset.renderer = function(ctx) {
         }
         return navList.list();
     };
-    var buildAddLeftNav = function(page, util) {
+    var buildAddLeftNav = function (page, util) {
         return [];
     };
-    var isActivatedAsset = function(assetType) {
+    var isActivatedAsset = function (assetType) {
         var app = require('rxt').app;
         var activatedAssets = app.getActivatedAssets(ctx.tenantId); //ctx.tenantConfigs.assets;
         //return true;
@@ -242,7 +296,7 @@ asset.renderer = function(ctx) {
         return false;
     };
     return {
-        list: function(page) {
+        list: function (page) {
             var assets = page.assets;
             for (var index in assets) {
                 var asset = assets[index];
@@ -256,7 +310,7 @@ asset.renderer = function(ctx) {
             }
             require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page, this);
         },
-        details: function(page) {
+        details: function (page) {
             var tables = page.assets.tables;
             //TODO:This cannot be hardcoded
             var timestampAttribute = 'createdtime'; //ctx.rxtManager.getTimeStampAttribute(this.assetType);
@@ -270,7 +324,7 @@ asset.renderer = function(ctx) {
                 }
             }
         },
-        create: function(page) {
+        create: function (page) {
             var tables = page.assets.tables;
             var providerAttribute = 'provider';
             for (var index in tables) {
@@ -280,7 +334,7 @@ asset.renderer = function(ctx) {
                 }
             }
         },
-        update: function(page) {
+        update: function (page) {
             var tables = page.assets.tables;
             var timestampAttribute = 'createdtime';
             for (var index in tables) {
@@ -294,7 +348,7 @@ asset.renderer = function(ctx) {
             }
         },
         pageDecorators: {
-            leftNav: function(page) {
+            leftNav: function (page) {
                 if (log.isDebugEnabled()) {
                     log.debug('Using default leftNav');
                 }
@@ -312,16 +366,16 @@ asset.renderer = function(ctx) {
                         page.leftNav = buildDefaultLeftNav(page, this);
                         break;
                 }
-                if(page.leftNav){
-                    for(var navItem in page.leftNav){
-                        if(page.leftNav[navItem].name){
-                            page.leftNav[navItem].id = page.leftNav[navItem].name.replace(/\s/g,"");
+                if (page.leftNav) {
+                    for (var navItem in page.leftNav) {
+                        if (page.leftNav[navItem].name) {
+                            page.leftNav[navItem].id = page.leftNav[navItem].name.replace(/\s/g, "");
                         }
                     }
                 }
                 return page;
             },
-            ribbon: function(page) {
+            ribbon: function (page) {
                 var ribbon = page.ribbon = {};
                 var DEFAULT_ICON = 'icon-cog';
                 var assetTypes = [];
@@ -345,17 +399,17 @@ asset.renderer = function(ctx) {
                 ribbon.breadcrumb = assetTypes;
                 return page;
             },
-            populateAttachedLifecycles: function(page) {
+            populateAttachedLifecycles: function (page) {
                 if (page.assets.id) {
                     require('/modules/page-decorators.js').pageDecorators.populateAttachedLifecycles(ctx, page, this);
                 }
             },
-            populateAssetVersionDetails: function(page) {
+            populateAssetVersionDetails: function (page) {
                 if (page.assets.id) {
                     require('/modules/page-decorators.js').pageDecorators.populateAssetVersionDetails(ctx, page, this);
                 }
             },
-            populateGroupingFeatureDetails: function(page) {
+            populateGroupingFeatureDetails: function (page) {
                 require('/modules/page-decorators.js').pageDecorators.populateGroupingFeatureDetails(ctx, page);
             }
         }

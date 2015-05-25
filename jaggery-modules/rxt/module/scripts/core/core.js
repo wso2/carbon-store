@@ -545,6 +545,18 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether default lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
+    RxtManager.prototype.isValidationMappings = function (type) {
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if validationMappings of assets is required';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.validationMappings)) {
+            return rxtDefinition.meta.validationMappings || null;
+        }
+        log.warn('Unable to locate the  meta property to determine whether asset validationMappings is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        return null;
+    };
     RxtManager.prototype.isLifecycleViewEnabled = function(type){
         var rxtDefinition = this.rxtMap[type];
         var isLCEnabled = this.isLifecycleEnabled(type);

@@ -18,11 +18,11 @@
  */
 var cache = false;
 var log = new Log();
-var engine = caramel.engine('handlebars', (function() {
+var engine = caramel.engine('handlebars', (function () {
     return {
-        partials: function(Handlebars) {
+        partials: function (Handlebars) {
             var theme = caramel.theme();
-            var partials = function(file) {
+            var partials = function (file) {
                 (function register(prefix, file) {
                     var i, length, name, files;
                     if (file.isDirectory()) {
@@ -48,39 +48,37 @@ var engine = caramel.engine('handlebars', (function() {
             partials(new File(theme.__proto__.resolve.call(theme, 'partials')));
             var rxtAPI = require('rxt');
             var appExtensionMediator = rxtAPI.core.defaultAppExtensionMediator();
-            if(appExtensionMediator){
-                var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme,'partials'));
-                log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+            if (appExtensionMediator) {
+                var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme, 'partials'));
+                log.debug('Registering new partials directory from:  ' + defaultExtensionPartialsPath);
                 partials(new File(defaultExtensionPartialsPath));
             }
             partials(new File(theme.resolve('partials')));
-            Handlebars.registerHelper('dyn', function(options) {
-                var asset = options.hash.asset,
-                    resolve = function(path) {
-                        var p,
-                            publisher = require('/modules/publisher.js');
-                        if (asset) {
-                            p = publisher.ASSETS_EXT_PATH + asset + '/themes/' + theme.name + '/' + path;
-                            if (new File(p).isExists()) {
-                                return p;
-                            }
+            Handlebars.registerHelper('dyn', function (options) {
+                var asset = options.hash.asset, resolve = function (path) {
+                    var p, publisher = require('/modules/publisher.js');
+                    if (asset) {
+                        p = publisher.ASSETS_EXT_PATH + asset + '/themes/' + theme.name + '/' + path;
+                        if (new File(p).isExists()) {
+                            return p;
                         }
-                        return theme.__proto__.resolve.call(theme, path);
-                    };
+                    }
+                    return theme.__proto__.resolve.call(theme, path);
+                };
                 partials(new File(resolve('partials')));
                 return options.fn(this);
             });
-            Handlebars.registerHelper('eachField', function(context, options) {
+            Handlebars.registerHelper('eachField', function (context, options) {
                 var ret = '';
                 for (var key in context) {
                     context[key].label = context[key].name.label ? context[key].name.label : context[key].name.name;
-                    if(!context[key].hidden){
+                    if (!context[key].hidden) {
                         ret += options.fn(context[key]);
                     }
                 }
                 return ret;
             });
-            var renderOptionsTextPreview = function(field) {
+            var renderOptionsTextPreview = function (field) {
                 var value;
                 var values = field.value;
                 var output = '';
@@ -101,16 +99,16 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return output;
             };
-            var getHeadings = function(table) {
+            var getHeadings = function (table) {
                 return (table.subheading) ? table.subheading[0].heading : [];
             };
-            var getNumOfRows = function(table) {
+            var getNumOfRows = function (table) {
                 for (var key in table.fields) {
                     return table.fields[key].value.length;
                 }
                 return 0;
             };
-            var getNumOfRowsUnbound = function(table) {
+            var getNumOfRowsUnbound = function (table) {
                 var ref = require('utils').reflection;
                 for (var key in table.fields) {
                     //If there is only a single entry it will be returned as a string as opposed to an array
@@ -122,20 +120,20 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return 0;
             };
-            var getFieldCount = function(table) {
+            var getFieldCount = function (table) {
                 var count = 0;
                 for (var key in table.fields) {
                     count++;
                 }
                 return count;
             };
-            var getFirstField = function(table) {
+            var getFirstField = function (table) {
                 for (var key in table.fields) {
                     return table.fields[key];
                 }
                 return null;
             };
-            var renderHeadingFieldPreview = function(table) {
+            var renderHeadingFieldPreview = function (table) {
                 var fields = table.fields;
                 var columns = table.columns;
                 var index = 0;
@@ -150,7 +148,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return out;
             };
-            Handlebars.registerHelper('renderUnboundTablePreview', function(table) {
+            Handlebars.registerHelper('renderUnboundTablePreview', function (table) {
                 //Get the number of rows in the table
                 var rowCount = getNumOfRowsUnbound(table);
                 var fields = table.fields;
@@ -170,7 +168,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return new Handlebars.SafeString(out);
             });
-            Handlebars.registerHelper('renderHeadingTablePreview', function(table) {
+            Handlebars.registerHelper('renderHeadingTablePreview', function (table) {
                 var fieldCount = getFieldCount(table);
                 var firstField = getFirstField(table);
                 //Determine if there is only one field and it is an option text
@@ -180,7 +178,7 @@ var engine = caramel.engine('handlebars', (function() {
                     return new Handlebars.SafeString(renderHeadingFieldPreview(table));
                 }
             });
-            Handlebars.registerHelper('renderTablePreview', function(table) {
+            Handlebars.registerHelper('renderTablePreview', function (table) {
                 var headingPtr = Handlebars.compile('{{> heading_table .}}');
                 var defaultPtr = Handlebars.compile('{{> default_table .}}');
                 var unboundPtr = Handlebars.compile('{{> unbound_table .}}');
@@ -200,38 +198,39 @@ var engine = caramel.engine('handlebars', (function() {
                 //Check if the table is a normal table
                 return new Handlebars.SafeString(defaultPtr(table));
             });
-            var renderFieldMetaData = function(field,name,options) {
-                var isRequired=(field.required)?field.required:false;
-                var isReadOnly=(field.readonly)?field.readonly:false;
-                var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
+            var renderFieldMetaData = function (field, name, options) {
+                var isRequired = (field.required) ? field.required : false;
+                var isReadOnly = (field.readonly) ? field.readonly : false;
+                var meta = ' name="' + (name ? name : field.name.tableQualifiedName) + '" class="input-large"';
                 var isUpdatable = true;
-                if(field.updatable == false){
+                if (field.updatable == false) {
                     isUpdatable = false;
                 }
-                var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
-                if(isRequired && field.type != 'file'){
-                    meta+=' required';
+                var mode = options ? (options.hash.mode ? options.hash.mode : 'create') : 'create';
+                if (isRequired && field.type != 'file') {
+                    meta += ' required';
                 } else if (isRequired && field.type == 'file' && mode == 'create') {
-                    meta+=' required';
+                    meta += ' required';
                 }
-                if(isReadOnly){
-                    meta+=' readonly';
-                } else if(!isUpdatable && mode == 'edit'){
-                    meta+=' readonly';
+                if (isReadOnly) {
+                    meta += ' readonly';
+                } else if (!isUpdatable && mode == 'edit') {
+                    meta += ' readonly';
                 }
+                //meta += " data-field-metadata= '" + stringify(field)+"'";
                 return meta;
             };
-            var renderFieldLabel = function(field) {
+            var renderFieldLabel = function (field) {
                 var output = '';
-                var isHidden= (field.hidden)?field.hidden:false;
-                if (!isHidden){
+                var isHidden = (field.hidden) ? field.hidden : false;
+                if (!isHidden) {
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name) + '</label>';
                 }
                 return output;
             };
-            var renderOptions = function(value, values, field,count) {
-                var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
-                var out = '<select ' + renderFieldMetaData(field,id) + '>';
+            var renderOptions = function (value, values, field, count, validationClass, defaultClass) {
+                var id = (count) ? field.name.tableQualifiedName + '_option_' + count : undefined;
+                var out = '<select class ="' + validationClass + '"' + defaultClass + renderFieldMetaData(field, id) + '>';
                 if (value) {
                     out += '<option selected>' + value + '</option>';
                 }
@@ -242,13 +241,13 @@ var engine = caramel.engine('handlebars', (function() {
                 out += '</select>';
                 return out;
             };
-            var renderOptionsTextField = function(field) {
+            var renderOptionsTextField = function (field) {
                 var value;
                 var values = field.value;
                 var output = '';
                 var ref = require('utils').reflection;
-                var buttonName=field.name?field.name.label:'Cannot locate name';
-                output+='<tr><td colspan="3"><a class="btn-inline-form btn-add-dark" onClick="addOptionTextRow(this)">Add '+buttonName+'</a></td></tr>';
+                var buttonName = field.name ? field.name.label : 'Cannot locate name';
+                output += '<tr><td colspan="3"><a class="btn-inline-form btn-add-dark" onClick="addOptionTextRow(this)">Add ' + buttonName + '</a></td></tr>';
                 if (values) {
                     //If there is only a single entry then the registry API will send a string
                     //In order to uniformly handle these scenarios we must make it an array
@@ -261,68 +260,89 @@ var engine = caramel.engine('handlebars', (function() {
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
                         output += '<tr>';
-                        output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                        output += '<td valign="top"><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                        output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
+                        output += '<td valign="top">' + renderOptions(option, field.values[0].value, field, index) + '</td>';
+                        output += '<td valign="top"><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field, field.name.tableQualifiedName + '_text_' + index) + ' /></td>';
+                        output += '<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
                         output += '</tr>';
                     }
                 } else {
                     output += '<tr>';
-                    var index='0';
-                    output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                    output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
+                    var index = '0';
+                    output += '<td valign="top">' + renderOptions(option, field.values[0].value, field, index) + '</td>';
+                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field, field.name.tableQualifiedName + '_text_' + index) + ' /></td>';
+                    output += '<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
                     output += '</tr>';
                 }
                 return output;
             };
-            var renderFileField = function(field, value) {
+            var renderFileField = function (field, value) {
                 var out = '<td><input type="hidden" name="old_' + field.name.tableQualifiedName + '" value="' + value + '" >';
                 out += '<input type="file" value="' + value + '" ' + renderFieldMetaData(field) + '></td>';
                 return out;
             };
-            var renderField = function(field, options) {
+            var renderField = function (field, options) {
                 var out = '';
+                var validationCls = '';
+                var cls = '';
                 var value = field.value || '';
+                var fieldMetadata = field;
+                if (fieldMetadata.validations != null) {
+                    var clientSideValidations = fieldMetadata.validations.client;
+                    if (clientSideValidations != null) {
+                        for (var i = 0; i < clientSideValidations.length; i++) {
+                            if (typeof clientSideValidations[i] == 'object') {
+                                validationCls += clientSideValidations[i].name + " ";
+                            } else {
+                                validationCls += clientSideValidations[i] + " ";
+                            }
+                        }
+                    }
+                }
+                if (field.required) {
+                    cls += ' required="required" '
+                }
+                if (field.readonly) {
+                    cls += ' readonly="readonly" '
+                }
                 switch (field.type) {
                     case 'options':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
+                        out = renderOptions(field.value, field.values[0].value, field, validationCls, cls) + '</div>';
                         break;
                     case 'text':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="form-control"  value="' + value + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
+                        out = '<input type="text" class="form-control ' + validationCls + '"' + cls + '  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' class="span8" ' + cls + '></div>';
                         break;
                     case 'text-area':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full">'+value+'</textarea></div>';
+                        out = '<textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full ' + validationCls + '"' + cls + '>' + value + '</textarea></div>';
                         break;
                     case 'file':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<input type="file" class="' + validationCls + '"' + cls + ' value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'date':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<input type="text" class="' + validationCls + '"' + cls + ' data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'checkbox':
                         var checkboxString = "";
-                        if(options.hash.mode == "edit"){
-                            if(value == "on"){
+                        if (options.hash.mode == "edit") {
+                            if (value == "on") {
                                 checkboxString = 'checked="checked"';
-                            }else{
+                            } else {
                                 checkboxString = '';
                             }
-                        }else{
-                            value="on";
+                        } else {
+                            value = "on";
                         }
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="checkbox" ' + renderFieldMetaData(field, null, options) + ' '+checkboxString+' ></div>';
+                        out = '<input type="checkbox" class="' + validationCls + '"' + cls + renderFieldMetaData(field, null, options) + ' ' + checkboxString + ' ></div>';
                         break;
                     case 'password':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<input type="password" class="' + validationCls + '"' + cls + ' value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     default:
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">Normal Field' + field.type + '</div>';
+                        out = 'Normal Field' + field.type + '</div>';
                         break;
                 }
-                return out;
+                return '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">' + out;
             };
-            var renderTableField = function(field) {
+            var renderTableField = function (field) {
                 var out = '';
                 var value = field.value || '';
                 switch (field.type) {
@@ -333,7 +353,7 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<td valign="top"><input type="text" class="form-control" value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></td>';
                         break;
                     case 'text-area':
-                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">'+value+'</textarea></td>';
+                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">' + value + '</textarea></td>';
                         break;
                     case 'file':
                         out = '<td> valign="top"<input type="file" class="form-control" value="' + value + '" ' + renderFieldMetaData(field) + ' ></td>';
@@ -344,7 +364,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return out;
             };
-            var renderFieldValue = function(field, value) {
+            var renderFieldValue = function (field, value) {
                 var out = '';
                 switch (field.type) {
                     case 'options':
@@ -365,7 +385,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return out;
             };
-            var renderEditableHeadingField = function(table) {
+            var renderEditableHeadingField = function (table) {
                 var fields = table.fields;
                 var columns = table.columns;
                 var index = 0;
@@ -380,7 +400,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return out;
             };
-            Handlebars.registerHelper('renderEditableFields', function(fields) {
+            Handlebars.registerHelper('renderEditableFields', function (fields) {
                 var out = '';
                 var field;
                 for (var key in fields) {
@@ -389,11 +409,11 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return new Handlebars.SafeString(out);
             });
-            Handlebars.registerHelper('renderEditableField', function(field, options) {
+            Handlebars.registerHelper('renderEditableField', function (field, options) {
                 var label = renderFieldLabel(field);
                 return new Handlebars.SafeString(label + renderField(field, options));
             });
-            Handlebars.registerHelper('renderEditableHeadingTable', function(table) {
+            Handlebars.registerHelper('renderEditableHeadingTable', function (table) {
                 var fieldCount = getFieldCount(table);
                 var firstField = getFirstField(table);
                 //Determine if there is only one field and it is an option text
@@ -403,7 +423,7 @@ var engine = caramel.engine('handlebars', (function() {
                     return new Handlebars.SafeString(renderEditableHeadingField(table));
                 }
             });
-            Handlebars.registerHelper('renderEditableUnboundTable', function(table) {
+            Handlebars.registerHelper('renderEditableUnboundTable', function (table) {
                 //Get the number of rows in the table
                 var rowCount = getNumOfRowsUnbound(table);
                 var fields = table.fields;
@@ -434,7 +454,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return new Handlebars.SafeString(out);
             });
-            Handlebars.registerHelper('renderTable', function(table, options) {
+            Handlebars.registerHelper('renderTable', function (table, options) {
                 table.mode = options.hash.mode;
                 var headingPtr = Handlebars.compile('{{> editable_heading_table .}}');
                 var defaultPtr = Handlebars.compile('{{> editable_default_table .}}');
@@ -456,7 +476,7 @@ var engine = caramel.engine('handlebars', (function() {
                 return new Handlebars.SafeString(defaultPtr(table));
             });
         },
-        render: function(data, meta) {
+        render: function (data, meta) {
             if (request.getParameter('debug') == '1') {
                 response.addHeader("Content-Type", "application/json");
                 print(stringify(data));
@@ -464,25 +484,24 @@ var engine = caramel.engine('handlebars', (function() {
                 this.__proto__.render.call(this, data, meta);
             }
         },
-        globals: function(data, meta) {
-            var publisher = require('/modules/publisher.js'),
-                user = require('store').server.current(meta.session);
+        globals: function (data, meta) {
+            var publisher = require('/modules/publisher.js'), user = require('store').server.current(meta.session);
             return 'var store = ' + stringify({
                 user: user ? user.username : null
             });
         }
     };
 }()));
-var resolve = function(path) {
+var resolve = function (path) {
     /*var themeResolver = this.__proto__.resolve;
-    var asset = require('rxt').asset;
-    path = asset.resolve(request, path, this.name, this, themeResolver);
-    return path;*/
+     var asset = require('rxt').asset;
+     path = asset.resolve(request, path, this.name, this, themeResolver);
+     return path;*/
     var themeResolver = this.__proto__.resolve;
     var asset = require('rxt').asset;
     var app = require('rxt').app;
-    for(var key in this.engine.partials){
-        log.info('key ' +key);
+    for (var key in this.engine.partials) {
+        log.info('key ' + key);
     }
     var appPath = app.resolve(request, path, this.name, this, themeResolver, session);
     if (!appPath) {

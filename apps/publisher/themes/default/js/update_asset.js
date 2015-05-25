@@ -18,6 +18,9 @@
  */
 
 $(function() {
+    $('#form-asset-update').validate({
+            ignore : ".FieldValidate"
+    });
     var obtainFormMeta = function(formId) {
         return $(formId).data();
     };
@@ -66,4 +69,4 @@ $(function() {
     );
 
 
-});
+});;

@@ -17,18 +17,29 @@
  *
  */
 $(function(){
+    $('#form-asset-create').validate();
+
 	var obtainFormMeta=function(formId){
 		return $(formId).data();
 	};
+
+
     $('#form-asset-create').ajaxForm({
+       //alert("hello world");
+
         beforeSubmit:function(){
-            PublisherUtils.blockButtons({
-                container:'saveButtons',
-                msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
-            });
+
+                PublisherUtils.blockButtons({
+                    container:'saveButtons',
+                    msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
+                });
         },
+
         success:function(){
+            //e.preventDefault();
             var options=obtainFormMeta('#form-asset-create');
+            //debugger;
+            //return false;
             window.location=options.redirectUrl;
         },
         error:function(){
@@ -36,7 +47,9 @@ $(function(){
             PublisherUtils.unblockButtons({
                 container:'saveButtons'
             });
+
         }
+
     });
 
     $('#form-asset-create input[type="text"]').each(
