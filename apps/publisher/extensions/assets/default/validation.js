@@ -1,12 +1,12 @@
 var validations = {
     validator1: {
         validateFunc: function (ctx) {
-            return ctx.length < 0;
+            return ctx.length > 0;
         }
     },
     validator2: {
         validateFunc: function (ctx) {
-            return ctx.length < 0;
+            return ctx.length > 0;
         }
     },
     alphaOnly: {

@@ -115,10 +115,8 @@ var asset = {};
             } else {
                 attributes[attrName] = "on";  //We set it's value to on
             }
-
-        }else {
-            if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g,"") != "") {
-
+        } else {
+            if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
             } else {
                 log.debug(attrName + ' will not be saved.');
@@ -233,9 +231,10 @@ var asset = {};
      */
     AssetManager.prototype.validate = function (options) {
         var data = [];
-        var rxtmetamappings = this.rxtManager.isValidationMappings(this.type);
+        var curObject = this;
+        var rxtmetamappings = curObject.rxtManager.isValidationMappings(this.type);
         for (var key in options.attributes) {
-            var rxtfield = this.rxtManager.getRxtField(this.type, key);
+            var rxtfield = curObject.rxtManager.getRxtField(this.type, key);
             var valueofAttrib = options.attributes[key];
             if (rxtfield.validations != null && rxtfield.validations.server != null) {
                 var serverSideValid = rxtfield.validations.server;
@@ -317,7 +316,7 @@ var asset = {};
         }
         return validationStatus;
     };
-    var validationObjStatus = function(key,validationName,value){
+    var validationObjStatus = function (key, validationName, value) {
         var status;
         var extJsFile = require("/extensions/assets/default/validation.js");
         var validations = extJsFile.validations;
@@ -335,7 +334,6 @@ var asset = {};
         }
         return validationObj;
     };
-
     /**
      * Makes the provided asset the default asset by retrieving the group of assets it
      * belongs to and removing the default property from any existing assets.The provided

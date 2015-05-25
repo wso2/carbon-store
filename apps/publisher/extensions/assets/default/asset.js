@@ -174,6 +174,9 @@ asset.configure = function () {
                     version: {
                         name: {
                             label: 'Version'
+                        },
+                        validations: {
+                            server: ["numericOnly"]
                         }
 
                     },
