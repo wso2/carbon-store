@@ -26,7 +26,6 @@ require('/modules/store.js').exec(function(ctx) {
     var query = ctx.params.query;
     var store = ctx.store;
     var user = ctx.user;
-    var configs = ctx.configs;
     var am;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var assetPageUrl = constants.ASSET_PAGE_URL_PATTERN;

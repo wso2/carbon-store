@@ -1,0 +1,62 @@
+{{#if popularAssets}}
+<section>
+    <div class="container-fluid row padding-double center">
+        {{#each popularAssets}}
+            {{#attributes}}
+                <div class="freatured-assets-col col-xs-12 col-sm-6 col-md-3  "><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}"><img class="img-responsive" src="{{#if ../banner}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../banner}}{{/if}}"></a> </div><!--freatured-assets-col-->
+            {{/attributes}}
+        {{/each}}
+    </div>
+</section>
+{{/if}}
+
+{{#each recentAssetsByType}}
+    <div class="ast-container " id="ast-container">
+        <div class="container-fluid ">
+            <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?">Recent {{rxt.pluralLabel}}</a></div><!--title-->
+            <div class="float-right"><a href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?" class="more">See More</a></div>
+            <hr>
+        </div>
+    </div>
+    <div class="assets-container">
+        {{#if assets}}
+            <section>
+                {{#each assets}}
+                    {{#attributes}}
+                        <div class="ctrl-wr-asset">
+                            <div class="itm-ast">
+                                <a class="ast-img " href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
+                                    <img class="img-responsive" src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
+                                </a>
+                                <div class="ast-content">
+                                    <div class="ast-title padding">
+                                        <a class="ast-name truncate" href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
+                                        <span class="ast-auth">{{overview_provider}}</span>
+                                    </div>
+                                    <div class="pull-left asset-rating-container">
+                                        <span class="asset-rating">
+                                            <div style="width:{{../ratingPx}}px"></div>
+                                        </span>
+                                    </div>
+                                    <div class="pull-right">
+                                        <div class="dropdown dropdown-asset-custom">
+                                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:return 0;"></a>
+                                            <ul role="menu" class="dropdown-menu">
+                                                <li>
+                                                    {{>top-assets-utilization ..}}
+                                                </li>
+                                                <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {{/attributes}}
+                {{/each}}
+            </section>
+        {{else}}
+            <div class="top-assets-empty-assert">{{t "We couldn't find anything for you."}}</div>
+        {{/if}}
+    </div>
+{{/each}}

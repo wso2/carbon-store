@@ -74,10 +74,10 @@ var engine = caramel.engine('handlebars', (function() {
                 //log.info('options: '+stringify(options));
                 switch (options.type) {
                     case 'text':
-                        output = '<input type="text" class="span12" name="' + options.name.fullName + '" />';
+                        output = '<input type="text" class="search-input" name="' + options.name.fullName + '" />';
                         break;
                     case 'options':
-                        output = '<select id="' + options.name.fullName + '" class="span12 selectpicker " name="' + options.name.fullName + '">';
+                        output = '<select id="' + options.name.fullName + '" class="selectpicker " name="' + options.name.fullName + '">';
                         var valueObj = options.values ? options.values[0] : {};
                         var values = valueObj.value ? valueObj.value : [];
                         for (var index in values) {

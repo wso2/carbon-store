@@ -337,3 +337,6 @@ a.ctrl-filter-category:hover {
     float: none;
     margin: 0 auto;
 }
+.login-link{
+    cursor: pointer;
+}
