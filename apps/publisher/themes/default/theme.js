@@ -202,7 +202,7 @@ var engine = caramel.engine('handlebars', (function () {
             var renderFieldMetaData = function (field, name, options) {
                 var isRequired = (field.required) ? field.required : false;
                 var isReadOnly = (field.readonly) ? field.readonly : false;
-                var meta = ' name="' + (name ? name : field.name.tableQualifiedName) + '" class="input-large"';
+                var meta = ' name="' + (name ? name : field.name.tableQualifiedName) + '" class="input-large success"';
                 var isUpdatable = true;
                 if (field.updatable == false) {
                     isUpdatable = false;
@@ -234,7 +234,7 @@ var engine = caramel.engine('handlebars', (function () {
             };
             var renderOptions = function (value, values, field, count, validationClass, defaultClass) {
                 var id = (count) ? field.name.tableQualifiedName + '_option_' + count : undefined;
-                var out = '<select class ="' + validationClass + '"' + defaultClass + renderFieldMetaData(field, id) + '>';
+                var out = '<select class ="success ' + validationClass + '"' + defaultClass + renderFieldMetaData(field, id) + '>';
                 if (value) {
                     out += '<option selected>' + value + '</option>';
                 }
@@ -313,16 +313,16 @@ var engine = caramel.engine('handlebars', (function () {
                         out = renderOptions(field.value, field.values[0].value, field, validationCls, cls) + '</div>';
                         break;
                     case 'text':
-                        out = '<input type="text" class="form-control ' + validationCls + '"' + cls + '  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' class="span8" ' + cls + '></div>';
+                        out = '<input type="text" class="form-control success  ' + validationCls + '"' + cls + '  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' class="span8" ' + cls + '></div>';
                         break;
                     case 'text-area':
                         out = '<textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full ' + validationCls + '"' + cls + '>' + value + '</textarea></div>';
                         break;
                     case 'file':
-                        out = '<input type="file" class="' + validationCls + '"' + cls + ' value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<input type="file" class="success ' + validationCls + '"' + cls + ' value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'date':
-                        out = '<input type="text" class="' + validationCls + '"' + cls + ' data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<input type="text" class="success ' + validationCls + '"' + cls + ' data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'checkbox':
                         var checkboxString = "";
@@ -335,10 +335,10 @@ var engine = caramel.engine('handlebars', (function () {
                         } else {
                             value = "on";
                         }
-                        out = '<input type="checkbox" class="' + validationCls + '"' + cls + renderFieldMetaData(field, null, options) + ' ' + checkboxString + ' ></div>';
+                        out = '<input type="checkbox" class="success  ' + validationCls + '"' + cls + renderFieldMetaData(field, null, options) + ' ' + checkboxString + ' ></div>';
                         break;
                     case 'password':
-                        out = '<input type="password" class="' + validationCls + '"' + cls + ' value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<input type="password" class="success  ' + validationCls + '"' + cls + ' value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     default:
                         out = 'Normal Field' + field.type + '</div>';

@@ -1,14 +1,4 @@
 var validations = {
-    validator1: {
-        validateFunc: function (ctx) {
-            return ctx.length > 0;
-        }
-    },
-    validator2: {
-        validateFunc: function (ctx) {
-            return ctx.length > 0;
-        }
-    },
     alphaOnly: {
         validateFunc: function (ctx) {
             var letters = /^[a-zA-Z]+$/;
@@ -31,6 +21,16 @@ var validations = {
     numericOnly: {
         validateFunc: function (ctx) {
             var letters = /^[0-9]+$/;
+            ;
+            if (ctx.match(letters)) {
+                return true;
+            }
+            return false;
+        }
+    },
+    decimalCheck: {
+        validateFunc: function (ctx) {
+            var letters = /^[-+]?[0-9]+\.[0-9]+$/;
             ;
             if (ctx.match(letters)) {
                 return true;

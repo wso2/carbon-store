@@ -164,7 +164,7 @@ asset.configure = function () {
                         updatable: false,
                         validations: {
                             client: ["FieldValidate", {"name": "alphaNumericChecked", "error_msg": "this is default"}],
-                            server: ["validator2"]
+                            server: ["alphaNumericOnly"]
 
                         }
 
@@ -176,7 +176,7 @@ asset.configure = function () {
                             label: 'Version'
                         },
                         validations: {
-                            server: ["numericOnly"]
+                            server: []
                         }
 
                     },
@@ -243,12 +243,13 @@ asset.configure = function () {
             },
             validationMappings : {
                 type : {
-                    text : ['validator1','validator2'],
-                    options : ['validator1']
+                    text : ['alphaNumericOnly'],
+                    url : ['url'],
+                    email : ['email']
                 },
-                required : ['validator1','validator2'],
-                updatable : ['validator2'],
-                readonly : ['validator1']
+                required : ['requiredField'],
+                updatable : [],
+                readonly : []
             }
         }
     };
