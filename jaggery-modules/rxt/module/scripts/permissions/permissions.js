@@ -266,9 +266,7 @@ var permissions = {};
         var server = require('store').server;
         var um = server.userManager(options.tenantId);
         var permissions = this.getAppPagePermission(options.url);
-        log.info('Checking permission for ' + permissions);
         var isAllowed = um.authorizer.isUserAuthorized(options.username, permissions, 'read');
-        log.info('Is allowed? ' + isAllowed);
         return isAllowed;
     };
     //var permissionKeySet = ['ASSET_SEARCH', 'ASSET_LIST', 'ASSET_CREATE', 'ASSET_UPDATE', 'ASSET_DELETE', 'ASSET_LIFECYCLE_MANAGEMENT', 'ASSET_BOOKMARK', 'ASSET_MYITEMS'];
@@ -522,7 +520,7 @@ var permissions = {};
         try {
             result = permission(context) || true;
             if (typeof result === 'string') {
-                log.info('Dynamic permission function evaluated to permission string ' + result);
+                //log.info('Dynamic permission function evaluated to permission string ' + result);
                 isAuthorized = checkPermissionString(username, result, action, authorizer);
             } else if (typeof result === 'boolean') {
                 isAuthorized = result;
@@ -544,7 +542,6 @@ var permissions = {};
             return false;
         }
         options.username = username;
-        log.info('Using mapped permission: ' + stringify(permission));
         return isPermissable(permission, tenantId, username,options);
     };
     var checkAppPermission = function(key, tenantId, username,options) {
@@ -556,7 +553,6 @@ var permissions = {};
             return false;
         }
         options.username = username;
-        log.info('Using mapped permission ' + stringify(permission));
         return isPermissable(permission, tenantId, username,options);
     };
     permissions.hasAssetPermission = function() {
@@ -565,6 +561,7 @@ var permissions = {};
         var tenantId;
         var username;
         var options = {};
+        var authorized;
         options.type = type;
         if (arguments.length === 3) {
             var server = require('store').server;
@@ -580,13 +577,16 @@ var permissions = {};
         if ((!username) || (!tenantId)) {
             throw 'Unable to resolve permissions without the tenantId and username';
         }
-        log.info('Checking permission for ' + username + ' tenantId ' + tenantId);
-        return checkAssetPermission(key, type, tenantId, username,options);
+        log.info('Checking permission '+key+' for ' + username + ' tenantId ' + tenantId+' type '+type);
+        authorized = checkAssetPermission(key, type, tenantId, username,options);
+        log.info('Authorized :'+authorized);
+        return authorized;
     };
     permissions.hasAppPermission = function() {
         var key = arguments[0];
         var tenantId;
         var username;
+        var authorized;
         if (arguments.length === 2) {
             var server = require('store').server;
             var user = server.current(arguments[1]);
@@ -601,8 +601,10 @@ var permissions = {};
         if ((!username) || (!tenantId)) {
             throw 'Unable to resolve permissios without the tenantId and username';
         }
-        log.info('Checking permissions for ' + username + ' tenantId ' + tenantId);
-        return checkAppPermission(key, tenantId, username);
+        log.info('Checking permissions'+key+' for ' + username + ' tenantId ' + tenantId);
+        authorized = checkAppPermission(key, tenantId, username);
+        log.info('Authorized: '+authorized);
+        return authorized;
     };
     var locateEndpointDetails = function(endpoints, url) {
         var endpoint;
