@@ -21,6 +21,10 @@ var permissions = {};
     var log = new Log('rxt-permissions');
     var DEFAULT_ASSET = '_default';
     var PERMISSION_LOAD_HOOK = 'tenantLoad';
+    permissions.ANON_ROLE = 'system/wso2.anonymous.role';
+    var getAnonRole = function(){
+        return permissions.ANON_ROLE;
+    };
     var permissionTreeRoot = function() {
         return '/_system/governance/permission';
     };
@@ -479,7 +483,12 @@ var permissions = {};
     var checkPermissionString = function(username, permission, action, authorizer) {
         var isAuthorized = false;
         try {
-            isAuthorized = authorizer.isUserAuthorized(username, permission, action);
+            if(!username){
+                log.warn('username not provided to check '+permission+'.The anon role will be used to check permissions');
+                isAuthorized = authorizer.isRoleAuthorized(getAnonRole(),permission,action);
+            } else {
+                isAuthorized = authorizer.isUserAuthorized(username, permission, action);
+            }
         } catch (e) {
             log.error(e);
         }
@@ -504,8 +513,8 @@ var permissions = {};
         var isAuthorized = false; //Assume authorization will fail
         var context;
         var result;
-        if ((!username) || (!tenantId)) {
-            throw 'Unable to resolve permissions without a username and tenantId';
+        if (!tenantId) {
+            throw 'Unable to resolve permissions without a tenantId';
         }
         if (isPermissionString) {
             return checkPermissionString(username, permission, action, authorizer);
