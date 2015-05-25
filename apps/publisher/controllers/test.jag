@@ -39,23 +39,23 @@ var permissions = rxtAPI.permissions;
 log.info('### Asset Check ###');
 
 log.info('*** user3 ***');
-log.info('Is authorized to view create page of SITES? '+permissions.hasAssetPermission('ASSET_CREATE','site',-1234,'user3'));
-log.info('Is authorized to view list page of SITES? '+permissions.hasAssetPermission('ASSET_LIST','site',-1234,'user3'));
-log.info('Is authorized to view lifecycle page of SITES? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','site',-1234,'user3'));
+log.info('Is authorized to view create page of SITES? '+permissions.hasAssetPermission('ASSET_CREATE','site',-1234,'user4'));
+log.info('Is authorized to view list page of SITES? '+permissions.hasAssetPermission('ASSET_LIST','site',-1234,'user4'));
+log.info('Is authorized to view lifecycle page of SITES? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','site',-1234,'user4'));
 
-log.info('Is authorized to view create page of GADGETS? '+permissions.hasAssetPermission('ASSET_CREATE','gadget',-1234,'user3'));
-log.info('Is authorized to view list page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIST','gadget',-1234,'user3'));
-log.info('Is authorized to view lifecycle page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','gadget',-1234,'user3'));
+log.info('Is authorized to view create page of GADGETS? '+permissions.hasAssetPermission('ASSET_CREATE','gadget',-1234,'user4'));
+log.info('Is authorized to view list page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIST','gadget',-1234,'user4'));
+log.info('Is authorized to view lifecycle page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','gadget',-1234,'user4'));
 
 
-log.info('*** admin ***');
-log.info('Is authorized to view create page of SITES? '+permissions.hasAssetPermission('ASSET_CREATE','site',session));
-log.info('Is authorized to view list page of SITES? '+permissions.hasAssetPermission('ASSET_LIST','site',session));
-log.info('Is authorized to view lifecycle page of SITES? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','site',session));
+//log.info('*** admin ***');
+// log.info('Is authorized to view create page of SITES? '+permissions.hasAssetPermission('ASSET_CREATE','site',session));
+// log.info('Is authorized to view list page of SITES? '+permissions.hasAssetPermission('ASSET_LIST','site',session));
+// log.info('Is authorized to view lifecycle page of SITES? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','site',session));
 
-log.info('Is authorized to view create page of GADGETS? '+permissions.hasAssetPermission('ASSET_CREATE','gadget',session));
-log.info('Is authorized to view list page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIST','gadget',session));
-log.info('Is authorized to view lifecycle page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','gadget',session));
+// log.info('Is authorized to view create page of GADGETS? '+permissions.hasAssetPermission('ASSET_CREATE','gadget',session));
+// log.info('Is authorized to view list page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIST','gadget',session));
+// log.info('Is authorized to view lifecycle page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','gadget',session));
 
 
 
