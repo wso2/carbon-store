@@ -48,9 +48,10 @@ var handleApiEndpoint = function(request, session, uriParams) {
             }
         }
         var user = require('store').server.current(session);
-        var isAuthorized = rxtAPI.hasAssetAPIPermission(type, page, user.tenantId, user.username);
+        var username = user ? user.username : null;
+        var isAuthorized = rxtAPI.hasAssetAPIPermission(type, page, user.tenantId, username);
         if (!isAuthorized) {
-            log.error('user ' + user.username + ' does not have permission to access the api ' + page);
+            log.error('user ' + username + ' does not have permission to access the api ' + page);
             response.sendError(401, 'You do not have access to this api');
         } else {
             if (endpoint) {
