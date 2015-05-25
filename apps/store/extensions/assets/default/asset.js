@@ -123,7 +123,7 @@ asset.configure = function() {
                 lifecycleEnabled:true
             },
             ui: {
-                icon: 'icon-cog'
+                icon_src: '/store/themes/store/img/icons/view-source.png'
             },
             categories: {
                 categoryField: 'overview_category'

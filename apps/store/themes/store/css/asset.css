@@ -1,19 +1,27 @@
 body .store-left {
     padding-top: 0;
 }
+h4{font-weight: 400;}
 .asset-description {
     position: relative;
     padding-top: 0;
+
 }
 .asset-description-header h2 {
     margin-top: 12px;
 }
 .asset-description-header {
     background: #fff;
+    display: inline-block;
+    float: left;
+    height: auto;
+    margin-top: 20px;
+    width: 100%;
+    margin-bottom: 20px;
 }
 .asset-description-header .row > div {
     position: relative;
-    height: 300px;
+
 }
 .asset-description-header .row {
     margin-bottom: 0;
@@ -36,10 +44,10 @@ body .store-left {
     overflow: visible;
 }
 #tab-reviews {
-    position: absolute;
-    display: block;
-    visibility: hidden;
-    top:-9999px;
+    /*position: absolute;*/
+    /*display: block;*/
+    /*visibility: hidden;*/
+    /*top:-9999px;*/
 }
 
 #tab-reviews li {
@@ -190,12 +198,107 @@ label.error {
     margin-bottom: 15px;
     margin-left: 10px;
 }
-
+h4{font-weight: 400px;}
 /*
 .asset-description-header .asset-introduction-box {
     left: 59% !important;
     right: -1px;
     background: #fff;
 }*/
+.details-image{padding: 18px 0 0; width:30%; float: left; transition:all 0.5s ease; margin-bottom: 15px;}
+.details-container{ float: left; transition:all 0.5s ease; width:69%;margin-top: 15px; }
+.action-container{width:auto;padding:15px; display:inline-block;}
+.action-sub-container{width: auto; height: auto; float: left; vertical-align:middle; padding-right: 6px;}
+.action-lable{width:85px; height: auto;}
+.blue-button {
+    background-color: #3a9ecf;
+    border:0 none;
+    color:#fff;
+    height:45px;
+    padding:10px 15px;
+    text-align: center;
+    font-size: 16px;
+}
+.asset-details-wrapper {width:57.2%; margin-left: 20px; float: left;}
+.tags {
+    background-color: #e3e3e3;
+    display: inline-block;
+    margin-left: 1%;
+    margin-top: 1%;
+    padding: 1%;
+    text-align: center;
+    width: 10%;
+}
+.assetp-properties{float: left; width: 100%; margin-top:20px; background-color: #fff; padding:20px;}
+/*  _____________________________________________________________________________
+
+	 TYPOGRAPHY & COLOR
+    _____________________________________________________________________________  */
 
 
+.font-small{font-size:12px;}
+.font-medium{font-size:14px;}
+.font-large{font-size:16px;}
+.font-extra-large{font-size:20px !important;}
+
+.uppercase{text-transform:uppercase;}
+.capitalize{text-transform:capitalize;}
+.lowercase{text-transform:lowercase;}
+
+
+.blue-bg{background-color: #3a9ecf !important;}
+.grey-bg{background-color: #222222 !important;}
+.white-bg{background-color: #ffffff !important;}
+
+.light-blue{color:#3a9ecf;}
+.black{color:#000;}
+.grey{color:#333;}
+.light-grey{color: #737272;}
+.white{color:#FFF;}
+
+.bold{font-weight:bold;}
+.no-underline{text-decoration:none;}
+
+.center{text-align:center;}
+.right{text-align:right;}
+.left{text-align:left;}
+.justify{text-align:justify;}
+
+.middle{vertical-align: middle;}
+
+/*  ____________________________________________________________________________
+
+	 PADDING & MARGIN
+    _____________________________________________________________________________  */
+.padding-left {padding-left:10px;}
+.padding-right  {padding-right:10px;}
+.padding-top  {padding-top:10px;}
+.padding-bottom  {padding-bottom:10px;}
+.padding{padding:10px;}
+.padding-none{ padding:0px !important;}
+
+.padding-left-double {padding-left:20px;}
+.padding-right-double  {padding-right:20px;}
+.padding-top-double  {padding-top:20px;}
+.padding-bottom-double  {padding-bottom:20px;}
+.padding-double{padding:20px;}
+
+.margin-left {margin-left:10px;}
+.margin-right  {margin-right:10px;}
+.margin-top  {margin-top:10px;}
+.margin-bottom  {margin-bottom:10px;}
+.margin{margin:10px;}
+.margin-none{margin: 0px !important;}
+
+.margin-left-double {margin-left:20px;}
+.margin-right-double  {margin-right:20px;}
+.margin-top-double  {margin-top:20px;}
+.margin-bottom-double  {margin-bottom:20px;}
+.margin-double{margin:20px;}
+
+.section-top-margin{margin: 10%;}
+.float-left{float:left;}
+.float-right{float:right;}
+.clear{ clear:both;}
+
+.relative{ position:relative;}
