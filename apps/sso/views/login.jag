@@ -36,9 +36,7 @@ var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
 
     <!-- Le styles -->
     <link href="views/css/bootstrap.min.css" rel="stylesheet">
-    <link href="views/css/bootstrap-responsive.css" rel="stylesheet">
-    <link href="views/css/styles.css" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" href="views/css/font-awesome.min.css">
+    <link href="views/css/custom.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -48,200 +46,163 @@ var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
     <![endif]-->
 
     <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
     <link rel="shortcut icon" href="http://wso2.com/files/favicon.ico" type="image/x-icon"/>
 
 </head>
 
 <body>
-
-<div class="container">
-    <div class="row">
-        <div class="span8 offset2">
-            <div class="row">
-                <div class="span8 form-header">
-                    <img src="views/img/logo-banner.png">
+<div class="container col-lg-12 col-md-12 col-sm-12">
+        <header>
+            <div class="row wr-global-header">
+                <div class="col-lg-12 app-logo">
+                    <a href="home.html"><img src="views/images/logo.png" /><h2 class="app-title">Enterprise Store</h2></a>
                 </div>
             </div>
-            <div id="form-cont" class="row">
-                <div class="span8">
-                    <div class="form-signin row-fluid">
-                        <div class="span12">
-                            <div class="row-fluid">
-                                <div class="span6">
-                                    <form id="loginForm" action="/commonauth" method="POST">
-                                        <h2 class="form-signin-heading">Sign in</h2>
-                                        <% if(e){ %>
-                                        <div class="alert alert-error">Username or password is invalid</div>
-                                        <%
+        </header>
+        <div class="row">
+            <div class="col-md-12">
 
-                                        }%>
-                                        <div class="control"><label>Username</label><input id="username" name="username"
-                                                                                           type="text"
-                                                                                           class="input-block-level">
-                                        </div>
-                                        <div class="control"><label>Password</label><input id="password" name="password"
-                                                                                           type="password"
-                                                                                           class="input-block-level">
-                                        </div>
-                                        <label class="checkbox lblRemember">
-                                            <input type="checkbox" value="remember-me"> Remember me
-                                        </label>
-                                        <input type="hidden" name="sessionDataKey"
-                                               value="<%=request.getParameter("sessionDataKey")%>">
-                                        <% if(isPasswordRecoveryEnabled){ %>
-                                            <a href="recovery-option">Forgot your password?</a>
-                                        <%
+                <!-- content -->
+                <div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
 
-                                        }%>
-                                        <button class="btn btn-large pull-right" type="submit">Sign in</button>
-                                    </form>
-                                </div>
 
-                                <div class="span6">
-                                    <form id="registerForm">
-                                        <h2 class="form-signin-heading">Register</h2>
+                    <form id="loginForm" action="/commonauth" method="POST">
+                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
 
-                                        <div id="regFormError" class="alert alert-error" style="display:none"></div>
-                                        <div id="regFormSuc" class="alert alert-success" style="display:none"></div>
 
-                                        <div class="control"><label>Username</label><input id="reg-username"
-                                                name="reg-username" type="text" class="input-block-level required
-                                                usrName">
-                                        </div>
-                                        <div class="control">
-                                            <label>Password</label>
-                                            <input id="reg-password" name="reg-password" type="password"
-                                                   class="input-block-level required">
-                                        </div>
-                                        <div class="control">
-                                            <label>Confirm password</label>
-                                            <input id="reg-password2" name="password2" type="password"
-                                                   class="input-block-level required" equalTo="#reg-password">
-                                        </div>
-                                        <%
-                                        var claimsModule = require('account-management');
-                                        var claims = claimsModule.getDefaultClaims();
-                                        var renderedClaims = {};
+                        <div class="boarder-all ">
+                            <div class="clear"></div>
+                            <span class="padding-double float-left font-large">Sign in to continue </span>
+                            <!-- validation -->
+                            <div class="wr-input-control padding-double">
+                                <br><br><br>
 
-                                        var claimUriOverrides = {
-                                            USERNAME: {
-                                                  render: false // because this is already rendered by default
-                                            },
-                                            PASSWORD: {
-                                                  render: false // because this is already rendered by default
-                                            },
-                                            EMAILADDRESS: {
-                                                  render: true,
-                                                  customClass: 'email'
-                                            }
+                                <% if(e){ %>
+                                <div class="alert alert-error">Username or password is invalid</div>
+                                <% } %>
+                                <input id="username" name="username" type="text" class="input-block-level" placeholder="Username">
+                                <br><br>
+                                <input id="password" name="password" type="password" class="input-block-level">
+                                <br><br>
+                                <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large" type="submit">Sign in</button>
+
+                                 <br><br><br>
+                                    <input type="checkbox" value="remember-me" style="display: inline"> Remember me
+                                    <br><br>
+                                <input type="hidden" name="sessionDataKey" value="<%=request.getParameter("sessionDataKey")%>">
+                                <% if(isPasswordRecoveryEnabled){ %>
+                                    <a href="recovery-option">Forgot your password?</a>
+                                <% }%>
+                                <a id="registerLink" href="#">Create an account</a>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form id="registerForm" style="display: none">
+                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
+
+                         <div class="boarder-all ">
+                            <div class="clear"></div>
+                            <span class="padding-double float-left font-large">Enter all text fields to complete registration </span>
+                            <!-- validation -->
+                            <div class="wr-input-control padding-double">
+                                <br><br><br>
+                                <div id="regFormError" class="alert alert-error" style="display:none"></div>
+                                <div id="regFormSuc" class="alert alert-success" style="display:none"></div>
+
+                                <label class="float-left light-grey taxt-label">Username</label>
+                                <input id="reg-username"
+                                        name="reg-username" type="text" class="padding-double required usrName">
+
+                                <br><br>
+
+                                <label class="float-left light-grey taxt-label">Password</label>
+                                <input id="reg-password" name="reg-password" type="password" class="padding-double required">
+
+                                <br><br>
+
+                                <label class="float-left light-grey taxt-label">Confirm password</label>
+                                <input id="reg-password2" name="password2" type="password" class="padding-double required" equalTo="#reg-password">
+
+                                <br><br>
+                                <%
+                                    var claimsModule = require('account-management');
+                                    var claims = claimsModule.getDefaultClaims();
+                                    var renderedClaims = {};
+
+                                    var claimUriOverrides = {
+                                        USERNAME: {
+                                            render: false // because this is already rendered by default
+                                        },
+                                        PASSWORD: {
+                                            render: false // because this is already rendered by default
+                                        },
+                                        EMAILADDRESS: {
+                                            render: true,
+                                            customClass: 'email'
                                         }
+                                    }
 
-                                        for (var claimIndex = 0; claimIndex < claims.length; claimIndex++) {
+                                    for (var claimIndex = 0; claimIndex < claims.length; claimIndex++) {
 
-                                               var override = claimUriOverrides[claims[claimIndex].claimUri.toUpperCase()];
+                                        var override = claimUriOverrides[claims[claimIndex].claimUri.toUpperCase()];
 
-                                               // render claim if it's required and not overriden to --> render:false
-                                               if (claims[claimIndex].isRequired && (!override || override.render !== false)) {
-                                                    var formElementName = 'reg-' + claims[claimIndex].displayTag
-                                                              .toLowerCase().replace(' ', '-');
-                                        %>
-                                        <div class="control">
-                                            <label><%=claims[claimIndex].displayTag%></label>
-                                            <input type="text" name="<%=formElementName%>"
-                                                   data-claim-uri="<%=claims[claimIndex].claimUri%>"
-                                                   class="input-block-level required <%=claims[claimIndex].customClass%>">
-                                        </div>
-                                        <%
-                                                    renderedClaims[formElementName] = claims[claimIndex].claimUri;
-                                               }
+                                        // render claim if it's required and not overriden to --> render:false
+                                        if (claims[claimIndex].isRequired && (!override || override.render !== false)) {
+                                            var formElementName = 'reg-' + claims[claimIndex].displayTag
+                                                    .toLowerCase().replace(' ', '-');
+                                            %>
+                                                <label class="float-left light-grey taxt-label"><%=claims[claimIndex].displayTag%></label>
+                                                                                <input type="text" name="<%=formElementName%>"
+                                                                                       data-claim-uri="<%=claims[claimIndex].claimUri%>"
+                                                                                       class="padding-double required <%=claims[claimIndex].customClass%>">
+                                                                                       <br><br>
+                                                                            <%
+                                            renderedClaims[formElementName] = claims[claimIndex].claimUri;
                                         }
-                                        %>
-                                        <div class="control">
-                                            <label>Security Question</label>
-                                            <select id='secret-question' name='secret-question'>
-                                        <%
-                                            for (var challengeIndex = 0; challengeIndex < challengeSet.length; challengeIndex++) {
+                                    }
+                                    %>
+                                        <label class="float-left light-grey taxt-label">Security Question</label>
+                                        <select id='secret-question' name='secret-question'>
+                                    <%
+                                    for (var challengeIndex = 0; challengeIndex < challengeSet.length; challengeIndex++) {
                                         %>
                                                 <option value="<%=challengeSet[challengeIndex].getQuestion()%>">
-                                                    <%=challengeSet[challengeIndex].getQuestion()%>
-                                                </option>
-                                        <%
-                                            }
-                                        %>
-                                            </select>
-                                        </div>
-                                        <div class="control">
-                                            <label>Answer</label>
-                                            <input type='text' id='secret-answer' name="secret-answer"
-                                                   class="input-block-level required">
-                                        </div>
-                                        <div class="control">
-                                            <input type="hidden" name="reg-claims" value='<%=renderedClaims%>'
-                                                   class="input-block-level required">
-                                        </div>
-                                        <div>
-                                            <input id="reg-action" name="action" type="hidden" value="register">
-                                        </div>
-                                        <button id="registrationSubmit" class="btn btn-large btn-primary pull-right"
-                                                type="button">Register
-                                        </button>
-                                    </form>
+                                                                                        <%=challengeSet[challengeIndex].getQuestion()%>
+                                                                                    </option>
+                                                                            <%
+                                    }
+                                    %>
+                                    </select>
+                                    <br><br>
+                                    <label class="float-left light-grey taxt-label">Answer</label>
+                                    <input type='text' id='secret-answer' name="secret-answer"
+                                           class="padding-double required">
+                                    <br><br>
+                                    <input type="hidden" name="reg-claims" value='<%=renderedClaims%>'
+                                       class="input-block-level required">
+                                    <input id="reg-action" name="action" type="hidden" value="register">
+                                    <button id="registrationSubmit" class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"
+                                            type="button">Register
+                                    </button>
+
+                                    <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
+                                            <span class="margin-top padding-top-double font-large"><br>Already have an account? </span>
+                                            <a href="#" id="signInLink">Sign in</a>
+                                    </div>
                                 </div>
                             </div>
-
-                        </div>
-
+                        </form>
                     </div>
                 </div>
             </div>
-
-
-        </div>
-        <div class="row row-footer span8 offset2 sso-footer">
-
-            <div class="footer row-fluid">
-                <div class="span12">
-                    <div class="row-fluid">
-                        <div class="span6">
-                            <span> &copy; 2013 WSO2 Inc. All Rights Reserved. </span>
-                        </div>
-                        <div class="span6 pull-right">
-                            <ul>
-                                <li>
-                                    <a href="/publisher"><i class="icon-check-sign"></i> Publisher</a>
-                                </li>
-                                <li>
-                                    <a href="/store"><i class="icon-th-large"></i> Store</a>
-                                </li>
-                                <li>
-                                    <a href="http://docs.wso2.org/display/ES100/WSO2+Enterprise+Store"
-                                       target="_blank"><i class="icon-book"></i> Docs</a>
-                                </li>
-                                <li>
-                                    <a target="_blank" href="http://www.wso2.com" id="logo-wso2"></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-        </div>
-    </div>
-
-
 </div>
 <!-- /container -->
 
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="views/js/jquery-1.8.3.min.js"></script>
+<script src="views/js/jquery-1.11.1.min.js"></script>
 <script src="views/js/bootstrap.min.js"></script>
 <script src="views/js/jquery.validate.js"></script>
 <script type="text/javascript">
@@ -286,6 +247,16 @@ var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
         jQuery.validator.addMethod("usrName", function (value, element) {
             return this.optional(element) || /^[a-zA-Z0-9\-]*$/.test(value);
         }, "Only alphanumeric characters and '-' allowed");
+
+         $('#signInLink').click(function(){
+            $('#registerForm').hide('slow');
+            $('#loginForm').show('slow');
+        });
+
+        $('#registerLink').click(function(){
+            $('#registerForm').show('slow');
+            $('#loginForm').hide('slow');
+        });
     });
 </script>
 </body>

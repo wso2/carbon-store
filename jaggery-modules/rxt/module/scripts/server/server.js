@@ -36,14 +36,24 @@ var server = {};
         event.on('login', function(tenantId, user, session) {
             var rxtManager = core.rxtManager(tenantId);
             var rxts = rxtManager.listRxtTypes();
+            var context; // = core.createAssetContext(session, type, tenantId);
             var assetResources;
             var rxt;
-            var context;
+            var instance;
             for (var index in rxts) {
                 type = rxts[index];
-                assetResources = core.assetResources(tenantId, type);
                 context = core.createAssetContext(session, type, tenantId);
-                assetResources.server(context).onUserLogin();
+                assetResources = core.assetResources(tenantId, type);
+                if (assetResources.server) {
+                    instance = assetResources.server(context);
+                } else {
+                    instance = assetResources._default.server(context);
+                }
+                //Check if a user logged in callback is present
+                //annd then execute it with the username
+                if (instance.onUserLoggedIn) {
+                    instance.onUserLoggedIn(user);
+                }
             }
         });
     };

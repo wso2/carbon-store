@@ -122,10 +122,15 @@ var core = {};
         var field;
         var name;
         rxtTable.fields = {};
+
         for (var index in fields) {
             field = fields[index];
-            trasnformField(field)
-            name = createCamelCaseName(field.name.name);
+            trasnformField(field);
+            if(rxtTable.maxoccurs && field.name.name.trim().search(/\s/g) == -1){
+                name = field.name.name;
+            }else{
+                name = createCamelCaseName(field.name.name);
+            }
             rxtTable.fields[name] = field;
             //Determine if there is a label which has been defined 
             if (!field.name.label) {

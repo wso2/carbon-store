@@ -19,7 +19,7 @@
 var resources = function (page, meta) {
     return {
        	js:['libs/jquery.form.min.js','publisher-utils.js','update_asset.js','common/option_text.js','date_picker/datepicker.js','jquery.validate.js','jquery.validate.min.js','client_side_validation.js'],
-       	css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css',,'error-style.css'],
+       	css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css','error-style.css'],
        	code: ['publisher.assets.hbs']
     };
 };

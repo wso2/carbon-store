@@ -51,27 +51,65 @@ $(function(){
         }
 
     });
-
-    $('#form-asset-create input[type="text"]').each(
-        function(){
-            if($(this).attr('data-render-options') == "date-time"){
-                var dateField = this;
-                $(this).DatePicker({
-                    mode: 'single',
-                    position: 'right',
-                    onBeforeShow: function(el){
-                        if($(dateField).val())
-                            $(dateField).DatePickerSetDate($(dateField).val(), true);
-                    },
-                    onChange: function(date, el) {
-                        $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
-                        if($('#closeOnSelect input').attr('checked')) {
-                            $(el).DatePickerHide();
-                        }
+    var initDatePicker =  function(){
+        if($(this).attr('data-render-options') == "date-time"){
+            var dateField = this;
+            $(this).DatePicker({
+                mode: 'single',
+                position: 'right',
+                onBeforeShow: function(el){
+                    if($(dateField).val().replace(/^\s+|\s+$/g,"")){
+                        $(dateField).DatePickerSetDate($(dateField).val(), true);
                     }
-                });
-            }
+
+                },
+                onChange: function(date, el) {
+                    $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
+                    if($('#closeOnSelect input').attr('checked')) {
+                        $(el).DatePickerHide();
+                    }
+                }
+            });
         }
-    );
+    };
+
+    $('#form-asset-create input[type="text"]').each(initDatePicker);
+
+
+    var removeUnboundRow = function(link){
+        var table = link.closest('table');
+        if($('tr',table).length == 2){
+            table.hide();
+        }
+        link.closest('tr').remove();
+    };
+
+    $('.js-add-unbounded-row').click(function(){
+        var tableName = $(this).attr('data-name');
+        var table = $('#table_'+tableName);
+        var referenceRow = $('#table_reference_'+tableName);
+        var newRow = referenceRow.clone().removeAttr('id');
+        table.show().append(newRow);
+
+        $('input[type="text"]',newRow).each(initDatePicker);
+
+    });
+    $('.js-unbounded-table').on('click','a',function(event){
+        removeUnboundRow($(event.target));
+    });
+
+    $('.js-unbounded-table').on('click','input[type="checkbox"]',function(event){
+        var checkbox = event.target;
+        var hiddenField = $(checkbox).next();
+        console.info(hiddenField);
+        if($(checkbox).is(":checked")){
+            $(hiddenField).val('on');
+        }else{
+            $(hiddenField).val('off');
+        }
+    });
+
+    $('#tmp_refernceTableForUnbounded').detach().attr('id','refernceTableForUnbounded').appendTo('body');
+    $('#tmp_refernceTableForUnbounded').remove();
 
 });

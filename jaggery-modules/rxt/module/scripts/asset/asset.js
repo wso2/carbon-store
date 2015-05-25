@@ -115,8 +115,10 @@ var asset = {};
             } else {
                 attributes[attrName] = "on";  //We set it's value to on
             }
-        } else {
-            if (data[attrName] != null) {
+
+        }else {
+            if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g,"") != "") {
+
                 attributes[attrName] = data[attrName];
             } else {
                 log.debug(attrName + ' will not be saved.');
@@ -315,7 +317,7 @@ var asset = {};
         }
         return validationStatus;
     };
-    var validationObjStatus = function (key, validationName, value) {
+    var validationObjStatus = function(key,validationName,value){
         var status;
         var extJsFile = require("/extensions/assets/default/validation.js");
         var validations = extJsFile.validations;
@@ -333,23 +335,7 @@ var asset = {};
         }
         return validationObj;
     };
-    /**
-     * The function will validate against validation function for each asset attributes value.
-     */
-//    var validations = {
-//        validator1: {
-//            validateFunc: function (ctx) {
-//                log.info(" custom validation for validator1");
-//                return ctx.length < 0;
-//            }
-//        },
-//        validator2: {
-//            validateFunc: function (ctx) {
-//                log.info("custom validation for validator2");
-//                return ctx.length < 0;
-//            }
-//        }
-//    };
+
     /**
      * Makes the provided asset the default asset by retrieving the group of assets it
      * belongs to and removing the default property from any existing assets.The provided
