@@ -31,7 +31,7 @@
     <url>http://wso2.org</url>
     <dependencies>
         <dependency>
-            <groupId>org.apache.httpcomponents.wso2</groupId>
+            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
         </dependency>
         <dependency>
@@ -76,7 +76,7 @@
                             </bundles>
                             <importBundles>
                                 <!-- TODO: remove these when org.wso2.carbon.identity.sso.saml.server feature included proper bundleDefs for following jars -->
-                                <importBundleDef>org.apache.httpcomponents.wso2:httpclient</importBundleDef>
+                                <importBundleDef>org.wso2.orbit.org.apache.httpcomponents:httpclient</importBundleDef>
                                 <importBundleDef>org.apache.httpcomponents.wso2:httpcore</importBundleDef>
                             </importBundles>
                             <importFeatures>
