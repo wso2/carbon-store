@@ -69,6 +69,8 @@ var store = require('/modules/store.js');
 store.init(configs);
 rxt.server.init(configs);
 
+rxt.permissions.init();
+
 /*
 var url='https://localhost:9443/admin',
     username='admin',

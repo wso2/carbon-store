@@ -82,67 +82,57 @@ asset.server = function (ctx) {
         onUserLoggedIn: function () {
         },
         endpoints: {
-            apis: [
-                {
-                    url: 'assets',
-                    path: 'assets.jag'
-                },
-                {
-                    url: 'asset',
-                    path: 'asset.jag'
-                },
-                {
-                    url: 'statistics',
-                    path: 'statistics.jag'
-                }
-            ],
-            pages: [
-                {
-                    title: 'Asset: ' + type,
-                    url: 'asset',
-                    path: 'asset.jag'
-                },
-                {
-                    title: 'Assets ' + type,
-                    url: 'assets',
-                    path: 'assets.jag'
-                },
-                {
-                    title: 'Create ' + type,
-                    url: 'create',
-                    path: 'create.jag'
-                },
-                {
-                    title: 'Update ' + type,
-                    url: 'update',
-                    path: 'update.jag'
-                },
-                {
-                    title: 'Details ' + type,
-                    url: 'details',
-                    path: 'details.jag'
-                },
-                {
-                    title: 'List ' + type,
-                    url: 'list',
-                    path: 'list.jag'
-                },
-                {
-                    title: 'Lifecycle',
-                    url: 'lifecycle',
-                    path: 'lifecycle.jag'
-                },
-                {
-                    title: 'Old lifecycle ',
-                    url: 'old-lifecycle',
-                    path: 'old-lifecycle.jag'
-                },
-                {
-                    title: 'Statistics',
-                    url: 'statistics',
-                    path: 'statistics.jag'
-                }
-            ]
+
+            apis: [{
+                url: 'assets',
+                path: 'assets.jag'
+            }, {
+                url: 'asset',
+                path: 'asset.jag'
+            }, {
+                url: 'statistics',
+                path: 'statistics.jag'
+            }],
+            pages: [{
+                title: 'Asset: ' + type,
+                url: 'asset',
+                path: 'asset.jag'
+            }, {
+                title: 'Assets ' + type,
+                url: 'assets',
+                path: 'assets.jag'
+            }, {
+                title: 'Create ' + type,
+                url: 'create',
+                path: 'create.jag',
+                permission:'ASSET_CREATE'
+            }, {
+                title: 'Update ' + type,
+                url: 'update',
+                path: 'update.jag'
+            }, {
+                title: 'Details ' + type,
+                url: 'details',
+                path: 'details.jag'
+            }, {
+                title: 'List ' + type,
+                url: 'list',
+                path: 'list.jag',
+                permission:'ASSET_LIST'
+            }, {
+                title: 'Lifecycle',
+                url: 'lifecycle',
+                path: 'lifecycle.jag',
+                permission:'ASSET_LIFECYCLE'
+            }, {
+                title: 'Old lifecycle ',
+                url: 'old-lifecycle',
+                path: 'old-lifecycle.jag'
+            }, {
+                title: 'Statistics',
+                url: 'statistics',
+                path: 'statistics.jag'
+            }]
         }
     };
 };
@@ -255,8 +245,11 @@ asset.configure = function () {
 };
 asset.renderer = function (ctx) {
     var type = ctx.assetType;
-    var isAssetWithLifecycle = function (asset) {
-        if ((asset.lifecycle) && (asset.lifecycleState)) {
+
+    var permissionAPI = require('rxt').permissions;
+    var isAssetWithLifecycle = function(asset){
+        if((asset.lifecycle)&&(asset.lifecycleState)){
+
             return true;
         }
         log.warn('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
@@ -264,8 +257,10 @@ asset.renderer = function (ctx) {
     };
     var buildListLeftNav = function (page, util) {
         var navList = util.navList();
-        navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
-        navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
+        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE,ctx.assetType,ctx.session)){
+            navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
+            navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
+        }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
     };
@@ -273,11 +268,17 @@ asset.renderer = function (ctx) {
         var id = page.assets.id;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-        navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+
+        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE,ctx.assetType,ctx.session)){
+            navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+        }
+
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         //Only render the view if the asset has a 
         if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
-            navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+            if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE,ctx.assetType,ctx.session)){
+                navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+            }
         }
         return navList.list();
     };
@@ -386,7 +387,8 @@ asset.renderer = function (ctx) {
                 var assetList = ctx.rxtManager.listRxtTypeDetails();
                 for (var index in assetList) {
                     assetType = assetList[index];
-                    if (isActivatedAsset(assetType.shortName)) {
+                    //Only populate the link if the asset type is activated and the logged in user has permission to that asset
+                    if ((isActivatedAsset(assetType.shortName)) && (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIST,assetType.shortName,ctx.session)) ) {
                         assetTypes.push({
                             url: this.buildBaseUrl(assetType.shortName) + '/list',
                             assetIcon: assetType.ui.icon || DEFAULT_ICON,

@@ -79,7 +79,8 @@ var asset = {};
         }
         return result;
     };
-    var setField = function (field, attrName, data, attributes, table) {
+
+    var setField = function(field, attrName, data, attributes, table) {
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
@@ -113,7 +114,9 @@ var asset = {};
             if (data[attrName] == null || data[attrName] == undefined) {
                 attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
             } else {
-                attributes[attrName] = "on";  //We set it's value to on
+
+                attributes[attrName] = "on"; //We set it's value to on
+
             }
         } else {
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
@@ -552,7 +555,9 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
-    var createGroupingQuery = function (query, groupingAttributeValues) {
+
+    var createGroupingQuery = function(query, groupingAttributeValues) {
+
         query = query || {};
         // var attribute;
         // if(groupingAttributeValu.length === 0) {
@@ -562,11 +567,13 @@ var asset = {};
         //attribute = groupingAttributes[0];
         //query[attribute] = target;
         for (var key in groupingAttributeValues) {
-            query [key] = groupingAttributeValues[key];
+
+            query[key] = groupingAttributeValues[key];
         }
         return query;
     };
-    var getGroupAttributeValues = function (asset, attributes) {
+    var getGroupAttributeValues = function(asset, attributes) {
+
         //Handle cases where the full asset is provided
         if (asset.hasOwnProperty('attributes')) {
             asset = asset.attributes;
@@ -1690,6 +1697,45 @@ var asset = {};
         }
         return defaultCb;
     };
+    var createSessionlessServer = function(type, tenantId) {
+        var context = core.createAnonAssetContext(null, type, tenantId);
+        var assetResources = core.assetResources(tenantId, type);
+        var reflection = require('utils').reflection;
+        var serverCb = assetResources.server;
+        var defaultCb = assetResources._default.server;
+        if (!assetResources._default) {
+            log.warn('A default object has not been defined for the type: ' + type + ' for tenant: ' + tenantId);
+            throw 'A default object has not been defined for the type: ' + type + ' for tenant: ' + tenantId + '.Check if a default folder is present';
+        }
+        //Check if there is a type level server callback
+        if (!serverCb) {
+            defaultCb = defaultCb(context);
+            serverCb = defaultCb;
+        } else {
+            defaultCb = defaultCb(context);
+            serverCb = serverCb(context);
+            //Combine the endpoints 
+            var defaultApiEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.apis)) ? defaultCb.endpoints.apis : [];
+            var defaultPageEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.pages)) ? defaultCb.endpoints.pages : [];
+            var serverApiEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.apis)) ? serverCb.endpoints.apis : [];
+            var serverPageEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.pages)) ? serverCb.endpoints.pages : [];
+            combineEndpoints(defaultApiEndpoints, serverApiEndpoints);
+            combineEndpoints(defaultPageEndpoints, serverPageEndpoints);
+            if (!defaultCb.endpoints) {
+                throw 'No endpoints found for the type: ' + type;
+            }
+            if (!serverCb.endpoints) {
+                serverCb.endpoints = {};
+                log.warn('Creating endpoints object for type: ' + type);
+            }
+            defaultCb.endpoints.apis = defaultApiEndpoints;
+            serverCb.endpoints.apis = defaultApiEndpoints;
+            defaultCb.endpoints.pages = defaultPageEndpoints;
+            serverCb.endpoints.pages = defaultPageEndpoints;
+            reflection.override(defaultCb, serverCb);
+        }
+        return defaultCb;
+    };
     /**
      * Creates an Asset Manager instance using the registry of the currently
      * logged in user.This asset manager can be used to perform CRUD operations on pages
@@ -1737,6 +1783,18 @@ var asset = {};
     };
     asset.createRenderer = function (session, type) {
         return createRenderer(session, type);
+    };
+    asset.getSessionlessAssetEndpoints = function(type, tenantId) {
+        var serverCb = createSessionlessServer(type, tenantId);
+        return serverCb ? serverCb.endpoints : {};
+    };
+    asset.getSessionlessAssetPageEndpoints = function(type, tenantId) {
+        var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
+        return endpoints['pages'] || [];
+    };
+    asset.getSessionlessAssetApiEndpoints = function(type, tenantId) {
+        var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
+        return endpoints['apis'] || [];
     };
     /**
      * Returns a list of all endpoints available to currently
@@ -1830,9 +1888,13 @@ var asset = {};
     asset.resolve = function (request, path, themeName, themeObj, themeResolver) {
         var log = new Log();
         var resPath = path;
-        var appExtensionMediator = core.defaultAppExtensionMediator() || {resolveCaramelResources: function (path) {
-            return path;
-        }};
+
+        var appExtensionMediator = core.defaultAppExtensionMediator() || {
+            resolveCaramelResources: function(path) {
+                return path;
+            }
+        };
+
         path = '/' + path;
         //Determine the type of the asset
         var uriMatcher = new URIMatcher(request.getRequestURI());
@@ -1855,7 +1917,7 @@ var asset = {};
             }
             var basePath = themeResolver.call(themeObj, path);
             basePath = appExtensionMediator.resolveCaramelResources(basePath);
-            return basePath;//themeResolver.call(themeObj, path);
+            return basePath; //themeResolver.call(themeObj, path);
         }
         //Check if type has a similar path in its extension directory
         var extensionPath = '/extensions/assets/' + uriOptions.type + '/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;
