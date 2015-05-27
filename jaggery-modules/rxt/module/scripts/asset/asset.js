@@ -226,59 +226,61 @@ var asset = {};
      * @param  {Object} options A JSON object representing the asset to be validated
      * @memberOf AssetManager
      * @instance
-     * @function validateAsset
+     * @function validate
      * @lends AssetManager.prototype
      */
     AssetManager.prototype.validate = function (options) {
         var data = [];
         var curObject = this;
-        var rxtmetamappings = curObject.rxtManager.isValidationMappings(this.type);
+        var rxtmetamappings = curObject.rxtManager.isValidationMappings(curObject.type);
         for (var key in options.attributes) {
-            var rxtfield = curObject.rxtManager.getRxtField(this.type, key);
-            var valueofAttrib = options.attributes[key];
-            if (rxtfield.validations != null && rxtfield.validations.server != null) {
-                var serverSideValid = rxtfield.validations.server;
-                for (var i = 0; i < serverSideValid.length; i++) {
-                    var obj = validationObjStatus(key, serverSideValid[i], valueofAttrib);
-                    if (Object.getOwnPropertyNames(obj).length != 0) {
-                        data.push(obj);
+            if (options.attributes.hasOwnProperty(key)) {
+                var rxtfield = curObject.rxtManager.getRxtField(curObject.type, key);
+                var valueofAttrib = options.attributes[key];
+                if (rxtfield.validations != null && rxtfield.validations.server != null) {
+                    var serverSideValid = rxtfield.validations.server;
+                    for (var i = 0; i < serverSideValid.length; i++) {
+                        var obj = validationObjStatus(key, serverSideValid[i], valueofAttrib);
+                        if (Object.getOwnPropertyNames(obj).length != 0) {
+                            data.push(obj);
+                        }
                     }
-                }
-            } else {
-                for (var keyfield in rxtfield) {
-                    if (keyfield === "type") {
-                        var obj = validationMappingType(key, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
-                        if (obj.length != 0) {
-                            for (var i = 0; i < obj.length; i++) {
-                                if (Object.getOwnPropertyNames(obj[i]).length != 0) {
-                                    data.push(obj[i]);
+                } else {
+                    for (var keyfield in rxtfield) {
+                        if (keyfield === "type") {
+                            var obj = validationMappingType(key, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                            if (obj.length != 0) {
+                                for (var i = 0; i < obj.length; i++) {
+                                    if (Object.getOwnPropertyNames(obj[i]).length != 0) {
+                                        data.push(obj[i]);
+                                    }
                                 }
                             }
-                        }
-                    } else if (keyfield === "required") {
-                        var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
-                        if (obj.length != 0) {
-                            for (var i = 0; i < obj.length; i++) {
-                                if (Object.getOwnPropertyNames(obj[i]).length != 0) {
-                                    data.push(obj[i]);
+                        } else if (keyfield === "required") {
+                            var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                            if (obj.length != 0) {
+                                for (var i = 0; i < obj.length; i++) {
+                                    if (Object.getOwnPropertyNames(obj[i]).length != 0) {
+                                        data.push(obj[i]);
+                                    }
                                 }
                             }
-                        }
-                    } else if (keyfield === "readonly") {
-                        var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
-                        if (obj.length != 0) {
-                            for (var i = 0; i < obj.length; i++) {
-                                if (Object.getOwnPropertyNames(obj[i]).length != 0) {
-                                    data.push(obj[i]);
+                        } else if (keyfield === "readonly") {
+                            var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                            if (obj.length != 0) {
+                                for (var i = 0; i < obj.length; i++) {
+                                    if (Object.getOwnPropertyNames(obj[i]).length != 0) {
+                                        data.push(obj[i]);
+                                    }
                                 }
                             }
-                        }
-                    } else if (keyfield === "updatable") {
-                        var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
-                        if (obj.length != 0) {
-                            for (var i = 0; i < obj.length; i++) {
-                                if (Object.getOwnPropertyNames(obj[i]).length != 0) {
-                                    data.push(obj[i]);
+                        } else if (keyfield === "updatable") {
+                            var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                            if (obj.length != 0) {
+                                for (var i = 0; i < obj.length; i++) {
+                                    if (Object.getOwnPropertyNames(obj[i]).length != 0) {
+                                        data.push(obj[i]);
+                                    }
                                 }
                             }
                         }

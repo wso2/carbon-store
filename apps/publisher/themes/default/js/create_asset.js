@@ -16,100 +16,83 @@
  *  under the License.
  *
  */
-$(function(){
+$(function () {
     $('#form-asset-create').validate();
-
-	var obtainFormMeta=function(formId){
-		return $(formId).data();
-	};
-
-
+    var obtainFormMeta = function (formId) {
+        return $(formId).data();
+    };
     $('#form-asset-create').ajaxForm({
-       //alert("hello world");
-
-        beforeSubmit:function(){
-
-                PublisherUtils.blockButtons({
-                    container:'saveButtons',
-                    msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
-                });
+        //alert("hello world");
+        beforeSubmit: function () {
+            PublisherUtils.blockButtons({
+                container: 'saveButtons',
+                msg: 'Creating the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance'
+            });
         },
-
-        success:function(){
+        success: function () {
             //e.preventDefault();
-            var options=obtainFormMeta('#form-asset-create');
+            var options = obtainFormMeta('#form-asset-create');
             //debugger;
             //return false;
-            window.location=options.redirectUrl;
+            window.location = options.redirectUrl;
         },
-        error:function(){
-            alert('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
+        error: function () {
+            alert('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
             PublisherUtils.unblockButtons({
-                container:'saveButtons'
+                container: 'saveButtons'
             });
-
         }
 
     });
-    var initDatePicker =  function(){
-        if($(this).attr('data-render-options') == "date-time"){
+    var initDatePicker = function () {
+        if ($(this).attr('data-render-options') == "date-time") {
             var dateField = this;
             $(this).DatePicker({
                 mode: 'single',
                 position: 'right',
-                onBeforeShow: function(el){
-                    if($(dateField).val().replace(/^\s+|\s+$/g,"")){
+                onBeforeShow: function (el) {
+                    if ($(dateField).val().replace(/^\s+|\s+$/g, "")) {
                         $(dateField).DatePickerSetDate($(dateField).val(), true);
                     }
-
                 },
-                onChange: function(date, el) {
-                    $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
-                    if($('#closeOnSelect input').attr('checked')) {
+                onChange: function (date, el) {
+                    $(el).val((date.getMonth() + 1) + '/' + date.getDate() + '/' + date.getFullYear());
+                    if ($('#closeOnSelect input').attr('checked')) {
                         $(el).DatePickerHide();
                     }
                 }
             });
         }
     };
-
     $('#form-asset-create input[type="text"]').each(initDatePicker);
-
-
-    var removeUnboundRow = function(link){
+    var removeUnboundRow = function (link) {
         var table = link.closest('table');
-        if($('tr',table).length == 2){
+        if ($('tr', table).length == 2) {
             table.hide();
         }
         link.closest('tr').remove();
     };
-
-    $('.js-add-unbounded-row').click(function(){
+    $('.js-add-unbounded-row').click(function () {
         var tableName = $(this).attr('data-name');
-        var table = $('#table_'+tableName);
-        var referenceRow = $('#table_reference_'+tableName);
+        var table = $('#table_' + tableName);
+        var referenceRow = $('#table_reference_' + tableName);
         var newRow = referenceRow.clone().removeAttr('id');
         table.show().append(newRow);
-
-        $('input[type="text"]',newRow).each(initDatePicker);
-
+        $('input[type="text"]', newRow).each(initDatePicker);
     });
-    $('.js-unbounded-table').on('click','a',function(event){
+    $('.js-unbounded-table').on('click', 'a', function (event) {
         removeUnboundRow($(event.target));
     });
-
-    $('.js-unbounded-table').on('click','input[type="checkbox"]',function(event){
+    $('.js-unbounded-table').on('click', 'input[type="checkbox"]', function (event) {
         var checkbox = event.target;
         var hiddenField = $(checkbox).next();
         console.info(hiddenField);
-        if($(checkbox).is(":checked")){
+        if ($(checkbox).is(":checked")) {
             $(hiddenField).val('on');
-        }else{
+        } else {
             $(hiddenField).val('off');
         }
     });
-
-    $('#tmp_refernceTableForUnbounded').detach().attr('id','refernceTableForUnbounded').appendTo('body');
+    $('#tmp_refernceTableForUnbounded').detach().attr('id', 'refernceTableForUnbounded').appendTo('body');
     $('#tmp_refernceTableForUnbounded').remove();
-
 });

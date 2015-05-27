@@ -176,7 +176,6 @@ asset.configure = function () {
                             label: 'Version'
                         },
                         validations: {
-                            server: []
                         }
 
                     },
