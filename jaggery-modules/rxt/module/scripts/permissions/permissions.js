@@ -404,9 +404,9 @@ var permissions = {};
         var defaultMediator = core.defaultAppExtensionMediator();
         if (defaultMediator) {
             basePath = defaultMediator.path + '/permissions.js';
-            file = new File(path);
+            file = new File(basePath);
             if (file.isExists()) {
-                api = require(path);
+                api = require(basePath);
                 if (api.hasOwnProperty(PERMISSION_LOAD_HOOK)) {
                     api[PERMISSION_LOAD_HOOK](context);
                 }
