@@ -1,0 +1,11 @@
+{{#if actionBar}}
+<div class="wr-action-btn-bar">
+<ul class="nav navbar-nav">
+	{{#each actionBar.actions}}            
+	<li>
+		<a class="cu-btn {{this.iconClass}}" href='{{url ""}}{{this.url}}' id="{{this.id}}">{{this.name}}</a>
+	</li>
+	{{/each}}
+</ul>
+</div>
+{{/if}}
