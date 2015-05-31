@@ -27,7 +27,9 @@
                     <div class="col-lg-5  padding-top right asset-rating margin-left-double">
                     </div>
                 </div>
-                 {{>asset-utilization ../..}}
+                 {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
+                    {{>asset-utilization ../../..}}
+                 {{/hasAssetPermission}}
                  {{> asset-version-info ../..}}
              </div>
                 <!-- end of asset details-->
