@@ -182,10 +182,10 @@ var permissions = {};
         if (!systemRegistry.exists(path)) {
             log.info('creating permission path: '+path)
             //Add the permission
-            //recursivelyCreatePath(fullPath, systemRegistry);
+            recursivelyCreatePath(path, systemRegistry);
             return true;
         }
-        log.warn('permision path ' + path + ' not created as it already exists');
+        log.debug('permision path ' + path + ' not created as it already exists');
         return false;
     };
     var addPermissionsToRole = function(permissionMap, role, tenantId) {
@@ -340,7 +340,8 @@ var permissions = {};
         }
         context = core.createSystemContext(tenantId);
         context.utils = {};
-        context.utils.addPermission = addPermission;
+        //context.utils.addPermission = addPermission;
+        context.utils.registerPermissions = registerPermissions;//TODO: fix to accept just permission and not tenantid
         context.utils.assetFeaturePermissionString = assetFeaturePermissionString;
         context.utils.appFeaturePermissionString = appFeaturePermissionString;
         context.utils.addPermissionsToRole = addPermissionsToRole;

@@ -33,7 +33,7 @@ var tenantLoad = function(ctx) {
     assignAllPermissionsToDefaultRole();
     log.info('### Done ###');
 
-    log.info('Anon role added ? '+Utils.addRole(ANON_ROLE));
-    log.info('update permission for assets: '+Utils.assetFeaturePermissionString('/update', 'gadget'));
-    log.info(Utils.assetFeaturePermissionKey('update','gadget'));
+    //log.info('Anon role added ? '+Utils.addRole(ANON_ROLE));
+    //log.info('update permission for assets: '+Utils.assetFeaturePermissionString('/update', 'gadget'));
+    //log.info(Utils.assetFeaturePermissionKey('update','gadget'));
 };
