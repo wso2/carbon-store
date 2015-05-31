@@ -531,6 +531,7 @@ var permissions = {};
                 log.warn('username not provided to check ' + permission + '.The anon role will be used to check permissions');
                 isAuthorized = authorizer.isRoleAuthorized(getAnonRole(), permission, action);
             } else {
+                log.info('using username: '+username+' to check permission');
                 isAuthorized = authorizer.isUserAuthorized(username, permission, action);
             }
         } catch (e) {
@@ -791,4 +792,5 @@ var permissions = {};
         return isPermissable(permission, tenantId, username);
     };
     permissions.getAnonRole = getAnonRole;
+    permissions.wso2AnonUsername = wso2AnonUsername;
 }(core, asset, app, permissions));
