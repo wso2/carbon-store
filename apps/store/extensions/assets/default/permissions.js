@@ -5,6 +5,7 @@ var tenantLoad = function(ctx) {
     var rxtManager = ctx.rxtManager;
     var DEFAULT_ROLE = 'Internal/store';
     var tenantId = ctx.tenantId;
+    var ANON_ROLE = Utils.anonRole(tenantId);
     var listPermission = function(type) {
         return '/permission/admin/manage/resources/govern/' + type + '/list';
     };
@@ -31,4 +32,8 @@ var tenantLoad = function(ctx) {
     log.info('### Populating permissions to ' + DEFAULT_ROLE + ' ###');
     assignAllPermissionsToDefaultRole();
     log.info('### Done ###');
+
+    log.info('Anon role added ? '+Utils.addRole(ANON_ROLE));
+    log.info('update permission for assets: '+Utils.assetFeaturePermissionString('/update', 'gadget'));
+    log.info(Utils.assetFeaturePermissionKey('update','gadget'));
 };
