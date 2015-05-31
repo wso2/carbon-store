@@ -42,10 +42,12 @@
                                         <div class="dropdown dropdown-asset-custom">
                                             <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:return 0;"></a>
                                             <ul role="menu" class="dropdown-menu">
+                                            {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../../../cuser.username tenantId=../../../../cuser.tenantId}}
                                                 <li>
                                                     {{>top-assets-utilization ..}}
                                                 </li>
-                                                <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
+                                            {{/hasAssetPermission}}
+                                                 <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -60,3 +62,7 @@
         {{/if}}
     </div>
 {{/each}}
+
+{{#hasAssetPermission . key="ASSET_BOOKMARK" type="gadget" username=cuser.username tenantId=cuser.tenantId}}
+    Bookmarks visible
+{{/hasAssetPermission}}
