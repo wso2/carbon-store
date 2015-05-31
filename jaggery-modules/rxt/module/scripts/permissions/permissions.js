@@ -25,6 +25,9 @@ var permissions = {};
     var getAnonRole = function(tenantId) {
         return permissions.ANON_ROLE;
     };
+    var wso2AnonUsername = function(){
+        return 'wso2.anonymous.user';
+    };
     var systemPermissionPath = function(path){
         return '/_system/governance'+path;
     };
@@ -524,7 +527,7 @@ var permissions = {};
     var checkPermissionString = function(username, permission, action, authorizer) {
         var isAuthorized = false;
         try {
-            if (!username) {
+            if ((!username) || (username === wso2AnonUsername()) ) {
                 log.warn('username not provided to check ' + permission + '.The anon role will be used to check permissions');
                 isAuthorized = authorizer.isRoleAuthorized(getAnonRole(), permission, action);
             } else {
