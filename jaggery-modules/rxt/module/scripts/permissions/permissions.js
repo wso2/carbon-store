@@ -252,8 +252,8 @@ var permissions = {};
         var appName = app.getContext();
         var root = esPermissionRoot(appName);
         var featureRoot;
-        if (!type) {
-            throw 'Unable to create an asset feature permission string without the type';
+        if (!permission) {
+            throw 'Unable to create an asset feature permission string without the permission';
         }
         featureRoot = root + esFeaturePermissionRoot() + '/app';
         if (permission.charAt(0) !== '/') {

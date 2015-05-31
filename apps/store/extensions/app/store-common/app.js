@@ -27,7 +27,8 @@ app.server = function(ctx) {
                 title:'Store | My Items',
                 url:'my-items',
                 path:'my_items.jag',
-                secured:true
+                secured:true,
+                permission:'APP_MYITEMS'
             }]
         },
         configs: {

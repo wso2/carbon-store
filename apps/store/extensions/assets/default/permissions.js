@@ -15,6 +15,9 @@ var tenantLoad = function(ctx) {
     var reviewPermission = function(type) {
         return Utils.assetFeaturePermissionString('reviews', type);
     };
+    var myitemsPermission = function(){
+        return Utils.appFeaturePermissionString('myitems');
+    };
     var populateAssetPermissions = function(tenantId) {
         var types = rxtManager.listRxtTypes();
         var type;
@@ -38,10 +41,21 @@ var tenantLoad = function(ctx) {
         }
     };
     var populateAppPermissions = function(tenantId) {
-        var permissions = {};
+        var permissions = Permissions;
         var permission;
         var key;
-        var features = ['myassets'];
+        var features = ['myitems'];
+        var feature;
+        var obj = {};
+        for(var index = 0; index < features.length; index++){
+            feature = features[index];
+            key = Utils.appFeaturePermissionKey(feature);
+            permission = Utils.appFeaturePermissionString(feature);
+            permissions[key] = permission;
+            obj[key] = permission;
+            //log.info('New app permission: '+key+' : '+permission);
+        }
+        Utils.registerPermissions(obj,tenantId);
     };
     var assignAllPermissionsToDefaultRole = function() {
         var types = rxtManager.listRxtTypes();
@@ -54,6 +68,7 @@ var tenantLoad = function(ctx) {
             permissions.ASSET_LIST = listPermission(type);
             permissions.ASSET_BOOKMARK = bookmarkPermission(type);
             permissions.ASSET_REVIEWS = reviewPermission(type);
+            permissions.APP_MYITEMS = myitemsPermission();
             Utils.addPermissionsToRole(permissions, DEFAULT_ROLE, tenantId);
         }
     };
@@ -65,6 +80,7 @@ var tenantLoad = function(ctx) {
             type = types[index];
             permissions = {};
             permissions.ASSET_LIST = listPermission(type);
+            permissions.ASSET_REVIEWS = reviewPermission(type);
             Utils.addPermissionsToRole(permissions, ANON_ROLE, tenantId);
         }
     };
@@ -94,8 +110,12 @@ var tenantLoad = function(ctx) {
         }
         return ctx.utils.assetFeaturePermissionString('list', ctx.type);
     };
+    Permissions.APP_MYITEMS = function(ctx){
+        return ctx.utils.appFeaturePermissionString('myitems');
+    };
     log.info('### registering permissions not in the WSO2 permission tree ###');
     populateAssetPermissions(tenantId);
+    populateAppPermissions(tenantId);
     log.info('### adding permissions to role: ' + DEFAULT_ROLE + ' ###');
     assignAllPermissionsToDefaultRole();
     log.info('### registering store anonymous role : ' + ANON_ROLE + ' ###');
