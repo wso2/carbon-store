@@ -463,7 +463,13 @@ a.ast-name:after {
     background-image: url(../img/icons/rigister.png);
     background-repeat: no-repeat;
     background-position: left;
-    color: #fff
+    color: #fff;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+
 }
 
 a.register:hover {
@@ -473,6 +479,11 @@ a.register:hover {
     background-position: left;
     background-color: #282828;
     color: #3a9ecf;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 a.register:active {
@@ -482,6 +493,11 @@ a.register:active {
     background-position: left;
     background-color: #282828;
     color: #3a9ecf;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 a.register:focus {
@@ -490,6 +506,11 @@ a.register:focus {
     background-repeat: no-repeat;
     background-position: left;
     color: #3a9ecf;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 .login {
@@ -499,7 +520,12 @@ a.register:focus {
     background-repeat: no-repeat;
     background-position: left;
     padding-left: 42px;
-    color: #fff
+    color: #fff;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 a.login:hover {
@@ -508,23 +534,38 @@ a.login:hover {
     background-repeat: no-repeat;
     background-position: left;
     color: #3a9ecf;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 a.login:active {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
+    background-image: url(../img/icons/login-hover.png);
     background-repeat: no-repeat;
     background-position: left;
     color: #3a9ecf;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 a.login:focus {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
+    background-image: url(../img/icons/login-hover.png);
     background-repeat: no-repeat;
     background-position: left;
     background-color: #282828;
     color: #3a9ecf;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 .search-area {
@@ -569,8 +610,8 @@ a.login:focus {
 .dropdown-asset-custom ul.dropdown-menu {
     position: absolute;
     top: 40px;
-    left: 0;
-    z-index: 0;
+    left: 1px;
+    z-index: 1000;
     float: left;
     min-width: 160px;
     padding: 5px 0;
@@ -581,11 +622,9 @@ a.login:focus {
     list-style: none;
     background-clip: padding-box;
     border-radius: 0px;
-    -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, .175);
-    box-shadow: 0 0px 0px rgba(0, 0, 0, .175);
+    box-shadow:0px;
     overflow: hidden;
     margin-left: -160px;
-    margin-top: -5px;
     border: solid 1px #ccc;
     background: #efefef;
     color: #333;
@@ -907,7 +946,7 @@ a.ast-type-item:hover {
 
 @media (max-width: 1100px) {
     .ctrl-wr-asset .ast-img {
-        width: 70%;
+        width: 50%;
     }
 }
 
@@ -1171,3 +1210,82 @@ a.more:focus {
 .wr-filter-category {
     float: left;
 }
+.action-wrapper{
+    background-color: #546C78;
+    border-radius: 2px;
+    color: #fff;
+    height: 75px;
+    margin: 10px 10px 0 0;
+    text-align: center;
+    width: 80px;
+}
+.action-wrapper:hover{
+    background-color:#333;
+    color: #fff;
+    height: 75px;
+    margin: 10px 10px 0 0;
+    text-align: center;
+    width: 80px;
+}
+.action-img-icon{ width:40px; height: 40px;  margin-left: 18px; background: url("../img/icons/ico-lock.png") no-repeat scroll left top transparent; opacity: 0.5; }
+.action-title{ padding:2px; text-align: center; font-weight:400; font-size: 12px; line-height: 13px;  }
+
+.btn-primary{
+    background:none;
+    border:0px;
+    border-radius: 0px;
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+    text-align: left;
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+    -moz-border-bottom-colors: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    background-color: #3a9ecf;
+    border-image: none;
+    border-style: solid;
+    border-width: 1px;
+    color: #fff;
+    cursor: default;
+    padding: 15px;
+}
+.nav-tabs > li > a {
+    border: 1px solid transparent;
+    border-radius: 0;
+    line-height: 1.42857;
+    margin-right: 2px;
+}
+.nav-tabs > li > a {
+    background: #ccc none repeat scroll 0 0;
+    border: 1px solid transparent;
+    border-radius: 0;
+    color: #333;
+    line-height: 1.42857;
+    margin-right: 2px;
+    padding: 15px;
+}
+.content{ background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border-bottom: 1px solid #ededed;
+    border-left: 1px solid #ededed;
+    border-right: 1px solid #ededed;
+    border-width: 0 1px 1px;
+    display: block;
+    padding: 1em 1.4em;
+}
+#socialIfr{ background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
+    border-bottom: 1px solid #ededed;
+    border-left: 1px solid #ededed;
+    border-right: 1px solid #ededed;
+    border-width: 0 1px 1px;
+    display: block;
+    padding: 1em 1.4em;
+}
+#btn-post{background-color: #3a9ecf; padding: 15px;
+    color: #fff;}
+a:hover, a:focus {
+    opacity: 0.8;
+    color: #FFF;
+    text-decoration: none;}
