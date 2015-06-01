@@ -1012,12 +1012,17 @@ a.ast-type-item:hover {
 }
 
 .wr-asset-type-switcher span.btn-asset {
-    width: 53px;
-    height: 53px;
+    width: 54px;
+    height: 54px;
     margin-right: 0px;
     display: inline-block;
     background: #222 url('../img/icons/ico-menu.png') 1em 1em no-repeat;
     margin-right: 15px;
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
 }
 
 .wr-asset-type-switcher span.btn-asset:hover {
@@ -1211,24 +1216,19 @@ a.more:focus {
     float: left;
 }
 .action-wrapper{
-    background-color: #546C78;
     border-radius: 2px;
     color: #fff;
     height: 75px;
-    margin: 10px 10px 0 0;
+    margin:10px 25px 0 0;
     text-align: center;
-    width: 80px;
+    width: 80px;cursor: pointer;
 }
 .action-wrapper:hover{
-    background-color:#333;
-    color: #fff;
-    height: 75px;
-    margin: 10px 10px 0 0;
-    text-align: center;
-    width: 80px;
+    opacity: 0.5;
+
 }
-.action-img-icon{ width:40px; height: 40px;  margin-left: 18px; background: url("../img/icons/ico-lock.png") no-repeat scroll left top transparent; opacity: 0.5; }
-.action-title{ padding:2px; text-align: center; font-weight:400; font-size: 12px; line-height: 13px;  }
+.action-img-icon{ width:40px; height: 40px;  margin-left: 18px; background: url("../img/icons/ico-lock.png") no-repeat scroll left top transparent; opacity: 0.5; cursor: pointer; }
+.action-title{ padding:2px; text-align: center; font-weight:400; font-size: 12px; line-height: 13px; cursor: pointer;  }
 
 .btn-primary{
     background:none;
@@ -1283,9 +1283,18 @@ a.more:focus {
     display: block;
     padding: 1em 1.4em;
 }
-#btn-post{background-color: #3a9ecf; padding: 15px;
-    color: #fff;}
+#btn-post{background-color: #3a9ecf; padding: 15px; color: #fff;}
+
 a:hover, a:focus {
     opacity: 0.8;
     color: #FFF;
     text-decoration: none;}
+#content-asset-types{background-color: #101010;}
+.wr-action-btn-bar {
+    background-color: #00344D;
+    Width: 101.85%;
+    height: 96px;
+    margin-left: -20px;
+    padding-left: 20px;
+    overflow: hidden;
+}
