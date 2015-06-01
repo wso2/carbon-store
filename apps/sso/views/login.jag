@@ -64,7 +64,7 @@ var themeModule = require('/modules/theme.js');
                                 <% } %>
                                 <input id="username" name="username" type="text" class="input-block-level" placeholder="Username">
                                 <br><br>
-                                <input id="password" name="password" type="password" class="input-block-level">
+                                <input id="password" name="password" type="password" class="input-block-level" placeholder="Password">
                                 <br><br>
                                 <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large" type="submit">Sign in</button>
 
