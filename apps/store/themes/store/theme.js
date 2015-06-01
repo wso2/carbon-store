@@ -209,9 +209,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var key = options.hash.key;
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
-                var username = options.hash.username || 'anon';
+                var username = options.hash.username||rxtAPI.permissions.wso2AnonUsername();
                 var isAuthorized =options.hash.auth ? options.hash.auth : false; 
-                var missingParams = (!key) || (!type) || (!tenantId) || (!username);
+                var missingParams = (!key) || (!type) || (!tenantId)||(!username);
                 //If the user is forcing the view to render 
                 if(isAuthorized){
                     return options.fn(context);
@@ -233,9 +233,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var key = options.hash.key;
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
-                var username = options.hash.username ||'anon';
+                var username = options.hash.username||rxtAPI.permissions.wso2AnonUsername();
                 var isAuthorized =options.hash.auth ? options.hash.auth : false; 
-                var missingParams = (!key) || (!tenantId) || (!username);
+                var missingParams = (!key) || (!tenantId)||(!username);
                 //If the user is forcing the view to render 
                 if(isAuthorized){
                     return options.fn(context);

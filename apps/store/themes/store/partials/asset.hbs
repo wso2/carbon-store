@@ -27,7 +27,9 @@
                     <div class="col-lg-5  padding-top right asset-rating margin-left-double">
                     </div>
                 </div>
-                 {{>asset-utilization ../..}}
+                 {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
+                    {{>asset-utilization ../../..}}
+                 {{/hasAssetPermission}}
                  {{> asset-version-info ../..}}
              </div>
                 <!-- end of asset details-->
@@ -48,9 +50,11 @@
                         <li class="active">
                             <a href="#tab-properties" data-toggle="tab" data-type="basic">{{t "Description"}}</a>
                         </li>
+                        {{#hasAssetPermission . key="ASSET_REVIEWS" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
                         <li>
                             <a href="#tab-reviews" data-toggle="tab" data-type="comments">{{t "User Reviews"}}</a>
                         </li>
+                        {{/hasAssetPermission}}
                         <li>
                             <a href="#tab-share" data-toggle="tab" data-type="basic">{{t "Share"}}</a>
                         </li>
@@ -67,18 +71,20 @@
                                 {{>share ../..}}
                             </div>
                         </div>
+                        {{#hasAssetPermission . key="ASSET_REVIEWS" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
                         <div class="tab-pane" id="tab-reviews">
-                             {{#if ../../features.social.enabled}}
+                             {{#if ../../../features.social.enabled}}
                                 <iframe name="socialIfr" id="socialIfr"
-                                    src="{{../../../features.social.keys.socialAppUrl}}?target={{../../../rxt.shortName}}:{{../../id}}&user={{../../../cuser.username}}&urlDomain={{../../../features.social.keys.urlDomain}}"
-                                    width="100%" height="100%" style="height: 300px;" data-script="{{../../../features.social.keys.socialScriptSource}}" data-script-type="{{../../../features.social.keys.socialScriptType}}"></iframe>
+                                    src="{{../../../../features.social.keys.socialAppUrl}}?target={{../../../../rxt.shortName}}:{{../../../id}}&user={{../../../../cuser.username}}&urlDomain={{../../../../features.social.keys.urlDomain}}"
+                                    width="100%" height="100%" style="height: 300px;" data-script="{{../../../../features.social.keys.socialScriptSource}}" data-script-type="{{../../../../features.social.keys.socialScriptType}}"></iframe>
                              {{/if}}
-                            {{#if ../../inDashboard}}
+                            {{#if ../../../inDashboard}}
                                  <div id="comment-content" class="content"></div>
                             {{else}}
                                 <div id="comment-content" class="content user-review"></div>
                             {{/if}}
                         </div>
+                        {{/hasAssetPermission}}
                     </div>
 
                 </div>

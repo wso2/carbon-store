@@ -53,7 +53,9 @@
                       <img src="/store/themes/store/img/icons/store-.png"></a>
             <ul class="dropdown-menu dropdown-account" role="menu" aria-labelledby="dLabel">
                 <li class="uppercase"> <a href="{{url "/pages/my-items"}}">My Subscription</a></li>
+                {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
                 <li class="uppercase"> <a href="{{url "/pages/my-items"}}">My bookmarks</a> </li>
+                {{/hasAppPermission}}
             </ul>
         </div>
     </div>

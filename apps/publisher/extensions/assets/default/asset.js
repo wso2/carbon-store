@@ -107,7 +107,8 @@ asset.server = function(ctx) {
             }, {
                 title: 'Update ' + type,
                 url: 'update',
-                path: 'update.jag'
+                path: 'update.jag',
+                permission:'ASSET_UPDATE'
             }, {
                 title: 'Details ' + type,
                 url: 'details',
@@ -223,7 +224,7 @@ asset.renderer = function(ctx) {
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
 
-        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE,ctx.assetType,ctx.session)){
+        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE,ctx.assetType,ctx.session)){
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
         }
 

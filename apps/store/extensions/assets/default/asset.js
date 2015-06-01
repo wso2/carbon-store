@@ -79,11 +79,13 @@ asset.server = function(ctx) {
             pages: [{
                 title: 'Store |  ' + typeSingularLabel,
                 url: 'details',
-                path: 'details.jag'
+                path: 'details.jag',
+                permission:'ASSET_DETAILS'
             }, {
                 title: 'Store | ' + typeSingularLabel,
                 url: 'list',
-                path: 'list.jag'
+                path: 'list.jag',
+                permission:'ASSET_LIST'
             }, {
                 title: 'Store | ' + typeSingularLabel,
                 url: 'subscriptions',

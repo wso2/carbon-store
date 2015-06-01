@@ -20,6 +20,7 @@ var pageDecorators = {};
 (function() {
     var storeConstants = require('store').storeConstants;
     var tenantApi = require('/modules/tenant-api.js').api;
+    var permissionsAPI = require('rxt').permissions;
     var log = new Log('store-page-decorators');
     pageDecorators.navigationBar = function(ctx, page, utils) {
         var app = require('rxt').app;
@@ -36,13 +37,15 @@ var pageDecorators = {};
         page.navigationBar = {};
         for (var index in availableTypes) {
             type = availableTypes[index];
-            currentType = rxtManager.getRxtTypeDetails(type);
-            currentType.selected = false;
-            currentType.listingUrl = utils.buildAssetPageUrl(currentType.shortName, '/list');
-            if (currentType.shortName == ctx.assetType) {
-                currentType.selected = true;
+            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                currentType = rxtManager.getRxtTypeDetails(type);
+                currentType.selected = false;
+                currentType.listingUrl = utils.buildAssetPageUrl(currentType.shortName, '/list');
+                if (currentType.shortName == ctx.assetType) {
+                    currentType.selected = true;
+                }
+                types.push(currentType);
             }
-            types.push(currentType);
         }
         page.navigationBar.types = types;
         return page;
@@ -123,26 +126,28 @@ var pageDecorators = {};
             // } else {
             //     am = asset.createUserAssetManager(ctx.session, type);
             // }
-            if (query) {
-                query = replaceNameQuery(query,ctx.rxtManager,type);
-                query = replaceCategoryQuery(query,ctx.rxtManager,type);
-                assets = am.recentAssets({
-                    q: query
-                });
-            } else {
-                assets = am.recentAssets();
-            }
-            if (assets.length > 0) {
-                //Add subscription details if this is not an anon context
-                if (!ctx.isAnonContext) {
-                    addSubscriptionDetails(assets, am, ctx.session);
+            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                if (query) {
+                    query = replaceNameQuery(query, ctx.rxtManager, type);
+                    query = replaceCategoryQuery(query, ctx.rxtManager, type);
+                    assets = am.recentAssets({
+                        q: query
+                    });
+                } else {
+                    assets = am.recentAssets();
                 }
-                ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
-                items = items.concat(assets);
-                assetsByType.push({
-                    assets: assets,
-                    rxt: typeDetails
-                });
+                if (assets.length > 0) {
+                    //Add subscription details if this is not an anon context
+                    if (!ctx.isAnonContext) {
+                        addSubscriptionDetails(assets, am, ctx.session);
+                    }
+                    ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                    items = items.concat(assets);
+                    assetsByType.push({
+                        assets: assets,
+                        rxt: typeDetails
+                    });
+                }
             }
         }
         page.recentAssets = items;
