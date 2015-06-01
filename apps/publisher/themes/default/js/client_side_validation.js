@@ -17,17 +17,6 @@
  *
  */
 
-//$.validator.addMethod("validator1", function (value, element) {
-//    //alert("working method validator1 "+value);
-//    var result;
-//    if(value.length > 3){
-//        result = true ;
-//    }
-//    else{
-//        result = false ;
-//    }
-//    return result;
-//}, '****This content must be greater than 3 characters****');
 //Custom validator for valid Email check support custom error messages per field
 $.validator.addMethod("EmailTypeCheck", function (value, element) {
     if (value == "") {
@@ -44,13 +33,13 @@ $.validator.addMethod("EmailTypeCheck", function (value, element) {
 }, $.validator.messages.checkEmail);
 //custom validator for valid url check
 $.validator.addMethod("UrlTypeCheck", function (value, element) {
-    var myRegExp = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/i;
-    console.log(myRegExp.test(value));
-    return myRegExp.test(value);
+    console.log(value);
+    var myRegExp = /^http:\/\/[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+$/;
+    console.log(myRegExp.test(value.trim()));
+    return myRegExp.test(value.trim());
 }, "please provide valid url (http://www.abc.com)");
 //custom validator for remote ajax call to validate asset name
 $.validator.addMethod("FieldValidate", function (value, element) {
-    //alert("working method FieldValidate "+value);
     var data = '%22name%22 : %22' + value + '%22';
     var result = false;
     $.ajax({

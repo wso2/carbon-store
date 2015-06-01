@@ -20,46 +20,30 @@ var validations = {
     alphaOnly: {
         validateFunc: function (ctx) {
             var letters = /^[a-zA-Z]+$/;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.match(ctx);
         }
     },
     alphaNumericOnly: {
         validateFunc: function (ctx) {
             var letters = /^[0-9a-zA-Z]+$/;
-            ;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.match(ctx);
         }
     },
     numericOnly: {
         validateFunc: function (ctx) {
             var letters = /^[0-9]+$/;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.match(ctx);
         }
     },
     decimalCheck: {
         validateFunc: function (ctx) {
             var letters = /^[-+]?[0-9]+\.[0-9]+$/;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.match(ctx.trim());
         }
     },
     passwordLength: {
         validateFunc: function (ctx) {
-            if (ctx.length > 4) {
-                return true;
-            }
-            return false;
+            return ctx.length > 0;
         }
     },
     dateValidate: {
@@ -110,49 +94,34 @@ var validations = {
             return ctx.length > 0;
         }
     },
-    dateTime: {
+    dateTimeType: {
         validateFunc: function (ctx) {
             var dateTimeFormat = /^[0,1]?\d\/(([0-2]?\d)|([3][01]))\/((199\d)|([2-9]\d{3}))\s[0-2]?[0-9]:[0-5][0-9] (am|pm)?$/;
-            if (ctx.match(dateTimeFormat)) {
-                return true;
-            }
-            return false;
+            return dateTimeFormat.match(ctx);
         }
     },
-    time: {
+    timeType: {
         validateFunc: function (ctx) {
             var timeFormat = /^(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-            if (ctx.match(timeFormat)) {
-                return true;
-            }
-            return false;
+            return timeFormat.match(ctx);
         }
     },
-    email: {
+    emailType: {
         validateFunc: function (ctx) {
             var emailFormat = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-            if (ctx.match(emailFormat)) {
-                return true;
-            }
-            return false;
+            return emailFormat.match(ctx.trim());
         }
     },
-    url: {
+    urlType: {
         validateFunc: function (ctx) {
-            var urlFormat = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/i;
-            if (ctx.match(urlFormat)) {
-                return true;
-            }
-            return false;
+            var urlFormat = /^http:\/\/[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+\.[a-zA-Z0-9_\-]+$/;
+            return urlFormat.test(ctx.trim());
         }
     },
-    telephoneNo: {
+    telephoneNoType: {
         validateFunc: function (ctx) {
             var phoneno = /^\d{10}$/;
-            if (ctx.match(phoneno)) {
-                return true;
-            }
-            return false;
+            return phoneno.match(ctx);
         }
     }
 };

@@ -79,8 +79,7 @@ var asset = {};
         }
         return result;
     };
-
-    var setField = function(field, attrName, data, attributes, table) {
+    var setField = function (field, attrName, data, attributes, table) {
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
@@ -114,9 +113,7 @@ var asset = {};
             if (data[attrName] == null || data[attrName] == undefined) {
                 attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
             } else {
-
                 attributes[attrName] = "on"; //We set it's value to on
-
             }
         } else {
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
@@ -235,23 +232,23 @@ var asset = {};
     AssetManager.prototype.validate = function (options) {
         var data = [];
         var curObject = this;
-        var rxtmetamappings = curObject.rxtManager.isValidationMappings(curObject.type);
+        var rxtMetaMappings = curObject.rxtManager.isValidationMappings(curObject.type);
         for (var key in options.attributes) {
             if (options.attributes.hasOwnProperty(key)) {
-                var rxtfield = curObject.rxtManager.getRxtField(curObject.type, key);
-                var valueofAttrib = options.attributes[key];
-                if (rxtfield.validations != null && rxtfield.validations.server != null) {
-                    var serverSideValid = rxtfield.validations.server;
+                var rxtField = curObject.rxtManager.getRxtField(curObject.type, key);
+                var valueOfAttrib = options.attributes[key];
+                if (rxtField.validations != null && rxtField.validations.server != null) {
+                    var serverSideValid = rxtField.validations.server;
                     for (var i = 0; i < serverSideValid.length; i++) {
-                        var obj = validationObjStatus(key, serverSideValid[i], valueofAttrib);
+                        var obj = validationObjStatus(key, serverSideValid[i], valueOfAttrib);
                         if (Object.getOwnPropertyNames(obj).length != 0) {
                             data.push(obj);
                         }
                     }
                 } else {
-                    for (var keyfield in rxtfield) {
-                        if (keyfield === "type") {
-                            var obj = validationMappingType(key, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                    for (var keyField in rxtField) {
+                        if (keyField === "type") {
+                            var obj = validationMappingType(key, rxtField[keyField], valueOfAttrib, rxtMetaMappings);
                             if (obj.length != 0) {
                                 for (var i = 0; i < obj.length; i++) {
                                     if (Object.getOwnPropertyNames(obj[i]).length != 0) {
@@ -259,8 +256,8 @@ var asset = {};
                                     }
                                 }
                             }
-                        } else if (keyfield === "required") {
-                            var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                        } else if (keyField === "required") {
+                            var obj = validationMappingDefault(key, keyField, rxtField[keyField], valueOfAttrib, rxtMetaMappings);
                             if (obj.length != 0) {
                                 for (var i = 0; i < obj.length; i++) {
                                     if (Object.getOwnPropertyNames(obj[i]).length != 0) {
@@ -268,8 +265,8 @@ var asset = {};
                                     }
                                 }
                             }
-                        } else if (keyfield === "readonly") {
-                            var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                        } else if (keyField === "readonly") {
+                            var obj = validationMappingDefault(key, keyField, rxtField[keyField], valueOfAttrib, rxtMetaMappings);
                             if (obj.length != 0) {
                                 for (var i = 0; i < obj.length; i++) {
                                     if (Object.getOwnPropertyNames(obj[i]).length != 0) {
@@ -277,8 +274,8 @@ var asset = {};
                                     }
                                 }
                             }
-                        } else if (keyfield === "updatable") {
-                            var obj = validationMappingDefault(key, keyfield, rxtfield[keyfield], valueofAttrib, rxtmetamappings);
+                        } else if (keyField === "updatable") {
+                            var obj = validationMappingDefault(key, keyField, rxtField[keyField], valueOfAttrib, rxtMetaMappings);
                             if (obj.length != 0) {
                                 for (var i = 0; i < obj.length; i++) {
                                     if (Object.getOwnPropertyNames(obj[i]).length != 0) {
@@ -555,9 +552,7 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
-
-    var createGroupingQuery = function(query, groupingAttributeValues) {
-
+    var createGroupingQuery = function (query, groupingAttributeValues) {
         query = query || {};
         // var attribute;
         // if(groupingAttributeValu.length === 0) {
@@ -567,12 +562,11 @@ var asset = {};
         //attribute = groupingAttributes[0];
         //query[attribute] = target;
         for (var key in groupingAttributeValues) {
-
             query[key] = groupingAttributeValues[key];
         }
         return query;
     };
-    var getGroupAttributeValues = function(asset, attributes) {
+    var getGroupAttributeValues = function (asset, attributes) {
 
         //Handle cases where the full asset is provided
         if (asset.hasOwnProperty('attributes')) {
@@ -1697,7 +1691,7 @@ var asset = {};
         }
         return defaultCb;
     };
-    var createSessionlessServer = function(type, tenantId) {
+    var createSessionlessServer = function (type, tenantId) {
         var context = core.createAnonAssetContext(null, type, tenantId);
         var assetResources = core.assetResources(tenantId, type);
         var reflection = require('utils').reflection;
@@ -1784,15 +1778,15 @@ var asset = {};
     asset.createRenderer = function (session, type) {
         return createRenderer(session, type);
     };
-    asset.getSessionlessAssetEndpoints = function(type, tenantId) {
+    asset.getSessionlessAssetEndpoints = function (type, tenantId) {
         var serverCb = createSessionlessServer(type, tenantId);
         return serverCb ? serverCb.endpoints : {};
     };
-    asset.getSessionlessAssetPageEndpoints = function(type, tenantId) {
+    asset.getSessionlessAssetPageEndpoints = function (type, tenantId) {
         var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
         return endpoints['pages'] || [];
     };
-    asset.getSessionlessAssetApiEndpoints = function(type, tenantId) {
+    asset.getSessionlessAssetApiEndpoints = function (type, tenantId) {
         var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
         return endpoints['apis'] || [];
     };
@@ -1888,13 +1882,11 @@ var asset = {};
     asset.resolve = function (request, path, themeName, themeObj, themeResolver) {
         var log = new Log();
         var resPath = path;
-
         var appExtensionMediator = core.defaultAppExtensionMediator() || {
-            resolveCaramelResources: function(path) {
+            resolveCaramelResources: function (path) {
                 return path;
             }
         };
-
         path = '/' + path;
         //Determine the type of the asset
         var uriMatcher = new URIMatcher(request.getRequestURI());

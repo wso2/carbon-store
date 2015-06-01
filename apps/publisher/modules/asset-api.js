@@ -311,6 +311,7 @@ var result;
                 //Set any meta properties provided by the API call (e.g. _default)
                 setMetaProps(asset, meta);
                 var checkValidate = am.validate(asset);
+                log.info(JSON.stringify(checkValidate));
                 if (checkValidate.length > 0) {
                     for (var key in checkValidate) {
                         log.error(checkValidate[key].message);
