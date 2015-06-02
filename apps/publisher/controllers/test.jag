@@ -2,17 +2,80 @@
 var rxtAPI = require('rxt');
 var log = new Log();
 var context = rxtAPI.core.createUserAssetContext(session, 'gadget');
+var rxtManager = context.rxtManager;
 var um = context.userManager;
+var server = require('store').server;
+var sysRegistry = server.systemRegistry(-1234);
+var user1Role = 'Internal/private_user1';
+var user2Role = 'Internal/private_user2';
+var actions = ["http://www.wso2.org/projects/registry/actions/get", "http://www.wso2.org/projects/registry/actions/add", "http://www.wso2.org/projects/registry/actions/delete", "authorize"];
+var everyone = 'Internal/everyone';
 
-log.info(um.roleExists('Internal/publisher'));
-log.info(um.roleExists('iii'));
+var testPath = '/_system/governance/testcollection/asset1';
 
-var testRole = 'es.store.anon.user';
-if(!um.roleExists(testRole)){
-    log.info('Creating test role '+testRole);
-    um.addRole(testRole,[],[]);
+if(!sysRegistry.exists(testPath)){
+    sysRegistry.put(testPath,{collection:true});
 }
-log.info(um.roleExists(testRole));
+
+// var path = rxtManager.getRxtStoragePath('soapservice');
+// log.info('storage path is '+path);
+// var staticStoragePath = function(path) {
+//     //Split the path by /
+//     var components = path.split('/');
+//     var isStatic = true;
+//     var component;
+//     var path=[];
+//     for(var index = 0; index < components.length && isStatic; index++){
+//         component = components[index];
+//         if(component.indexOf('@') <= -1){
+//             path.push(component);
+//         } else {
+//             isStatic = false;
+//         }
+//     }
+//     return path.join('/');
+// };
+var types = rxtManager.listRxtTypes();
+var type;
+for(var index = 0; index < types.length; index++){
+    type = types[index];
+    log.info('Static path is '+rxtManager.getStaticRxtStoragePath(type));
+}
+
+//log.info(rxtManager.rxtMap.gadget.storagePath);
+
+//Assign permissions to the testcollection to all roles
+// var obj = {};
+// obj[testPath] = actions;
+
+// um.authorizeRole(user1Role,obj);
+// um.authorizeRole(user2Role,obj);
+
+//Assign permissions to user1Role to collection testcollection/asset1
+//var obj = {};
+//obj[testPath] = actions;
+//um.authorizeRole(user1Role,obj);
+
+//Authorize the everyone role to all actions
+// var obj = {};
+// obj[testPath] = actions;
+// um.authorizeRole(everyone,obj);
+
+//Unauthorize the everyone role
+//var obj = {};
+//obj[testPath] = actions;
+//um.denyRole(everyone,obj);
+
+
+// log.info(um.roleExists('Internal/publisher'));
+// log.info(um.roleExists('iii'));
+
+// var testRole = 'es.store.anon.user';
+// if(!um.roleExists(testRole)){
+//     log.info('Creating test role '+testRole);
+//     um.addRole(testRole,[],[]);
+// }
+// log.info(um.roleExists(testRole));
 
 // var authorizer = um.authorizer;
 // var server = require('store').server;

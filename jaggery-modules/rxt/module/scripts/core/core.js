@@ -122,13 +122,12 @@ var core = {};
         var field;
         var name;
         rxtTable.fields = {};
-
         for (var index in fields) {
             field = fields[index];
             trasnformField(field);
-            if(rxtTable.maxoccurs && field.name.name.trim().search(/\s/g) == -1){
+            if (rxtTable.maxoccurs && field.name.name.trim().search(/\s/g) == -1) {
                 name = field.name.name;
-            }else{
+            } else {
                 name = createCamelCaseName(field.name.name);
             }
             rxtTable.fields[name] = field;
@@ -213,12 +212,49 @@ var core = {};
             log.debug('Unable to locate rxt definition for ' + rxtType);
             return '';
         }
-        var pathItem = def.storagePath[0];
+        var pathItem = def.storagePath;
         if (!pathItem) {
             log.error('Unable to locate stoarge path of ' + rxtType + '.Check the rxt definition to see if the storage path is specified correctly');
             throw 'Unable to locate stoarge path of ' + rxtType;
         }
-        return pathItem.storagePath;
+        return pathItem;
+    };
+    RxtManager.prototype.getStaticRxtStoragePath = function(rxtType) {
+        var storagePath = this.getRxtStoragePath(rxtType);
+        var components;
+        var isStatic = true;
+        var component;
+        var path = [];
+        if (!storagePath) {
+            log.error('Cannot locate a static path in the rxt storage path ' + path + '.Please check the RXT definition to see if the storage path has been defined using only dynamic values.');
+            return storagePath;
+        }
+        components = storagePath.split('/');
+        for (var index = 0; index < components.length && isStatic; index++) {
+            component = components[index];
+            if (component.indexOf('@') <= -1) {
+                path.push(component);
+            } else {
+                isStatic = false;
+            }
+        }
+        return path.join('/');
+    };
+    RxtManager.prototype.getRegistryConfigureFunction = function(type) {
+        var template = this.rxtMap[type];
+        var ptr = function() {
+            return false;
+        };
+        if (!template) {
+            log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return rxt details');
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return rxt details';
+        }
+        var meta = template.meta;
+        if ((!meta) || (!meta.permissions)) {
+            return ptr;
+        }
+        ptr = meta.permissions.configureRegistryPermissions || ptr;
+        return ptr;
     };
     /**
      * Returns a list of all RXT types in the Governance registry
@@ -526,7 +562,7 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether asset grouping is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isLifecycleEnabled = function(type){
+    RxtManager.prototype.isLifecycleEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -538,7 +574,7 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isDefaultLifecycleEnabled =  function(type){
+    RxtManager.prototype.isDefaultLifecycleEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -550,7 +586,7 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether default lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isLifecycleViewEnabled = function(type){
+    RxtManager.prototype.isLifecycleViewEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         var isLCEnabled = this.isLifecycleEnabled(type);
         var isLCViewEnabled = false;
@@ -558,13 +594,11 @@ var core = {};
             log.error('Unable to locate the rxt definition for type: ' + type);
             throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if lifecycles are enabled';
         }
-
         if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
             //Check if the lifecycleViewEnabled property is found,if not then check if lifecycleEnabled
-            if(!rxtDefinition.meta.lifecycle.lifecycleViewEnabled){
+            if (!rxtDefinition.meta.lifecycle.lifecycleViewEnabled) {
                 isLCViewEnabled = isLCEnabled;
-            }
-            else  {
+            } else {
                 isLCViewEnabled = rxtDefinition.meta.lifecycle.lifecycleViewEnabled;
             }
         }
@@ -577,8 +611,8 @@ var core = {};
             log.error('Unable to locate the rxt definition for type: ' + type);
             throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine grouping attributes';
         }
-        if((rxtDefinition.meta) && (rxtDefinition.meta.grouping)){
-            return rxtDefinition.meta.grouping.groupingAttributes ||[];
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.grouping)) {
+            return rxtDefinition.meta.grouping.groupingAttributes || [];
         }
         log.warn('Unable to locate the  meta property to determine grouping attributes for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return [];
@@ -880,14 +914,13 @@ var core = {};
         }
         return configs;
     };
-    core.defaultAppExtensionMediator = function(){
-        var mediator ;
-        if(arguments.length === 1) {
+    core.defaultAppExtensionMediator = function() {
+        var mediator;
+        if (arguments.length === 1) {
             mediator = arguments[0];
-            application.put(DEF_APP_EXTENSION_MEDIATOR,mediator);
+            application.put(DEF_APP_EXTENSION_MEDIATOR, mediator);
             return;
         }
-        
         return application.get(DEF_APP_EXTENSION_MEDIATOR);
     };
     /**
@@ -1220,7 +1253,7 @@ var core = {};
             session: session
         };
     };
-    core.createSystemContext = function(tenantId){
+    core.createSystemContext = function(tenantId) {
         var server = require('store').server;
         var sysRegistry = server.systemRegistry(tenantId);
         var userManager = server.userManager(tenantId);
@@ -1228,10 +1261,10 @@ var core = {};
         var serverConfigs = server.configs(tenantId);
         var rxtManager = core.rxtManager(tenantId);
         return {
-            userManager : userManager,
-            tenantId : tenantId,
-            systemRegistry : sysRegistry,
-            rxtManager : rxtManager,
+            userManager: userManager,
+            tenantId: tenantId,
+            systemRegistry: sysRegistry,
+            rxtManager: rxtManager,
             serverConfigs: serverConfigs,
             isAnonContext: false
         }

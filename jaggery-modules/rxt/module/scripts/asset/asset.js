@@ -218,6 +218,32 @@ var asset = {};
             return;
         }
     };
+    AssetManager.prototype.postCreate = function(asset,ctx){
+        log.info('### Performing post create operations ###');
+        var username = ctx.username;
+        var permissionsAPI = require('rxt').permissions;
+        var userMod = require('store').user;
+        var userRole = user.privateRole(username);
+        var tenantId = ctx.tenantId;
+        var path = asset.path;
+        var actions = [];
+        if(!path) {
+            log.error('Unable to finish post create actions as the asset path was not located.Subsequent CRUD operations may fail for asset '+asset.id);
+            return false;
+        }
+        //Allow all actions for the user's role
+        actions.push(constants.REGISTRY_GET_ACTION);
+        actions.push(constants.REGISTRY_ADD_ACTION);
+        actions.push(constants.REGISTRY_DELETE_ACTION);
+        actions.push(constants.REGISTRY_AUTHORIZE_ACTION);
+        log.info('Authorizing actions for role ');
+        permissionsAPI.authorizeActionsForRole(tenantId, path, userRole, actions);
+
+        //Deny actions for the everyone role
+        permissionsAPI.denyActionsForEveryone(tenantId, path);
+        log.info('### Finished post create operations ###');
+        return true;
+    };
     /**
      * Makes the provided asset the default asset by retrieving the group of assets it
      * belongs to and removing the default property from any existing assets.The provided
