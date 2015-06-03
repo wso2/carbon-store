@@ -58,6 +58,20 @@ var reflection = {};
             }
         });
     };
+    reflection.copyAllPropValuesWithFunctions = function(from, to) {
+        recurse(from, to, function(from, to, key) {
+            //Create an instance if the property does not exist
+            if (!to[key]) {
+                to[key] = {};
+            }
+            //Copy the values over
+            if ( typeof from[key] !== 'object') {
+                to[key] = from[key];
+            } else {
+                log.debug('Not copying values of key: ' + key);
+            }
+        });
+    };
     /**
      * The function will only copy public properties
      * @param from

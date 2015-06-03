@@ -103,12 +103,12 @@ asset.server = function(ctx) {
                 title: 'Create ' + type,
                 url: 'create',
                 path: 'create.jag',
-                permission:'ASSET_CREATE'
+                permission: 'ASSET_CREATE'
             }, {
                 title: 'Update ' + type,
                 url: 'update',
                 path: 'update.jag',
-                permission:'ASSET_UPDATE'
+                permission: 'ASSET_UPDATE'
             }, {
                 title: 'Details ' + type,
                 url: 'details',
@@ -117,12 +117,12 @@ asset.server = function(ctx) {
                 title: 'List ' + type,
                 url: 'list',
                 path: 'list.jag',
-                permission:'ASSET_LIST'
+                permission: 'ASSET_LIST'
             }, {
                 title: 'Lifecycle',
                 url: 'lifecycle',
                 path: 'lifecycle.jag',
-                permission:'ASSET_LIFECYCLE'
+                permission: 'ASSET_LIFECYCLE'
             }, {
                 title: 'Old lifecycle ',
                 url: 'old-lifecycle',
@@ -176,7 +176,7 @@ asset.configure = function() {
             lifecycle: {
                 name: 'SampleLifeCycle2',
                 commentRequired: false,
-                defaultLifecycleEnabled:true,
+                defaultLifecycleEnabled: true,
                 defaultAction: 'Promote',
                 deletableStates: [],
                 publishedStates: ['Published'],
@@ -196,6 +196,19 @@ asset.configure = function() {
             grouping: {
                 groupingEnabled: false,
                 groupingAttributes: ['overview_name']
+            },
+            permissions: {
+                configureRegistryPermissions: function(ctx) {
+                    log.info('Default configure registry method callled ');
+                    var type = ctx.type;
+                    var tenantId = ctx.tenantId;
+                    var rxtManager = ctx.rxtManager;
+                    var staticPath = rxtManager.getStaticRxtStoragePath(type);
+                    var Utils = ctx.utils;
+                    staticPath = Utils.governanceRooted(staticPath);
+                    log.info('Assigning permissions to static path ' + staticPath);
+                    Utils.authorizeActionsForEveryone(tenantId, staticPath);
+                }
             }
         }
     };
@@ -203,16 +216,16 @@ asset.configure = function() {
 asset.renderer = function(ctx) {
     var type = ctx.assetType;
     var permissionAPI = require('rxt').permissions;
-    var isAssetWithLifecycle = function(asset){
-        if((asset.lifecycle)&&(asset.lifecycleState)){
+    var isAssetWithLifecycle = function(asset) {
+        if ((asset.lifecycle) && (asset.lifecycleState)) {
             return true;
         }
-        log.warn('asset: '+asset.name+' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        log.warn('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
         return false;
     };
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
-        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE,ctx.assetType,ctx.session)){
+        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
             navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
             navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
         }
@@ -223,15 +236,13 @@ asset.renderer = function(ctx) {
         var id = page.assets.id;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-
-        if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE,ctx.assetType,ctx.session)){
+        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE, ctx.assetType, ctx.session)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
         }
-
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         //Only render the view if the asset has a 
         if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
-            if(permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE,ctx.assetType,ctx.session)){
+            if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE, ctx.assetType, ctx.session)) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
@@ -325,10 +336,10 @@ asset.renderer = function(ctx) {
                         page.leftNav = buildDefaultLeftNav(page, this);
                         break;
                 }
-                if(page.leftNav){
-                    for(var navItem in page.leftNav){
-                        if(page.leftNav[navItem].name){
-                            page.leftNav[navItem].id = page.leftNav[navItem].name.replace(/\s/g,"");
+                if (page.leftNav) {
+                    for (var navItem in page.leftNav) {
+                        if (page.leftNav[navItem].name) {
+                            page.leftNav[navItem].id = page.leftNav[navItem].name.replace(/\s/g, "");
                         }
                     }
                 }
@@ -343,7 +354,7 @@ asset.renderer = function(ctx) {
                 for (var index in assetList) {
                     assetType = assetList[index];
                     //Only populate the link if the asset type is activated and the logged in user has permission to that asset
-                    if ((isActivatedAsset(assetType.shortName)) && (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIST,assetType.shortName,ctx.session)) ) {
+                    if ((isActivatedAsset(assetType.shortName)) && (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIST, assetType.shortName, ctx.session))) {
                         assetTypes.push({
                             url: this.buildBaseUrl(assetType.shortName) + '/list',
                             assetIcon: assetType.ui.icon || DEFAULT_ICON,
