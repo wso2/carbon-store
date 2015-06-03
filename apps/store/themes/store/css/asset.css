@@ -220,7 +220,7 @@ h4{font-weight: 400px;}
     font-size: 16px;
 }
 .asset-details-wrapper {width:58.3%;  border-left: 1px solid #ccc; float: left;}
-.asset-description{ width: 100%; height: auto; float: left; background-color: #fff; margin-bottom: 20px; margin-top: 20px;}
+.asset-description{ width: 100%; height: auto; float: left; background-color: #fff; margin-top: 20px;}
 .tags {
     background-color: #e3e3e3;
     display: inline-block;
@@ -235,7 +235,7 @@ h4{font-weight: 400px;}
     background-color: #919191;
     color: #fff;
 }
-.assetp-properties{float: left; width: 100%; margin-top:20px; background-color: #fff; padding:20px;}
+.assetp-properties{float: left; width: 100%; background-color: #fff; padding:20px;}
 /*  _____________________________________________________________________________
 
 	 TYPOGRAPHY & COLOR

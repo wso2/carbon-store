@@ -664,12 +664,15 @@ a.more-list:hover {
 div.top-menu-right-custom .navbar-nav > li > a {
     color: #fff;
     text-transform: uppercase;
-    margin-left: 10px;
+    margin-left: 10px;height: 50px;
+    padding-top: 15px;
 }
 
 div.top-menu-right-custom .navbar-nav > li > a:hover {
     text-transform: uppercase;
     background-color: #444;
+    height: 50px;
+    padding-top: 15px;
 }
 
 .dropdown-toggle:hover {
@@ -811,7 +814,7 @@ a.ast-type-item:hover {
     }
 
     .search-area {
-        width: 67%
+        width: 43%
     }
 
 }
@@ -1146,29 +1149,27 @@ a.ast-type-item:hover {
 }
 
 .more {
-    color: #000;
+    color: #c7c7c7;
     float: right;
-    background-image: url(../img/icons/more-icon.png);
-    background-position: center left;
-    background-repeat: no-repeat;
     text-transform: uppercase;
-    padding: 23px 3px 16px 36px;
+    padding: 6px 3px 16px 36px;
 }
-
-a.more:hover {
-    color: #237bd5;
+.more:hover{
+    color: #919191;
+    float: right;
+    text-transform: uppercase;
+    padding: 6px 3px 16px 36px;
+}
+a.more:hover .grey {
+    color: #919191;
     text-decoration: none;
-    background-image: url(../img/icons/more-icon-hover-blue.png);
-    background-position: center left;
-    background-repeat: no-repeat
 }
 
-a.more:active {
-    background-color: none
-}
+
+
 
 a.more:focus {
-    border: none
+    border: none;
 }
 
 .dropdown-menu > li > a {
@@ -1277,6 +1278,7 @@ a.more:focus {
     border-width: 0 1px 1px;
     display: block;
     padding: 1em 1.4em;
+    min-height: 110px;
 }
 #socialIfr{ background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
     border-bottom: 1px solid #ededed;
@@ -1302,14 +1304,7 @@ a:hover, a:focus {
     overflow: hidden;
 }
 .white{color: #f3f3f3;}
-.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
-    background-color: #333;
-    border-color: #337ab7;
-}
-.navbar-nav > li > a {
-    padding-bottom: 4px;
-    padding-top:8px;
-}
+
 #ul-sort-assets li a {
     color: #333;
     opacity: 1;
@@ -1331,3 +1326,4 @@ a:hover, a:focus {
     height: 45px;
     padding-left: 20px;
 }
+.grey{color: #c7c7c7;}
