@@ -361,14 +361,14 @@ var configureUser = function(tenantId, user) {
     log.debug('Starting configuringUser.');
     var cleanedUsername = store.user.cleanUsername(user.username);
     //Create the permissions in the options configuration file
-    perms = buildPermissionsList(tenantId, cleanedUsername, perms, server);
+    //perms = buildPermissionsList(tenantId, cleanedUsername, perms, server);
     //Only add the role if permissions are present
-    if (!checkIfEmpty(perms)) {
+    /*if (!checkIfEmpty(perms)) {
         //Register the role
         //We assume that the private_role is already present
         //TODO: This needs to be replaced.
         um.authorizeRole(role, perms);
-    }
+    }*/
 };
 var checkIfEmpty = function(object) {
     for (var index in object) {
