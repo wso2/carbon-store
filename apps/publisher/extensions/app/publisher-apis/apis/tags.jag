@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-require('/modules/publisher.js').exec(function (ctx) {
+require('/modules/publisher.js').exec(function(ctx) {
     var utils = require('utils');
     var rxt = require('rxt');
     var ref = utils.request;
@@ -38,14 +38,11 @@ require('/modules/publisher.js').exec(function (ctx) {
                 var carbon = require('carbon');
                 var osgiServiceName = 'org.wso2.carbon.registry.indexing.service.TermsSearchService';
                 var osgiService = carbon.server.osgiService(osgiServiceName);
-
                 var hashMap = Packages.java.util.HashMap;
                 var map = new hashMap;
                 map.put("facet.field", "tags");
                 map.put("facet.prefix", utils.request.getQueryOptions(ctx.request.getQueryString()).prefix);
-                map.put("mediaType", context.rxtManager
-                        .getMediaType(utils.request.getQueryOptions(ctx.request.getQueryString()).type));
-
+                map.put("mediaType", context.rxtManager.getMediaType(utils.request.getQueryOptions(ctx.request.getQueryString()).type));
                 tagsResults = osgiService.search(map);
                 var tags;
                 var tagsArr = [];
@@ -64,7 +61,7 @@ require('/modules/publisher.js').exec(function (ctx) {
             }
             break;
         default:
-            response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.NOT_IMPLEMENTED,
-                    'Unable to locate this endpoint for ' + method)
+            response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.NOT_IMPLEMENTED, 'Unable to locate this endpoint for ' + method)
     }
-}, request, response, session); %>
+}, request, response, session); 
+%>
