@@ -1,1 +1,5 @@
-<img class="img-responsive" alt='thumbnail' src="{{#if thumbnail}}{{tenantedUrl ""}}/storage/{{type}}/{{id}}/{{thumbnail}}{{/if}}">
+{{#if thumbnail}}
+	<img class="img-responsive" alt='thumbnail' src="{{tenantedUrl ""}}/storage/{{type}}/{{id}}/{{thumbnail}}">
+{{else}}
+	{{> asset-default-thumbnail ..}}
+{{/if}}
