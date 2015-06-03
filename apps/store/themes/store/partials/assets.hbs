@@ -41,12 +41,14 @@
                             <div class="dropdown dropdown-asset-custom">
                                 <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:void(0)"></a>
                                 <ul role="menu" class="dropdown-menu">
+                                    {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../../rxt.shortName username=../../../cuser.username tenantId=../../../cuser.tenantId}}
                                     <li>
                                         {{#mergeContext ssoParam=../../../sso userParam=../../../user thisAsset=../this}}
                                         {{>assets-utilization .}}
                                         {{/mergeContext}}
 
                                     </li>
+                                    {{/hasAssetPermission}}
                                     <li><a href="#">Download</a></li>
                                     <li><a href="#">More Details</a></li>
                                 </ul>

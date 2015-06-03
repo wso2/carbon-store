@@ -1,14 +1,16 @@
+<!-- Popular assets listing till we figure out a way to display it elegentely
 {{#if popularAssets}}
 <section>
     <div class="container-fluid row padding-double center">
         {{#each popularAssets}}
             {{#attributes}}
-                <div class="freatured-assets-col col-xs-12 col-sm-6 col-md-3  "><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}"><img class="img-responsive" src="{{#if ../banner}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../banner}}{{/if}}"></a> </div><!--freatured-assets-col-->
+                <div class="freatured-assets-col col-xs-12 col-sm-6 col-md-3  "><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}"><img class="img-responsive" src="{{#if ../banner}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../banner}}{{/if}}"></a> </div>
             {{/attributes}}
         {{/each}}
     </div>
 </section>
 {{/if}}
+--->
 
 {{#each recentAssetsByType}}
     <div class="ast-container " id="ast-container">
@@ -42,10 +44,12 @@
                                         <div class="dropdown dropdown-asset-custom">
                                             <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:return 0;"></a>
                                             <ul role="menu" class="dropdown-menu">
+                                            {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../../../cuser.username tenantId=../../../../cuser.tenantId}}
                                                 <li>
                                                     {{>top-assets-utilization ..}}
                                                 </li>
-                                                <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
+                                            {{/hasAssetPermission}}
+                                                 <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
                                             </ul>
                                         </div>
                                     </div>
@@ -60,3 +64,7 @@
         {{/if}}
     </div>
 {{/each}}
+
+{{#hasAssetPermission . key="ASSET_BOOKMARK" type="gadget" username=cuser.username tenantId=cuser.tenantId}}
+    Bookmarks visible
+{{/hasAssetPermission}}

@@ -1,7 +1,7 @@
 body .store-left {
     padding-top: 0;
 }
-h4{font-weight: 400;}
+h4{font-weight: 500; font-size: 20px;}
 .asset-description {
     position: relative;
     padding-top: 0;
@@ -17,7 +17,7 @@ h4{font-weight: 400;}
     height: auto;
     margin-top: 20px;
     width: 100%;
-    margin-bottom: 20px;
+    padding-bottom: 20px;
 }
 .asset-description-header .row > div {
     position: relative;
@@ -219,7 +219,8 @@ h4{font-weight: 400px;}
     text-align: center;
     font-size: 16px;
 }
-.asset-details-wrapper {width:57.2%; margin-left: 20px; float: left;}
+.asset-details-wrapper {width:58.3%;  border-left: 1px solid #ccc; float: left;}
+.asset-description{ width: 100%; height: auto; float: left; background-color: #fff; margin-bottom: 20px; margin-top: 20px;}
 .tags {
     background-color: #e3e3e3;
     display: inline-block;
@@ -302,3 +303,4 @@ h4{font-weight: 400px;}
 .clear{ clear:both;}
 
 .relative{ position:relative;}
+.border-bottom{border-bottom: 1px solid #282828;}
