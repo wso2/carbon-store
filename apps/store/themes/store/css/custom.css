@@ -238,7 +238,13 @@ a.ast-type-item:hover {
 .wr-action-container {
     padding-left: 0;
 }
-
+/* social frame */
+#socialIfr {
+    overflow: hidden;
+}
+iframe {
+    border: medium none;
+}
 /* assets */
 .ast-container {
     padding-top: 20px;
