@@ -1,6 +1,6 @@
 <%
 /*
- *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2015, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -17,36 +17,51 @@
  *  under the License.
  *
  */
-// /tags will return all tags
-// /tags?q="type":"api","name":"wso2" will return 
 require('/modules/publisher.js').exec(function(ctx) {
-    var log = new Log('tags-api');
     var utils = require('utils');
     var rxt = require('rxt');
-    var server = require('store').server;
-    var tagsAPI = require('/modules/tags-api.js').api;
     var ref = utils.request;
     var GET_TAGS_PATTERN = '/{context}/apis/tags';
     var responseProcessor = utils.response;
     var constants = rxt.constants;
     var response = ctx.response;
     var req = ctx.request;
-    var session = ctx.session;
-    var tenantId = server.current(session).tenantId;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var method = req.getMethod();
     var options = ref.getQueryOptions(req.getQueryString());
-    var am = rxt.asset.createUserAssetManager(session,options.type);
-  	var results;
+    var context = rxt.core.createUserAssetContext(ctx.session, options.type);
+    var tagsResults;
     switch (method) {
         case 'GET':
             if (uriMatcher.match(GET_TAGS_PATTERN)) {
-                // to return available lifecycle list
-                results = tagsAPI.search(am,options);
-                print(results);
-            } 
+                //How to obtain the  OSGi service
+                var carbon = require('carbon');
+                var osgiServiceName = 'org.wso2.carbon.registry.indexing.service.TermsSearchService';
+                var osgiService = carbon.server.osgiService(osgiServiceName);
+                var hashMap = Packages.java.util.HashMap;
+                var map = new hashMap;
+                map.put("facet.field", "tags");
+                map.put("facet.prefix", utils.request.getQueryOptions(ctx.request.getQueryString()).prefix);
+                map.put("mediaType", context.rxtManager.getMediaType(utils.request.getQueryOptions(ctx.request.getQueryString()).type));
+                tagsResults = osgiService.search(map);
+                var tags;
+                var tagsArr = [];
+                var item;
+                var result = {};
+                for (var i = 0; i < tagsResults.length; i++) {
+                    tags = tagsResults[i];
+                    item = {};
+                    item.name = tags.getTerm();
+                    item.count = tags.getFrequency();
+                    tagsArr.push(item);
+                }
+                ctx.response.contentType = 'application/json';
+                result.data = tagsArr;
+                print(result);
+            }
             break;
-        default: 
+        default:
             response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.NOT_IMPLEMENTED, 'Unable to locate this endpoint for ' + method)
     }
-}, request, response, session); %>
+}, request, response, session); 
+%>
