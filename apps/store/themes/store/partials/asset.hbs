@@ -19,7 +19,7 @@
                 <!-- aset details -->
              <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 white-bg">
                 <div class=" details-image white-bg">
-                    <img class="img-responsive" src="{{#if images_thumbnail}}{{tenantedUrl ""}}/storage/{{../../../rxt.shortName}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
+                    {{> asset-thumbnail ..}}
                 </div>
                 <div class="details-container">
                     <div class="col-lg-9">
