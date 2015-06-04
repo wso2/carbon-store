@@ -143,6 +143,7 @@ body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
     background-color: #f9f9f9;
+    font-family: 'Open Sans';
 }
 
 footer {
@@ -155,12 +156,11 @@ footer {
 }
 
 .wrapper {
-    min-width: 360px;
+    min-width: 320px;
+    overflow-x: hidden;
 }
 
-body {
-    font-family: 'Open Sans';
-}
+
 
 /* application top level header */
 h1 {
@@ -461,9 +461,6 @@ a.ast-name:after {
 .register {
     width: auto;
     height: 50px;
-    background-image: url(../img/icons/rigister.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #fff;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -475,9 +472,6 @@ a.ast-name:after {
 
 a.register:hover {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     background-color: #282828;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
@@ -489,9 +483,6 @@ a.register:hover {
 
 a.register:active {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     background-color: #282828;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
@@ -503,9 +494,6 @@ a.register:active {
 
 a.register:focus {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -517,9 +505,6 @@ a.register:focus {
 .login {
     width: auto;
     height: 50px;
-    background-image: url(../img/icons/login.png);
-    background-repeat: no-repeat;
-    background-position: left;
     padding-left: 42px;
     color: #fff;
     -webkit-transition: all 0.30s ease-in-out;
@@ -531,9 +516,6 @@ a.register:focus {
 
 a.login:hover {
     width: auto;
-    background-image: url(../img/icons/login-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -544,9 +526,6 @@ a.login:hover {
 
 a.login:active {
     width: auto;
-    background-image: url(../img/icons/login-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -557,9 +536,6 @@ a.login:active {
 
 a.login:focus {
     width: auto;
-    background-image: url(../img/icons/login-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     background-color: #282828;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
@@ -570,7 +546,7 @@ a.login:focus {
 }
 
 .search-area {
-    width: 40%;
+    width: 80%;
     height: 42px;
     padding-left: 10px;
     float: left;
@@ -632,6 +608,7 @@ a.login:focus {
 
 .dropdown-asset-custom ul.dropdown-menu a {
     color: #444;
+    text-align: left;
 }
 
 .dropdown-toggle.more-list {
@@ -733,6 +710,12 @@ div.top-menu-right-custom .navbar-nav > li > a:hover {
     h2.app-title {
         font-size: 19px;
     }
+
+    .ctrl-wr-asset {
+        margin-bottom: 2%;
+        margin-left: 3%;
+        width: 29%;
+    }
 }
 
 a.ctrl-asset-type-switcher {
@@ -829,7 +812,6 @@ a.ast-type-item:hover {
     width: 100%;
     float: left;
     margin: 0.5%;
-    background: #fbfbfb;
     transition: all 0.5s ease;
 }
 
@@ -845,7 +827,6 @@ a.ast-type-item:hover {
 
 .ctrl-wr-asset .ast-img {
     width: 100%;
-    background: #ffffff;
     display: block;
 }
 
@@ -880,38 +861,10 @@ a.ast-type-item:hover {
     width: 100%;
 }
 
-@media (min-width: 360px) {
-    .ctrl-wr-asset .ast-img {
-        width: 50%;
-    }
-
-    .ctrl-wr-asset {
-        width: 100%;
-    }
-
-    .ast-img {
-        margin: 0;
-        padding: 0;
-    }
-
-    . col-xs-5 {
-        padding-left: 10px;
-        padding-right: 0;
-        width: 43%;
-    }
-
-    .title {
-        font-size: 19px;
-        height: 59px;
-        padding: 16px 4px 0;
-    }
-
-}
-
 @media (min-width: 500px) {
     .ctrl-wr-asset {
         margin-left: 3%;
-        width: 46%;
+        width: 21%;
         margin-bottom: 2%;
     }
 
@@ -938,7 +891,7 @@ a.ast-type-item:hover {
 
 @media (min-width: 800px) {
     .ctrl-wr-asset {
-        width: 29%;
+        width: 21%;
     }
 }
 
@@ -950,7 +903,7 @@ a.ast-type-item:hover {
 
 @media (max-width: 1100px) {
     .ctrl-wr-asset .ast-img {
-        width: 50%;
+        width: 100%;
     }
 }
 
@@ -989,6 +942,110 @@ a.ast-type-item:hover {
     top: 0;
     left: 0;
 }
+
+@media (max-width: 568px) {
+    body {
+        background-color: #f9f9f9;
+        margin-bottom: 60px;
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .ctrl-wr-asset .ast-img {
+        width: 90%;
+    }
+
+    .ast-img {
+        margin: 0;
+        padding: 0;
+    }
+
+    . col-xs-5 {
+        padding-left: 10px;
+        padding-right: 0;
+        width: 43%;
+    }
+
+    .title {
+        font-size: 19px;
+        height: 59px;
+        padding: 16px 4px 0;
+    }
+
+    .nav > li {
+        position: relative;
+        display: inline-block;
+    }
+}
+@media (max-width: 480px) {
+    body {
+        background-color: #f9f9f9;
+        margin-bottom: 60px;
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .ctrl-wr-asset .ast-img {
+        width: 30%;
+    }
+
+    .ast-img {
+        margin: 0;
+        padding: 0;
+    }
+
+    . col-xs-5 {
+        padding-left: 10px;
+        padding-right: 0;
+        width: 43%;
+    }
+
+    .title {
+        font-size: 19px;
+        height: 59px;
+        padding: 16px 4px 0;
+    }
+
+    .nav > li {
+        position: relative;
+        display: inline-block;
+    }
+}
+
+@media (max-width: 360px) {
+    body{
+        background-color: #f9f9f9;
+        margin-bottom: 60px;
+        overflow-x: hidden;
+        width: 100%;
+    }
+    .ctrl-wr-asset .ast-img {
+        width: 50% ;
+    }
+
+
+    .ast-img {
+        margin: 0;
+        padding: 0;
+    }
+
+    . col-xs-5 {
+        padding-left: 10px;
+        padding-right: 0;
+        width: 43%;
+    }
+
+    .title {
+        font-size: 19px;
+        height: 59px;
+        padding: 16px 4px 0;
+    }
+    .nav>li {
+        position: relative;
+        display: inline-block;
+    }
+}
+
 
 .wr-asset-type-switcher span {
     float: left;
@@ -1083,7 +1140,6 @@ a.ast-type-item:hover {
     left: 50%;
     margin-left: -11px;
     border-top-width: 0;
-    border-bottom-color: #232323;
     border-bottom-color: #232323;
 }
 
@@ -1234,7 +1290,6 @@ a.more:focus {
 .action-title{ text-align: center; font-weight:400; font-size: 14px; line-height: 13px; cursor: pointer; text-transform: uppercase; padding: 15px 2px 2px; float: left;   }
 
 .btn-primary{
-    background:none;
     border:0px;
     border-radius: 0px;
     color: #fff;
@@ -1296,7 +1351,6 @@ a:hover, a:focus {
 #content-asset-types{background-color: #101010;}
 .wr-action-btn-bar {
     background-color: #00344D;
-    Width: 101.85%;
     height: 60px;
     margin-left: -20px;
     padding-left: 20px;
@@ -1326,3 +1380,4 @@ a:hover, a:focus {
     padding-left: 20px;
 }
 .grey{color: #c7c7c7;}
+.dropdown-menu > li > a .btn-primary { background-color: transparent;}

@@ -17,7 +17,7 @@
             <!-- asset details folder-->
             <div class="asset-details-header ">
                 <!-- aset details -->
-             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 white-bg">
+             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 white-bg">
                 <div class=" details-image white-bg">
                     <img class="img-responsive" src="{{#if images_thumbnail}}{{tenantedUrl ""}}/storage/{{../../../rxt.shortName}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
                 </div>
@@ -37,13 +37,11 @@
             </div>
             <div class="white-bg asset-details-wrapper ">
                 <div class="white-bg padding-right-double padding-left-double">
-                    <h4>{{overview_name}}</h4>
+                    <h4>Summary</h4>
                     <p>{{>overview .}}</p>
                     <hr>
                     {{>tags ../../.}}
-
             </div><!-- description column-->
-
         </div>
         </div>
             <div>
@@ -61,7 +59,6 @@
                             <a href="#tab-share" data-toggle="tab" data-type="basic">{{t "Share"}}</a>
                         </li>
                     </ul>
-
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab-properties">
                             <div class="content">
@@ -86,7 +83,6 @@
                             {{/if}}
                         </div>
                     </div>
-
                 </div>
         {{/with}}
     {{/with}}
