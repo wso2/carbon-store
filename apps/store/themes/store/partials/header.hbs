@@ -27,7 +27,7 @@
                 {{#if cuser.username}}
                 <li>
                     <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <i class="fw fw-user"></i> {{cuser.username}} <b class="caret"></b></a>
+                        {{cuser.username}} <i class="fw fw-user"></i> </a>
                     <ul class="dropdown-menu dropdown-account" role="menu" aria-labelledby="dLabel">
                         <li>
                             {{signout .}}

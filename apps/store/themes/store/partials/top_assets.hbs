@@ -3,7 +3,8 @@
     <div class="container-fluid row padding-double center">
         {{#each popularAssets}}
             {{#attributes}}
-                <div class="freatured-assets-col col-xs-12 col-sm-6 col-md-3  "><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}"><img class="img-responsive" src="{{#if ../banner}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../banner}}{{/if}}"></a> </div><!--freatured-assets-col-->
+                <div class="freatured-assets-col col-xs-12 col-sm-6 col-md-3  "><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
+                    <img class="img-responsive" src="{{#if ../banner}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../banner}}{{/if}}"></a> </div><!--freatured-assets-col-->
             {{/attributes}}
         {{/each}}
     </div>
@@ -14,7 +15,12 @@
     <div class="ast-container " id="ast-container">
         <div class="container-fluid ">
             <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?">Recent {{rxt.pluralLabel}}</a></div><!--title-->
-            <div class="float-right"><a href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?" class="more">See More</a></div>
+            <div class="float-right"><a href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?" class="more">
+                <span class="fw-stack fw-lg  fw-inverse">
+                    <i class="fw fw-circle fw-stack-1-5x grey"></i>
+                    <i class="fw fw-dots fw-stack-1x white"></i>
+                </span>
+                See More</a></div>
             <hr>
         </div>
     </div>
