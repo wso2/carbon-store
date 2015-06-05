@@ -17,11 +17,11 @@
  *
  */
 var cache = false;
-var engine = caramel.engine('handlebars', (function() {
+var engine = caramel.engine('handlebars', (function () {
     return {
-        partials: function(Handlebars) {
+        partials: function (Handlebars) {
             var theme = caramel.theme();
-            var partials = function(file) {
+            var partials = function (file) {
                 (function register(prefix, file) {
                     var i, length, name, files;
                     if (file.isDirectory()) {
@@ -47,15 +47,15 @@ var engine = caramel.engine('handlebars', (function() {
             partials(new File(theme.__proto__.resolve.call(theme, 'partials')));
             var rxtAPI = require('rxt');
             var appExtensionMediator = rxtAPI.core.defaultAppExtensionMediator();
-            if(appExtensionMediator){
-                var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme,'partials'));
-                log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+            if (appExtensionMediator) {
+                var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme, 'partials'));
+                log.debug('Registering new partials directory from:  ' + defaultExtensionPartialsPath);
                 partials(new File(defaultExtensionPartialsPath));
             }
             partials(new File(theme.resolve('partials')));
-            Handlebars.registerHelper('dyn', function(options) {
+            Handlebars.registerHelper('dyn', function (options) {
                 var asset = options.hash.asset,
-                    resolve = function(path) {
+                    resolve = function (path) {
                         var p,
                             store = require('/modules/store.js');
                         if (asset) {
@@ -69,7 +69,7 @@ var engine = caramel.engine('handlebars', (function() {
                 partials(new File(resolve('partials')));
                 return options.fn(this);
             });
-            Handlebars.registerHelper('renderSearchField', function(options) {
+            Handlebars.registerHelper('renderSearchField', function (options) {
                 var output = '';
                 //log.info('options: '+stringify(options));
                 switch (options.type) {
@@ -91,7 +91,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return new Handlebars.SafeString(output);
             });
-            Handlebars.registerHelper('authentication', function(options) {
+            Handlebars.registerHelper('authentication', function (options) {
                 var log = new Log();
                 //Determine if security details are present
                 var security = options.security;
@@ -115,29 +115,52 @@ var engine = caramel.engine('handlebars', (function() {
                 ptr = Handlebars.compile(output);
                 return new Handlebars.SafeString(ptr(security));
             });
-            Handlebars.registerHelper('signout',function(options){
-                var log=new Log();
-                var security=options.security;
-                var output='';
+            Handlebars.registerHelper('getPageDescription', function (context) {
+                var description = context.meta.description;
+                var compDescription = Handlebars.compile(description);
+                return new Handlebars.SafeString(compDescription(context));
+            });
+            Handlebars.registerHelper('getPageTitlePerAsset', function (context) {
+                // log.info(stringify(context.tags));
+                var title = context.meta.title;
+                var compDescription = Handlebars.compile(title);
+                return new Handlebars.SafeString(compDescription(context));
+            });
+            Handlebars.registerHelper('getAssetTags', function (context) {
+                var tags = context.tags;
+                var tagStr = '';
+                for (var key in tags) {
+                    if (key == (tags.length - 1)) {
+                        tagStr += tags[key].name;
+                    } else {
+                        tagStr += tags[key].name + ",";
+                    }
+                }
+                return new Handlebars.SafeString(tagStr);
+            });
+            Handlebars.registerHelper('signout', function (options) {
+                var log = new Log();
+                var security = options.security;
+                var output = '';
                 var ptr;
-                if(!security){
+                if (!security) {
                     log.warn('Unable to locate security details in order to render sign out ui elements');
                     return;
                 }
-                switch(security.method){
+                switch (security.method) {
                     case 'sso':
-                        output='{{> sso-signout .}}';
+                        output = '{{> sso-signout .}}';
                         break;
                     case 'basic':
-                        output='{{> basic-signout .}}';
+                        output = '{{> basic-signout .}}';
                         break;
                     default:
                         break;
                 }
-                ptr=Handlebars.compile(output);
+                ptr = Handlebars.compile(output);
                 return new Handlebars.SafeString(ptr(security));
             });
-            Handlebars.registerHelper('assetUtilization', function(options) {
+            Handlebars.registerHelper('assetUtilization', function (options) {
                 var output = '';
                 var ptr;
                 var security = options.security;
@@ -167,19 +190,19 @@ var engine = caramel.engine('handlebars', (function() {
                 ptr = Handlebars.compile(output);
                 return new Handlebars.SafeString(ptr());
             });
-            Handlebars.registerHelper('getLoginUrl',function(options){
-                var security=options.security;
-                var output='/login';
-                if(!security){
+            Handlebars.registerHelper('getLoginUrl', function (options) {
+                var security = options.security;
+                var output = '/login';
+                if (!security) {
                     log.debug('Unable to determine login url as the security block was not pesent');
                     return output;
                 }
-                switch(security.method){
+                switch (security.method) {
                     case 'sso':
-                        output='/login';
+                        output = '/login';
                         break;
                     case 'basic':
-                        output='#';
+                        output = '#';
                         break;
                     default:
                         break;
@@ -190,7 +213,6 @@ var engine = caramel.engine('handlebars', (function() {
                 var constants = require('rxt').constants;
                 var uriPattern = '/{context}/{+suffix}';
                 var tenantedUriPattern = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
-
                 var uriOptions, output;
                 var uriMatcher = new URIMatcher(request.getRequestURI());
                 if (uriMatcher.match(tenantedUriPattern)) {
@@ -202,57 +224,55 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return output + path;
             });
-
-            Handlebars.registerHelper('hasAssetPermission',function(context,options){
+            Handlebars.registerHelper('hasAssetPermission', function (context, options) {
                 log.info(options.hash);
-                var rxtAPI  = require('rxt');
+                var rxtAPI = require('rxt');
                 var key = options.hash.key;
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
                 var username = options.hash.username || 'anon';
-                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var isAuthorized = options.hash.auth ? options.hash.auth : false;
                 var missingParams = (!key) || (!type) || (!tenantId) || (!username);
                 //If the user is forcing the view to render 
-                if(isAuthorized){
+                if (isAuthorized) {
                     return options.fn(context);
                 }
-                if(missingParams){
+                if (missingParams) {
                     log.error('[hasAssetPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
-                    return ;
+                    return;
                 }
-                isAuthorized = rxtAPI.permissions.hasAssetPermission(key,type,tenantId,username);
-                if(isAuthorized){
+                isAuthorized = rxtAPI.permissions.hasAssetPermission(key, type, tenantId, username);
+                if (isAuthorized) {
                     return options.fn(context);
                 }
-                log.error('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');
-                return ;
+                log.error('[hasAssetPermission] User ' + username + ' does not have permission: ' + key + ' to see ui area');
+                return;
             });
-
-            Handlebars.registerHelper('hasAppPermission',function(context,options){
-                var rxtAPI  = require('rxt');
+            Handlebars.registerHelper('hasAppPermission', function (context, options) {
+                var rxtAPI = require('rxt');
                 var key = options.hash.key;
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
-                var username = options.hash.username ||'anon';
-                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var username = options.hash.username || 'anon';
+                var isAuthorized = options.hash.auth ? options.hash.auth : false;
                 var missingParams = (!key) || (!tenantId) || (!username);
                 //If the user is forcing the view to render 
-                if(isAuthorized){
+                if (isAuthorized) {
                     return options.fn(context);
                 }
-                if(missingParams){
+                if (missingParams) {
                     log.error('[hasAppPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
-                    return ;
+                    return;
                 }
-                isAuthorized = rxtAPI.permissions.hasAppPermission(key,tenantId,username);
-                if(isAuthorized){
+                isAuthorized = rxtAPI.permissions.hasAppPermission(key, tenantId, username);
+                if (isAuthorized) {
                     return options.fn(context);
                 }
-                log.error('[hasAppPermission] User '+username+' does not have permission: '+key+' to see ui area');
-                return ;
+                log.error('[hasAppPermission] User ' + username + ' does not have permission: ' + key + ' to see ui area');
+                return;
             });
         },
-        render: function(data, meta) {
+        render: function (data, meta) {
             if (request.getParameter('debug') == '1') {
                 response.addHeader("Content-Type", "application/json");
                 print(stringify(data));
@@ -260,16 +280,16 @@ var engine = caramel.engine('handlebars', (function() {
                 this.__proto__.render.call(this, data, meta);
             }
         },
-        globals: function(data, meta) {
+        globals: function (data, meta) {
             var store = require('/modules/store.js'),
                 user = require('store').server.current(meta.session);
             return 'var store = ' + stringify({
-                user: user ? user.username : null
-            });
+                    user: user ? user.username : null
+                });
         }
     };
 }()));
-var resolve = function(path) {
+var resolve = function (path) {
     var themeResolver = this.__proto__.resolve;
     var asset = require('rxt').asset;
     var app = require('rxt').app;
