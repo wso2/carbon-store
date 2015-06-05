@@ -64,7 +64,8 @@ button:hover {
 }
 .com-container {
     display: table;
-    width: 100%;
+    margin: 15px 16px;
+    width: 98%;
 }
 
 .com-add {
@@ -294,3 +295,5 @@ button:hover {
 .com-sort-hidden{
     display:none;
 }
+#btn-post{background-color: #3a9ecf; padding: 15px;
+    color: #fff;}

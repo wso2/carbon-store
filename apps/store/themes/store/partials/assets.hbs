@@ -14,18 +14,18 @@
   ~ limitations under the License.
   -->
 
-<div class="assets-container" >
-    <h3 class="asset-type-default asset-title-separator asset-type-{{rxt.shortName}}">
+<div class="assets-container margin-top-double padding-top-double" >
+    <!-- <h3 class="asset-type-default asset-title-separator asset-type-{{rxt.shortName}}">
         <div class="pagination top-asset-slideshow-pag assetSliderPag" id="top-asset-slideshow-pag-{{rxt.shortName}}"></div>
-    </h3>
+    </h3> -->
     {{#if assets}}
         <section>
         {{#each assets}}
             {{#attributes}}
-            <div class="ctrl-wr-asset">
+            <div class="ctrl-wr-asset ">
                 <div class="itm-ast">
                     <a class="ast-img " href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
-                        <img class="img-responsive" src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
+                      {{> assets-thumbnail ..}}
                     </a>
                     <div class="ast-content">
                         <div class="ast-title padding">
