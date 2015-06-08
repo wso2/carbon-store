@@ -19,6 +19,6 @@
 var resources = function (page, meta) {
     return {
         css: ['top-assets.css', 'userAssets.css'],
-       	js: ['userAssets.js']
+       	js: ['userAssets.js','asset-core.js']
     };
 };
