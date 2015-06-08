@@ -80,7 +80,9 @@ public class StateExecutor {
             //Replace any dynamic keys for the role string(e.g. private_{asset_author}
             role = dynamicValueInjector.injectValues(role);
 
-            log.debug("ROLE: " + role);
+            if (log.isDebugEnabled()) {
+            	log.debug("ROLE: " + role);
+            }
 
             //Go through all of the permissions
             for (int index = 0; index < permissions.size(); index++) {
@@ -94,8 +96,10 @@ public class StateExecutor {
                 //used here.
                 permission = dynamicValueInjector.injectValues(permission);
 
-                log.debug("Applying transition: " + rule.getOperator() + " permission: " + permission);
-
+                if (log.isDebugEnabled()) {
+                	log.debug("Applying transition: " + rule.getOperator() + " permission: " + permission);
+                }
+                
                 //Only execute a permission if both a permission and a operator exists.
                 if ((rule.getPermissionKey() != null) && (rule.getOperator() != null)) {
 
@@ -125,7 +129,9 @@ public class StateExecutor {
                 removePermission(user, role, target, rule);
                 break;
             default:
-                log.debug("Ignoring " + opType);
+            	if (log.isDebugEnabled()) {
+            		log.debug("Ignoring " + opType);
+            	}
                 break;
         }
     }
@@ -146,10 +152,12 @@ public class StateExecutor {
 
         try {
             user.getAuthorizationManager().authorizeRole(role, target, rule);
-            log.debug("Permission " + rule + " ADDED to role: " + role + " for " + target);
+            if (log.isDebugEnabled()) {
+            	log.debug("Permission " + rule + " ADDED to role: " + role + " for " + target);
+            }
         } catch (Exception e) {
             String msg = "Permission " + rule + " could NOT be added to role: " + role + " for " + target;
-            log.debug(msg);
+            log.error(msg);
         }
 
     }
@@ -170,7 +178,9 @@ public class StateExecutor {
         try {
 
             user.getAuthorizationManager().denyRole(role, target, rule);
-            log.debug("Permission: " + rule + " REMOVED from role: " + role + " for " + target);
+            if (log.isDebugEnabled()) {
+            	log.debug("Permission: " + rule + " REMOVED from role: " + role + " for " + target);
+            }
         } catch (Exception e) {
             String msg = "Permission: " + rule + " could NOT be removed from role: " + role + " for " + target;
             log.error(e);
