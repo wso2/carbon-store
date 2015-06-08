@@ -7,12 +7,9 @@
                data-toggle="modal"
                data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"> {{>processed-asset-text}}</a>
 {{else}}
-
-
-    <a class="btn btn-primary js_bookmark"
-                    href='#'
-                   data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"> {{>process-asset-text }}</a>
-
-
+    <a class="btn btn-primary js_bookmark left"
+                href='#'
+                data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"> {{>process-asset-text }}</a>
 
 {{/if}}
+

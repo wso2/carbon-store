@@ -238,7 +238,7 @@ hr.emboss {
     padding-bottom: 10px;
     padding-left: 10px;
     padding-top: 10px;
-    top: 42px;
+    top: 49px;
     width: 211px;
 }
 .store-menu .dropdown-menu li a {
@@ -282,6 +282,13 @@ hr.emboss {
     border-bottom: 6px solid transparent;
     left: 10px;
     top: 11px;
-    left: -6px;
 }
-
+.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
+    background-color: #333;
+    border-color: #337ab7;
+}
+.navbar-nav > li > a {
+    padding-bottom: 4px;
+    padding-top:8px;
+}
+.nav > li > a:focus, .nav > li > a:hover{ background-color:#3e3e3e; }

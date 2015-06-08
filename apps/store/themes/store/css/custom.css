@@ -1,7 +1,6 @@
 /* Regular */
 @font-face {
     font-family: 'Open Sans';
-
     src: url('../fonts/OpenSans-Regular-webfont.eot');
     src: url('../fonts/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
     url('../fonts/OpenSans-Regular-webfont.woff') format('woff'),
@@ -144,6 +143,7 @@ body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
     background-color: #f9f9f9;
+    font-family: 'Open Sans';
 }
 
 footer {
@@ -156,12 +156,11 @@ footer {
 }
 
 .wrapper {
-    min-width: 360px;
+    min-width: 320px;
+    overflow-x: hidden;
 }
 
-body {
-    font-family: 'Open Sans';
-}
+
 
 /* application top level header */
 h1 {
@@ -468,9 +467,6 @@ a.ast-name:after {
 .register {
     width: auto;
     height: 50px;
-    background-image: url(../img/icons/rigister.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #fff;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -482,9 +478,6 @@ a.ast-name:after {
 
 a.register:hover {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     background-color: #282828;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
@@ -496,9 +489,6 @@ a.register:hover {
 
 a.register:active {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     background-color: #282828;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
@@ -510,9 +500,6 @@ a.register:active {
 
 a.register:focus {
     width: auto;
-    background-image: url(../img/icons/rigister-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -524,9 +511,6 @@ a.register:focus {
 .login {
     width: auto;
     height: 50px;
-    background-image: url(../img/icons/login.png);
-    background-repeat: no-repeat;
-    background-position: left;
     padding-left: 42px;
     color: #fff;
     -webkit-transition: all 0.30s ease-in-out;
@@ -538,9 +522,6 @@ a.register:focus {
 
 a.login:hover {
     width: auto;
-    background-image: url(../img/icons/login-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -551,9 +532,6 @@ a.login:hover {
 
 a.login:active {
     width: auto;
-    background-image: url(../img/icons/login-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
     -moz-transition: all 0.30s ease-in-out;
@@ -564,9 +542,6 @@ a.login:active {
 
 a.login:focus {
     width: auto;
-    background-image: url(../img/icons/login-hover.png);
-    background-repeat: no-repeat;
-    background-position: left;
     background-color: #282828;
     color: #237bd5;
     -webkit-transition: all 0.30s ease-in-out;
@@ -577,7 +552,7 @@ a.login:focus {
 }
 
 .search-area {
-    width: 40%;
+    width: 80%;
     height: 42px;
     padding-left: 10px;
     float: left;
@@ -639,6 +614,7 @@ a.login:focus {
 
 .dropdown-asset-custom ul.dropdown-menu a {
     color: #444;
+    text-align: left;
 }
 
 .dropdown-toggle.more-list {
@@ -670,12 +646,15 @@ a.more-list:hover {
 div.top-menu-right-custom .navbar-nav > li > a {
     color: #fff;
     text-transform: uppercase;
-    margin-left: 10px;
+    margin-left: 10px;height: 50px;
+    padding-top: 15px;
 }
 
 div.top-menu-right-custom .navbar-nav > li > a:hover {
     text-transform: uppercase;
     background-color: #444;
+    height: 50px;
+    padding-top: 15px;
 }
 
 .dropdown-toggle:hover {
@@ -736,6 +715,12 @@ div.top-menu-right-custom .navbar-nav > li > a:hover {
 
     h2.app-title {
         font-size: 19px;
+    }
+
+    .ctrl-wr-asset {
+        margin-bottom: 2%;
+        margin-left: 3%;
+        width: 29%;
     }
 }
 
@@ -817,7 +802,7 @@ a.ast-type-item:hover {
     }
 
     .search-area {
-        width: 67%
+        width: 43%
     }
 
 }
@@ -833,7 +818,6 @@ a.ast-type-item:hover {
     width: 100%;
     float: left;
     margin: 0.5%;
-    background: #fbfbfb;
     transition: all 0.5s ease;
 }
 
@@ -849,7 +833,6 @@ a.ast-type-item:hover {
 
 .ctrl-wr-asset .ast-img {
     width: 100%;
-    background: #ffffff;
     display: block;
 }
 
@@ -884,38 +867,10 @@ a.ast-type-item:hover {
     width: 100%;
 }
 
-@media (min-width: 360px) {
-    .ctrl-wr-asset .ast-img {
-        width: 50%;
-    }
-
-    .ctrl-wr-asset {
-        width: 100%;
-    }
-
-    .ast-img {
-        margin: 0;
-        padding: 0;
-    }
-
-    . col-xs-5 {
-        padding-left: 10px;
-        padding-right: 0;
-        width: 43%;
-    }
-
-    .title {
-        font-size: 19px;
-        height: 59px;
-        padding: 16px 4px 0;
-    }
-
-}
-
 @media (min-width: 500px) {
     .ctrl-wr-asset {
         margin-left: 3%;
-        width: 46%;
+        width: 21%;
         margin-bottom: 2%;
     }
 
@@ -942,7 +897,7 @@ a.ast-type-item:hover {
 
 @media (min-width: 800px) {
     .ctrl-wr-asset {
-        width: 29%;
+        width: 21%;
     }
 }
 
@@ -954,7 +909,7 @@ a.ast-type-item:hover {
 
 @media (max-width: 1100px) {
     .ctrl-wr-asset .ast-img {
-        width: 50%;
+        width: 100%;
     }
 }
 
@@ -993,6 +948,110 @@ a.ast-type-item:hover {
     top: 0;
     left: 0;
 }
+
+@media (max-width: 568px) {
+    body {
+        background-color: #f9f9f9;
+        margin-bottom: 60px;
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .ctrl-wr-asset .ast-img {
+        width: 90%;
+    }
+
+    .ast-img {
+        margin: 0;
+        padding: 0;
+    }
+
+    . col-xs-5 {
+        padding-left: 10px;
+        padding-right: 0;
+        width: 43%;
+    }
+
+    .title {
+        font-size: 19px;
+        height: 59px;
+        padding: 16px 4px 0;
+    }
+
+    .nav > li {
+        position: relative;
+        display: inline-block;
+    }
+}
+@media (max-width: 480px) {
+    body {
+        background-color: #f9f9f9;
+        margin-bottom: 60px;
+        overflow-x: hidden;
+        width: 100%;
+    }
+
+    .ctrl-wr-asset .ast-img {
+        width: 30%;
+    }
+
+    .ast-img {
+        margin: 0;
+        padding: 0;
+    }
+
+    . col-xs-5 {
+        padding-left: 10px;
+        padding-right: 0;
+        width: 43%;
+    }
+
+    .title {
+        font-size: 19px;
+        height: 59px;
+        padding: 16px 4px 0;
+    }
+
+    .nav > li {
+        position: relative;
+        display: inline-block;
+    }
+}
+
+@media (max-width: 360px) {
+    body{
+        background-color: #f9f9f9;
+        margin-bottom: 60px;
+        overflow-x: hidden;
+        width: 100%;
+    }
+    .ctrl-wr-asset .ast-img {
+        width: 50% ;
+    }
+
+
+    .ast-img {
+        margin: 0;
+        padding: 0;
+    }
+
+    . col-xs-5 {
+        padding-left: 10px;
+        padding-right: 0;
+        width: 43%;
+    }
+
+    .title {
+        font-size: 19px;
+        height: 59px;
+        padding: 16px 4px 0;
+    }
+    .nav>li {
+        position: relative;
+        display: inline-block;
+    }
+}
+
 
 .wr-asset-type-switcher span {
     float: left;
@@ -1088,7 +1147,6 @@ a.ast-type-item:hover {
     margin-left: -11px;
     border-top-width: 0;
     border-bottom-color: #232323;
-    border-bottom-color: #232323;
 }
 
 .wr-asset-type-switcher .popover > .arrow {
@@ -1152,29 +1210,27 @@ a.ast-type-item:hover {
 }
 
 .more {
-    color: #000;
+    color: #c7c7c7;
     float: right;
-    background-image: url(../img/icons/more-icon.png);
-    background-position: center left;
-    background-repeat: no-repeat;
     text-transform: uppercase;
-    padding: 23px 3px 16px 36px;
+    padding: 6px 3px 16px 36px;
 }
-
-a.more:hover {
-    color: #237bd5;
+.more:hover{
+    color: #919191;
+    float: right;
+    text-transform: uppercase;
+    padding: 6px 3px 16px 36px;
+}
+a.more:hover .grey {
+    color: #919191;
     text-decoration: none;
-    background-image: url(../img/icons/more-icon-hover-blue.png);
-    background-position: center left;
-    background-repeat: no-repeat
 }
 
-a.more:active {
-    background-color: none
-}
+
+
 
 a.more:focus {
-    border: none
+    border: none;
 }
 
 .dropdown-menu > li > a {
@@ -1240,7 +1296,6 @@ a.more:focus {
 .action-title{ text-align: center; font-weight:400; font-size: 14px; line-height: 13px; cursor: pointer; text-transform: uppercase; padding: 15px 2px 2px; float: left;   }
 
 .btn-primary{
-    background:none;
     border:0px;
     border-radius: 0px;
     color: #fff;
@@ -1283,6 +1338,7 @@ a.more:focus {
     border-width: 0 1px 1px;
     display: block;
     padding: 1em 1.4em;
+    min-height: 110px;
 }
 #socialIfr{ background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
     border-bottom: 1px solid #ededed;
@@ -1301,21 +1357,12 @@ a:hover, a:focus {
 #content-asset-types{background-color: #101010;}
 .wr-action-btn-bar {
     background-color: #00344D;
-    Width: 101.85%;
     height: 60px;
     margin-left: -20px;
     padding-left: 20px;
     overflow: hidden;
 }
 .white{color: #f3f3f3;}
-.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
-    background-color: #333;
-    border-color: #337ab7;
-}
-.navbar-nav > li > a {
-    padding-bottom: 4px;
-    padding-top:8px;
-}
 #ul-sort-assets li a {
     color: #333;
     opacity: 1;
@@ -1337,3 +1384,5 @@ a:hover, a:focus {
     height: 45px;
     padding-left: 20px;
 }
+.grey{color: #c7c7c7;}
+.dropdown-menu > li > a .btn-primary { background-color: transparent;}
