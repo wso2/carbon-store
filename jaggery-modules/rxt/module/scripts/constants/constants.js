@@ -58,6 +58,17 @@ var constants = {};
     constants.PROP_DEFAULT = 'default';
     constants.DEFAULT_NAME_ATTRIBUTE = 'overview_name';
     /**
+     * Registry actions
+     */
+    constants.REGISTRY_GET_ACTION = 'http://www.wso2.org/projects/registry/actions/get';
+    constants.REGISTRY_ADD_ACTION = 'http://www.wso2.org/projects/registry/actions/add';
+    constants.REGISTRY_DELETE_ACTION = 'http://www.wso2.org/projects/registry/actions/delete';
+    constants.REGISTRY_AUTHORIZE_ACTION = 'authorize';
+    /**
+     * Registry roles
+     */
+    constants.ROLE_EVERYONE = 'Internal/everyone';
+    /**
      * URL Patterns
      */
     constants.APP_PAGE_URL_PATTERN = '/{context}/pages/{+suffix}';

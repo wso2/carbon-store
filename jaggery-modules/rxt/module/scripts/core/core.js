@@ -214,12 +214,49 @@ var core = {};
             log.debug('Unable to locate rxt definition for ' + rxtType);
             return '';
         }
-        var pathItem = def.storagePath[0];
+        var pathItem = def.storagePath;
         if (!pathItem) {
             log.error('Unable to locate stoarge path of ' + rxtType + '.Check the rxt definition to see if the storage path is specified correctly');
             throw 'Unable to locate stoarge path of ' + rxtType;
         }
-        return pathItem.storagePath;
+        return pathItem;
+    };
+    RxtManager.prototype.getStaticRxtStoragePath = function(rxtType) {
+        var storagePath = this.getRxtStoragePath(rxtType);
+        var components;
+        var isStatic = true;
+        var component;
+        var path = [];
+        if (!storagePath) {
+            log.error('Cannot locate a static path in the rxt storage path ' + path + '.Please check the RXT definition to see if the storage path has been defined using only dynamic values.');
+            return storagePath;
+        }
+        components = storagePath.split('/');
+        for (var index = 0; index < components.length && isStatic; index++) {
+            component = components[index];
+            if (component.indexOf('@') <= -1) {
+                path.push(component);
+            } else {
+                isStatic = false;
+            }
+        }
+        return path.join('/');
+    };
+    RxtManager.prototype.getRegistryConfigureFunction = function(type) {
+        var template = this.rxtMap[type];
+        var ptr = function() {
+            return false;
+        };
+        if (!template) {
+            log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return rxt details');
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return rxt details';
+        }
+        var meta = template.meta;
+        if ((!meta) || (!meta.permissions)) {
+            return ptr;
+        }
+        ptr = meta.permissions.configureRegistryPermissions || ptr;
+        return ptr;
     };
     /**
      * Returns a list of all RXT types in the Governance registry
@@ -527,7 +564,9 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether asset grouping is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isLifecycleEnabled = function (type) {
+
+    RxtManager.prototype.isLifecycleEnabled = function(type) {
+
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -539,7 +578,9 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isDefaultLifecycleEnabled = function (type) {
+
+    RxtManager.prototype.isDefaultLifecycleEnabled = function(type) {
+
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -551,19 +592,9 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether default lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isValidationMappings = function (type) {
-        var rxtDefinition = this.rxtMap[type];
-        if (!rxtDefinition) {
-            log.error('Unable to locate the rxt definition for type: ' + type);
-            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if validationMappings of assets is required';
-        }
-        if ((rxtDefinition.meta) && (rxtDefinition.meta.validationMappings)) {
-            return rxtDefinition.meta.validationMappings || null;
-        }
-        log.warn('Unable to locate the  meta property to determine whether asset validationMappings is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
-        return null;
-    };
-    RxtManager.prototype.isLifecycleViewEnabled = function (type) {
+
+    RxtManager.prototype.isLifecycleViewEnabled = function(type) {
+
         var rxtDefinition = this.rxtMap[type];
         var isLCEnabled = this.isLifecycleEnabled(type);
         var isLCViewEnabled = false;
@@ -891,7 +922,9 @@ var core = {};
         }
         return configs;
     };
-    core.defaultAppExtensionMediator = function () {
+
+    core.defaultAppExtensionMediator = function() {
+
         var mediator;
         if (arguments.length === 1) {
             mediator = arguments[0];
@@ -1230,7 +1263,9 @@ var core = {};
             session: session
         };
     };
-    core.createSystemContext = function (tenantId) {
+
+    core.createSystemContext = function(tenantId) {
+
         var server = require('store').server;
         var sysRegistry = server.systemRegistry(tenantId);
         var userManager = server.userManager(tenantId);

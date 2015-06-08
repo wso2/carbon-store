@@ -220,6 +220,32 @@ var asset = {};
             return;
         }
     };
+    AssetManager.prototype.postCreate = function(asset,ctx){
+        log.info('### Performing post create operations ###');
+        var username = ctx.username;
+        var permissionsAPI = require('rxt').permissions;
+        var userMod = require('store').user;
+        var userRole = user.privateRole(username);
+        var tenantId = ctx.tenantId;
+        var path = asset.path;
+        var actions = [];
+        if(!path) {
+            log.error('Unable to finish post create actions as the asset path was not located.Subsequent CRUD operations may fail for asset '+asset.id);
+            return false;
+        }
+        //Allow all actions for the user's role
+        actions.push(constants.REGISTRY_GET_ACTION);
+        actions.push(constants.REGISTRY_ADD_ACTION);
+        actions.push(constants.REGISTRY_DELETE_ACTION);
+        actions.push(constants.REGISTRY_AUTHORIZE_ACTION);
+        log.info('Authorizing actions for role ');
+        permissionsAPI.authorizeActionsForRole(tenantId, path, userRole, actions);
+
+        //Deny actions for the everyone role
+        permissionsAPI.denyActionsForEveryone(tenantId, path);
+        log.info('### Finished post create operations ###');
+        return true;
+    };
     /**
      * validate the asset attributes on server side
      *
@@ -796,9 +822,81 @@ var asset = {};
      * @param {String} id  A UUID representing an asset instance
      * @param {String} tag  The name of the tag
      */
-    AssetManager.prototype.addTag = function (id, tag) {
+
+    AssetManager.prototype.addTags = function(id, tags) {
+        var asset = this.get(id);
+        var tagged; //Assume that the tag will not be applied
+        var utilsAPI = require('utils');
+        //If the user has provided a single tag then it should be 
+        //assigned to an array to keep the registry invocation uniform
+        if (!utilsAPI.reflection.isArray(tags)) {
+            tags = [tags];
+        }
+        if (!asset) {
+            log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
+        }
+        try {
+            this.registry.tag(asset.path, tags);
+            tagged = true;
+        } catch (e) {
+            log.error('Unable to add tags: ' + stringify(tags), e);
+        }
+        return tagged;
     };
-    AssetManager.prototype.untag = function (id, tag) {
+    AssetManager.prototype.removeTags = function(id, tags) {
+        var asset = this.get(id);
+        var tag;
+        var untagged; //Assume that the tags will not be removed
+        var utilsAPI = require('utils');
+        if (!utilsAPI.reflection.isArray(tags)) {
+            tags = [tags];
+        }
+        if (!asset) {
+            log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
+        }
+        try{
+            for(var index =0; index< tags.length; index++){
+                tag = tags[index];
+                this.registry.untag(asset.path,tag);
+            }
+            //TODO: Make the untagging process atomic
+            untagged = true;
+        } catch(e){
+            log.error('One or more tags were not untagged ',e);
+        }
+        return untagged;
+    };
+    /**
+     * Returns the set of tags applied to an asset
+     * TODO: This method should be called in the tags method
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    AssetManager.prototype.getTags = function(id){
+        var asset = this.get(id);
+        var tags;
+        if (!asset) {
+            log.error('Unable to retrieve tags of asset: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to retrieve the tags of the asset : ' + id + ' as the asset path was not located');
+        }
+        try{
+            tags = this.registry.tags(asset.path)||[];
+        } catch(e){
+            log.error('Unable to retrieve the tags of the provided asset ',e);
+        }
+        return tags;
+
     };
     /**
      * The method returns the rating value of a given asset

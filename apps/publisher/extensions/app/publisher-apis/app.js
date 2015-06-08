@@ -27,6 +27,10 @@ app.server = function(ctx) {
                 url: 'lifecycles',
                 path: 'lifecycles.jag',
                 secured: true
+            },{
+                url: 'tags',
+                path: 'tags.jag',
+                secured: true
             }, {
                 url: 'asset',
                 path: 'asset.jag',

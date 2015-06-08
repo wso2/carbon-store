@@ -82,13 +82,15 @@ asset.server = function (ctx) {
                 title: 'Store |  {{assets.name}}',
                 url: 'details',
                 path: 'details.jag',
-                description: 'This is a details page of {{assets.name}}'
+                description: 'This is a details page of {{assets.name}}',
+                permission: 'ASSET_DETAILS'
             }, {
                 //title: 'Store | ' + typeSingularLabel,
                 title: 'Store | {{rxt.shortName}}',
                 url: 'list',
                 path: 'list.jag',
-                description:'This is the listing page of {{rxt.shortName}}'
+                description: 'This is the listing page of {{rxt.shortName}}',
+                permission: 'ASSET_LIST'
             }, {
                 title: 'Store | ' + typeSingularLabel,
                 url: 'subscriptions',
@@ -190,6 +192,16 @@ asset.renderer = function (ctx) {
             },
             populateGroupingFeatureDetails: function (page, meta) {
                 return decoratorApi.populateGroupingFeatureDetails(ctx, page, this);
+            },
+            populateActionBar: function (page, meta) {
+                page.actionBar = {};
+                page.actionBar.actions = [];
+                //Format
+                //var action = {};
+                //action.url = '/list';
+                //action.iconClass ='ast-create';
+                //action.name ='Create';
+                //page.actionBar.actions.push(action);
             }
         }
     };

@@ -93,7 +93,8 @@ var resources = {};
                 if (ptr) {
                     var customConfig = ptr();
                     //Combine the configuration
-                    ref.copyAllPropValues(customConfig, configs);
+                    //ref.copyAllPropValues(customConfig, configs);
+                    ref.copyAllPropValuesWithFunctions(customConfig,configs);
                 }
                 return configs;
             };

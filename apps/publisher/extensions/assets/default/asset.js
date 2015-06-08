@@ -83,70 +83,58 @@ asset.server = function (ctx) {
         },
         endpoints: {
 
-            apis: [
-                {
-                    url: 'assets',
-                    path: 'assets.jag'
-                },
-                {
-                    url: 'asset',
-                    path: 'asset.jag'
-                },
-                {
-                    url: 'statistics',
-                    path: 'statistics.jag'
-                }
-            ],
-            pages: [
-                {
-                    title: 'Asset: ' + type,
-                    url: 'asset',
-                    path: 'asset.jag'
-                },
-                {
-                    title: 'Assets ' + type,
-                    url: 'assets',
-                    path: 'assets.jag'
-                },
-                {
-                    title: 'Create ' + type,
-                    url: 'create',
-                    path: 'create.jag',
-                    permission: 'ASSET_CREATE'
-                },
-                {
-                    title: 'Update ' + type,
-                    url: 'update',
-                    path: 'update.jag'
-                },
-                {
-                    title: 'Details ' + type,
-                    url: 'details',
-                    path: 'details.jag'
-                },
-                {
-                    title: 'List ' + type,
-                    url: 'list',
-                    path: 'list.jag',
-                    permission: 'ASSET_LIST'
-                },
-                {
-                    title: 'Lifecycle',
-                    url: 'lifecycle',
-                    path: 'lifecycle.jag',
-                    permission: 'ASSET_LIFECYCLE'
-                },
-                {
-                    title: 'Old lifecycle ',
-                    url: 'old-lifecycle',
-                    path: 'old-lifecycle.jag'
-                },
-                {
-                    title: 'Statistics',
-                    url: 'statistics',
-                    path: 'statistics.jag'
-                }
-            ]
+            apis: [{
+                url: 'assets',
+                path: 'assets.jag'
+            }, {
+                url: 'asset',
+                path: 'asset.jag'
+            }, {
+                url: 'statistics',
+                path: 'statistics.jag'
+            }],
+            pages: [{
+                title: 'Asset: ' + type,
+                url: 'asset',
+                path: 'asset.jag'
+            }, {
+                title: 'Assets ' + type,
+                url: 'assets',
+                path: 'assets.jag'
+            }, {
+                title: 'Create ' + type,
+                url: 'create',
+                path: 'create.jag',
+                permission: 'ASSET_CREATE'
+            }, {
+                title: 'Update ' + type,
+                url: 'update',
+                path: 'update.jag',
+                permission: 'ASSET_UPDATE'
+            }, {
+                title: 'Details ' + type,
+                url: 'details',
+                path: 'details.jag'
+            }, {
+                title: 'List ' + type,
+                url: 'list',
+                path: 'list.jag',
+                permission: 'ASSET_LIST'
+            }, {
+                title: 'Lifecycle',
+                url: 'lifecycle',
+                path: 'lifecycle.jag',
+                permission: 'ASSET_LIFECYCLE'
+            }, {
+                title: 'Old lifecycle ',
+                url: 'old-lifecycle',
+                path: 'old-lifecycle.jag'
+            }, {
+                title: 'Statistics',
+                url: 'statistics',
+                path: 'statistics.jag'
+            }]
+
         }
     };
 };
@@ -258,6 +246,20 @@ asset.configure = function () {
                 required: ['requiredField'],
                 updatable: [],
                 readonly: []
+            },
+            permissions: {
+                configureRegistryPermissions: function(ctx) {
+                    log.info('Default configure registry method callled ');
+                    var type = ctx.type;
+                    var tenantId = ctx.tenantId;
+                    var rxtManager = ctx.rxtManager;
+                    var staticPath = rxtManager.getStaticRxtStoragePath(type);
+                    var Utils = ctx.utils;
+                    staticPath = Utils.governanceRooted(staticPath);
+                    log.info('Assigning permissions to static path ' + staticPath);
+                    Utils.authorizeActionsForEveryone(tenantId, staticPath);
+                }
+
             }
         }
     };
@@ -265,7 +267,9 @@ asset.configure = function () {
 asset.renderer = function (ctx) {
     var type = ctx.assetType;
     var permissionAPI = require('rxt').permissions;
-    var isAssetWithLifecycle = function (asset) {
+
+    var isAssetWithLifecycle = function(asset) {
+
         if ((asset.lifecycle) && (asset.lifecycleState)) {
             return true;
         }
@@ -285,7 +289,8 @@ asset.renderer = function (ctx) {
         var id = page.assets.id;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
+
+        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE, ctx.assetType, ctx.session)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
         }
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
