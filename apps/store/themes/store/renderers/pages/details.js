@@ -29,16 +29,16 @@ var render = function (theme, data, meta, require) {
     }
     theme('2-column-right', {
         //title: data.meta.title,
-        title:[{
+        title: [{
             partial: 'title',
             context: data
         }],
         description: data.meta.description,
-        meta:[{
+        meta: [{
             partial: 'meta',
             context: data
         }],
-        metatags:[{
+        metatags: [{
             partial: 'metatags',
             context: data
         }],
@@ -54,18 +54,6 @@ var render = function (theme, data, meta, require) {
             partial: 'asset',
             context: data
         }
-            //{
-            //    partial: 'recent-assets',
-            //    context: data
-            //}
-            //{
-            //    partial: 'tags',
-            //    context: data
-            //}
-            // {
-            //     partial: 'more-assets-from-provider',
-            //     context: require('/helpers/asset.js').formatAssetFromProviderRatings(data.moreAssetsFromProvider)
-            // }
         ]
     });
 };

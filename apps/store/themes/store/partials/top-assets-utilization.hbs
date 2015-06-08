@@ -1,5 +1,8 @@
 {{#if isSubscribed}}
-       <a class="disabled btn-added">{{> top-assets-processed-text}}</a>
-       {{else}}
-       <a class="asset-add-btn">{{>top-assets-process-text}}</a>
+    <a class="btn disabled"
+       data-toggle="modal"
+       data-aid="{{id}}" data-type="{{type}}"> {{>processed-asset-text}}</a>
+{{else}}
+    <a class="btn btn-primary js_bookmark"
+       data-aid="{{id}}" data-type="{{type}}"> {{>process-asset-text }}</a>
 {{/if}}

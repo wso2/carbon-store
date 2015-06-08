@@ -46,7 +46,12 @@
                                             <ul role="menu" class="dropdown-menu">
                                             {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../../../cuser.username tenantId=../../../../cuser.tenantId}}
                                                 <li>
-                                                    {{>top-assets-utilization ..}}
+                                                        {{>top-assets-utilization ../..}}
+                                                </li>
+                                            {{else}}
+                                                <li>
+                                                    <a class="btn btn-primary js_bookmark"
+                                                       href='{{url ""}}{{getLoginUrl .}}'> {{>process-asset-text }}</a>
                                                 </li>
                                             {{/hasAssetPermission}}
                                                  <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
