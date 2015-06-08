@@ -104,7 +104,8 @@ public class GenericExecutor implements Execution
             this.tenantId=RealmContext.getRealmService().getTenantManager().getTenantId(stringTenantDomain);
         }
         catch(Exception e){
-            log.debug("Failed to obtain Tenant id");
+        	String errorMessage = "Failed to obtain Tenant id";
+        	log.error(errorMessage);
         }
     }
 
@@ -116,7 +117,8 @@ public class GenericExecutor implements Execution
             this.userRealm=RealmContext.getRealmService().getTenantUserRealm(this.tenantId);
         }
         catch(Exception e){
-            log.debug("Failed to load User Realm Manager.");
+        	String errorMessage = "Failed to load User Realm Manager.";
+        	log.error(errorMessage);
         }
     }
 
