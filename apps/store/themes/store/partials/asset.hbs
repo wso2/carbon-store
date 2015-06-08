@@ -17,7 +17,7 @@
             <!-- asset details folder-->
             <div class="asset-details-header ">
                 <!-- aset details -->
-             <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 white-bg">
+             <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5 white-bg">
                 <div class=" details-image white-bg">
                     {{> asset-thumbnail ..}}
                 </div>
@@ -39,20 +39,18 @@
             </div>
             <div class="white-bg asset-details-wrapper ">
                 <div class="white-bg padding-right-double padding-left-double">
-                    <h4>{{overview_name}}</h4>
+                    <h4>Summary</h4>
                     <p>{{>overview .}}</p>
                     <hr>
                     {{>tags ../../.}}
-
             </div><!-- description column-->
-
         </div>
         </div>
             <div>
             <!-- asset description -->
-                <div class="assetp-properties margin-top-double">
-
-                    <ul class="nav nav-tabs" id="assetp-tabs" data-aid="{{../path}}">
+                <div class="assetp-properties">
+                    <hr class="margin-bottom-double">
+                    <ul class="nav nav-tabs padding-top-double" id="assetp-tabs" data-aid="{{../path}}">
                         <li class="active">
                             <a href="#tab-properties" data-toggle="tab" data-type="basic">{{t "Description"}}</a>
                         </li>
@@ -65,7 +63,6 @@
                             <a href="#tab-share" data-toggle="tab" data-type="basic">{{t "Share"}}</a>
                         </li>
                     </ul>
-
                     <div class="tab-content">
                         <div class="tab-pane active" id="tab-properties">
                             <div class="content">
@@ -92,7 +89,6 @@
                         </div>
                         {{/hasAssetPermission}}
                     </div>
-
                 </div>
         {{/with}}
     {{/with}}

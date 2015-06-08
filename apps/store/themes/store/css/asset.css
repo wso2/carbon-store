@@ -211,7 +211,7 @@ h4{font-weight: 400px;}
 .action-sub-container{width: auto; height: auto; float: left; vertical-align:middle; padding-right: 6px;}
 .action-lable{width:85px; height: auto;}
 .blue-button {
-    background-color: #3a9ecf;
+    background-color: #237BD5;
     border:0 none;
     color:#fff;
     height:45px;
@@ -220,7 +220,7 @@ h4{font-weight: 400px;}
     font-size: 16px;
 }
 .asset-details-wrapper {width:58.3%;  border-left: 1px solid #ccc; float: left;}
-.asset-description{ width: 100%; height: auto; float: left; background-color: #fff; margin-bottom: 20px; margin-top: 20px;}
+.asset-description{ width: 100%; height: auto; float: left; background-color: #fff; margin-top: 20px;}
 .tags {
     background-color: #e3e3e3;
     display: inline-block;
@@ -235,7 +235,7 @@ h4{font-weight: 400px;}
     background-color: #919191;
     color: #fff;
 }
-.assetp-properties{float: left; width: 100%; margin-top:20px; background-color: #fff; padding:20px;}
+.assetp-properties{float: left; width: 100%; background-color: #fff; padding:20px;}
 /*  _____________________________________________________________________________
 
 	 TYPOGRAPHY & COLOR
@@ -252,11 +252,11 @@ h4{font-weight: 400px;}
 .lowercase{text-transform:lowercase;}
 
 
-.blue-bg{background-color: #3a9ecf !important;}
+.blue-bg{background-color: #237BD5 !important;}
 .grey-bg{background-color: #222222 !important;}
 .white-bg{background-color: #ffffff !important;}
 
-.light-blue{color:#3a9ecf;}
+.light-blue{color:#237BD5;}
 .black{color:#000;}
 .grey{color:#333;}
 .light-grey{color: #737272;}

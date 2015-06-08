@@ -41,18 +41,6 @@ var render = function(theme, data, meta, require) {
             partial: 'asset',
             context: data
             }
-            //{
-            //    partial: 'recent-assets',
-            //    context: data
-            //}
-            //{
-            //    partial: 'tags',
-            //    context: data
-            //}
-            // {
-            //     partial: 'more-assets-from-provider',
-            //     context: require('/helpers/asset.js').formatAssetFromProviderRatings(data.moreAssetsFromProvider)
-            // }
         ]
     });
 };

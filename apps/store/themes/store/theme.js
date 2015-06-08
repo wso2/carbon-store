@@ -223,9 +223,10 @@ var engine = caramel.engine('handlebars', (function() {
                 isAuthorized = rxtAPI.permissions.hasAssetPermission(key,type,tenantId,username);
                 if(isAuthorized){
                     return options.fn(context);
+                }else{
+                    log.error('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                    return options.inverse(context);
                 }
-                log.error('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');
-                return ;
             });
 
             Handlebars.registerHelper('hasAppPermission',function(context,options){
