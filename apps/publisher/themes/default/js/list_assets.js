@@ -161,6 +161,9 @@ var createQuery = function(options) {
         q.name = name;
     }
     if (category) {
+        if(category == "All Categories"){
+            category = "";
+        }
         q.category = category;
     }
     if (propCount(q) >= 1) {

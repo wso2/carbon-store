@@ -16,9 +16,19 @@
 <div class="row">
     <div class="col-lg-10 col-md-10 col-sm-11 col-xs-12 wr-filters">
       {{#if assetCategoryDetails.hasCategories}}
-      <div class="wr-filter-category">
-          <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select Category ... <span class="fa fa-angle-down pull-right"></span></a>
+        <div class="wr-filter-category">
+          <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+              {{#if assetCategoryDetails.selectedCategory}}
+                {{assetCategoryDetails.selectedCategory}}
+              {{else}}
+                All Categories
+              {{/if}}
+              <span class="fa fa-angle-down pull-right"></span>
+          </a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              {{#if assetCategoryDetails.selectedCategory}}
+                <li><a tabindex="-1" href="#">All Categories</a></li>
+              {{/if}}
               {{#each assetCategoryDetails.values}}
               <li><a tabindex="-1" href="#">{{this}}</a></li>
               {{/each}}
