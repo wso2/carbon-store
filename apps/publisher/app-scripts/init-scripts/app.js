@@ -7,6 +7,7 @@
 var caramel = require('caramel'),
     config = require('/config/publisher.json'),
     carbon = require('carbon'),
+    process = require('process'),
     mediaType = 'application/vnd.wso2.registry-ext-type+xml',
     conf = carbon.server.loadConfig('carbon.xml'),
     offset = conf.*::['Ports'].*::['Offset'].text(),
@@ -18,14 +19,13 @@ var caramel = require('caramel'),
 // var ext_mng = require('/modules/ext/core/extension.management.js').extension_management();
 
 if (hostName === null || hostName === '') {
-    hostName = 'localhost';
+    hostName = process.getProperty('carbon.local.ip');
 }
 
 var httpPort = 9763 + parseInt(offset, 10);
 var httpsPort = 9443 + parseInt(offset, 10);
 
 
-var process = require('process');
 process.setProperty('server.host', hostName);
 process.setProperty('http.port', httpPort.toString());
 process.setProperty('https.port', httpsPort.toString());
