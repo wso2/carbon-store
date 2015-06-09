@@ -20,11 +20,5 @@
         "login": {
             "/permission/admin/login": ["ui.execute"]
         }
-    },
-    "dataPublisherConnectionInfo":{
-        "port":"7611",
-        "host":"localhost",
-        "username":"admin",
-        "password":"admin"
     }
 }
