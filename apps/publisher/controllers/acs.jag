@@ -20,6 +20,8 @@
 (function () {
     var log = new Log(),
             configs = require('/config/publisher.js').config(),
+            app = require('rxt').app,
+            context = app.getContext(),
             samlResponse = request.getParameter('SAMLResponse'),
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
@@ -68,7 +70,7 @@
 
                         if (user.loginWithSAML(sessionObj.loggedInUser)) {
                             log.debug('user is set :::' + sessionObj.loggedInUser);
-                            response.sendRedirect('/publisher');
+                            response.sendRedirect(context);
                         }
                         else{
                             session.invalidate();
@@ -82,7 +84,7 @@
 
         } else {
             session.invalidate();
-            response.sendRedirect('/publisher');
+            response.sendRedirect(context);
         }
     }
 

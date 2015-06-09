@@ -19,7 +19,8 @@
  */
 (function(){
     var user = session.get("LOGGED_IN_USER");
-    var relayState = request.getHeader('referer') ? request.getHeader('referer') : '/store';
+    var caramel = require('caramel');
+    var relayState = request.getHeader('referer') ? request.getHeader('referer') : caramel.configs().context;
     if(user === null) {
         response.sendRedirect(relayState);
     } else {
