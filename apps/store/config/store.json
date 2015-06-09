@@ -19,7 +19,7 @@
         "visibleIn": ["Published"]
     },
     "socialAppConnectionInfo": {
-        "script": "https://localhost:9443/social/export-js/social.js",
+        "script": "%https.host%/social/export-js/social.js",
         "scriptType": "text/javascript",
         "socialAppUrl": "../../../social/"
     },
