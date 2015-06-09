@@ -897,7 +897,7 @@ var app = {};
      */
     app.getAuthenticationMethod = function(tenantId) {
         var server = require('store').server;
-        var configs = server.configs(tenanId);
+        var configs = server.configs(tenantId);
         var method = method || null;
         if (!configs) {
             log.error('Unable to locate configurations for the tenant: ' + tenanId + '.Cannot retrieve authentication feature details.');
