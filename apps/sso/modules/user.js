@@ -217,7 +217,7 @@ var userExists = function (username) {
 var privateRole = function (username) {
     return USER_ROLE_PREFIX + username;
 };
-var assignRolesOnRegister = function (username,relyingParty) {
+var assignRolesOnRegister = function (username, relyingParty) {
     var um;
     var usr;
     var user;
@@ -227,13 +227,11 @@ var assignRolesOnRegister = function (username,relyingParty) {
     um = server.userManager(usr.tenantId);
     user = um.getUser(usr.username);
     var authorizedRoles = require('/config/sso.json');
-    log.info("%%%%% checking relying party %%%%%%"+relyingParty);
-    if(relyingParty == 'publisher'){
+    if (relyingParty == 'publisher') {
         user.addRoles(authorizedRoles.registerPermissions.authorizedRolePublisher);
-    }else{
+    } else {
         user.addRoles(authorizedRoles.registerPermissions.authorizedRoleStore);
     }
-
 };
 var register = function (username, password, claims) {
     var user, role, id, perms, r, p,
