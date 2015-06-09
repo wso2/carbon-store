@@ -6,12 +6,19 @@ var conf = carbon.server.loadConfig('carbon.xml');
 var offset = conf.*::['Ports'].*::['Offset'].text();
 var hostName = conf.*::['HostName'].text().toString();
 
+var configurationContextService = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+var carbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+var configCtx = configurationContextService.getServerConfigContext();
+
+var httpPort = carbonUtils.getTransportPort(configCtx,"http");
+var httpsPort = carbonUtils.getTransportPort(configCtx,"https");
+
 if (hostName === null || hostName === '') {
     hostName = process.getProperty('carbon.local.ip');
 }
 
-var httpPort = 9763 + parseInt(offset, 10);
-var httpsPort = 9443 + parseInt(offset, 10);
+httpPort  = httpPort + parseInt(offset, 10);
+httpsPort = httpsPort + parseInt(offset, 10);
 
 process.setProperty('server.host', hostName);
 process.setProperty('http.port', httpPort.toString());
