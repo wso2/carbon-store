@@ -19,8 +19,9 @@
  */
 (function(){
     var user = session.get("LOGGED_IN_USER");
+    var caramel = require('caramel');
     if(user === null) {
-        response.sendRedirect('/store');
+        response.sendRedirect(caramel.configs().context);
     } else {
         var config = require('/config/store.js').config(),
                 sso = require('sso'),

@@ -19,6 +19,7 @@
  */
 (function () {
     var log = new Log(),
+            caramel = require('caramel'),
             configs = require('/configs/social.js').config(),
             process = require('process'),
             samlResponse = request.getParameter('SAMLResponse'),
@@ -70,7 +71,7 @@
 
         } else {
             session.invalidate();
-            response.sendRedirect('/social');
+            response.sendRedirect(caramel.configs().context);
         }
     }
 

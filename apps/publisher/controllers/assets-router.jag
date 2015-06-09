@@ -21,6 +21,8 @@
 	var matcher=new URIMatcher(request.getRequestURI());
 	var asset=require('rxt').asset;
 	var constants=require('rxt').constants;
+    var app = require('rxt').app;
+    var context = app.getContext();
 	var apiEndpoint=constants.ASSET_API_URL_PATTERN;//'/{context}/asts/{type}/api/{+suffix}';
 	var pageEndpoint=constants.ASSET_PAGE_URL_PATTERN;//'/{context}/asts/{type}/{+suffix}';
 	var rxtAPI = require('rxt');
@@ -100,7 +102,7 @@
 	var user=server.current(session);
 
 	if(!user){
-		response.sendRedirect('/publisher/login');//TODO:Remove this
+		response.sendRedirect(context + '/login');//TODO:Remove this
 	}
  	else{
  		//Check if options have been provided
