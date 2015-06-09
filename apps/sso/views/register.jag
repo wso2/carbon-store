@@ -23,8 +23,11 @@ var action = request.getParameter('action'),
     password = request.getParameter('reg-password'),
     question = request.getParameter('secret-question'),
     answer = request.getParameter('secret-answer'),
+    relyingParty = request.getParameter('relyingParty'),
     res = {},
     log = new Log('register');
+
+log.info("checking at register.jag"+relyingParty);
 
 var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
 
@@ -47,7 +50,7 @@ var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
         var userMod = require('/modules/user.js');
         try {
             userMod.register(username, password, claims);
-            userMod.assignRolesOnRegister(username);
+            userMod.assignRolesOnRegister(username,relyingParty);
             res.error = 'false';
             res.msg = 'User successfully added';
             print(res);
