@@ -35,6 +35,9 @@
             }
         ]
     },
+    "registerPermissions":{
+        "authorizedRoles":["Internal/publisher","Internal/store"]
+    },
     "storeSpace": {
         "space": "store",
         "options": {

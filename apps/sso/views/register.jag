@@ -47,6 +47,7 @@ var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
         var userMod = require('/modules/user.js');
         try {
             userMod.register(username, password, claims);
+            userMod.assignRolesOnRegister(username);
             res.error = 'false';
             res.msg = 'User successfully added';
             print(res);
