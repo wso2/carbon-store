@@ -38,13 +38,13 @@ public class GenericQueryAdapter implements AdapterInterface {
 	protected static final String errorMsg = "Unable to generate the resultset";
 	protected static final String preparedStatementMsg = "Creating preparedStatement for :";
 
-	private static final String COMMENT_SELECT_SQL_DESC = "SELECT body, id FROM SOCIAL_COMMENTS WHERE payload_context_id = ? AND tenant_domain = ? ORDER BY id DESC LIMIT ?,?";
+	private static final String COMMENT_SELECT_SQL_DESC = "SELECT body, id FROM SOCIAL_COMMENTS WHERE payload_context_id = ? AND tenant_domain = ? ORDER BY id DESC LIMIT ? OFFSET ?";
 
-	private static final String COMMENT_SELECT_SQL_ASC = "SELECT body, id FROM SOCIAL_COMMENTS WHERE payload_context_id = ? AND tenant_domain = ? ORDER BY id ASC LIMIT ?,?";
+	private static final String COMMENT_SELECT_SQL_ASC = "SELECT body, id FROM SOCIAL_COMMENTS WHERE payload_context_id = ? AND tenant_domain = ? ORDER BY id ASC LIMIT ? OFFSET ?";
 
-	private static final String POPULAR_COMMENTS_SELECT_SQL = "SELECT body, id FROM SOCIAL_COMMENTS WHERE payload_context_id = ? AND tenant_domain = ? ORDER BY likes DESC LIMIT ?,?";
+	private static final String POPULAR_COMMENTS_SELECT_SQL = "SELECT body, id FROM SOCIAL_COMMENTS WHERE payload_context_id = ? AND tenant_domain = ? ORDER BY likes DESC LIMIT ? OFFSET ?";
 
-	private static final String POPULAR_ASSETS_SELECT_SQL = "SELECT payload_context_id FROM SOCIAL_RATING_CACHE WHERE payload_context_id LIKE ? AND tenant_domain = ? ORDER BY rating_average DESC LIMIT ?,?";
+	private static final String POPULAR_ASSETS_SELECT_SQL = "SELECT payload_context_id FROM SOCIAL_RATING_CACHE WHERE payload_context_id LIKE ? AND tenant_domain = ? ORDER BY rating_average DESC LIMIT ? OFFSET ?";
 
 	private static final String INSERT_COMMENT_SQL = "INSERT INTO SOCIAL_COMMENTS (body, payload_context_id, user_id, tenant_domain, likes, unlikes, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
@@ -88,8 +88,8 @@ public class GenericQueryAdapter implements AdapterInterface {
 		statement = connection.prepareStatement(selectQuery);
 		statement.setString(1, targetId);
 		statement.setString(2, tenant);
-		statement.setInt(3, offset);
-		statement.setInt(4, limit);
+		statement.setInt(3, limit);
+		statement.setInt(4, offset);
 		
 		return statement;
 	}
@@ -127,8 +127,8 @@ public class GenericQueryAdapter implements AdapterInterface {
 		statement = connection.prepareStatement(POPULAR_ASSETS_SELECT_SQL);
 		statement.setString(1, type + "%");
 		statement.setString(2, tenantDomain);
-		statement.setInt(3, offset);
-		statement.setInt(4, limit);
+		statement.setInt(3, limit);
+		statement.setInt(4, offset);
 		
 		return statement;
 
