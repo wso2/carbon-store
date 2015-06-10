@@ -190,7 +190,7 @@ public abstract class SocialActivityService {
 	 * @param like
 	 * @return
 	 */
-	public boolean isUserliked(String userId, String targetId, int like) throws SocialActivityException {
+	public boolean isUserliked(String userId, int targetId, int like) throws SocialActivityException {
 		return getActivityBrowser().isUserlikedActivity(userId, targetId, like);
 	}
 	
