@@ -177,7 +177,7 @@ public abstract class SocialActivityService {
 	 * @param userId
 	 * @return
 	 */
-	public boolean removeActivity(String activityId, String userId) throws SocialActivityException {
+	public boolean removeActivity(int activityId, String userId) throws SocialActivityException {
 		return getActivityPublisher().remove(activityId, userId);
 	}
 

@@ -491,7 +491,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	}
 
 	@Override
-	public boolean remove(String activityId, String userId)
+	public boolean remove(int activityId, String userId)
 			throws SocialActivityException {
 		Connection connection = null;
 		String errorMessage = "Error while removing the activity. Activity ID: "
@@ -514,7 +514,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 				}
 
 				deleteComment = connection.prepareStatement(DELETE_COMMENT_SQL);
-				deleteComment.setString(1, activityId);
+				deleteComment.setInt(1, activityId);
 				ret = deleteComment.executeUpdate();
 			}
 			connection.commit();
@@ -551,7 +551,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	 * @throws SQLException
 	 * @throws SocialActivityException
 	 */
-	private boolean removeRating(String activityId, Connection connection,
+	private boolean removeRating(int activityId, Connection connection,
 			String userId) throws SQLException, JsonSyntaxException,
 			SocialActivityException {
 		ResultSet selectResultSet;
@@ -567,7 +567,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			selectStatement = connection
 					.prepareStatement(COMMENT_ACTIVITY_SELECT_SQL);
-			selectStatement.setString(1, activityId);
+			selectStatement.setInt(1, activityId);
 			selectResultSet = selectStatement.executeQuery();
 
 			if (!selectResultSet.next()) {
