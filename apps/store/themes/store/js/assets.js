@@ -20,61 +20,138 @@
  var details;
  ;
  */
+var rows_added = 0;
+var last_to = 0;
+var doPagination = true;
+store.infiniteScroll ={};
 
-var opened = false, currentPage = 0, infiniteScroll = null;
+store.infiniteScroll.addItemsToPage = function(){
+    /*
+     clean the counted rows from the session
+     fist time load the viewable number of rows to the screen rows_per_page
+     - Data for this are viewable width and height in the screen ( screen_width, screen_height)
+     keep the rows counted in the session   (rows_added)
 
+     calculate the row suppose to be displayed (row_current)
+     -  rows_per_page and scroll position (scroll_pos)
+
+     if(row_current > rows_added ) then
+     - do a call to get the remaining rows and append them
+
+     */
+    var screen_width = $(window).width();
+    var screen_height = $(window).height();
+
+    var thumb_width = 170;
+    var thumb_height = 270;
+
+    var menu_width = 0;
+    var header_height = 163;
+    if($('#leftmenu').is(":visible")){
+        screen_width = screen_width - menu_width;
+    }
+    screen_height = screen_height - header_height;
+
+    var items_per_row = (screen_width-screen_width%thumb_width)/thumb_width;
+    var rows_per_page = (screen_height-screen_height%thumb_height)/thumb_height;
+    var scroll_pos = $(document).scrollTop();
+    var row_current =  (screen_height+scroll_pos-(screen_height+scroll_pos)%thumb_height)/thumb_height;
+    row_current++; // We increase the row current by 1 since we need to provide one additional row to scroll down without loading it from backend
+    store.infiniteScroll.recalculateRowsAdded = function(){
+        return (last_to - last_to%items_per_row)/items_per_row;
+    };
+
+    var from = 0;
+    var to = 0;
+    console.info("***************");
+    console.info(row_current);
+    console.info(rows_added);
+    if(row_current > rows_added && doPagination){
+        from = rows_added * items_per_row;
+        to = row_current*items_per_row;
+        last_to = to; //We store this os we can recalculate rows_added when resolution change
+        rows_added = row_current;
+        console.info(from,to);
+        console.info("***************");
+        store.infiniteScroll.getItems(from,to);
+
+
+    }
+
+};
+
+store.infiniteScroll.getItems = function(from,to){
+    var count = to-from;
+    var dynamicData = {};
+    dynamicData["from"] = from;
+    dynamicData["to"] = to;
+    // Returns the jQuery ajax method
+    var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);
+    if(url.indexOf('tag')== -1){
+        caramel.data({
+                         title : null,
+                         body : ['assets']
+                     }, {
+                         url : url,
+                         success : function(data, status, xhr) {
+                             caramel.render('assets', data.body.assets.context, function(info,content){
+                                 $('.assets-container section').append(content);
+                             });
+                         },
+                         error : function(xhr, status, error) {
+                             doPagination = false;
+                         }
+                     });
+    }
+
+};
+store.infiniteScroll.showAll = function(){
+    $('.assets-container section').empty();
+    store.infiniteScroll.addItemsToPage();
+    $(window).scroll(function(){
+        store.infiniteScroll.addItemsToPage();
+    });
+    $(window).resize(function () {
+        //recalculate "rows_added"
+        rows_added = store.infiniteScroll.recalculateRowsAdded();
+        store.infiniteScroll.addItemsToPage();
+    });
+};
 $(function() {
+    /*
+    * Bookmark event handler
+    * */
     $('.js_bookmark').click(function () {
         var elem = $(this);
         asset.process(elem.data('type'), elem.data('aid'), location.href);
     });
+
+    /*
+    * subscribe button event handler
+    * */
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
 		var parent = $(this).parent().parent().parent();
 		asset.process(parent.data('type'), parent.data('id'), location.href);
 		event.stopPropagation();
 	});
-
-	$(document).on('click', '.asset > .asset-details', function(event) {
-		var link = $(this).find('.asset-name > a').attr('href');
-		location.href = link;
-	});
-
-
-	/*History.Adapter.bind(window, 'statechange', function() {
-		var state = History.getState();
-		if (state.data.id === 'assets') {
-			renderAssets(state.data.context);
-		}
-	});*/
-
-	var loadAssets = function(url) {
-		caramel.data({
-			title : null,
-			header : ['header'],
-			body : ['assets', 'sort-assets']
-		}, {
-			url : url,
-			success : function(data, status, xhr) {
-				//TODO: Integrate a new History.js library to fix this
-				if ($.browser.msie == true && $.browser.version < 10) {
-					renderAssets(data);
-				} else {
-					History.pushState({
-						id : 'assets',
-						context : data
-					}, document.title, url);
-				}
-
-			},
-			error : function(xhr, status, error) {
-				theme.loaded($('#assets-container').parent(), '<p>Error while retrieving data.</p>');
-			}
-		});
-		theme.loading($('.store-left'));
-	};
-
+    /*
+    * Sort button event handler
+    * */
+    $(document).on('click', '#ul-sort-assets li a', function(e) {
+        currentPage = 1;
+        $('#ul-sort-assets li a').removeClass('selected-type');
+        var thiz = $(this);
+        thiz.addClass('selected-type');
+        loadAssets(thiz.attr('href'));
+        mouseStop();
+        e.preventDefault();
+    });
+    /*
+    * Pagination for listing page
+    * */
+    store.infiniteScroll.showAll();
 	var loadAssetsScroll = function(url) {
-		//TO-DO 
+		//TO-DO
 		/* As tags are not Indexing so far
 		*  Assert pagination and is not supporteed and There for infiniteScroll is disable to 'Tag'
 		* */
@@ -97,26 +174,6 @@ $(function() {
 		$('.loading-inf-scroll').show();
 		}
 	};
-
-	$(document).on('click', '#ul-sort-assets li a', function(e) {
-		currentPage = 1;
-		$('#ul-sort-assets li a').removeClass('selected-type');
-		var thiz = $(this);
-		thiz.addClass('selected-type');
-		loadAssets(thiz.attr('href'));
-		mouseStop();
-		e.preventDefault();
-	});
-
-	$(document).on('click', '.pagination a', function(e) {
-		e.preventDefault();
-		var url = $(this).attr('href');
-		if (url === '#') {
-			return;
-		}
-		loadAssets(url);
-	});
-
 	var scroll = function() {
 		if(infiniteScroll || (store.asset.paging.size >= 12 && infiniteScroll == null)) {
 			if($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
@@ -131,23 +188,7 @@ $(function() {
 		} else {
 			$('.loading-inf-scroll').hide();
 		}
-	}
-
-	$(window).bind('scroll', scroll);
-
-	$("a[data-toggle='tooltip']").tooltip();
-	
-	$('#my-assets').hide();
-	$('.my-assets-link').click(function(){
-
-		if($(this).find('.pull-right').hasClass('icon-angle-down')){
-			$(this).find('.pull-right').removeClass('icon-angle-down').addClass('icon-angle-up');
-		}else{
-			$(this).find('.pull-right').removeClass('icon-angle-up').addClass('icon-angle-down');
-		}
-		$('#my-assets').slideToggle("fast");
-	});
-
+	};
 	caramel.loaded('js', 'assets');
 	caramel.loaded('js', 'sort-assets');
 });
