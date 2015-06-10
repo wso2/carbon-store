@@ -19,22 +19,21 @@
  */
 
 var action = request.getParameter('action'),
-    username = request.getParameter('reg-username'),
-    password = request.getParameter('reg-password'),
-    question = request.getParameter('secret-question'),
-    answer = request.getParameter('secret-answer'),
-    relyingParty = request.getParameter('relyingParty'),
-    res = {},
-    log = new Log('register');
+        username = request.getParameter('reg-username'),
+        password = request.getParameter('reg-password'),
+        question = request.getParameter('secret-question'),
+        answer = request.getParameter('secret-answer'),
+        relyingParty = request.getParameter('relyingParty'),
+        res = {},
+        log = new Log('register');
 
-log.info("checking at register.jag"+relyingParty);
+
 
 var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
 
-(function() {
-    var getClaimValues = function(claims, req) {
+(function () {
+    var getClaimValues = function (claims, req) {
         var claimValues = [];
-
         for (var formFieldName in claims) {
             if (claims.hasOwnProperty(formFieldName)) {
                 claimValues.push({
@@ -45,12 +44,11 @@ var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
         }
         return claimValues;
     };
-
-    var registerUser = function(username, password, claims) {
+    var registerUser = function (username, password, claims) {
         var userMod = require('/modules/user.js');
         try {
             userMod.register(username, password, claims);
-            userMod.assignRolesOnRegister(username,relyingParty);
+            userMod.assignRolesOnRegister(username, relyingParty);
             res.error = 'false';
             res.msg = 'User successfully added';
             print(res);
@@ -61,21 +59,17 @@ var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
             print(res);
         }
     };
-
-    var setChallenge = function(username) {
+    var setChallenge = function (username) {
         var recovery = require('account-management').recovery;
-        var qList = [{question:question, answer:answer, id:QUESTION_SET_ID}];
+        var qList = [{question: question, answer: answer, id: QUESTION_SET_ID}];
         recovery.setChallengeQuestionForUser(username, qList);
     }
-
     if (action == 'register') {
         var claims = JSON.parse(request.getParameter("reg-claims"));
         var claimValues = getClaimValues(claims, request);
-
         registerUser(username, password, claimValues);
         setChallenge(username);
     }
-
 }());
 
 %>
