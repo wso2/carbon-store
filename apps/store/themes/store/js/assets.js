@@ -24,7 +24,10 @@
 var opened = false, currentPage = 0, infiniteScroll = null;
 
 $(function() {
-
+    $('.js_bookmark').click(function () {
+        var elem = $(this);
+        asset.process(elem.data('type'), elem.data('aid'), location.href);
+    });
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
 		var parent = $(this).parent().parent().parent();
 		asset.process(parent.data('type'), parent.data('id'), location.href);
@@ -36,14 +39,13 @@ $(function() {
 		location.href = link;
 	});
 
-	mouseStop();
 
-	History.Adapter.bind(window, 'statechange', function() {
+	/*History.Adapter.bind(window, 'statechange', function() {
 		var state = History.getState();
 		if (state.data.id === 'assets') {
 			renderAssets(state.data.context);
 		}
-	});
+	});*/
 
 	var loadAssets = function(url) {
 		caramel.data({

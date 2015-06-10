@@ -1,18 +1,25 @@
 var caramel = require('caramel');
 
 var carbon = require('carbon');
+var process = require('process');
 var conf = carbon.server.loadConfig('carbon.xml');
 var offset = conf.*::['Ports'].*::['Offset'].text();
 var hostName = conf.*::['HostName'].text().toString();
 
+var configurationContextService = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+var carbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+var configCtx = configurationContextService.getServerConfigContext();
+
+var httpPort = carbonUtils.getTransportPort(configCtx,"http");
+var httpsPort = carbonUtils.getTransportPort(configCtx,"https");
+
 if (hostName === null || hostName === '') {
-    hostName = 'localhost';
+    hostName = process.getProperty('carbon.local.ip');
 }
 
-var httpPort = 9763 + parseInt(offset, 10);
-var httpsPort = 9443 + parseInt(offset, 10);
+httpPort  = httpPort + parseInt(offset, 10);
+httpsPort = httpsPort + parseInt(offset, 10);
 
-var process = require('process');
 process.setProperty('server.host', hostName);
 process.setProperty('http.port', httpPort.toString());
 process.setProperty('https.port', httpsPort.toString());
@@ -72,7 +79,7 @@ rxt.server.init(configs);
 rxt.permissions.init();
 
 /*
-var url='https://localhost:9443/admin',
+var url='https://<HOST>:<PORT>/admin',
     username='admin',
     password='admin';
 

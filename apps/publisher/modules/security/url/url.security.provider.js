@@ -30,8 +30,10 @@ var securityModule = function () {
      and redirects the user to the login page
      */
     function onSecurityCheckFail() {
+        var app = require('rxt').app;
+        var context = app.getContext();
         log.debug('security check failed redirecting...');
-        response.sendRedirect('/publisher/login');
+        response.sendRedirect(context + '/login');
     }
 
     /*

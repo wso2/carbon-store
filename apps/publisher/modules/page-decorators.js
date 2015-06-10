@@ -26,6 +26,13 @@ var pageDecorators = {};
         var categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
         var categoryValues = [];
         var field = ctx.rxtManager.getRxtField(ctx.assetType, categoryField);
+        var q = request.getParameter("q");
+        if(q) {
+            var options = parse("{"+q+"}");
+            if(options.category){
+                page.assetCategoryDetails.selectedCategory = options.category;
+            }
+        }
         if (!field) {
             return;
         }

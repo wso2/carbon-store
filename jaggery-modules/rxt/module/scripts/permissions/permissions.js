@@ -21,12 +21,25 @@ var permissions = {};
     var log = new Log('rxt-permissions');
     var DEFAULT_ASSET = '_default';
     var PERMISSION_LOAD_HOOK = 'tenantLoad';
-    permissions.ANON_ROLE = 'system/wso2.anonymous.role';
-    var getAnonRole = function(){
+    permissions.ANON_ROLE = 'es.store.anon.user';
+    var getAnonRole = function(tenantId) {
         return permissions.ANON_ROLE;
     };
-    var permissionTreeRoot = function() {
-        return '/_system/governance/permission';
+    var wso2AnonUsername = function() {
+        return 'wso2.anonymous.user';
+    };
+    var systemPermissionPath = function(path) {
+        return '/_system/governance' + path;
+    };
+    var governanceRooted = function(path) {
+        path = path || '';
+        if (path == '') {
+            throw 'Unable to root the root as the path was returned as empty';
+        }
+        if (path.charAt(0) !== '/') {
+            path = '/' + path;
+        }
+        return '/_system/governance' + path;
     };
     /**
      * Returns the root of the permission tree for given
@@ -35,9 +48,9 @@ var permissions = {};
      * @return {[type]}         A path in the permission tree alocated for the provided app
      */
     var esPermissionRoot = function(appName) {
-        return permissionTreeRoot() + '/es/apps' + appName;
+        return '/permission/enterprisestore/apps' + appName;
     };
-    var esFeaturePermissionRoot = function(){
+    var esFeaturePermissionRoot = function() {
         return '/features';
     };
     var getPermissionNameFromPath = function(path) {
@@ -174,35 +187,55 @@ var permissions = {};
         //Obtain the system registry for the provided tenant
         var server = require('store').server;
         var systemRegistry = server.systemRegistry(tenantId);
-        var fullPath;
         //Check if the path starts with a / if not add one
         if (path.charAt(0) !== '/') {
             path = '/' + path;
         }
-        fullPath = permissionTreeRoot() + path;
         //Check if the permission already exists
-        if (!systemRegistry.exists(fullPath)) {
+        if (!systemRegistry.exists(path)) {
+            log.info('creating permission path: ' + path)
             //Add the permission
-            recursivelyCreatePath(fullPath, systemRegistry);
+            recursivelyCreatePath(path, systemRegistry);
+            return true;
         }
+        log.debug('permision path ' + path + ' not created as it already exists');
+        return false;
     };
-    var addPermissionsToRole = function(permissionMap,role,tenantId){
+    var addPermissionsToRole = function(permissionMap, role, tenantId) {
         var server = require('store').server;
         var um = server.userManager(tenantId);
         var permission;
         var action = 'ui.execute';
-        for(var key in permissionMap){
-            if(permissionMap.hasOwnProperty(key)){
+        for (var key in permissionMap) {
+            if (permissionMap.hasOwnProperty(key)) {
                 permission = permissionMap[key];
-                if(typeof permission === 'string'){
-                    try{
-                        um.authorizeRole(role,permission,action);
-                    } catch(e) {
-                        log.error('Unable to assign permission '+permission+' to role '+role);
+                if (typeof permission === 'string') {
+                    try {
+                        um.authorizeRole(role, permission, action);
+                    } catch (e) {
+                        log.error('Unable to assign permission ' + permission + ' to role ' + role);
                     }
                 }
             }
         }
+    };
+    var addRole = function(role, tenantId) {
+        var server = require('store').server;
+        var um = server.userManager(tenantId);
+        var users = [];
+        var permissions = [];
+        if (!um.roleExists(role)) {
+            log.info('Creating new role: ' + role);
+            try {
+                um.addRole(role, users, permissions);
+                return true;
+            } catch (e) {
+                log.error('role: ' + role + ' was not created', e);
+                return false;
+            }
+        }
+        log.warn('role ' + role + ' was not created as it already exists');
+        return true;
     };
     /**
      * Creates a permission string which defines an asset level feature
@@ -210,38 +243,51 @@ var permissions = {};
      * @param  {[type]} type       [description]
      * @return {[type]}            [description]
      */
-    var assetFeaturePermissionString = function(permission,type){
+    var assetFeaturePermissionString = function(permission, type) {
         //Get the base app
         var appName = app.getContext();
         var root = esPermissionRoot(appName);
         var featureRoot;
-        if(!type){
+        if (!type) {
             throw 'Unable to create an asset feature permission string without the type';
         }
-        featureRoot = root + esFeaturePermissionRoot()+'/assets/'+type;
-        if(permission.charAt(0) !== '/'){
-            permission = '/'+permission;
+        featureRoot = root + esFeaturePermissionRoot() + '/assets/' + type;
+        if (permission.charAt(0) !== '/') {
+            permission = '/' + permission;
         }
-        return featureRoot+permission;
+        return featureRoot + permission;
     };
-    var appFeaturePermissionString  = function(permission){
+    var appFeaturePermissionString = function(permission) {
         //Get the base app
         var appName = app.getContext();
         var root = esPermissionRoot(appName);
         var featureRoot;
-        if(!type){
-            throw 'Unable to create an asset feature permission string without the type';
+        if (!permission) {
+            throw 'Unable to create an asset feature permission string without the permission';
         }
-        featureRoot = root + esFeaturePermissionRoot()+'/app';
-        if(permission.charAt(0) !== '/'){
-            permission = '/'+permission;
+        featureRoot = root + esFeaturePermissionRoot() + '/app';
+        if (permission.charAt(0) !== '/') {
+            permission = '/' + permission;
         }
-        return featureRoot+permission;
+        return featureRoot + permission;
     };
+    var assetFeaturePermissionKey = function(feature, type) {
+        if ((!feature) || (!type)) {
+            throw 'Unable to generate asset feature permission key without a feature name and a type';
+        }
+        return 'ASSET_' + type.toUpperCase() + '_' + feature.toUpperCase();
+    };
+    var appFeaturePermissionKey = function(feature) {
+        if (!feature) {
+            throw 'Unable to generate app feature permission key without a feature name';
+        }
+        return 'APP_' + feature.toUpperCase();
+    }
     permissions.init = function() {
         var event = require('event');
         event.on('tenantLoad', function(tenantId) {
             loadPermissions(tenantId);
+            loadRegistryPermissions(tenantId);
         });
     };
     permissions.force = function(tenantId) {
@@ -284,7 +330,6 @@ var permissions = {};
     permissions.ASSET_BOOKMARK = 'ASSET_BOOKMARK';
     permissions.APP_STATISTICS = 'APP_STATISTICS';
     permissions.APP_MYITEMS = 'APP_MYITEMS';
-
     var buildEmptyPermissionMap = function() {
         var map = {};
         // for (var index = 0; index < permissionKeySet.length; index++) {
@@ -309,10 +354,20 @@ var permissions = {};
         }
         context = core.createSystemContext(tenantId);
         context.utils = {};
-        context.utils.addPermission = addPermission;
+        //context.utils.addPermission = addPermission;
+        context.utils.registerPermissions = registerPermissions; //TODO: fix to accept just permission and not tenantid
         context.utils.assetFeaturePermissionString = assetFeaturePermissionString;
         context.utils.appFeaturePermissionString = appFeaturePermissionString;
         context.utils.addPermissionsToRole = addPermissionsToRole;
+        context.utils.addRole = addRole;
+        context.utils.assetFeaturePermissionKey = assetFeaturePermissionKey;
+        context.utils.appFeaturePermissionKey = appFeaturePermissionKey;
+        context.utils.anonRole = getAnonRole;
+        context.utils.authorizeActionsForEveryone = authorizeActionsForEveryone;
+        context.utils.authorizeActionsForRole = authorizeActionsForRole;
+        context.utils.denyActionsForEveryone = denyActionsForEveryone;
+        context.utils.denyActionsForRole = denyActionsForRole;
+        context.utils.governanceRooted = governanceRooted;
         for (var key in options) {
             if (options.hasOwnProperty(key)) {
                 context[key] = options[key];
@@ -344,14 +399,35 @@ var permissions = {};
     };
     var registerPermissions = function(map, tenantId) {
         var permission;
+        var modifiedPath;
         for (var key in map) {
             if (map.hasOwnProperty(key)) {
                 permission = map[key];
                 if (typeof permission === 'string') {
-                    log.info('Registering permission ' + permission);
-                    //addPermission(permission, tenantId);
+                    if (permission.charAt(0) !== '/') {
+                        permission = '/' + permission;
+                    }
+                    permission = systemPermissionPath(permission);
+                    //log.info('Registering permission ' + permission);
+                    addPermission(permission, tenantId);
                 }
             }
+        }
+    };
+    var loadRegistryPermissions = function(tenantId) {
+        var rxtManager = core.rxtManager(tenantId);
+        var types = rxtManager.listRxtTypes();
+        var type;
+        var context;
+        var ptr;
+        for (var index = 0; index < types.length; index++) {
+            type = types[index];
+            context = buildPermissionContext(tenantId, {
+                type: type
+            });
+            ptr = rxtManager.getRegistryConfigureFunction(type);
+            log.debug('Executing registry permission configure function for type: ' + type);
+            ptr(context);
         }
     };
     var loadAppPermissions = function(tenantId) {
@@ -483,10 +559,11 @@ var permissions = {};
     var checkPermissionString = function(username, permission, action, authorizer) {
         var isAuthorized = false;
         try {
-            if(!username){
-                log.warn('username not provided to check '+permission+'.The anon role will be used to check permissions');
-                isAuthorized = authorizer.isRoleAuthorized(getAnonRole(),permission,action);
+            if ((!username) || (username === wso2AnonUsername())) {
+                log.warn('username not provided to check ' + permission + '.The anon role will be used to check permissions');
+                isAuthorized = authorizer.isRoleAuthorized(getAnonRole(), permission, action);
             } else {
+                log.info('using username: ' + username + ' to check permission');
                 isAuthorized = authorizer.isUserAuthorized(username, permission, action);
             }
         } catch (e) {
@@ -524,7 +601,7 @@ var permissions = {};
             return isAuthorized;
         }
         options.username = username;
-        context = buildPermissionContext(tenantId,options);
+        context = buildPermissionContext(tenantId, options);
         //context.userManager = userManager;
         try {
             result = permission(context) || true;
@@ -542,7 +619,7 @@ var permissions = {};
         }
         return isAuthorized;
     };
-    var checkAssetPermission = function(key, type, tenantId, username,options) {
+    var checkAssetPermission = function(key, type, tenantId, username, options) {
         var permission;
         options = options || {};
         permission = mapToAssetPermission(key, type, tenantId);
@@ -551,9 +628,9 @@ var permissions = {};
             return false;
         }
         options.username = username;
-        return isPermissable(permission, tenantId, username,options);
+        return isPermissable(permission, tenantId, username, options);
     };
-    var checkAppPermission = function(key, tenantId, username,options) {
+    var checkAppPermission = function(key, tenantId, username, options) {
         var permission;
         options = options || {};
         permission = mapToAppPermission(key, tenantId);
@@ -562,7 +639,62 @@ var permissions = {};
             return false;
         }
         options.username = username;
-        return isPermissable(permission, tenantId, username,options);
+        return isPermissable(permission, tenantId, username, options);
+    };
+    var authorizeActionsForRole = function(tenantId, path, role, actions) {
+        var obj = {};
+        var actionArr = [];
+        var server = require('store').server;
+        var um = server.userManager(tenantId);
+        var systemRegistry = server.systemRegistry(tenantId);
+        var success = false;
+        if (typeof actions === 'string') {
+            actionArr.push(actions);
+        } else {
+            actionArr = actions;
+        }
+
+        //Check if the path exists
+        if(!systemRegistry.exists(path)) {
+            log.info('Recursively creating path in order to eagerly assign actions : '+path);
+            recursivelyCreatePath(path, systemRegistry);
+        }
+        obj[path] = actions;
+        try {
+            um.authorizeRole(role, obj);
+            success = true;
+        } catch (e) {
+            log.error('Unable to authorize actions for path: ' + path + ' to role: ' + role + ' tenantId: ' + tenantId, e);
+        }
+        return success;
+    };
+    var denyActionsForRole = function(tenantId, path, role, actions) {
+        var obj = {};
+        var actionArr = [];
+        var server = require('store').server;
+        var um = server.userManager(tenantId);
+        var success = false;
+        if (typeof actions === 'string') {
+            actionArr.push(actions);
+        } else {
+            actionArr = actions;
+        }
+        obj[path] = actions;
+        try {
+            um.denyRole(role, obj);
+            success = true;
+        } catch (e) {
+            log.error('Unable to deny actions for path: ' + path + ' to role: ' + role + ' tenantId: ' + tenantId, e);
+        }
+        return success;
+    };
+    var authorizeActionsForEveryone = function(tenantId, path) {
+        var actions = [constants.REGISTRY_ADD_ACTION, constants.REGISTRY_GET_ACTION, constants.REGISTRY_DELETE_ACTION, constants.REGISTRY_AUTHORIZE_ACTION];
+        return authorizeActionsForRole(tenantId, path, constants.ROLE_EVERYONE, actions);
+    };
+    var denyActionsForEveryone = function(tenantId, path) {
+        var actions = [constants.REGISTRY_DELETE_ACTION, constants.REGISTRY_ADD_ACTION, constants.REGISTRY_AUTHORIZE_ACTION];
+        return denyActionsForRole(tenantId, path, constants.ROLE_EVERYONE, actions);
     };
     permissions.hasAssetPermission = function() {
         var key = arguments[0];
@@ -586,9 +718,9 @@ var permissions = {};
         if ((!username) || (!tenantId)) {
             throw 'Unable to resolve permissions without the tenantId and username';
         }
-        log.info('Checking permission '+key+' for ' + username + ' tenantId ' + tenantId+' type '+type);
-        authorized = checkAssetPermission(key, type, tenantId, username,options);
-        log.info('Authorized :'+authorized);
+        log.info('Checking permission ' + key + ' for ' + username + ' tenantId ' + tenantId + ' type ' + type);
+        authorized = checkAssetPermission(key, type, tenantId, username, options);
+        log.info('Authorized :' + authorized);
         return authorized;
     };
     permissions.hasAppPermission = function() {
@@ -610,9 +742,9 @@ var permissions = {};
         if ((!username) || (!tenantId)) {
             throw 'Unable to resolve permissios without the tenantId and username';
         }
-        log.info('Checking permissions'+key+' for ' + username + ' tenantId ' + tenantId);
+        log.info('Checking permissions' + key + ' for ' + username + ' tenantId ' + tenantId);
         authorized = checkAppPermission(key, tenantId, username);
-        log.info('Authorized: '+authorized);
+        log.info('Authorized: ' + authorized);
         return authorized;
     };
     var locateEndpointDetails = function(endpoints, url) {
@@ -660,7 +792,7 @@ var permissions = {};
             log.error('Unable to locate a mapping for permission ' + key);
             return true;
         }
-        return isPermissable(permission, tenantId, username,options);
+        return isPermissable(permission, tenantId, username, options);
     };
     permissions.hasAssetAPIPermission = function(type, apiURL, tenantId, username) {
         var details = assetAPIEndpoint(type, tenantId, apiURL);
@@ -689,7 +821,7 @@ var permissions = {};
             log.error('Unable to locate a mapping for permission ' + key);
             return true;
         }
-        return isPermissable(permission, tenantId, username,options);
+        return isPermissable(permission, tenantId, username, options);
     };
     permissions.hasAppPagePermission = function(pageURL, tenantId, username) {
         var details = app.getPageEndpoint(tenantId, pageURL);
@@ -746,4 +878,10 @@ var permissions = {};
         }
         return isPermissable(permission, tenantId, username);
     };
+    permissions.getAnonRole = getAnonRole;
+    permissions.wso2AnonUsername = wso2AnonUsername;
+    permissions.denyActionsForRole = denyActionsForRole;
+    permissions.denyActionsForEveryone = denyActionsForEveryone;
+    permissions.authorizeActionsForRole = authorizeActionsForRole;
+    permissions.authorizeActionsForEveryone = authorizeActionsForEveryone;
 }(core, asset, app, permissions));

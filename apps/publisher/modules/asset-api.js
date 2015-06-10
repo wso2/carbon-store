@@ -219,7 +219,9 @@ var result;
         var rxtManager = getRxtManager(session,options.type);
         var isLCEnabled = false;
         var isDefaultLCEnabled = false;
+        var ctx = rxtModule.core.createUserAssetContext(session,options.type);
         assetReq = processRequestBody(req,assetReq);
+        var createdAsset;
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
         } else {
@@ -232,6 +234,8 @@ var result;
             //throw 'This is to stop asset creation!';
 
             am.create(asset);
+            createdAsset = am.get(asset.id);
+            am.postCreate(createdAsset,ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {

@@ -28,6 +28,7 @@ var render = function(theme, data, meta, require) {
             break;
     }
     //var assets = require('/helpers/assets.js');
+
     theme('2-column-right', {
         title: data.meta.title,
         header: [{

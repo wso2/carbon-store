@@ -239,7 +239,13 @@ a.ast-type-item:hover {
 .wr-action-container {
     padding-left: 0;
 }
-
+/* social frame */
+#socialIfr {
+    overflow: hidden;
+}
+iframe {
+    border: medium none;
+}
 /* assets */
 .ast-container {
     padding-top: 20px;
@@ -1357,7 +1363,6 @@ a:hover, a:focus {
     overflow: hidden;
 }
 .white{color: #f3f3f3;}
-
 #ul-sort-assets li a {
     color: #333;
     opacity: 1;

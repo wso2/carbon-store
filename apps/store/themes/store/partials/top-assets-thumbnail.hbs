@@ -1,0 +1,7 @@
+{{#if thumbnail}}
+	<img alt="thumbnail" class="img-responsive" src="{{tenantedUrl ""}}/storage/{{type}}/{{id}}/{{thumbnail}}">
+{{else}}
+	{{> assets-default-thumbnail ..}}
+{{/if}}
+
+ 
