@@ -16,16 +16,9 @@
  *  under the License.
  *
  */
-var render = function(theme, data, meta, require) {
-    theme('single-col-fluid', {
-        title: 'Publisher Login',
-         header: [{
-            partial: 'basic-login-header',
-            context: data
-        }],
-        listassets: [{
-            partial: 'basic-login-form',
-            context: data
-        }]
-    });
-};
+
+var resources = function(){
+	return {
+		js:['libs/jquery.form.min.js','basic-login.js']
+	}
+}

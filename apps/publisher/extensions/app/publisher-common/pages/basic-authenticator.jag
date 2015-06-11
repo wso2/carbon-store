@@ -17,5 +17,29 @@
  *  under the License.
  *
  */
-	
+(function(session, request, response) {
+    var storeAPI = require('store');
+    var params = request.getAllParameters();
+    var hasUsernamePassword = params.username && params.password;
+    var authenticated; //Assume that the authentication will fail
+    if (!hasUsernamePassword) {
+    	response.sendError(400,'Please provide the username and password to login');
+    	if(log.isDebugEnabled) {
+    		log.debug('Attempt to login without username and password');
+    	}
+    	return;
+    }
+    try {
+    	authenticated = storeAPI.user.login(params.username,params.password,session);
+    } catch (e) {
+    	log.error("Unable to authenticate user : "+username,e);
+    }
+
+    if(authenticated){
+    	response.code = 200;
+    } else {
+    	response.sendError(401);
+    }
+    
+}(session, request, response)); 
 %>

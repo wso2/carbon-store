@@ -16,16 +16,14 @@
  *  under the License.
  *
  */
-var render = function(theme, data, meta, require) {
-    theme('single-col-fluid', {
-        title: 'Publisher Login',
-         header: [{
-            partial: 'basic-login-header',
-            context: data
-        }],
-        listassets: [{
-            partial: 'basic-login-form',
-            context: data
-        }]
+$(function(){
+	$('#basic-login-form').ajaxForm({
+        success:function(){
+        	//alert('You have been logged in!'+caramel.url(''));
+        	window.location = caramel.url('');
+        },
+        error:function(){
+        	alert('Failed to log in!');
+        }
     });
-};
+});

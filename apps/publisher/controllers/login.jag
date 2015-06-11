@@ -34,7 +34,7 @@
     }
     var resolveAuthMethod = function() {
         var tenantId = carbon.server.superTenant.tenantId;
-        return constants.AUTH_METHOD_BASIC; //rxtAPI.app.getAuthenticationMethod(tenantId);
+        return rxtAPI.app.getAuthenticationMethod(tenantId);
     };
     var getRedirectURL = function(authMethod, context) {
         var url;
@@ -57,7 +57,8 @@
     };
     authMethod = resolveAuthMethod();
     if (!authMethod) {
-        log.error('A login method has not been configured for this tenant.Please make sure the activeMethod property has been set in the authentication section of the publisher.json' + '.You can find this file in the /_system/config/publisher/configs/publisher.json file.');
+        log.error('A login method has not been configured for this tenant.Please make sure the activeMethod property has been set in the authentication section '
+        +'of the publisher.json' + '.You can find this file in the /_system/config/publisher/configs/publisher.json file.');
         response.sendError(500);
         return;
     }
