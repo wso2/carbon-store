@@ -26,12 +26,15 @@
     } else {
         var config = require('/config/publisher.js').config(),
                 sso = require('sso'),
+                app=require('rxt').app,
                 sso_sessions = application.get('sso_sessions'),
                 sessionId = session.getId(),
                 encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], config.ssoConfiguration.issuer),
                 relayState = context,
+                opts=app.getAuthenticationDetails(-1234),
                 //postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
-                postUrl = config.ssoConfiguration.identityProviderURL;
+                //postUrl = config.ssoConfiguration.identityProviderURL;
+                postUrl = opts.identityProviderURL;
         var log = new Log();
 
         log.debug("portal session index : " + sso_sessions[session.getId()]);
