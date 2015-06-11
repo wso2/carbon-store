@@ -29,9 +29,6 @@ if (hostName === null || hostName === '') {
     hostName = process.getProperty('carbon.local.ip');
 }
 
-httpPort  = httpPort + parseInt(offset, 10);
-httpsPort = httpsPort + parseInt(offset, 10);
-
 
 process.setProperty('server.host', hostName);
 process.setProperty('http.port', httpPort.toString());
