@@ -16,9 +16,16 @@
  *  under the License.
  *
  */
-
-var resources = function(){
-	return {
-		js:['libs/jquery.form.min.js','basic-login.js']
-	}
+var render = function(theme, data, meta, require) {
+    theme('2-column-right', {
+        title: 'Store Login',
+         header: [{
+            partial: 'basic-login-header',
+            context: data
+        }],
+        body: [{
+            partial: 'basic-login-form',
+            context: data
+        }]
+    });
 };

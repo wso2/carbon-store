@@ -16,9 +16,14 @@
  *  under the License.
  *
  */
-
-var resources = function(){
-	return {
-		js:['libs/jquery.form.min.js','basic-login.js']
-	}
-};
+$(function(){
+	$('#basic-login-form').ajaxForm({
+        success:function(){
+        	//alert('You have been logged in!'+caramel.url(''));
+        	window.location = caramel.url('');
+        },
+        error:function(){
+        	alert('Failed to log in!');
+        }
+    });
+});

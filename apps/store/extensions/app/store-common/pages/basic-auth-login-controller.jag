@@ -1,3 +1,4 @@
+<%
 /*
  *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
@@ -16,9 +17,6 @@
  *  under the License.
  *
  */
-
-var resources = function(){
-	return {
-		js:['libs/jquery.form.min.js','basic-login.js']
-	}
-};
+var caramel = require('caramel');
+caramel.render({});
+%>

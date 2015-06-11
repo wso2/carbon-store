@@ -1,3 +1,4 @@
+<%
 /*
  *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
@@ -16,9 +17,20 @@
  *  under the License.
  *
  */
-
-var resources = function(){
-	return {
-		js:['libs/jquery.form.min.js','basic-login.js']
-	}
-};
+(function(request, response, session) {
+    var storeAPI = require('store');
+    var rxtAPI = require('rxt');
+    var user = storeAPI.server.current(session);
+    var context = rxtAPI.app.getContext();
+    //If there is no logged in user then redirect
+    if (!user) {
+        response.sendRedirect(context);
+        return;
+    }
+    try {
+        storeAPI.user.logout();
+    } catch (e) {
+        log.error('Unable to logout the user', e);
+    }
+    response.sendRedirect(context);
+}(request, response, session)) %>

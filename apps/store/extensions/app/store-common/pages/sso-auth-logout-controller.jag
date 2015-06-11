@@ -20,22 +20,19 @@
 (function(){
     var user = session.get("LOGGED_IN_USER");
     var caramel = require('caramel');
+    var relayState = request.getHeader('referer') ? request.getHeader('referer') : caramel.configs().context;
     if(user === null) {
-        response.sendRedirect(caramel.configs().context);
+        response.sendRedirect(relayState);
     } else {
         var config = require('/config/store.js').config(),
                 sso = require('sso'),
                 sso_sessions = application.get('sso_sessions'),
                 sessionId = session.getId(),
                 encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], config.ssoConfiguration.issuer),
-                relayState = '/store',
                 //postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
                 postUrl = config.ssoConfiguration.identityProviderURL;
-
         var log = new Log();
-
         log.debug("store session index : " + sso_sessions[session.getId()]);
-
 
         %>
         <div>
