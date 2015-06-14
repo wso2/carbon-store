@@ -1,6 +1,7 @@
 <%
 
 require('/modules/publisher.js').exec(function(ctx){
+    var log = new Log();
     var userMod = require('store').user;
     var userRegistry = userMod.userRegistry(ctx.session);
     var govUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
@@ -8,6 +9,19 @@ require('/modules/publisher.js').exec(function(ctx){
     var govRegistry = govUtils.getGovernanceUserRegistry(registry, registry.getUserName());
     var results = govUtils.findGovernanceArtifacts("version=1.0.0&mediaType=application/vnd.wso2-gadget+xml", govRegistry, "application/vnd.wso2-gadget+xml");
     print(results.size());
+
+    /*for(var key in results){
+        log.info(key);
+    }*/
+
+    var iter = results.iterator();
+    var current;
+    while(iter.hasNext()){
+        current = iter.next();
+    }
+    for(var key in current){
+        log.info(key);
+    }
 },request,response,session);
 
 // var rxtAPI = require('rxt');

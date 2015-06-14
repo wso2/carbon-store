@@ -136,6 +136,8 @@ require('/modules/publisher.js').exec(function (ctx) {
         case 'GET':// GET endpoints
             options.type = req.getParameter('type');
             if (uriMatcher.match(LIST_ASSETS_URL)) {//return assets by type
+                //If the type has been provided then do an advanceSearch 
+                //else do a genericAdvanceSearch
                 var assets = assetApi.search(options, req, res, session);
                 response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, assets);
             } else if (uriMatcher.match(GET_ASSET_URL)) {//return asset by id

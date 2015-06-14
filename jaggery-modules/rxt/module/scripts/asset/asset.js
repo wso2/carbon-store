@@ -424,11 +424,59 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
+    //TODO:This is a temp fix
+    var buildArtifact = function (type, artifact) {
+        return {
+            id: String(artifact.id),
+            type: String(type),
+            path: "/_system/governance" + String(artifact.getPath()),
+            lifecycle: artifact.getLifecycleName(),
+            lifecycleState: artifact.getLifecycleState(),
+            mediaType: String(artifact.getMediaType()),
+            attributes: (function () {
+                var i, name,
+                    names = artifact.getAttributeKeys(),
+                    length = names.length,
+                    attributes = {};
+                for (i = 0; i < length; i++) {
+                    name = names[i];
+
+                    var data = artifact.getAttributes(name);
+
+                    //Check if there is only one element
+                    if (data.length == 1) {
+                        attributes[name] = String(artifact.getAttribute(name));
+                    }
+                    else {
+                        attributes[name] = data;
+                    }
+                }
+                return attributes;
+            }()),
+            content: function () {
+                return new Stream(new ByteArrayInputStream(artifact.getContent()));
+            }
+        };
+    };
+    var processAssets = function(type,set){
+        var iterator = set.iterator();
+        var assets = [];
+        var current;
+        while(iterator.hasNext()){
+            current = iterator.next();
+            asset = buildArtifact(type,current);
+            assets.push(asset);
+        }
+        return assets;
+    };
     AssetManager.prototype.advanceSearch = function(query,paging) {
       var assets = [];
       var type = query.type;
       var mediaType = '';
       var queryString;
+      var registry = this.registry.registry;
+      var governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
+      var assetz =[];
       //Note: This will restrict the search to this asset type
       type = this.type;
       mediaType = this.rxtManager.getMediaType(type);    
@@ -437,23 +485,23 @@ var asset = {};
       if(queryString.length<=0){
         return assets;
       }
-      log.info('*** Performing search using query string: '+queryString+' ***');
-      log.info('*** search media type:'+mediaType+' ***');
-      assets = GovernanceUtils.findGovernanceArtifacts(queryString,this.registry.registry,mediaType);
+      assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
+      assetz  = processAssets(type,assets);
       //Add additional meta data
-      //addAssetsMetaData(assets,this);
-      return assets;
+      addAssetsMetaData(assets,this);
+      return assetz;
     };
     asset.advanceSearch = function(query,paging,session) {
         var storeAPI = require('store');
-        var registry = storeAPI.user.userRegistry(session);
+        var userRegistry = storeAPI.user.userRegistry(session);
         var user = storeAPI.server.current(session);
         var tenantId = user.tenantId;
         var rxtManager = core.rxtManager(tenantId);
         var assets = [];
         var type = query.type;
         var mediaType = '';
-        var registry;
+        var registry = userRegistry.registry;
+        var governanceRegistry =  GovernanceUtils..getGovernanceUserRegistry(registry, registry.getUserName());
         if(type){
             mediaType = rxtManger.getMediaType(type);
         }
@@ -461,7 +509,7 @@ var asset = {};
         if(queryString.length<=0){
             return assets = [];
         }
-        assets = GovernanceUtils.findGovernanceArtifacts(queryString,registry,mediaType);
+        assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
         return assets;
     };
     var buildQueryString = function(query) {
