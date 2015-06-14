@@ -205,7 +205,7 @@ var parseUsedDefinedQuery = function(input) {
         //previous term
         if((term.length>0)&&(isTokenizedTerm(term))){
             previous = arr.length -1;
-            if(arr.length>=0) {
+            if(previous>=0) {
                 arr[previous]= arr[previous]+' '+term;
             }
         } else {

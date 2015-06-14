@@ -429,12 +429,8 @@ var asset = {};
       var type = query.type;
       var mediaType = '';
       var queryString;
-      //If the user has not explicitly specified the type then
-      //type should be picked up from the asset manager instance
       //Note: This will restrict the search to this asset type
-      if(!type) {
-        type = this.type;
-      }
+      type = this.type;
       mediaType = this.rxtManager.getMediaType(type);    
       queryString = buildQueryString(query);
       //Check if a query string was created
