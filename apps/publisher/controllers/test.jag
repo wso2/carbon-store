@@ -4,12 +4,17 @@ var userRegistry = userMod.userRegistry(session);
 var govUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
 var registry = userRegistry.registry;
 var govRegistry = govUtils.getGovernanceUserRegistry(registry, registry.getUserName());
-var results = govUtils.findGovernanceArtifacts("name=*wso2*&mediaType=application/vnd.wso2-gadget+xml", govRegistry, "application/vnd.wso2-gadget+xml");
-print(results);
+//var results = govUtils.findGovernanceArtifacts("name=*wso2*&mediaType=application/vnd.wso2-gadget+xml", govRegistry, "application/vnd.wso2-gadget+xml");
+//print(results);
 var rxtAPI = require('rxt');
 var q = {};
-q.name = '*wso2*';
+q.version = '1.0.0';
 var assets = rxtAPI.asset.advanceSearch(q,{},session);
+var log = new Log();
+log.info('Size of result set: '+assets.size());
+for(var key in assets){
+    log.info(key);
+}
 //print(assets);
 /*var rxtAPI = require('rxt');
 var log = new Log();

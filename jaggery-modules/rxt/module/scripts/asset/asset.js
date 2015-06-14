@@ -445,7 +445,7 @@ var asset = {};
       log.info('*** search media type:'+mediaType+' ***');
       assets = GovernanceUtils.findGovernanceArtifacts(queryString,this.registry.registry,mediaType);
       //Add additional meta data
-      addAssetsMetaData(assets,this);
+      //addAssetsMetaData(assets,this);
       return assets;
     };
     asset.advanceSearch = function(query,paging,session) {
