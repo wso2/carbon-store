@@ -1,20 +1,24 @@
 <%
-var userMod = require('store').user;
-var userRegistry = userMod.userRegistry(session);
-var govUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
-var registry = userRegistry.registry;
-var govRegistry = govUtils.getGovernanceUserRegistry(registry, registry.getUserName());
-//var results = govUtils.findGovernanceArtifacts("name=*wso2*&mediaType=application/vnd.wso2-gadget+xml", govRegistry, "application/vnd.wso2-gadget+xml");
-//print(results);
-var rxtAPI = require('rxt');
-var q = {};
-q.version = '1.0.0';
-var assets = rxtAPI.asset.advanceSearch(q,{},session);
-var log = new Log();
-log.info('Size of result set: '+assets.size());
-for(var key in assets){
-    log.info(key);
-}
+
+require('/modules/publisher.js').exec(function(ctx){
+    var userMod = require('store').user;
+    var userRegistry = userMod.userRegistry(ctx.session);
+    var govUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    var registry = userRegistry.registry;
+    var govRegistry = govUtils.getGovernanceUserRegistry(registry, registry.getUserName());
+    var results = govUtils.findGovernanceArtifacts("version=1.0.0&mediaType=application/vnd.wso2-gadget+xml", govRegistry, "application/vnd.wso2-gadget+xml");
+    print(results.size());
+},request,response,session);
+
+// var rxtAPI = require('rxt');
+// var q = {};
+// q.version = '1.0.0';
+// var assets = rxtAPI.asset.advanceSearch(q,{},session);
+// var log = new Log();
+// log.info('Size of result set: '+assets.size());
+// for(var key in assets){
+//     log.info(key);
+// }
 //print(assets);
 /*var rxtAPI = require('rxt');
 var log = new Log();
