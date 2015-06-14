@@ -16,24 +16,24 @@
  *  under the License.
  *
  */
-app.server = function(ctx) {
-    return {
-        endpoints: {
-            pages: [{
-                title: 'Publisher | Splash page',
-                url: 'splash',
-                path: 'splash.jag'
-            },{
-                title:'Advanced Search',
-                url:'advanced-search',
-                path:'advanced-search.jag'
-            }]
-        },
-        configs: {
-            landingPage: '/asts/gadget/list',
-            disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint']
-        },
-        onLoadedServerConfigs:function(configs){
-        }
-    }
+var render = function(theme, data, meta, require) {
+    theme('single-col-fluid', {
+        title: 'Asset',
+        header: [{
+            partial: 'header',
+            context: data
+        }],
+        ribbon: [{
+            partial: 'ribbon',
+            context: data
+        }],
+        // leftnav: [{
+        //     partial:'left-nav',
+        //     context:data
+        // }],
+        listassets: [{
+            partial: 'advanced-search-body',
+            context: data
+        }]
+    });
 };

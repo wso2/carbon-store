@@ -1,5 +1,5 @@
 <%
-var rxtAPI = require('rxt');
+/*var rxtAPI = require('rxt');
 var log = new Log();
 var context = rxtAPI.core.createUserAssetContext(session, 'gadget');
 var rxtManager = context.rxtManager;
@@ -40,7 +40,7 @@ var type;
 for(var index = 0; index < types.length; index++){
     type = types[index];
     log.info('Static path is '+rxtManager.getStaticRxtStoragePath(type));
-}
+}*/
 
 //log.info(rxtManager.rxtMap.gadget.storagePath);
 

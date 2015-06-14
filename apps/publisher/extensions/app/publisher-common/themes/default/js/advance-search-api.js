@@ -16,24 +16,6 @@
  *  under the License.
  *
  */
-app.server = function(ctx) {
-    return {
-        endpoints: {
-            pages: [{
-                title: 'Publisher | Splash page',
-                url: 'splash',
-                path: 'splash.jag'
-            },{
-                title:'Advanced Search',
-                url:'advanced-search',
-                path:'advanced-search.jag'
-            }]
-        },
-        configs: {
-            landingPage: '/asts/gadget/list',
-            disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint']
-        },
-        onLoadedServerConfigs:function(configs){
-        }
-    }
-};
+$(function(){
+	alert('Hello world!');
+});
