@@ -429,9 +429,13 @@ var asset = {};
       var type = query.type;
       var mediaType = '';
       var queryString;
-      if(type) {
-        mediaType = this.rxtManager.getMediaType(type);
+      //If the user has not explicitly specified the type then
+      //type should be picked up from the asset manager instance
+      //Note: This will restrict the search to this asset type
+      if(!type) {
+        type = this.type;
       }
+      mediaType = this.rxtManager.getMediaType(type);    
       queryString = buildQueryString(query);
       //Check if a query string was created
       if(queryString.length<=0){
@@ -440,12 +444,35 @@ var asset = {};
       log.info('*** Performing search using query string: '+queryString+' ***');
       log.info('*** search media type:'+mediaType+' ***');
       assets = GovernanceUtils.findGovernanceArtifacts(queryString,this.registry.registry,mediaType);
+      //Add additional meta data
+      addAssetsMetaData(assets,this);
       return assets;
+    };
+    asset.advanceSearch = function(query,paging,session) {
+        var storeAPI = require('store');
+        var registry = storeAPI.user.userRegistry(session);
+        var user = storeAPI.server.current(session);
+        var tenantId = user.tenantId;
+        var rxtManager = core.rxtManager(tenantId);
+        var assets = [];
+        var type = query.type;
+        var mediaType = '';
+        var registry;
+        if(type){
+            mediaType = rxtManger.getMediaType(type);
+        }
+        queryString = buildQueryString(query);
+        if(queryString.length<=0){
+            return assets = [];
+        }
+        assets = GovernanceUtils.findGovernanceArtifacts(queryString,registry,mediaType);
+        return assets;
     };
     var buildQueryString = function(query) {
         var queryString = [];
         var value;
         for(var key in query) {
+            //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
                 value = query[key];
                 queryString.push(key+'='+value);
