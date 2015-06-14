@@ -424,6 +424,35 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
+    AssetManager.prototype.advanceSearch = function(query,paging) {
+      var assets = [];
+      var type = query.type;
+      var mediaType = '';
+      var queryString;
+      if(type) {
+        mediaType = this.rxtManager.getMediaType(type);
+      }
+      queryString = buildQueryString(query);
+      //Check if a query string was created
+      if(queryString.length<=0){
+        return assets;
+      }
+      log.info('*** Performing search using query string: '+queryString+' ***');
+      log.info('*** search media type:'+mediaType+' ***');
+      assets = GovernanceUtils.findGovernanceArtifacts(queryString,this.registry.registry,mediaType);
+      return assets;
+    };
+    var buildQueryString = function(query) {
+        var queryString = [];
+        var value;
+        for(var key in query) {
+            if((query.hasOwnProperty(key)) && (key!='type')){
+                value = query[key];
+                queryString.push(key+'='+value);
+            }
+        }
+        return queryString.join('&');
+    };
     /**
      * Adds wild card search pattern to all
      * query properties

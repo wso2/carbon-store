@@ -1,4 +1,12 @@
 <%
+var userMod = require('store').user;
+var userRegistry = userMod.userRegistry(session);
+var govUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+var registry = userRegistry.registry;
+var govRegistry = govUtils.getGovernanceUserRegistry(registry, registry.getUserName());
+var results = govUtils.findGovernanceArtifacts("BLZService&mediaType=application/vnd.wso2-soap-service+xml", registry, "iiii");
+print(results);
+
 /*var rxtAPI = require('rxt');
 var log = new Log();
 var context = rxtAPI.core.createUserAssetContext(session, 'gadget');
