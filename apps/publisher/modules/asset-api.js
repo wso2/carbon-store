@@ -528,7 +528,7 @@ var result;
                     //category values
                     log.debug('processed query used for searching: ' + stringify(query));
                 }
-                assets = assetAPI.advanceSearch(query, paging); // asset manager back-end call with search-query
+                assets = assetAPI.advanceSearch(query, paging,session); // asset manager back-end call with search-query
             } else {
                 log.error('Unable to perform a bulk asset retrieval without a type been specified');
                 throw 'Unable to perform a bulk asset retrieval without a type been specified';

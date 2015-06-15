@@ -458,16 +458,41 @@ var asset = {};
             }
         };
     };
-    var processAssets = function(type,set){
+    var processAssets = function(type,set,rxtManager){
         var iterator = set.iterator();
         var assets = [];
         var current;
+        var mediaType;
+        var assetType;
+        var item;
         while(iterator.hasNext()){
             current = iterator.next();
-            asset = buildArtifact(type,current);
-            assets.push(asset);
+            assetType = null;
+            if(!type) {
+                mediaType = current.getMediaType();
+                assetType = rxtManager.getTypeFromMediaType(mediaType);
+            } else {
+                assetType = type;
+            }
+            item = buildArtifact(assetType,current);
+            assets.push(item);
         }
         return assets;
+    };
+    var addMetaDataToGenericAssets = function(assets,session){
+        var assetManagers = {};
+        var assetManager;
+        var item;
+        for(var index = 0; index < assets.length; index++){
+            item = assets[index];
+            if(!assetManagers[item.type]){
+                assetManager = asset.createUserAssetManager(session,item.type);
+                assetManagers[item.type] = assetManager;
+            } else {
+                assetManager = assetManagers[item.type];
+            }
+            addAssetMetaData(item,assetManager);
+        }
     };
     AssetManager.prototype.advanceSearch = function(query,paging) {
       var assets = [];
@@ -486,7 +511,7 @@ var asset = {};
         return assets;
       }
       assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
-      assetz  = processAssets(type,assets);
+      assetz  = processAssets(type,assets,this.rxtManger);
       //Add additional meta data
       addAssetsMetaData(assets,this);
       return assetz;
@@ -501,7 +526,8 @@ var asset = {};
         var type = query.type;
         var mediaType = '';
         var registry = userRegistry.registry;
-        var governanceRegistry =  GovernanceUtils..getGovernanceUserRegistry(registry, registry.getUserName());
+        var assetz = [];
+        var governanceRegistry =  GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
         if(type){
             mediaType = rxtManger.getMediaType(type);
         }
@@ -510,7 +536,9 @@ var asset = {};
             return assets = [];
         }
         assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
-        return assets;
+        assetz = processAssets(null,assets,rxtManager);
+        addMetaDataToGenericAssets(assetz,session);
+        return assetz;
     };
     var buildQueryString = function(query) {
         var queryString = [];

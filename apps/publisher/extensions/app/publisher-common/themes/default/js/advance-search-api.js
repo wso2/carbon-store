@@ -64,7 +64,7 @@ $(function(){
 	};
 	var createAPIQuery = function(query) {
 		//TODO:Remove this
-		return caramel.url(SEARCH_API+query+'&type=gadget');
+		return caramel.url(SEARCH_API+query);
 		//return caramel.url('/apis/assets?type=gadget&q='+query);
 	};
 	var partial = function(name) {

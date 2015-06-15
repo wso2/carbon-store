@@ -137,8 +137,12 @@ require('/modules/publisher.js').exec(function (ctx) {
             options.type = req.getParameter('type');
             if (uriMatcher.match(LIST_ASSETS_URL)) {//return assets by type
                 //If the type has been provided then do an advanceSearch 
-                //else do a genericAdvanceSearch
-                var assets = assetApi.search(options, req, res, session);
+                var assets = [];
+                if(options.type) {
+                    assets = assetApi.advanceSearch(options, req, res, session);
+                } else {
+                    assets = assetApi.genericAdvanceSearch(options,req,res,session);
+                }
                 response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, assets);
             } else if (uriMatcher.match(GET_ASSET_URL)) {//return asset by id
                 options.id = uriMatcher.elements().id;
