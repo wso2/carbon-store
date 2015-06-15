@@ -1809,7 +1809,7 @@ var asset = {};
         return asset.getBaseUrl() + type;
     };
     asset.getBaseUrl = function() {
-        return '/asts/';
+        return '/assets/';
     };
     /**
      * Returns the details of a specific API endpoint matched by the provided endpoint name
@@ -1862,9 +1862,9 @@ var asset = {};
         var uriMatcher = new URIMatcher(request.getRequestURI());
         var extensionMatcher = new URIMatcher(path);
         //TODO: Use the constants
-        var uriPattern = '/{context}/asts/{type}/{+options}';
+        var uriPattern = '/{context}/assets/{type}/{+options}';
         var extensionPattern = '/{root}/extensions/assets/{type}/{+suffix}';
-        var tenantedUriPattern = '/{context}/t/{domain}/asts/{type}/{+suffix}';
+        var tenantedUriPattern = '/{context}/t/{domain}/assets/{type}/{+suffix}';
         uriMatcher.match(uriPattern) || uriMatcher.match(tenantedUriPattern); //TODO check with samples
         extensionMatcher.match(extensionPattern);
         var pathOptions = extensionMatcher.elements() || {};
