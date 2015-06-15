@@ -465,7 +465,7 @@ var result;
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
                 query = replaceCategoryQuery(query, rxtManager, options.type);
-                query = replaceNameQuery(query, rxtManager, options.type);
+                //query = replaceNameQuery(query, rxtManager, options.type);
                 if (log.isDebugEnabled) {
                     //Need to log this as we perform some processing on the name and
                     //category values
