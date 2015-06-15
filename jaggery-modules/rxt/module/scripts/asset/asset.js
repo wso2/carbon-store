@@ -510,6 +510,7 @@ var asset = {};
       if(queryString.length<=0){
         return assets;
       }
+      log.info('advance search query: '+queryString);
       assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
       assetz  = processAssets(type,assets,this.rxtManger);
       //Add additional meta data
@@ -535,6 +536,7 @@ var asset = {};
         if(queryString.length<=0){
             return assets = [];
         }
+        log.info('advance search query: '+queryString);
         assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
         assetz = processAssets(null,assets,rxtManager);
         addMetaDataToGenericAssets(assetz,session);
@@ -543,10 +545,19 @@ var asset = {};
     var buildQueryString = function(query) {
         var queryString = [];
         var value;
+
         for(var key in query) {
             //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
                 value = query[key];
+                //If the key contains an underscore (_) we 
+                //need  replace it with a semi colon (:)
+                //as the underlying API requires this
+                //Note: This prevents us from searching props
+                //with a underscore (_)
+                key = key.replace('_',':');
+                //We force a wildcard search
+                value = '*'+value+'*';
                 queryString.push(key+'='+value);
             }
         }
