@@ -22,9 +22,9 @@ var log = new Log('assets_router');
 var matcher = new URIMatcher(request.getRequestURI());
 var rxt = require('rxt');
 var constants = rxt.constants;
-var apiEndpoint = constants.ASSET_API_URL_PATTERN;// '/{context}/asts/{type}/api/{+suffix}';
-var pageEndpoint = constants.ASSET_PAGE_URL_PATTERN;// '/{context}/asts/{type}/{+suffix}';
-var tenantedPageEndpoint = constants.ASSET_TENANT_PAGE_URL_PATTERN;//'/{context}/t/{domain}/asts/{type}/{+suffix}';
+var apiEndpoint = constants.ASSET_API_URL_PATTERN;// '/{context}/assets/{type}/api/{+suffix}';
+var pageEndpoint = constants.ASSET_PAGE_URL_PATTERN;// '/{context}/assets/{type}/{+suffix}';
+var tenantedPageEndpoint = constants.ASSET_TENANT_PAGE_URL_PATTERN;//'/{context}/t/{domain}/assets/{type}/{+suffix}';
 
 var asset = rxt.asset;
 var getPage = function (uri) {

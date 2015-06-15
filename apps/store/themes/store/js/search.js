@@ -65,9 +65,9 @@ $(function () {
             if(path.match('/t/')){
                 var regex = '/t/{1}([0-9A-Za-z-\\.@:%_\+~#=]+)';
                 var domain = path.match(regex)[1];
-                url = caramel.url('/t/'+ domain +'/asts/' + store.asset.type + '/list?' + buildParams(searchVal));
+                url = caramel.url('/t/'+ domain +'/assets/' + store.asset.type + '/list?' + buildParams(searchVal));
             }else{
-                url = caramel.url('/asts/' + store.asset.type + '/list?' + buildParams(searchVal));
+                url = caramel.url('/assets/' + store.asset.type + '/list?' + buildParams(searchVal));
             }
             window.location.href = url;
         } else if (searchVal.length > 0 && searchVal != undefined) {

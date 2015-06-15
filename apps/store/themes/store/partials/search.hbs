@@ -47,9 +47,9 @@
     </a>
     <div id="category-dropdown-content" style="display: none">
         <ul aria-labelledby="dropdownMenu1" role="menu" class="dropdown-menu-category">
-                <li><a href="{{tenantedUrl "/asts"}}/{{rxt.shortName}}/list">All Categories</a></li>
+                <li><a href="{{tenantedUrl "/assets"}}/{{rxt.shortName}}/list">All Categories</a></li>
                 {{#each assetMeta.categories}}
-                    <li><a href='{{tenantedUrl "/asts"}}/{{../rxt.shortName}}/list?q="overview_category":"{{this}}"'>{{this}}</a></li>
+                    <li><a href='{{tenantedUrl "/assets"}}/{{../rxt.shortName}}/list?q="overview_category":"{{this}}"'>{{this}}</a></li>
                 {{/each}}
         </ul>
     </div>

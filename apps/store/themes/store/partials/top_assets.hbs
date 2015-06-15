@@ -4,7 +4,7 @@
     <div class="container-fluid row padding-double center">
         {{#each popularAssets}}
             {{#attributes}}
-                <div class="freatured-assets-col col-xs-12 col-sm-6 col-md-3  "><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
+                <div class="freatured-assets-col col-xs-12 col-sm-6 col-md-3  "><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
                     <img class="img-responsive" src="{{#if ../banner}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../banner}}{{/if}}"></a> </div>
             {{/attributes}}
         {{/each}}
@@ -16,8 +16,8 @@
 {{#each recentAssetsByType}}
     <div class="ast-container " id="ast-container">
         <div class="container-fluid ">
-            <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?">Recent {{rxt.pluralLabel}}</a></div><!--title-->
-            <div class="float-right"><a href="{{tenantedUrl "/asts/"}}{{rxt.shortName}}/list?" class="more">
+            <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">Recent {{rxt.pluralLabel}}</a></div><!--title-->
+            <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?" class="more">
                 <span class="fw-stack fw-lg  fw-inverse">
                     <i class="fw fw-circle fw-stack-1-5x grey"></i>
                     <i class="fw fw-dots fw-stack-1x white"></i>
@@ -33,12 +33,12 @@
                     {{#attributes}}
                         <div class="ctrl-wr-asset">
                             <div class="itm-ast">
-                                <a class="ast-img " href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
+                                <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
                                     {{> top-assets-thumbnail ..}}
                                 </a>
                                 <div class="ast-content">
                                     <div class="ast-title padding">
-                                        <a class="ast-name truncate" href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
+                                        <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
                                         <span class="ast-auth">{{overview_provider}}</span>
                                     </div>
                                     <div class="pull-left asset-rating-container">
@@ -60,7 +60,7 @@
                                                        href='{{url ""}}{{getLoginUrl .}}'> {{>process-asset-text }}</a>
                                                 </li>
                                             {{/hasAssetPermission}}
-                                                 <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
+                                                 <li><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">More Details</a></li>
                                             </ul>
                                         </div>
                                     </div>

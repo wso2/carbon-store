@@ -22,11 +22,11 @@
                 <div class="row-fluid recently-added">
                     {{#attributes}}
                         <div class="span3">
-                            <a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}"><img
+                            <a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}"><img
                                 src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}"></a>
                         </div>
                         <div class="span9">
-                            <strong><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a></strong>
+                            <strong><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a></strong>
                             <small>by <a href="#">{{overview_provider}}</a></small>
                             <span class="star-rating">
                             	<div class="asset-rating">
