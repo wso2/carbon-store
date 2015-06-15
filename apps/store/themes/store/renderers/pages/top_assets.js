@@ -28,7 +28,16 @@ var render = function(theme, data, meta, require) {
             break;
     }
     theme('2-column-right', {
-        title: data.meta.title,
+        //title: data.meta.title,
+        title:[{
+            partial: 'title',
+            context: data
+        }],
+        description: data.meta.description,
+        meta:[{
+            partial: 'meta',
+            context: data
+        }],
         header: [{
             partial: 'header',
             context: data

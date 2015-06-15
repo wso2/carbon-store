@@ -16,7 +16,7 @@
  *  under the License.
  *
  */
-var render = function(theme, data, meta, require) {
+var render = function (theme, data, meta, require) {
     var log = new Log();
     var navigation = 'navigation';
     var navigationContext = data;
@@ -30,7 +30,16 @@ var render = function(theme, data, meta, require) {
     //var assets = require('/helpers/assets.js');
 
     theme('2-column-right', {
-        title: data.meta.title,
+        //title: data.meta.title,
+        title:[{
+            partial: 'title',
+            context: data
+        }],
+        description: data.meta.description,
+        meta:[{
+            partial: 'meta',
+            context: data
+        }],
         header: [{
             partial: 'header',
             context: data
@@ -43,11 +52,11 @@ var render = function(theme, data, meta, require) {
             {
                 partial: 'sort-assets',
                 context: data
-             }, 
+            },
             {
                 partial: 'assets',
                 context: data
-             }
+            }
             // {
             //     partial: 'pagination',
             //     context: require('/helpers/pagination.js').format(data.paging)

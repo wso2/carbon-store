@@ -29,7 +29,7 @@
  * @requires Packages.org.wso2.carbon.governance.api.util.GovernanceUtils
  */
 var core = {};
-(function(core, constants) {
+(function (core, constants) {
     var DEFAULT_MEDIA_TYPE = 'application/vnd.wso2.registry-ext-type+xml';
     var ASSET_PATH = '/_system/governance/repository/components/org.wso2.carbon.governance/types/';
     var RXT_MAP = 'rxt.manager.map';
@@ -39,7 +39,7 @@ var core = {};
     var DEFAULT_TENANT = -1234;
     var utils = require('utils');
     var log = new Log('rxt.core');
-    var applyDefinitionMutation = function(rxtDefinition, rxtMutation) {
+    var applyDefinitionMutation = function (rxtDefinition, rxtMutation) {
         var mutatedTables = rxtMutation.table || {};
         var rxtTables = rxtDefinition.content.table;
         for (var tableName in mutatedTables) {
@@ -56,7 +56,7 @@ var core = {};
         }
         return rxtDefinition;
     };
-    var applyTableMutation = function(rxtTable, rxtTableMutation) {
+    var applyTableMutation = function (rxtTable, rxtTableMutation) {
         var rxtFields = rxtTable.fields;
         var mutatedFields = rxtTableMutation.fields;
         for (var fieldName in mutatedFields) {
@@ -66,7 +66,7 @@ var core = {};
         }
         return rxtTable;
     };
-    var applyFieldPropMutation = function(rxtField, mutatedField, fieldName) {
+    var applyFieldPropMutation = function (rxtField, mutatedField, fieldName) {
         rxtField = rxtField[fieldName];
         mutatedField = mutatedField[fieldName];
         if (!rxtField.validations) {
@@ -82,13 +82,13 @@ var core = {};
         }
         return rxtField;
     };
-    var makeWordUpperCase = function(word) {
+    var makeWordUpperCase = function (word) {
         if (word.length > 1) {
             return word[0].toUpperCase() + word.substring(1);
         }
         return word;
     };
-    var createCamelCaseName = function(fieldName) {
+    var createCamelCaseName = function (fieldName) {
         var comps = fieldName.split(' ');
         for (var index in comps) {
             comps[index] = comps[index].toLowerCase();
@@ -102,7 +102,7 @@ var core = {};
         }
         return comps.join('');
     };
-    var transformDefinition = function(rxtDefinition) {
+    var transformDefinition = function (rxtDefinition) {
         rxtDefinition.storagePath = rxtDefinition.storagePath[0].storagePath;
         rxtDefinition.content = rxtDefinition.content[0];
         var table;
@@ -117,7 +117,7 @@ var core = {};
             transformTable(rxtDefinition.content.table[table.name], table, tableName);
         }
     };
-    var transformTable = function(rxtDefinition, rxtTable, tableName) {
+    var transformTable = function (rxtDefinition, rxtTable, tableName) {
         var fields = rxtTable.field;
         var field;
         var name;
@@ -140,11 +140,12 @@ var core = {};
         }
         delete rxtTable.field;
     };
-    var trasnformField = function(rxtField) {
+    var trasnformField = function (rxtField) {
         var nameBlock = rxtField.name;
         rxtField.name = {};
         rxtField.name = nameBlock[0];
     };
+
     /**
      * Represents an interface for managing interactions with the different
      * RXT types deployed in the Governance Registry
@@ -157,11 +158,12 @@ var core = {};
         this.rxtMap = {};
         this.mutatorMap = {};
     }
+
     /**
      * Loads the RXT definition files from the Governance Registry and converts the definitions to JSON.RXT definitions
      * are read as XML files which are then converted to a JSON representation.
      */
-    RxtManager.prototype.load = function() {
+    RxtManager.prototype.load = function () {
         var rxtPaths = GovernanceUtils.findGovernanceArtifacts(DEFAULT_MEDIA_TYPE, this.registry.registry);
         var content;
         var rxtDefinition;
@@ -188,7 +190,7 @@ var core = {};
      * @return {Object}         The RXT definition as a JSON
      * @throws Unable to locate rxt type
      */
-    RxtManager.prototype.getRxtDefinition = function(rxtType) {
+    RxtManager.prototype.getRxtDefinition = function (rxtType) {
         if (this.rxtMap[rxtType]) {
             return this.rxtMap[rxtType];
         }
@@ -206,7 +208,7 @@ var core = {};
      * @return {String}         The Registry storage path
      * @throws Unable to locate storage path
      */
-    RxtManager.prototype.getRxtStoragePath = function(rxtType) {
+    RxtManager.prototype.getRxtStoragePath = function (rxtType) {
         var def = this.rxtMap[rxtType];
         if (!def) {
             log.debug('Unable to locate rxt definition for ' + rxtType);
@@ -263,7 +265,7 @@ var core = {};
      *     print(list); // ['gadget','site','ebook']
      * @return {Array} An array of strings that represent the RXT type names
      */
-    RxtManager.prototype.listRxtTypes = function() {
+    RxtManager.prototype.listRxtTypes = function () {
         var list = [];
         for (var type in this.rxtMap) {
             list.push(type);
@@ -285,7 +287,7 @@ var core = {};
      * @return {Object} Method returns either an object or an array.If a type is given when invoking then a single object is returned,
      *                         else an array
      */
-    RxtManager.prototype.listRxtTypeDetails = function() {
+    RxtManager.prototype.listRxtTypeDetails = function () {
         if (arguments.length == 1) {
             return this.getRxtTypeDetails(arguments[0]);
         } else {
@@ -305,7 +307,7 @@ var core = {};
      * @return {Object}      A json object with a set of specific RXT meta data
      * @throws Unable to locate the rxt definition for type in order to return rxt details
      */
-    RxtManager.prototype.getRxtTypeDetails = function(type) {
+    RxtManager.prototype.getRxtTypeDetails = function (type) {
         var template = this.rxtMap[type];
         if (!template) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return rxt details');
@@ -323,7 +325,7 @@ var core = {};
      * @todo This method should use the getRxtTypeDetails method
      * @return {Array} A list of RXT meta data
      */
-    RxtManager.prototype.getRxtTypesDetails = function() {
+    RxtManager.prototype.getRxtTypesDetails = function () {
         var list = [];
         for (var type in this.rxtMap) {
             var details = {};
@@ -337,7 +339,7 @@ var core = {};
         }
         return list;
     };
-    RxtManager.prototype.applyMutator = function(type, mutator) {
+    RxtManager.prototype.applyMutator = function (type, mutator) {
         this.mutatorMap[type] = {};
         this.mutatorMap[type] = mutator;
         var rxtDefinition = this.rxtMap[type];
@@ -355,7 +357,7 @@ var core = {};
      * @return {Array}      A array containing the name and label pairs of all the tables
      * @throws Unable to locate the rxt definition for type in order to return tables
      */
-    RxtManager.prototype.listRxtTypeTables = function(type) {
+    RxtManager.prototype.listRxtTypeTables = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return tables');
@@ -372,7 +374,7 @@ var core = {};
         }
         return tables;
     };
-    RxtManager.prototype.getMediaType = function(type) {
+    RxtManager.prototype.getMediaType = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return tables');
@@ -395,7 +397,7 @@ var core = {};
      * @return {String}      The name of a field defined in the RXT definition
      * @throws Unable to locate the rxt definition for type in order to return tables
      */
-    RxtManager.prototype.getNameAttribute = function(type) {
+    RxtManager.prototype.getNameAttribute = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return name attribute');
@@ -415,7 +417,7 @@ var core = {};
      * @return {String}      The field name defined as the thumbnail property
      * @throws Unable to locate the rxt definition for type in order to return the thumbnail attribute
      */
-    RxtManager.prototype.getThumbnailAttribute = function(type) {
+    RxtManager.prototype.getThumbnailAttribute = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return thumbail attribute');
@@ -434,7 +436,7 @@ var core = {};
      * @return {String}      The field name defined as the banner property
      * @throws Unable to locate the rxt definition for type in order to return the banner attribute
      */
-    RxtManager.prototype.getBannerAttribute = function(type) {
+    RxtManager.prototype.getBannerAttribute = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return banner attribute');
@@ -446,7 +448,7 @@ var core = {};
         log.warn('Unable to locate banner attribute for type: ' + type + '.Check if a banner property is defined in the rxt configuration.');
         return '';
     };
-    RxtManager.prototype.getVersionAttribute = function(type) {
+    RxtManager.prototype.getVersionAttribute = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return version attribute');
@@ -465,7 +467,7 @@ var core = {};
      * @return {String}      The field name deifned as the temporal property
      * @throws Unable to locate the rxt definition for type in order to return the timestamp attribute
      */
-    RxtManager.prototype.getTimeStampAttribute = function(type) {
+    RxtManager.prototype.getTimeStampAttribute = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return timestamp attribute');
@@ -479,7 +481,7 @@ var core = {};
         }
         return null;
     };
-    RxtManager.prototype.getProviderAttribute = function(type) {
+    RxtManager.prototype.getProviderAttribute = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return timestamp attribute');
@@ -501,7 +503,7 @@ var core = {};
      * @return {String}      The name of a lifecycle which is attached to all asset instances of an RXT type
      * @throws Unable to locate the rxt definition for type in order to return lifecycle
      */
-    RxtManager.prototype.getLifecycleName = function(type) {
+    RxtManager.prototype.getLifecycleName = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return lifecycle ');
@@ -519,7 +521,7 @@ var core = {};
      * @param  {String} type The RXT type
      * @return {String}      The lifecycle action to be invoked after attaching a lifecycle to an asset
      */
-    RxtManager.prototype.getDefaultLcAction = function(type) {
+    RxtManager.prototype.getDefaultLcAction = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -538,7 +540,7 @@ var core = {};
      * @return {Boolean}      True if comments are required
      * @throws Unable to locate the rxt definiton for type in order to determine if lifecycle comments are required
      */
-    RxtManager.prototype.isLCCommentRequired = function(type) {
+    RxtManager.prototype.isLCCommentRequired = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -550,7 +552,7 @@ var core = {};
         log.warn('Unable to locate the lifecycle meta property to determine whether comments are required ' + type + '.Make sure the lifecycle meta property is present in the configuratio callback of the asset.js');
         return false;
     };
-    RxtManager.prototype.isGroupingEnabled = function(type) {
+    RxtManager.prototype.isGroupingEnabled = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -562,7 +564,9 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether asset grouping is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
+
     RxtManager.prototype.isLifecycleEnabled = function(type) {
+
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -574,7 +578,9 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
+
     RxtManager.prototype.isDefaultLifecycleEnabled = function(type) {
+
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -586,7 +592,9 @@ var core = {};
         log.warn('Unable to locate the  meta property to determine whether default lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return false;
     };
+
     RxtManager.prototype.isLifecycleViewEnabled = function(type) {
+
         var rxtDefinition = this.rxtMap[type];
         var isLCEnabled = this.isLifecycleEnabled(type);
         var isLCViewEnabled = false;
@@ -605,7 +613,7 @@ var core = {};
         //log.warn('Unable to locate the  meta property to determine whether lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return isLCViewEnabled;
     };
-    RxtManager.prototype.groupingAttributes = function(type) {
+    RxtManager.prototype.groupingAttributes = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -626,7 +634,7 @@ var core = {};
      * @param  {String} fieldType The field type
      * @return {Array}           An array of fields qualified by the table name
      */
-    RxtManager.prototype.listRxtFieldsOfType = function(type, fieldType) {
+    RxtManager.prototype.listRxtFieldsOfType = function (type, fieldType) {
         var tables = this.listRxtTypeTables(type);
         if (tables.length == 0) {
             log.warn('The rxt definition for ' + type + ' does not have any tables.');
@@ -647,7 +655,7 @@ var core = {};
         }
         return result;
     };
-    RxtManager.prototype.listRxtFields = function(type) {
+    RxtManager.prototype.listRxtFields = function (type) {
         var tables = this.listRxtTypeTables(type);
         var fields = [];
         if (tables.length == 0) {
@@ -675,7 +683,7 @@ var core = {};
      * @return {Array}      An array of states in which an rxt instance can be deleted
      * @throws Unable to locate the rxt definition for type in order to return the deletable states
      */
-    RxtManager.prototype.getDeletableStates = function(type) {
+    RxtManager.prototype.getDeletableStates = function (type) {
         var rxtDefinition = this.rxtMap[type];
         var deletableStates = [];
         if (!rxtDefinition) {
@@ -705,7 +713,7 @@ var core = {};
      * @return {Array}       An array of strings indicating the set of published states
      * @throws Unable to locate the rxt definition for type in order to return the published states
      */
-    RxtManager.prototype.getPublishedStates = function(type) {
+    RxtManager.prototype.getPublishedStates = function (type) {
         var rxtDefinition = this.rxtMap[type];
         var publishedStates = [];
         if (!rxtDefinition) {
@@ -735,7 +743,7 @@ var core = {};
      * @return {String}      The field name which acts as the category field for the RXT type
      * @throws Unable to locate the rxt definition for type in order to return the category field
      */
-    RxtManager.prototype.getCategoryField = function(type) {
+    RxtManager.prototype.getCategoryField = function (type) {
         var rxtDefinition = this.rxtMap[type];
         var categoryField = null;
         if (!rxtDefinition) {
@@ -767,7 +775,7 @@ var core = {};
      * @return {Array}        The list of field names that can be used to search the asset
      * @throws Unable to locate the rxt definition for type in order to return the searchable fields
      */
-    RxtManager.prototype.getSearchableFields = function(type) {
+    RxtManager.prototype.getSearchableFields = function (type) {
         var rxtDefinition = this.rxtMap[type];
         var searchableFields = [];
         if (!rxtDefinition) {
@@ -800,7 +808,7 @@ var core = {};
      * @return {Object}            A JSON object defining the field
      * @throws Unable to locate the rxt definition for type in order to retrieve field data
      */
-    RxtManager.prototype.getRxtField = function(type, name) {
+    RxtManager.prototype.getRxtField = function (type, name) {
         var template = this.rxtMap[type];
         var tableName;
         var fieldName;
@@ -836,7 +844,7 @@ var core = {};
      * @param  {String} name The name of the field to be obtained as a {tableName}_{fieldName}
      * @return {Array}       The list of default field values
      */
-    RxtManager.prototype.getRxtFieldValue = function(type, name) {
+    RxtManager.prototype.getRxtFieldValue = function (type, name) {
         var field = this.getRxtField(type, name);
         var values = [];
         if (!field) {
@@ -852,7 +860,7 @@ var core = {};
         }
         return values;
     };
-    var getFieldNameParts = function(fieldName) {
+    var getFieldNameParts = function (fieldName) {
         //Break the field by the _
         var components = fieldName.split('_');
         return {
@@ -860,7 +868,7 @@ var core = {};
             fieldName: components[1]
         };
     };
-    var getRxtTable = function(tables, tableName) {
+    var getRxtTable = function (tables, tableName) {
         var table = null;
         for (var key in tables) {
             if (key == tableName) {
@@ -870,7 +878,7 @@ var core = {};
         }
         return table;
     };
-    var getRxtField = function(table, fieldName) {
+    var getRxtField = function (table, fieldName) {
         var field = null;
         for (var key in table.fields) {
             if (key == fieldName) {
@@ -881,23 +889,23 @@ var core = {};
         return field;
     };
     /*
-    Creates an xml file from the contents of an Rxt file
-    @rxtFile: An rxt file
-    @return: An xml file
-    */
-    var createXml = function(rxtFile) {
+     Creates an xml file from the contents of an Rxt file
+     @rxtFile: An rxt file
+     @return: An xml file
+     */
+    var createXml = function (rxtFile) {
         var content = rxtFile.content.toString();
         var fixedContent = content.replace('<xml version="1.0"?>', EMPTY).replace('</xml>', EMPTY);
         return new XML(fixedContent);
     }
-    var createRxtManager = function(tenantId, map) {
+    var createRxtManager = function (tenantId, map) {
         var server = require('store').server;
         var sysRegistry = server.systemRegistry(tenantId);
         map.rxtManager = new RxtManager(sysRegistry)
         map.rxtManager.load();
         return map.rxtManager;
     };
-    var createTenantRxtMap = function(tenantId, map) {
+    var createTenantRxtMap = function (tenantId, map) {
         map[tenantId] = {};
         return map[tenantId];
     };
@@ -906,7 +914,7 @@ var core = {};
      * @param  {Number} tenantId  The tenant ID
      * @return {Object}          A map of RxtManager instances
      */
-    core.configs = function(tenantId) {
+    core.configs = function (tenantId) {
         var rxtMap = application.get(RXT_MAP);
         var configs = rxtMap[tenantId];
         if (!configs) {
@@ -914,7 +922,9 @@ var core = {};
         }
         return configs;
     };
+
     core.defaultAppExtensionMediator = function() {
+
         var mediator;
         if (arguments.length === 1) {
             mediator = arguments[0];
@@ -930,7 +940,7 @@ var core = {};
      * @return {Object}          An RxtManager instance
      * @throws rxt map was not found in the application object
      */
-    core.rxtManager = function(tenantId) {
+    core.rxtManager = function (tenantId) {
         var map = application.get(RXT_MAP);
         if (!map) {
             throw 'rxt map was not found in the application object';
@@ -953,7 +963,7 @@ var core = {};
      * @return {Object}          The asset specific resources
      * @throws Unable to locate assetResources for tenant and type
      */
-    core.assetResources = function(tenantId, type) {
+    core.assetResources = function (tenantId, type) {
         var configs = core.configs(tenantId);
         var assetResource = configs.assetResources[type];
         if (!assetResource) {
@@ -967,7 +977,7 @@ var core = {};
      * @param  {Number} tenantId The tenant ID
      * @return {Object}          The app specific resources
      */
-    core.appResources = function(tenantId) {
+    core.appResources = function (tenantId) {
         var configs = core.configs(tenantId);
         var appResources = configs.appResources;
         if (!appResources) {
@@ -982,14 +992,14 @@ var core = {};
      * @param  {String} endpoint The endpoint pattern
      * @return {String}          The endpoint url
      */
-    core.getAssetPageUrl = function(type, endpoint) {
+    core.getAssetPageUrl = function (type, endpoint) {
         return this.getAssetPageBaseUrl() + type + endpoint;
     };
     /**
      * Returns the base url of all asset pages
      * @return {String} The base url
      */
-    core.getAssetPageBaseUrl = function() {
+    core.getAssetPageBaseUrl = function () {
         return constants.ASSET_BASE_URL;
     };
     /**
@@ -998,14 +1008,14 @@ var core = {};
      * @param  {String} endpoint The api endpoint to be resolved
      * @return {String}          The api endpoint qualified by asset extension api base url
      */
-    core.getAssetApiUrl = function(type, endpoint) {
+    core.getAssetApiUrl = function (type, endpoint) {
         return this.getAssetApiBaseUrl() + endpoint + '?type=' + type;
     };
     /**
      * Returns the base url for asset extension apis
      * @return {String}  The base url of asset apis
      */
-    core.getAssetApiBaseUrl = function() {
+    core.getAssetApiBaseUrl = function () {
         return constants.ASSET_API_URL;
     };
     /**
@@ -1013,14 +1023,14 @@ var core = {};
      * @param  {String} endpoint A page endpoint
      * @return {String}     The app page url qualified by the vase url of the app pages
      */
-    core.getAppPageUrl = function(endpoint) {
+    core.getAppPageUrl = function (endpoint) {
         return this.getAppPageBaseUrl() + endpoint;
     };
     /**
      * Returns the base url of app pages
      * @return {String} Base url of the app pages
      */
-    core.getAppPageBaseUrl = function() {
+    core.getAppPageBaseUrl = function () {
         return constants.APP_PAGE_URL;
     }
     /**
@@ -1028,25 +1038,25 @@ var core = {};
      * @param  {String} endpoint The api endpoint
      * @return {String}          The app api url qualified by the base url of the app api
      */
-    core.getAppApiUrl = function(endpoint) {
+    core.getAppApiUrl = function (endpoint) {
         return this.getAppApiBaseUrl() + endpoint;
     };
-    core.getAppApiBaseUrl = function() {
+    core.getAppApiBaseUrl = function () {
         return constants.APP_API_URL;
     };
-    core.getAssetSubscriptionSpace = function(type) {
+    core.getAssetSubscriptionSpace = function (type) {
         return constants.SUBSCRIPTIONS_PATH + (type ? '/' + type : '');
     };
     /**
      * Initializes the logic which loads the RXT definitions and creates the RxtManagers
      */
-    core.init = function() {
+    core.init = function () {
         var event = require('event');
         var server = require('store').server;
         var options = server.options();
         var map = {};
         application.put(RXT_MAP, map);
-        event.on('tenantLoad', function(tenantId) {
+        event.on('tenantLoad', function (tenantId) {
             map = application.get(RXT_MAP);
             createTenantRxtMap(tenantId, map);
             createRxtManager(tenantId, map);
@@ -1076,7 +1086,7 @@ var core = {};
      * @param  {String} type     The type of asset
      * @return {Object}          An object which acts as bag for properties and classes
      */
-    core.createAssetContext = function(session, type, tenantID) {
+    core.createAssetContext = function (session, type, tenantID) {
         var user = require('store').user;
         var server = require('store').server;
         var userDetails = server.current(session);
@@ -1098,9 +1108,9 @@ var core = {};
      * @param  {String} type     The type of asset
      * @param tenantID
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
-     
+
      */
-    core.createAnonAssetContext = function(session, type, tenantID) {
+    core.createAnonAssetContext = function (session, type, tenantID) {
         var server = require('store').server;
         var user = require('store').user;
         var tenantId = tenantID || DEFAULT_TENANT;
@@ -1131,7 +1141,7 @@ var core = {};
      * @param  {String} type    The type of asset
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
      */
-    core.createUserAssetContext = function(session, type) {
+    core.createUserAssetContext = function (session, type) {
         var user = require('store').user;
         var server = require('store').server;
         var userDetails = server.current(session);
@@ -1178,7 +1188,7 @@ var core = {};
      * @param  {Object} session Jaggery session object
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
      */
-    core.createAppContext = function(session, tenantID) {
+    core.createAppContext = function (session, tenantID) {
         var server = require('store').server;
         var user = require('store').user;
         var userDetails = server.current(session);
@@ -1199,7 +1209,7 @@ var core = {};
      * @param  {String} type     The type of asset
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
      */
-    core.createAnonAppContext = function(session, tenantId) {
+    core.createAnonAppContext = function (session, tenantId) {
         var server = require('store').server;
         var user = require('store').user;
         tenantId = tenantId || DEFAULT_TENANT;
@@ -1229,7 +1239,7 @@ var core = {};
      * @param  {String} type    The type of asset
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
      */
-    core.createUserAppContext = function(session) {
+    core.createUserAppContext = function (session) {
         var user = require('store').user;
         var server = require('store').server;
         var userDetails = server.current(session);
@@ -1253,7 +1263,9 @@ var core = {};
             session: session
         };
     };
+
     core.createSystemContext = function(tenantId) {
+
         var server = require('store').server;
         var sysRegistry = server.systemRegistry(tenantId);
         var userManager = server.userManager(tenantId);

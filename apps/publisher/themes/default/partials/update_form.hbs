@@ -1,10 +1,13 @@
- <form class="form-horizontal" id='form-asset-update' method='post' action='{{url ""}}/apis/assets/{{assets.id}}?type={{rxt.shortName}}' >
+<form class="form-horizontal" id='form-asset-update' method='post'
+      action='{{url ""}}/apis/assets/{{assets.id}}?type={{rxt.shortName}}'>
+
     <div class="control-group">
-             {{#each assets.tables}}
-                    {{renderTable . mode="edit"}}
-            {{/each}}
+        {{#each assets.tables}}
+            {{renderTable . mode="edit"}}
+        {{/each}}
     </div>
     {{#if groupingFeature.isEnabled}}
+
 
     <div class="control-group">
         <a class="collapsing-h2" aria-expanded="true" href="#collapseversioning" data-toggle="collapse">
@@ -13,26 +16,27 @@
             </h2>
         </a>
         <div id="collapseversioning" class="responsive-form-container collapse in" aria-expanded="true" style="">
-             <div class="form-group">
+            <div class="form-group">
                 <label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">{{t "Make this the default"}}</label>
+
                 <div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">
-                    <input type='checkbox' name="_default" />
+                    <input type='checkbox' name="_default"/>
                 </div>
+
+            </div>
+        </div>
+    {{/if}}
+
+    <div class="clearfix"></div>
+    <div id="updateButtons" class="form-actions">
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
+                <input type="reset" value="Reset" class="btn btn-default">
+                <input type="hidden" value="{{rxt.shortName}}" name="{{rxt.shortName}}" id="meta-asset-type">
             </div>
         </div>
     </div>
-    {{/if}}
-     <div class="clearfix"></div>
-     <div id="updateButtons" class="form-actions">
-     <div class="form-group">
-         <div class="col-sm-offset-2 col-sm-10">
-             <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
-             <input type="reset" value="Reset" class="btn btn-default">
-             <input type="hidden" value="{{rxt.shortName}}" name="{{rxt.shortName}}" id="meta-asset-type">
-         </div>
-     </div>
-     </div>
-
 
 
 </form>
