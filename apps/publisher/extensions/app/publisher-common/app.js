@@ -26,7 +26,7 @@ app.server = function(ctx) {
             }]
         },
         configs: {
-            landingPage: '/asts/gadget/list',
+            landingPage: '/assets/gadget/list',
             disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint']
         },
         onLoadedServerConfigs:function(configs){
