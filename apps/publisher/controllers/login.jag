@@ -25,7 +25,9 @@
             requestURI,
             requestedPage = request.getParameter("requestedPage");
             var referer=request.getHeader('referer');
-            var relayState = (referer? referer:'/publisher');
+            var app = require('rxt').app;
+            var context = app.getContext();
+            var relayState = (referer? referer:context);
             var app=require('rxt').app;
             var opts=app.getAuthenticationDetails(-1234);
             var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(opts.issuer);
