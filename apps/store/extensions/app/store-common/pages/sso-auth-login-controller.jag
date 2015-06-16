@@ -24,12 +24,26 @@
             sessionId = session.getId(),
             requestURI,
             requestedPage = request.getParameter("requestedPage"),
-            referer = request.getHeader("referer"),
-            relayState = (referer ? referer : '/store'),
-            encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(dataConfi.ssoConfiguration.issuer),
-            log = new Log(),
-            postUrl =dataConfi.ssoConfiguration.identityProviderURL; //"https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
-            log.info('Login URL: '+postUrl);
+            referer = request.getHeader("referer");
+
+    if (referer)
+    {
+        //var host = request.getHeader("Host");
+        var host = referer.split('/')[2];
+        referer = referer.split(host)[1];
+    }
+
+    var relayState = (referer ? referer : '/store');
+    //TODO: need to parameterize default value in order to support app renaming
+
+            var app=require('rxt').app;
+            var opts=app.getAuthenticationDetails(-1234);
+            var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(opts.issuer);
+            var log = new Log();
+            var postUrl =opts.identityProviderURL;
+            if(log.isDebugEnabled()){
+                log.debug('Login URL: '+postUrl);
+            }
     if (!session.get("Loged")) {
         %>
 
