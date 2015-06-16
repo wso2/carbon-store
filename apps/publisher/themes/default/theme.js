@@ -473,9 +473,13 @@ var engine = caramel.engine('handlebars', (function() {
             });
             Handlebars.registerHelper('renderEditableHeadingTableRow', function(table) {
                 var field = getFirstField(table);
+                var fieldValue = '';
+                if(field.values && typeof field.values === "object"){
+                    fieldValue = field.values[0].value;
+                }
                 var output = '';
                 output += '<tr id="table_reference_'+table.name+'">';
-                output += '<td valign="top">' + renderOptionsForOptionsText('', field.values[0].value, field) + '</td>';
+                output += '<td valign="top">' + renderOptionsForOptionsText('', fieldValue, field) + '</td>';
                 output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
                 output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                 output += '</tr>';
