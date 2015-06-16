@@ -40,20 +40,13 @@ var asset = {};
     };
     var getOptionTextField = function(attributes, tableName, fieldName, field, table) {
         //Determine the number of headings 
-        var subHeading = table.subheading ? table.subheading[0].heading : null;
-        if (!subHeading) {
-            return '';
-        }
-        var expression = tableName + '_' + fieldName;
-        //Get the number of subheadings
-        if (subHeading.length > 0) {
-            expression = tableName + '_entry';
-        }
+        var expression = tableName + '_entry';
         var value = attributes[expression];
         return value;
     };
     var resolveField = function(attributes, tableName, fieldName, field, table) {
         var value;
+        var ref = require('utils').reflection;
         switch (field.type) {
             case 'option-text':
                 value = getOptionTextField(attributes, tableName, fieldName, field, table);
@@ -83,32 +76,26 @@ var asset = {};
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
-            var indexc;
-            var length;
-            var splitName;
             for (var dataField in data) {
-                if (dataField.hasOwnProperty(attrName + '_option') && dataField.indexOf(attrName + '_option') == 0) {
-                    splitName = dataField.split("_");
-                    length = splitName.length;
-                    indexc = splitName[length - 1];
-                    optionsSet[indexc] = data[dataField];
-                }
-                if (dataField.hasOwnProperty(attrName + '_text') && dataField.indexOf(attrName + '_text') == 0) {
-                    splitName = dataField.split("_");
-                    length = splitName.length;
-                    indexc = splitName[length - 1];
-                    textSet[indexc] = data[dataField];
+                if(data.hasOwnProperty(dataField)){
+                    if (dataField == attrName + '_option') {
+                        optionsSet = data[dataField];
+                    }else if(dataField == attrName + '_text'){
+                        textSet = data[dataField];
+                    }
                 }
             }
             var list = [];
-            for (var singleIndex = 0; singleIndex < optionsSet.length; singleIndex++) {
-                list.push(optionsSet[singleIndex]);
-                list.push(textSet[singleIndex]);
+            if (typeof optionsSet === 'string') {
+                list.push(optionsSet + ":" + textSet);
+            }else{
+                for(var i=0;i<optionsSet.length;i++){
+                    list.push(optionsSet[i] + ":" + textSet[i]);
+                }
             }
             //The options text fields need to be sent in with the name of table and entry postfix
             attrName = table.name + '_entry';
-            var items = processOptionTextList(list);
-            attributes[attrName] = items;
+            attributes[attrName] = list;
         } else if (field.type == 'checkbox') {
             if (data[attrName] == null || data[attrName] == undefined) {
                 attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
@@ -118,6 +105,7 @@ var asset = {};
         } else {
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
+                log.info("setting the field " + attrName + ' with value ' + data[attrName]);
             } else {
                 log.debug(attrName + ' will not be saved.');
             }
@@ -1114,7 +1102,7 @@ var asset = {};
                 log.warn('Unable to locate versionAttribute: ' + versionAttribute + ' in asset ' + stringify(asset));
                 return '';
             }
-            return version;
+            return asset.attributes[versionAttribute];
         }
         return '';
     };
@@ -1149,8 +1137,8 @@ var asset = {};
     AssetManager.prototype.getTimeStamp = function(asset) {
         var timestampAttribute = this.rxtManager.getTimeStampAttribute(this.type);
         if (asset.attributes) {
-            var banner = asset.attributes[timestampAttribute];
-            if (!banner) {
+            var timeStamp = asset.attributes[timestampAttribute];
+            if (!timeStamp) {
                 log.warn('Unable to locate bannerAttribute ' + timestampAttribute + ' in asset ' + asset.id);
                 return '';
             }

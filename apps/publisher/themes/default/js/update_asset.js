@@ -82,6 +82,7 @@ $(function() {
         var table = $('#table_'+tableName);
         var referenceRow = $('#table_reference_'+tableName);
         var newRow = referenceRow.clone().removeAttr('id');
+        $('input[type="text"]', newRow).val('');
         table.show().append(newRow);
 
         $('input[type="text"]',newRow).each(initDatePicker);
@@ -92,6 +93,11 @@ $(function() {
 
     });
 
-    $('#tmp_refernceTableForUnbounded').detach().attr('id','refernceTableForUnbounded').appendTo('body');
-    $('#tmp_refernceTableForUnbounded').remove();
+    $('.tmp_refernceTableForUnbounded').each(function(){
+        $(this).detach().attr('class','refernceTableForUnbounded').appendTo('body');
+    });
+
+    $('.tmp_refernceTableForOptionText').each(function(){
+        $(this).detach().attr('class','refernceTableForUnbounded').appendTo('body');
+    });
 });

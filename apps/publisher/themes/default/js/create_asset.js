@@ -76,6 +76,7 @@ $(function(){
         var table = $('#table_'+tableName);
         var referenceRow = $('#table_reference_'+tableName);
         var newRow = referenceRow.clone().removeAttr('id');
+        $('input[type="text"]', newRow).val('');
         table.show().append(newRow);
 
         $('input[type="text"]',newRow).each(initDatePicker);
@@ -88,7 +89,6 @@ $(function(){
     $('.js-unbounded-table').on('click','input[type="checkbox"]',function(event){
         var checkbox = event.target;
         var hiddenField = $(checkbox).next();
-        console.info(hiddenField);
         if($(checkbox).is(":checked")){
             $(hiddenField).val('on');
         }else{
@@ -96,7 +96,12 @@ $(function(){
         }
     });
 
-    $('#tmp_refernceTableForUnbounded').detach().attr('id','refernceTableForUnbounded').appendTo('body');
-    $('#tmp_refernceTableForUnbounded').remove();
+    $('.tmp_refernceTableForUnbounded').each(function(){
+        $(this).detach().attr('class','refernceTableForUnbounded').appendTo('body');
+    });
+
+    $('.tmp_refernceTableForOptionText').each(function(){
+        $(this).detach().attr('class','refernceTableForUnbounded').appendTo('body');
+    });
 
 });

@@ -226,7 +226,7 @@ var engine = caramel.engine('handlebars', (function() {
             var renderFieldLabel = function(field) {
                 var output = '';
                 var isHidden= (field.hidden)?field.hidden:false;
-                if (!isHidden){
+                if (!isHidden && field.type != "option-text"){
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name) + '</label>';
                 }
                 return output;
@@ -234,11 +234,30 @@ var engine = caramel.engine('handlebars', (function() {
             var renderOptions = function(value, values, field,count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
                 var out = '<select ' + renderFieldMetaData(field,id) + '>';
-                if (value) {
-                    out += '<option selected>' + value + '</option>';
-                }
+
                 for (var index in values) {
-                    out += '<option>' + values[index].value + '</option>';
+                    if (value && values[index].value == value) {
+                        out += '<option selected="selected">' + value + '</option>';
+                    }else{
+                        out += '<option>' + values[index].value + '</option>';
+                    }
+                }
+                //Filter out the selected
+                out += '</select>';
+                return out;
+            };
+
+
+            var renderOptionsForOptionsText = function(value, values, field) {
+                var id=field.name.tableQualifiedName+'_option';
+                var out = '<select ' + renderFieldMetaData(field,id) + '>';
+
+                for (var index in values) {
+                    if (value && values[index].value == value) {
+                        out += '<option selected="selected">' + value + '</option>';
+                    }else{
+                        out += '<option>' + values[index].value + '</option>';
+                    }
                 }
                 //Filter out the selected
                 out += '</select>';
@@ -249,8 +268,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var values = field.value;
                 var output = '';
                 var ref = require('utils').reflection;
-                var buttonName=field.name?field.name.label:'Cannot locate name';
-                output+='<tr><td colspan="3"><a class="btn-inline-form btn-add-dark" onClick="addOptionTextRow(this)">Add '+buttonName+'</a></td></tr>';
+                var buttonName = field.name?field.name.label:'Cannot locate name';
                 if (values) {
                     //If there is only a single entry then the registry API will send a string
                     //In order to uniformly handle these scenarios we must make it an array
@@ -263,17 +281,17 @@ var engine = caramel.engine('handlebars', (function() {
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
                         output += '<tr>';
-                        output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                        output += '<td valign="top"><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                        output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
+                        output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
+                        output += '<td valign="top"><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                        output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                         output += '</tr>';
                     }
                 } else {
-                    output += '<tr>';
+                    output += '<tr id="table_reference_'+field.name.name+'">';
                     var index='0';
-                    output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                    output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
+                    output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
+                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                    output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>'
                     output += '</tr>';
                 }
                 return output;
@@ -317,6 +335,25 @@ var engine = caramel.engine('handlebars', (function() {
                         break;
                     case 'password':
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        break;
+                    case 'option-text':
+                        if(field.maxoccurs && field.maxoccurs == "unbounded"){
+                            out = '<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding:0">&nbsp;</div>' +
+                                  '<div style="border:0px solid #ff0000; padding:0" class="col-lg-10 col-md-10 col-sm-12 col-xs-12">'+
+//                                      '<div class="add-unbounded-row"><a class="js-add-unbounded-row" data-name="'+field.name.name+'"><i class="fa fa-plus-circle"></i> Add '+field.name.name+'</a></div>' +
+                                      '<table class="tablex cu-data-table js-unbounded-table" id="table_'+field.name.name+'">'+
+                                      '<thead><tr style="display: none"><th></th><th></th><th></th></tr></thead>'+
+                                      '<tbody>'+
+                                       renderOptionsTextField(field)+
+                                      '</tbody>'+
+                                      '</table>'+
+                                  '</div>';
+
+                            /*out+= '<table style="display: none;" class="tmp_refernceTableForOptionText">'+
+                                    renderOptionsTextField({name:field.name,values:field.values,label:field.label})+
+                                  '</table>';*/
+                        }
+
                         break;
                     default:
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">Normal Field' + field.type + '</div>';
@@ -433,6 +470,16 @@ var engine = caramel.engine('handlebars', (function() {
             Handlebars.registerHelper('renderEditableField', function(field, options) {
                 var label = renderFieldLabel(field);
                 return new Handlebars.SafeString(label + renderField(field, options));
+            });
+            Handlebars.registerHelper('renderEditableHeadingTableRow', function(table) {
+                var field = getFirstField(table);
+                var output = '';
+                output += '<tr id="table_reference_'+table.name+'">';
+                output += '<td valign="top">' + renderOptionsForOptionsText('', field.values[0].value, field) + '</td>';
+                output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
+                output += '</tr>';
+                return new Handlebars.SafeString(output);
             });
             Handlebars.registerHelper('renderEditableHeadingTable', function(table) {
                 var fieldCount = getFieldCount(table);
@@ -589,7 +636,6 @@ var resolve = function(path) {
     var asset = require('rxt').asset;
     var app = require('rxt').app;
     for(var key in this.engine.partials){
-        log.info('key ' +key);
     }
     var appPath = app.resolve(request, path, this.name, this, themeResolver, session);
     if (!appPath) {
