@@ -84,13 +84,13 @@ var result;
         var resourceFields = am.getAssetResources();
         var ref = utils.file;
         var storageModule = require('/modules/data/storage.js').storageModule();
-        var storageConfig = require('/config/storage.json');
+        //var storageConfig = require('/config/storage.json');
         var storageManager = new storageModule.StorageManager({
-            context: 'storage',
-            isCached: false,
-            connectionInfo: {
-                dataSource: storageConfig.dataSource
-            }
+//            context: 'storage',
+//            isCached: false,
+//            connectionInfo: {
+//                dataSource: storageConfig.dataSource
+//            }
         });
         var resource = {};
         var extension = '';

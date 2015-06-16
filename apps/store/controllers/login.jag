@@ -33,7 +33,9 @@
         referer = referer.split(host)[1];
     }
 
-    var relayState = (referer ? referer : '/store');
+    var app = require('rxt').app;
+    var context = app.getContext();
+    var relayState = (referer ? referer : context);
     //TODO: need to parameterize default value in order to support app renaming
 
             var app=require('rxt').app;
