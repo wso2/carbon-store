@@ -49,6 +49,7 @@ var tenantLoad = function(ctx) {
         }
         permissions = {};
         permissions.LOGIN = loginPermission();
+	permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
         Utils.addPermissionsToRole(permissions,REVIEWER_ROLE,tenantId);
     };
     /**
