@@ -479,14 +479,20 @@ var asset = {};
         }
         return assets;
     };
-    var addMetaDataToGenericAssets = function(assets,session){
+    var addMetaDataToGenericAssets = function(assets,session,tenantId){
         var assetManagers = {};
         var assetManager;
         var item;
+        var server = require('store').server;
+        var user = server.current(session);
         for(var index = 0; index < assets.length; index++){
             item = assets[index];
             if(!assetManagers[item.type]){
-                assetManager = asset.createUserAssetManager(session,item.type);
+                if(user){
+                    assetManager = asset.createUserAssetManager(session,item.type);
+                } else {
+                    assetManager = asset.createAnonAssetManager(session,item.type, tenantId);
+                }          
                 assetManagers[item.type] = assetManager;
             } else {
                 assetManager = assetManagers[item.type];
@@ -517,11 +523,23 @@ var asset = {};
       addAssetsMetaData(assets,this);
       return assetz;
     };
-    asset.advanceSearch = function(query,paging,session) {
+    asset.advanceSearch = function(query,paging,session,tenantId) {
         var storeAPI = require('store');
-        var userRegistry = storeAPI.user.userRegistry(session);
         var user = storeAPI.server.current(session);
-        var tenantId = user.tenantId;
+        var userRegistry;
+        tenantId = tenantId || null;
+        if((!user)&&(!tenantId)) {
+            log.error('Unable to create registry instance without a tenantId when there is no logged in user');
+            throw 'Unable to create registry instance without a tenantId when there is no logged in user';
+        } 
+        //Determine if a user exists
+        if(user){
+            userRegistry = storeAPI.user.userRegistry(session);
+            tenantId = user.tenantId;
+        }  else {
+            log.info('Switching anonymous registry to perform advanced search as there is no logged in user');
+            userRegistry = storeAPI.server.anonRegistry(tenantId);
+        }
         var rxtManager = core.rxtManager(tenantId);
         var assets = [];
         var type = query.type;
@@ -539,7 +557,7 @@ var asset = {};
         log.info('advance search query: '+queryString);
         assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
         assetz = processAssets(null,assets,rxtManager);
-        addMetaDataToGenericAssets(assetz,session);
+        addMetaDataToGenericAssets(assetz,session,tenantId);
         return assetz;
     };
     var buildQueryString = function(query) {

@@ -115,45 +115,37 @@ var pageDecorators = {};
         var ratingApi = require('/modules/rating-api.js').api;
         var q = page.assetMeta.q;
         var query = buildRecentAssetQuery(q);
-        for (var index in types) {
+
+        if(query){
+            log.info('#################### RECENT ASSETS QUERY ###################');
+            items = asset.advanceSearch(query,null,session,ctx.tenantId);
+            log.info('count: '+items.length);
+        } else {
+            for (var index in types) {
             typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
             type = typeDetails.shortName;
             tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
                 type: type
             });
             am = tenantAssetResources.am;
-            // if (ctx.isAnonContext) {
-            //     am = asset.createAnonAssetManager(ctx.session, type, ctx.tenantId);
-            // } else {
-            //     am = asset.createUserAssetManager(ctx.session, type);
-            // }
-            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
-                if (query) {
-                    //query = replaceNameQuery(query, ctx.rxtManager, type);
-                    //query = replaceCategoryQuery(query, ctx.rxtManager, type);
-                    /*assets = am.recentAssets({
-                        q: query
-                    });*/
-                    //assets = assetAPI.genericAdvanceSearch({type:type}, req, res, session)
-                    //log.info('**** recent asset search ****');
-                    assets = [];
-                } else {
+
+                if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
                     assets = am.recentAssets();
-                }
-                if (assets.length > 0) {
-                    //Add subscription details if this is not an anon context
-                    if (!ctx.isAnonContext) {
-                        addSubscriptionDetails(assets, am, ctx.session);
+                    if (assets.length > 0) {
+                        //Add subscription details if this is not an anon context
+                        if (!ctx.isAnonContext) {
+                            addSubscriptionDetails(assets, am, ctx.session);
+                        }
+                        ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                        items = items.concat(assets);
+                        assetsByType.push({
+                            assets: assets,
+                            rxt: typeDetails
+                        });
                     }
-                    ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
-                    items = items.concat(assets);
-                    assetsByType.push({
-                        assets: assets,
-                        rxt: typeDetails
-                    });
                 }
             }
-        }
+        }     
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
     };

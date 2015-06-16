@@ -382,7 +382,8 @@ var responseProcessor = require('utils').response;
                     //category values
                     log.debug('processed query used for searching: ' + stringify(query));
                 }
-                var assets = asset.advanceSearch(query,paging,session); //doesnt work properly
+                //Obtain the correct tenant Id to support /t/ urls
+                var assets = asset.advanceSearch(query,paging,session,tenantId); 
             } else {
                 log.error('Unable to perform a bulk asset retrieval without a type been specified');
                 throw 'Unable to perform a bulk asset retrieval without a type been specified';
