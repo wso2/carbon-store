@@ -4,6 +4,7 @@ var tenantLoad = function(ctx) {
     var Permissions = ctx.permissions;
     var rxtManager = ctx.rxtManager;
     var DEFAULT_ROLE = 'Internal/publisher';
+    var REVIEWER_ROLE = 'Internal/reviewer';
     var tenantId = ctx.tenantId;
     var createPermission = function(type) {
         return '/permission/admin/manage/resources/govern/' + type + '/add';
@@ -14,6 +15,9 @@ var tenantLoad = function(ctx) {
     var updatePermission = function(type) {
         return Utils.assetFeaturePermissionString('update', type);
     };
+    var loginPermission = function() {
+        return '/permission/admin/login';
+    }
     var assignAllPermissionsToDefaultRole = function() {
         var types = rxtManager.listRxtTypes();
         var type;
@@ -31,6 +35,22 @@ var tenantLoad = function(ctx) {
         permissions = {};
         permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
         Utils.addPermissionsToRole(permissions, DEFAULT_ROLE, tenantId);
+    };
+    var assignPermissionToReviewer = function(){
+        var types  = rxtManager.listRxtTypes();
+        var type;
+        var permissions;
+        for(var index = 0; index < types.length; index++){
+            type = types[index];
+            permissions = {};
+            permissions.ASSET_LIST = listPermission(type);
+            
+            Utils.addPermissionsToRole(permissions,REVIEWER_ROLE,tenantId);
+        }
+        permissions = {};
+        permissions.LOGIN = loginPermission();
+	permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
+        Utils.addPermissionsToRole(permissions,REVIEWER_ROLE,tenantId);
     };
     /**
      * Populates permissions that are not handled in the WSO2 permission tree
@@ -82,5 +102,7 @@ var tenantLoad = function(ctx) {
     populateAssetPermissions(tenantId);
     log.info('### adding permissions to role: ' + DEFAULT_ROLE + ' ###');
     assignAllPermissionsToDefaultRole();
+    log.info('### adding permissions to reviewer role ###');
+    assignPermissionToReviewer();
     log.info('### Permission operations have finished ###');
 };
