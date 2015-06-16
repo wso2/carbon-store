@@ -99,6 +99,7 @@ var pageDecorators = {};
     pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
+        var assetAPI = require('/modules/asset-api.js').api;
         var assets = {};
         var items = [];
         var assetsByType = [];
@@ -128,11 +129,14 @@ var pageDecorators = {};
             // }
             if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
                 if (query) {
-                    query = replaceNameQuery(query, ctx.rxtManager, type);
-                    query = replaceCategoryQuery(query, ctx.rxtManager, type);
-                    assets = am.recentAssets({
+                    //query = replaceNameQuery(query, ctx.rxtManager, type);
+                    //query = replaceCategoryQuery(query, ctx.rxtManager, type);
+                    /*assets = am.recentAssets({
                         q: query
-                    });
+                    });*/
+                    //assets = assetAPI.genericAdvanceSearch({type:type}, req, res, session)
+                    //log.info('**** recent asset search ****');
+                    assets = [];
                 } else {
                     assets = am.recentAssets();
                 }

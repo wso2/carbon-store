@@ -256,6 +256,155 @@ var responseProcessor = require('utils').response;
         }
         return result;
     };
+    api.advanceSearch = function(options, req, res, session) {
+        var asset = require('rxt').asset;
+        var server = require('store').server;
+        var userDetails = server.current(session);
+        var assetManager = null;
+        var domain = options.domain || carbon.server.superTenant.domain;
+        var tenantId = carbon.server.tenantId({
+            domain: domain
+        });
+        var rxtModule = require('rxt');
+        var rxtManager = rxtModule.core.rxtManager(tenantId);
+        if (!userDetails) {
+            assetManager = asset.createAnonAssetManager(session, options.type, tenantId);
+        } else {
+            assetManager = asset.createUserAssetManager(session, options.type);
+        }
+        var sort = (request.getParameter("sort") || '');
+        var sortOrder = DEFAULT_PAGIN.sortOrder;
+        if (sort) {
+            var order = sort.charAt(0);
+            if (order == '+' || order == ' ') {
+                sortOrder = 'ASC';
+                sort = sort.slice(1);
+            } else if (order == '-') {
+                sortOrder = 'DESC';
+                sort = sort.slice(1);
+            } else {
+                sortOrder = DEFAULT_PAGIN.sortOrder;
+            }
+        }
+        var sortBy = (sort || DEFAULT_PAGIN.sortBy);
+        var count = (request.getParameter("count") || DEFAULT_PAGIN.count);
+        var start = (request.getParameter("start") || DEFAULT_PAGIN.start);
+        var paginationLimit = (request.getParameter("paginationLimit") || DEFAULT_PAGIN.paginationLimit);
+        var paging = {
+            'start': start,
+            'count': count,
+            'sortOrder': sortOrder,
+            'sortBy': sortBy,
+            'paginationLimit': paginationLimit
+        };
+        var q = (request.getParameter("q") || '');
+        try {
+            if (q) {
+                var qString = '{' + q + '}';
+                var query = validateQuery(qString);
+                query = replaceCategoryQuery(query, rxtManager, options.type);
+                //query = replaceNameQuery(query, rxtManager, options.type);
+                var assets = assetManager.advanceSearch(query, paging); //doesnt work properly
+            } else {
+                var assets = assetManager.list(paging);
+            }
+            var expansionFields = (request.getParameter('fields') || '');
+            if (expansionFields) {
+                options.fields = expansionFields.split(',');
+                options.assets = assets;
+                result = fieldExpansion(options, req, res, session);
+                //return;                    
+            } else {
+                result = assets;
+            }
+            //res = responseProcessor.buildSuccessResponse(res,200,result);
+        } catch (e) {
+            //res = responseProcessor.buildErrorResponse(400, "Your request is malformed");
+            //print();
+            result = null;
+            log.error(e);
+        }
+        return result;
+    };
+    /**
+     * Performs an asset independent advance search
+     * @param  {[type]} options [description]
+     * @param  {[type]} req     [description]
+     * @param  {[type]} res     [description]
+     * @param  {[type]} session [description]
+     * @return {[type]}         [description]
+     */
+    api.genericAdvanceSearch = function(options,req,res,session){
+        var asset = require('rxt').asset;
+        var server = require('store').server;
+        var userDetails = server.current(session);
+        var assetManager = null;
+        var domain = options.domain || carbon.server.superTenant.domain;
+        var tenantId = carbon.server.tenantId({
+            domain: domain
+        });
+        var rxtModule = require('rxt');
+        var rxtManager = rxtModule.core.rxtManager(tenantId);
+        var sort = (request.getParameter("sort") || '');
+        var sortOrder = DEFAULT_PAGIN.sortOrder;
+        if (sort) {
+            var order = sort.charAt(0);
+            if (order == '+' || order == ' ') {
+                sortOrder = 'ASC';
+                sort = sort.slice(1);
+            } else if (order == '-') {
+                sortOrder = 'DESC';
+                sort = sort.slice(1);
+            } else {
+                sortOrder = DEFAULT_PAGIN.sortOrder;
+            }
+        }
+        var sortBy = (sort || DEFAULT_PAGIN.sortBy);
+        var count = (request.getParameter("count") || DEFAULT_PAGIN.count);
+        var start = (request.getParameter("start") || DEFAULT_PAGIN.start);
+        var paginationLimit = (request.getParameter("paginationLimit") || DEFAULT_PAGIN.paginationLimit);
+        var paging = {
+            'start': start,
+            'count': count,
+            'sortOrder': sortOrder,
+            'sortBy': sortBy,
+            'paginationLimit': paginationLimit
+        };
+        var q = (request.getParameter("q") || '');
+        try {
+            if (q) {
+                var qString = '{' + q + '}';
+                var query = validateQuery(qString);
+                //query = replaceCategoryQuery(query, rxtManager, options.type);
+                //query = replaceNameQuery(query, rxtManager, options.type);
+                if (log.isDebugEnabled) {
+                    //Need to log this as we perform some processing on the name and
+                    //category values
+                    log.debug('processed query used for searching: ' + stringify(query));
+                }
+                var assets = asset.advanceSearch(query,paging,session); //doesnt work properly
+            } else {
+                log.error('Unable to perform a bulk asset retrieval without a type been specified');
+                throw 'Unable to perform a bulk asset retrieval without a type been specified';
+            }
+            var expansionFields = (request.getParameter('fields') || '');
+            if (expansionFields) {
+                options.fields = expansionFields.split(',');
+                options.assets = assets;
+                result = fieldExpansion(options, req, res, session);
+                //return;                    
+            } else {
+                result = assets;
+            }
+            //res = responseProcessor.buildSuccessResponse(res,200,result);
+        } catch (e) {
+            //res = responseProcessor.buildErrorResponse(400, "Your request is malformed");
+            //print();
+            result = null;
+            log.error(e);
+        }
+        return result;  
+    };
     var replaceCategoryQuery = function(q, rxtManager, type) {
         //Determine if a category was provided
         if (!q.hasOwnProperty('category')) {
