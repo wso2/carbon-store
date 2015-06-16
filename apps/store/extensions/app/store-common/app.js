@@ -29,6 +29,21 @@ app.server = function(ctx) {
                 path:'my_items.jag',
                 secured:true,
                 permission:'APP_MYITEMS'
+            },{
+                url:'sso-login',
+                path:'sso-auth-login-controller.jag'
+            },{
+                url:'basic-auth-login',
+                path:'basic-auth-login-controller.jag'
+            },{
+                url:'sso-logout',
+                path:'sso-auth-logout-controller.jag'
+            },{
+                url:'basic-auth-logout',
+                path:'basic-auth-logout-controller.jag'
+            },{
+                url:'basic-authenticator',
+                path:'basic-authenticator.jag'
             }]
         },
         configs: {

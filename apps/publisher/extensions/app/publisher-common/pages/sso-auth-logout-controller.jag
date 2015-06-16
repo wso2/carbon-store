@@ -18,25 +18,24 @@
  *
  */
 (function(){
-    var user = session.get("LOGGED_IN_USER");
+    var user = require('store').server.current(session).username;//session.get("LOGGED_IN_USER");
     var caramel = require('caramel');
+    var context = caramel.configs().context;
     if(user === null) {
-        response.sendRedirect(caramel.configs().context);
+        response.sendRedirect(context);
     } else {
-        var config = require('/config/store.js').config(),
+        var config = require('/config/publisher.js').config(),
                 sso = require('sso'),
                 sso_sessions = application.get('sso_sessions'),
                 sessionId = session.getId(),
                 encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], config.ssoConfiguration.issuer),
-                relayState = '/store',
+                relayState = context,
                 //postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
                 postUrl = config.ssoConfiguration.identityProviderURL;
-
         var log = new Log();
 
-        log.debug("store session index : " + sso_sessions[session.getId()]);
-
-
+        log.debug("portal session index : " + sso_sessions[session.getId()]);
+         log.info('Logout URL: '+postUrl);
         %>
         <div>
            <p>You are now redirected to Stratos Identity. If the

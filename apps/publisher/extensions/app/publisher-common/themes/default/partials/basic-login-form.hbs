@@ -1,0 +1,12 @@
+<legend>{{t "SIGN IN"}}</legend>
+<div>
+	<form id='basic-login-form' class="form-horizontal" action='{{url ""}}/pages/basic-authenticator' method="POST">
+		<div class="form-group">
+			<input  type="text" class="form-control" id="username" name="username" placeholder="USERNAME" />
+		</div>
+		<div class="form-group">
+			<input  type="password"  class="form-control" name="password"  placeholder="PASSWORD"/>
+		</div>
+		<button type="submit" > {{t "SIGN IN"}} </button>
+	</form>
+</div>
