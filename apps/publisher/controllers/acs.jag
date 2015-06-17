@@ -28,10 +28,11 @@
             relayState = request.getParameter('RelayState'),
             sso = require('sso'),
             samlRespObj,
+            attr = configs.authentication.methods.sso.attributes,
             keyStoreProps = {
-                KEY_STORE_NAME: process.getProperty('carbon.home') + configs.ssoConfiguration.keyStoreName,
-                KEY_STORE_PASSWORD: configs.ssoConfiguration.keyStorePassword,
-                IDP_ALIAS: configs.ssoConfiguration.identityAlias
+                KEY_STORE_NAME: process.getProperty('carbon.home') + attr.keyStoreName,
+                KEY_STORE_PASSWORD: attr.keyStorePassword,
+                IDP_ALIAS: attr.identityAlias
             },
             sso_sessions = application.get('sso_sessions');
 
@@ -45,7 +46,7 @@
         if (!sso.client.isLogoutResponse(samlRespObj)) {
 
             // validating the signature
-            if (configs.ssoConfiguration.responseSigningEnabled) {
+            if (attr.responseSigningEnabled) {
 
                 if (sso.client.validateSignature(samlRespObj, keyStoreProps)) {
                     var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
