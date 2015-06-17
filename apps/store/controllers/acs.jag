@@ -34,6 +34,22 @@
             },
             sso_sessions = application.get('sso_sessions');
 
+    var loadTenant = function(username) {
+        var carbon = require('carbon');
+        var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+        var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
+        var TenantAxisUtils = Packages.org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+
+        var service;
+        var ctx;
+        var domain = MultitenantUtils.getTenantDomain(username);
+        if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
+            service = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+            ctx = service.getServerConfigContext();
+            TenantAxisUtils.setTenantAccessed(domain, ctx);
+        }
+    };
+
     if (!sso_sessions) {
         application.put('sso_sessions', {});
         sso_sessions = application.get('sso_sessions');
@@ -50,6 +66,7 @@
                     var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
                     if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
+                        loadTenant(sessionObj.loggedInUser);
                         session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
                         session.put("Loged", "true");
 
