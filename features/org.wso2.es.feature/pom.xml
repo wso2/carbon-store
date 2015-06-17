@@ -142,13 +142,13 @@
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.ui.menu:${carbon.registry.version}
-                                </importFeatureDef>&gt;
+                                </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.resource.properties.server:${carbon.registry.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.ui.menu.governance:${carbon.registry.version}
-                                </importFeatureDef>&gt;
+                                </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.contentsearch.server:${carbon.registry.version}
                                 </importFeatureDef>
