@@ -204,7 +204,6 @@ var engine = caramel.engine('handlebars', (function() {
             });
 
             Handlebars.registerHelper('hasAssetPermission',function(context,options){
-                log.info(options.hash);
                 var rxtAPI  = require('rxt');
                 var key = options.hash.key;
                 var type = options.hash.type;

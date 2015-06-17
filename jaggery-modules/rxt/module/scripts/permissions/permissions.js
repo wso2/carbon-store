@@ -193,12 +193,12 @@ var permissions = {};
         }
         //Check if the permission already exists
         if (!systemRegistry.exists(path)) {
-            log.info('creating permission path: ' + path)
+            log.info('[permissions] creating permission path: ' + path)
             //Add the permission
             recursivelyCreatePath(path, systemRegistry);
             return true;
         }
-        log.debug('permision path ' + path + ' not created as it already exists');
+        log.debug('[permissions] permision path ' + path + ' not created as it already exists');
         return false;
     };
     var addPermissionsToRole = function(permissionMap, role, tenantId) {
@@ -213,7 +213,7 @@ var permissions = {};
                     try {
                         um.authorizeRole(role, permission, action);
                     } catch (e) {
-                        log.error('Unable to assign permission ' + permission + ' to role ' + role);
+                        log.error('[permissions] unable to assign permission ' + permission + ' to role ' + role);
                     }
                 }
             }
@@ -225,16 +225,16 @@ var permissions = {};
         var users = [];
         var permissions = [];
         if (!um.roleExists(role)) {
-            log.info('Creating new role: ' + role);
+            log.info('[permissions] creating new role: ' + role);
             try {
                 um.addRole(role, users, permissions);
                 return true;
             } catch (e) {
-                log.error('role: ' + role + ' was not created', e);
+                log.error('[permissions] role: ' + role + ' was not created', e);
                 return false;
             }
         }
-        log.warn('role ' + role + ' was not created as it already exists');
+        log.warn('[permissions] role ' + role + ' was not created as it already exists');
         return true;
     };
     /**
@@ -426,7 +426,9 @@ var permissions = {};
                 type: type
             });
             ptr = rxtManager.getRegistryConfigureFunction(type);
-            log.debug('Executing registry permission configure function for type: ' + type);
+            if(log.isDebugEnabled()){
+                log.debug('[permissions] executing registry permission configure function for type: ' + type);      
+            }
             ptr(context);
         }
     };
@@ -526,13 +528,13 @@ var permissions = {};
         }
     };
     var loadPermissions = function(tenantId) {
-        log.info('Loading permissions for tenant ' + tenantId);
+        log.info('[permissions] loading permissions for tenant ' + tenantId);
         //Load the asset extension permissions.js
         loadDefaultAssetPermissions(tenantId);
         loadAssetPermissions(tenantId);
         //Load the app extension permissions.js
         loadAppPermissions(tenantId);
-        log.info('Finished loading permissions for tenant ' + tenantId);
+        log.info('[permissions] finished loading permissions for tenant ' + tenantId);
     };
     var mapToAssetPermission = function(key, type, tenantId, appName) {
         //Get the asset specific map
@@ -544,7 +546,7 @@ var permissions = {};
         permissions = assetPermissionMap(DEFAULT_ASSET, tenantId) || {};
         permission = permissions[key];
         if (!permission) {
-            log.error('Unable to locate permission for  ' + key);
+            log.error('[permissions] unable to locate permission for  ' + key);
         }
         return permission;
     };
@@ -552,7 +554,7 @@ var permissions = {};
         var permissions = assetPermissionMap(DEFAULT_ASSET, tenantId);
         var permission = permissions[key];
         if (!permission) {
-            log.error('Unable to locate permissions for ' + key);
+            log.error('[permissions] unable to locate permissions for ' + key);
         }
         return permission;
     };
@@ -560,10 +562,12 @@ var permissions = {};
         var isAuthorized = false;
         try {
             if ((!username) || (username === wso2AnonUsername())) {
-                log.warn('username not provided to check ' + permission + '.The anon role will be used to check permissions');
+                log.warn('[permissions] username not provided to check ' + permission + '.The anon role will be used to check permissions');
                 isAuthorized = authorizer.isRoleAuthorized(getAnonRole(), permission, action);
             } else {
-                log.info('using username: ' + username + ' to check permission');
+                if(log.isDebugEnabled()){
+                    log.debug('[permissions] using username: ' + username + ' to check permission');
+                }
                 isAuthorized = authorizer.isUserAuthorized(username, permission, action);
             }
         } catch (e) {
@@ -597,7 +601,7 @@ var permissions = {};
             return checkPermissionString(username, permission, action, authorizer);
         }
         if (!isPermissionFunction) {
-            log.error('Unable to resolve the permission type (it is neither a string permission or a function');
+            log.error('[permissions] unable to resolve the permission type (it is neither a string permission or a function');
             return isAuthorized;
         }
         options.username = username;
@@ -611,7 +615,7 @@ var permissions = {};
             } else if (typeof result === 'boolean') {
                 isAuthorized = result;
             } else {
-                log.error('The permission callback did not return a string or a boolean value');
+                log.error('[permissions] permission callback did not return a string or a boolean value');
                 isAuthorized = false;
             }
         } catch (e) {
@@ -624,7 +628,7 @@ var permissions = {};
         options = options || {};
         permission = mapToAssetPermission(key, type, tenantId);
         if (!permission) {
-            log.error('Permission ' + key + ' not was not found');
+            log.error('[permissions] permission key ' + key + ' was not found');
             return false;
         }
         options.username = username;
@@ -635,7 +639,7 @@ var permissions = {};
         options = options || {};
         permission = mapToAppPermission(key, tenantId);
         if (!permission) {
-            log.error('Permission ' + key + ' not was not found');
+            log.error('[permissions] permission ' + key + ' was not found');
             return false;
         }
         options.username = username;
@@ -656,7 +660,7 @@ var permissions = {};
 
         //Check if the path exists
         if(!systemRegistry.exists(path)) {
-            log.info('Recursively creating path in order to eagerly assign actions : '+path);
+            log.debug('[permissions] Recursively creating path in order to eagerly assign actions : '+path);
             recursivelyCreatePath(path, systemRegistry);
         }
         obj[path] = actions;
@@ -664,7 +668,7 @@ var permissions = {};
             um.authorizeRole(role, obj);
             success = true;
         } catch (e) {
-            log.error('Unable to authorize actions for path: ' + path + ' to role: ' + role + ' tenantId: ' + tenantId, e);
+            log.error('[permissions] unable to authorize actions for path: ' + path + ' to role: ' + role + ' tenantId: ' + tenantId, e);
         }
         return success;
     };
@@ -684,7 +688,7 @@ var permissions = {};
             um.denyRole(role, obj);
             success = true;
         } catch (e) {
-            log.error('Unable to deny actions for path: ' + path + ' to role: ' + role + ' tenantId: ' + tenantId, e);
+            log.error('[permissions] unable to deny actions for path: ' + path + ' to role: ' + role + ' tenantId: ' + tenantId, e);
         }
         return success;
     };
@@ -718,9 +722,13 @@ var permissions = {};
         if ((!username) || (!tenantId)) {
             throw 'Unable to resolve permissions without the tenantId and username';
         }
-        log.info('Checking permission ' + key + ' for ' + username + ' tenantId ' + tenantId + ' type ' + type);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] checking permission ' + key + ' for ' + username + ' tenantId ' + tenantId + ' type ' + type);        
+        }
         authorized = checkAssetPermission(key, type, tenantId, username, options);
-        log.info('Authorized :' + authorized);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] authorized :' + authorized);       
+        }
         return authorized;
     };
     permissions.hasAppPermission = function() {
@@ -742,9 +750,13 @@ var permissions = {};
         if ((!username) || (!tenantId)) {
             throw 'Unable to resolve permissios without the tenantId and username';
         }
-        log.info('Checking permissions' + key + ' for ' + username + ' tenantId ' + tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] checking permissions' + key + ' for ' + username + ' tenantId ' + tenantId);           
+        }
         authorized = checkAppPermission(key, tenantId, username);
-        log.info('Authorized: ' + authorized);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] authorized: ' + authorized);          
+        }
         return authorized;
     };
     var locateEndpointDetails = function(endpoints, url) {
@@ -773,12 +785,14 @@ var permissions = {};
         var options = {};
         options.type = type;
         if (!details) {
-            log.error('Unable to locate information on page: ' + pageURL + ' to determine permissions');
+            log.error('[permissions] unable to locate information on page: ' + pageURL + ' to determine permissions');
             return true;
         }
         key = details.permission;
         if (!key) {
-            log.warn('Permissions not defined for page ' + pageURL);
+            if(log.isDebugEnabled()){
+                log.debug('[permissions] permissions not defined for page ' + pageURL);      
+            }
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }
@@ -789,7 +803,7 @@ var permissions = {};
             permission = mapToAssetPermission(permission, type, tenantId);
         }
         if (!permission) {
-            log.error('Unable to locate a mapping for permission ' + key);
+            log.error('[permissions] Unable to locate a mapping for permission ' + key);
             return true;
         }
         return isPermissable(permission, tenantId, username, options);
@@ -802,12 +816,14 @@ var permissions = {};
         var options = {};
         options.type = type;
         if (!details) {
-            log.error('Unable to locate information on api: ' + apiURL + ' to determine permissions');
+            log.error('[permissions] unable to locate information on api: ' + apiURL + ' to determine permissions');
             return true;
         }
         key = details.permission;
         if (!key) {
-            log.warn('Permissions not defined for api ' + apiURL);
+            if(log.isDebugEnabled()){
+                log.debug('[permissions] permissions not defined for api ' + apiURL);           
+            }
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }
@@ -818,7 +834,7 @@ var permissions = {};
             permission = mapToAssetPermission(key, type, tenantId);
         }
         if (!permission) {
-            log.error('Unable to locate a mapping for permission ' + key);
+            log.error('[permissions] unable to locate a mapping for permission ' + key);
             return true;
         }
         return isPermissable(permission, tenantId, username, options);
@@ -829,12 +845,14 @@ var permissions = {};
         var permissionString;
         var key;
         if (!details) {
-            log.error('Unable to locate information on page: ' + pageURL + ' to determine permissions');
+            log.error('[permissions] unable to locate information on page: ' + pageURL + ' to determine permissions');
             return true;
         }
         key = details.permission;
         if (!key) {
-            log.warn('Permissions not defined for page ' + pageURL);
+            if(log.isDebugEnabled()){
+                log.debug('[permissions] permissions not defined for page ' + pageURL);       
+            }
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }
@@ -846,7 +864,7 @@ var permissions = {};
             permission = mapToAppPermission(key, type, tenantId);
         }
         if (!permission) {
-            log.error('Unable to locate a mapping for permission ' + key);
+            log.error('[permissions] unable to locate a mapping for permission ' + key);
             return true;
         }
         return isPermissable(permission, tenantId, username);
@@ -857,12 +875,14 @@ var permissions = {};
         var permissionString;
         var key;
         if (!details) {
-            log.error('Unable to locate information on api: ' + apiURL + ' to determine permissions');
+            log.error('[permissions] unable to locate information on api: ' + apiURL + ' to determine permissions');
             return true;
         }
         key = details.permission;
         if (!key) {
-            log.warn('Permissions not defined for api ' + apiURL);
+            if(log.isDebugEnabled()){
+                log.debug('[permissions] permissions not defined for api ' + apiURL);           
+            }
             //TODO: Use route permissions to determine if it is accessible
             return true;
         }
@@ -873,7 +893,7 @@ var permissions = {};
             permission = mapToAppPermission(key, type, tenantId);
         }
         if (!permission) {
-            log.error('Unable to locate a mapping for permission ' + key);
+            log.error('[permissions] unable to locate a mapping for permission ' + key);
             return true;
         }
         return isPermissable(permission, tenantId, username);
