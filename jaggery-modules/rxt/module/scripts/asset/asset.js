@@ -610,46 +610,75 @@ var asset = {};
         return items;
     };
     /**
-     * Returns the set of tags for a given asset instance or asset type
-     * If an id is provided then the tags of that particular asset is returned,else
-     * all of the tags applied to the current asset type are returned
+     * Returns the set of tags for a given asset type or given query
      * @example
-     *     var tags = am.tags(); //This will return all tags of the am's type
+     *     option 1
+     *     pass the asset type ( tags?type=gadget )
+     *          returns names of all tag and their count for the given asset type
      *
-     *     var tagName=tags[0].name;
-     *     var tagAppliedCount=tags[0].count;
+     *     option 2
+     *     pass a query (tags?type=gadget&q="name":"wso2")
+     *          returns names of all tags which has the word wso2 in the name and their respective counts
      *
-     * @param  {String} id A UUID representing an asset instance
-     * @return {Array}     An array of tag name value pairs
+     * @param  {String} optional query parameter
+     * @return {Array}     An array of tag name count pairs
      */
-    AssetManager.prototype.tags = function() {
-        var tag, tags, assetType, i, length, count;
-        var tagz = [];
-        var tz = {};
-        tags = this.registry.query(constants.TAGS_QUERY_PATH);
-        length = tags.length;
-        for (i = 0; i < length; i++) {
-            assetType = tags[i].split(';')[0].split('/')[3];
-            if (assetType != undefined) {
-                if (assetType.contains(this.type)) {
-                    tag = tags[i].split(';')[1].split(':')[1];
-                    count = tz[tag];
-                    count = count ? count + 1 : 1;
-                    tz[tag] = count;
+    AssetManager.prototype.tags = function(query) {
+        var result;
+        if (!query) {
+            var tagsArr =[];
+            var tagsResults = {};
+            var tag,tags, assetType, i, length, count;
+            tags = this.registry.query(constants.TAGS_QUERY_PATH);
+            length = tags.length;
+            for (i = 0; i < length; i++) {
+                assetType = tags[i].split(';')[0].split('/')[3];
+                if (assetType != undefined) {
+                    if (assetType.contains(this.type)) {
+                        tag = tags[i].split(';')[1].split(':')[1];
+                        count = tagsResults[tag];
+                        count = count ? count + 1 : 1;
+                        tagsResults[tag] = count;
+                    }
                 }
             }
+            for (tag in tagsResults) {
+                if (tagsResults.hasOwnProperty(tag)) {
+                    tagsArr.push({
+                        name: String(tag),
+                        count: tagsResults[tag]
+                    });
+                }
+            }
+            result = tagsArr;
+        } else {
+            var mediaType = this.rxtManager.getMediaType(this.type);
+            result = tagsQuerySearch(mediaType,query)
         }
-        //api setter
-        for (tag in tz) {
-            if (tz.hasOwnProperty(tag)) {
-                tagz.push({
-                    name: String(tag),
-                    count: tz[tag]
+        return result;
+    };
+    var tagsQuerySearch =function(mediaType,query){
+        var tagsArr =[];
+        var tag;
+        var tagsResults = {};
+        var carbon = require('carbon');
+        var osgiServiceName = constants.TAGS_SERVICE;
+        var osgiService = carbon.server.osgiService(osgiServiceName);
+        var map = new java.util.HashMap();
+        map.put("facet.field", "tags");
+        map.put("facet.prefix", query.name);
+        map.put("mediaType", mediaType);
+        tagsResults = osgiService.search(map);
+        for (tag in tagsResults) {
+            if (tagsResults.hasOwnProperty(tag)) {
+                tagsArr.push({
+                    name: tagsResults[tag].getTerm(),
+                    count:tagsResults[tag].getFrequency()
                 });
             }
         }
-        return tagz;
-    };
+        return tagsArr;
+    }
     /**
      * Returns the list of assets that have the provided tag
      * attached to it.If a paging value is provided then it is used,else
