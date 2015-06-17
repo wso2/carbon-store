@@ -1,0 +1,13 @@
+<div>
+	<div>
+		<form id='search-form'>
+			{{> primary-search-attributes .}}
+			{{> extended-search-attributes .}}
+			{{> advanced-search-buttons .}}
+		</form>
+	</div>
+</div>
+<hr/>
+<div>
+	{{> advanced-search-results .}}
+</div>
