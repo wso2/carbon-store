@@ -384,6 +384,17 @@ var core = {};
         }
         return rxtDefinition.type;
     };
+    RxtManager.prototype.getTypeFromMediaType = function(mediaType){
+        var map = this.rxtMap;
+        var definition;
+        for(var key in map){
+            definition = map[key];
+            if(definition.type == mediaType) {
+                return key;
+            }
+        }
+        return null;
+    };
     /**
      * Returns the name of the attribute that is used as the name property of assets of a given RXT type
      * @example
