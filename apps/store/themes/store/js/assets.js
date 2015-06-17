@@ -67,8 +67,9 @@ store.infiniteScroll.getItems = function(from,to){
     var dynamicData = {};
     dynamicData["from"] = from;
     dynamicData["to"] = to;
+    var path = window.location.href; //current page path
     // Returns the jQuery ajax method
-    var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);
+    var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
     if(url.indexOf('tag')== -1){
         caramel.data({
              title : null,
@@ -99,6 +100,24 @@ store.infiniteScroll.showAll = function(){
         rows_added = store.infiniteScroll.recalculateRowsAdded();
         store.infiniteScroll.addItemsToPage();
     });
+};
+/**
+ * Build query parameters based on page path
+ * @param {string} path  : string
+ */
+store.infiniteScroll.setQueryParams = function(path) {
+    var query = '';
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("q=") != -1){
+                query = '&&' + paramsPart;
+            }
+        }
+    }
+    return query;
 };
 $(function() {
     /*

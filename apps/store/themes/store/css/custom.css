@@ -157,7 +157,6 @@ footer {
 
 .wrapper {
     min-width: 320px;
-    overflow-x: hidden;
 }
 
 
@@ -171,11 +170,12 @@ h1 {
 }
 
 h2.app-title {
-    font-weight: 100;
-    font-size: 20px;
+    color: #fafafa;
+    font-size: 17px;
+    font-weight: 500;
     margin: 0;
-    padding: 0;
-    color: #fff;
+    padding: 3px 0 0;
+    text-transform: uppercase;
 }
 
 .right {
@@ -183,7 +183,7 @@ h2.app-title {
 }
 
 .wr-global-header {
-    background: #282828;
+    background: #444;
 }
 
 .app-logo {
@@ -248,7 +248,7 @@ iframe {
 }
 /* assets */
 .ast-container {
-    padding-top: 20px;
+    padding-top:0px;
 }
 
 .itm-ast:hover {
@@ -257,24 +257,6 @@ iframe {
 .itm-ast:hover .ast-auth {
     color: #3f75ff;
 }
-
-a.ast-name {
-    color: #555;
-    margin-bottom: 3px;
-    max-height: 45px;
-    overflow: hidden;
-    margin-top: 4px;
-    display: block;
-    white-space: nowrap;
-    position: relative;
-    font-size: 1.2em;
-}
-
-a.ast-name:hover {
-    text-decoration: none;
-    color: #237bd5;
-}
-
 a.ast-name:after {
     content: "";
     text-align: right;
@@ -283,8 +265,26 @@ a.ast-name:after {
     right: 0;
     width: 30%;
     height: 26px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
+
+}
+a.ast-name {
+    font-weight:300;
+    font-size:20px;
+    color:#555;
+    margin-top:2px;
+    margin-bottom:2px;
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    height: 26px;
+    position: relative;
 }
 
+a.ast-name:hover {
+    text-decoration: none;
+    color: #237bd5;
+}
 .ast-auth {
     font-weight: 300;
     font-size: 13px;
@@ -598,7 +598,7 @@ a.login:focus {
     color: #fff;
     float: left;
     font-size: 14px;
-    left: 1px;
+    left: 0px;
     list-style: outside none none;
     margin: -5px 10px 0 -132px;
     max-width: 169px;
@@ -622,21 +622,17 @@ a.login:focus {
 }
 
 .more-list {
-    background-image: url(../img/icons/list-more-icon.png);
-    background-position: center center;
-    background-repeat: no-repeat;
     float: right;
     height: 58px;
     opacity: .5;
     width: 37px;
-    margin-top: -18px;
+    color: #333;
+    padding: 10px 5px;
+    margin-top: -16px;
 }
 
 a.more-list:hover {
     background-color: #cccccc;
-    background-image: url(../img/icons/list-more-icon.png);
-    background-position: center center;
-    background-repeat: no-repeat;
     float: right;
     height: 58px;
     opacity: .5;
@@ -656,7 +652,9 @@ div.top-menu-right-custom .navbar-nav > li > a:hover {
     height: 50px;
     padding-top: 15px;
 }
-
+.top-menu-right-custom a{
+    color:#fff;
+}
 .dropdown-toggle:hover {
     background-color: #237bd5;
     color: #ffffff;
@@ -819,7 +817,7 @@ a.ast-type-item:hover {
     float: left;
     margin: 0.5%;
     transition: all 0.5s ease;
-    height: 270px;
+    height: 280px;
 }
 
 .itm-ast {
@@ -851,13 +849,16 @@ a.ast-type-item:hover {
     float: left;
     font-size: 22px;
     height: 59px;
-    padding: 14px 20px 0;
+    padding: 14px 0px 0;
     width: auto;
 }
 
 .title a {
     color: #333;
+    font-weight: 200;
+    font-size: 26px;
 }
+
 .title a:hover {
     color: #0d0d0d;
 }
@@ -871,8 +872,7 @@ a.ast-type-item:hover {
 @media (min-width: 500px) {
     .ctrl-wr-asset {
         margin-left: 3%;
-        width: 31%;
-        margin-bottom: 2%;
+        width: 21%;
     }
 
     .ctrl-wr-asset .ast-img {
@@ -922,7 +922,6 @@ a.ast-type-item:hover {
 
     .ctrl-wr-asset .ast-img {
         width: 100%;
-        height: 156px;
         overflow: hidden;
     }
 }
@@ -938,7 +937,6 @@ a.ast-type-item:hover {
     .ctrl-wr-asset {
         width: 9%;
         margin-left: 0.5%;
-        background: none repeat scroll 0 0 #fff;
     }
 }
 
@@ -1178,7 +1176,9 @@ a.ast-type-item:hover {
 .wr-asset-type-switcher .arrow {
     left: 25px
 }
-
+#social-button-div img{
+    width: 40px;
+}
 /* login page styles */
 
 /* form styles */
@@ -1211,25 +1211,21 @@ a.ast-type-item:hover {
 }
 
 .more {
-    color: #c7c7c7;
+    color: #494949;
     float: right;
     text-transform: uppercase;
-    padding: 6px 3px 16px 36px;
-}
-.more:hover{
-    color: #919191;
-    float: right;
-    text-transform: uppercase;
-    padding: 6px 3px 16px 36px;
+    margin-top:20px;
 }
 a.more:hover .grey {
     color: #919191;
     text-decoration: none;
 }
-
-
-
-
+.more i.fw-circle,.more:hover i.fw-circle{
+    color: #494949;
+}
+.more i.fw-dots, .more:hover i.fw-dots{
+    color: #939393;
+}
 a.more:focus {
     border: none;
 }
@@ -1247,7 +1243,7 @@ a.more:focus {
 #ul-sort-assets {
     display: inline-block;
     margin-left: 10px;
-    margin-top: 3px;
+    margin-top: 10px;
 }
 
 #ul-sort-assets li {
@@ -1276,7 +1272,12 @@ a.more:focus {
     opacity: 1;
     position: relative;
 }
-
+.top-assets-empty-assert{
+    padding:20px;
+    border:solid 1px #ccc;
+    background: rgba(48, 162, 249, 0.06);
+    margin:10px;
+}
 .wr-filter-category {
     float: left;
 }
@@ -1338,7 +1339,7 @@ a.more:focus {
     border-right: 1px solid #ededed;
     border-width: 0 1px 1px;
     display: block;
-    padding: 1em 1.4em;
+    padding: 2em 1.4em;
     min-height: 110px;
 }
 #socialIfr{ background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
@@ -1353,8 +1354,7 @@ a.more:focus {
 
 a:hover, a:focus {
     opacity: 0.8;
-    color: #FFF;
-    text-decoration: none;}
+    text-decoration: none; }
 #content-asset-types{background-color: #101010;}
 .wr-action-btn-bar {
     background-color: #00344D;
@@ -1379,7 +1379,7 @@ a:hover, a:focus {
 #ul-sort-assets {
     display: inline-block;
     margin-left: 10px;
-    margin-top: 3px;
+    margin-top: 10px;
     background-color: #f0f0f0;
     padding-top: 10px ;
     height: 45px;
@@ -1387,3 +1387,15 @@ a:hover, a:focus {
 }
 .grey{color: #c7c7c7;}
 .dropdown-menu > li > a .btn-primary { background-color: transparent;}
+.margin-top{margin-top: 5px;}
+.dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+    color: #f4f4f4;
+    background-color: #595959;
+    border-radius: 0px;
+}
+.dropdown-menu a { color: #f4f4f4;}
+.dropdown-menu a:hover  {   color: #f4f4f4;}
+.padding-left{padding-left: 10px;}
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: 0px;
+}

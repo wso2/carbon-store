@@ -33,7 +33,8 @@ require('/modules/publisher.js').exec(function(ctx) {
     var am = asset.createUserAssetManager(ctx.session, type);
     var page = ui.buildPage(ctx.session, ctx.request);
     var assets;
-    assets  = assetApi.search(options,ctx.request,ctx.response,ctx.session)||[];
+    //Do an advanced search
+    assets  = assetApi.advanceSearch(options,ctx.request,ctx.response,ctx.session)||[];
     var output = am.render(assets, page).list();
     caramel.render(output);
 }, request, response, session); %>

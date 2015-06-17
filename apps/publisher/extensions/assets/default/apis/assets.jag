@@ -136,7 +136,13 @@ require('/modules/publisher.js').exec(function (ctx) {
         case 'GET':// GET endpoints
             options.type = req.getParameter('type');
             if (uriMatcher.match(LIST_ASSETS_URL)) {//return assets by type
-                var assets = assetApi.search(options, req, res, session);
+                //If the type has been provided then do an advanceSearch 
+                var assets = [];
+                if(options.type) {
+                    assets = assetApi.advanceSearch(options, req, res, session);
+                } else {
+                    assets = assetApi.genericAdvanceSearch(options,req,res,session);
+                }
                 response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, assets);
             } else if (uriMatcher.match(GET_ASSET_URL)) {//return asset by id
                 options.id = uriMatcher.elements().id;

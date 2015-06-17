@@ -116,11 +116,11 @@ require('/modules/store.js').exec(function(ctx) {
     } else if (q) {
         var qString = '{' + q + '}';
         var query = parse(qString);
-        query = replaceNameQuery(query,rxtManager,type);
+        //query = replaceNameQuery(query,rxtManager,type);
         query = replaceCategoryQuery(query,rxtManager,type);
         query = addGroupingStateToQuery(query, type, ctx.request, rxtManager);
         log.info('list page search query: '+stringify(query));
-        assets = am.search(query, PAGING);
+        assets = am.advanceSearch(query, PAGING);
     } else {
         if (PAGING.sortOrder == 'popular') {
             assets = ratingApi.getPopularAssets(type, context.tenantId, am, PAGING.start);
