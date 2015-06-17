@@ -963,7 +963,6 @@ var exec = function (fn, request, response, session) {
         return fn.call(null, {
             tenant: tenant,
             server: es.server,
-            sso: configs.ssoConfiguration.enabled,
             usr: es.user,
             user: user,
             store: require('/modules/store.js').store(tenantId, session),
