@@ -142,7 +142,7 @@ html {
 body {
     /* Margin bottom by footer height */
     margin-bottom: 60px;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
     font-family: 'Open Sans';
 }
 
@@ -950,7 +950,6 @@ a.ast-type-item:hover {
 
 @media (max-width: 568px) {
     body {
-        background-color: #f9f9f9;
         margin-bottom: 60px;
         overflow-x: hidden;
         width: 100%;
@@ -984,7 +983,6 @@ a.ast-type-item:hover {
 }
 @media (max-width: 480px) {
     body {
-        background-color: #f9f9f9;
         margin-bottom: 60px;
         overflow-x: hidden;
         width: 100%;
@@ -1019,7 +1017,6 @@ a.ast-type-item:hover {
 
 @media (max-width: 360px) {
     body{
-        background-color: #f9f9f9;
         margin-bottom: 60px;
         overflow-x: hidden;
         width: 100%;
