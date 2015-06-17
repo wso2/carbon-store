@@ -171,11 +171,12 @@ h1 {
 }
 
 h2.app-title {
-    font-weight: 100;
-    font-size: 20px;
+    color: #fafafa;
+    font-size: 17px;
+    font-weight: 500;
     margin: 0;
-    padding: 0;
-    color: #fff;
+    padding: 3px 0 0;
+    text-transform: uppercase;
 }
 
 .right {
@@ -183,7 +184,7 @@ h2.app-title {
 }
 
 .wr-global-header {
-    background: #282828;
+    background: #444;
 }
 
 .app-logo {
