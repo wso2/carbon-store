@@ -46,17 +46,12 @@
         </div><!--search--->
     </div>
     <div class="col-sm-3 col-md-5 col-lg-3 top-menu-right-custom right margin-top-sm">
-        <!--<div class="inline-block  margin-right"> <img src="/store/themes/store/img/icons/Notifications.png"></div>-->
-        <!--<div class="inline-block margin-right"> <img src="/store/themes/store/img/icons/Settings.png"></div>-->
-        <div class="inline-block">
-            <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="myItemsToggle">
-                <span class="fw-stack fw-lg  fw-inverse">
-                    <i class="fw fw-ring fw-stack-1x"></i>
-
-                </span>
-                </a>
+        <div class="inline-block margin-top">
+            <a class="dropdown-toggle " data-toggle="dropdown" href="#" id="myItemsToggle">
+                   <i class="fw fw-store fw-inverse fw-lg"></i>
+            </a>
             <ul class="dropdown-menu dropdown-account" role="menu" aria-labelledby="dLabel">
-                <li class="uppercase"> <a href="{{url "/pages/my-items"}}">My Subscription</a></li>
+                <li class="uppercase"><a href="{{url "/pages/my-items"}}"> My Subscription</a></li>
                 {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
                 <li class="uppercase"> <a href="{{url "/pages/my-items"}}">My bookmarks</a> </li>
                 {{/hasAppPermission}}
@@ -65,7 +60,6 @@
     </div>
 </div>
 <!-- secondary header - app bar -->
-
 
 <!--Need to delete these sections down-->
 <div  style="display: none" id="content-asset-types">

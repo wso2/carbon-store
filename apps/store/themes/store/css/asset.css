@@ -17,7 +17,6 @@ h4{font-weight: 500; font-size: 20px;}
     height: auto;
     margin-top: 20px;
     width: 100%;
-    padding-bottom: 20px;
 }
 .asset-description-header .row > div {
     position: relative;
@@ -205,8 +204,8 @@ h4{font-weight: 400px;}
     right: -1px;
     background: #fff;
 }*/
-.details-image{padding: 18px 0 0; width:19%; float: left; transition:all 0.5s ease; margin-bottom: 15px;}
-.details-container{ float: left; transition:all 0.5s ease; width:81%;margin-top: 35px; }
+.details-image{padding: 18px 0 0; width:27%; float: left; transition:all 0.5s ease; margin-bottom: 15px;}
+.details-container{ float: left; transition:all 0.5s ease; width:73%;margin-top: 35px; }
 .action-container{width:auto;padding:15px; display:inline-block;}
 .action-sub-container{width: auto; height: auto; float: left; vertical-align:middle; padding-right: 6px;}
 .action-lable{width:85px; height: auto;}
@@ -224,7 +223,7 @@ h4{font-weight: 400px;}
 .tags {
     background-color: #e3e3e3;
     display: inline-block;
-    margin-left: 1%;
+    margin-right: 1%;
     margin-top: 1%;
     padding: 1%;
     text-align: center;
@@ -310,3 +309,7 @@ h4{font-weight: 400px;}
 .relative{ position:relative;}
 .border-bottom{border-bottom: 1px solid #282828;}
 
+a:focus, a:hover {
+    color: #fff;
+    text-decoration: none;
+}

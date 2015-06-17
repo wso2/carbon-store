@@ -183,7 +183,7 @@ h2.app-title {
 }
 
 .wr-global-header {
-    background: #282828;
+    background: #444;
 }
 
 .app-logo {
@@ -248,7 +248,7 @@ iframe {
 }
 /* assets */
 .ast-container {
-    padding-top: 20px;
+    padding-top:0px;
 }
 
 .itm-ast:hover {
@@ -598,7 +598,7 @@ a.login:focus {
     color: #fff;
     float: left;
     font-size: 14px;
-    left: 1px;
+    left: 0px;
     list-style: outside none none;
     margin: -5px 10px 0 -132px;
     max-width: 169px;
@@ -622,21 +622,17 @@ a.login:focus {
 }
 
 .more-list {
-    background-image: url(../img/icons/list-more-icon.png);
-    background-position: center center;
-    background-repeat: no-repeat;
     float: right;
     height: 58px;
     opacity: .5;
     width: 37px;
-    margin-top: -18px;
+    color: #333;
+    padding: 10px 5px;
+    margin-top: -16px;
 }
 
 a.more-list:hover {
     background-color: #cccccc;
-    background-image: url(../img/icons/list-more-icon.png);
-    background-position: center center;
-    background-repeat: no-repeat;
     float: right;
     height: 58px;
     opacity: .5;
@@ -850,13 +846,14 @@ a.ast-type-item:hover {
     float: left;
     font-size: 22px;
     height: 59px;
-    padding: 14px 20px 0;
+    padding: 14px 0px 0;
     width: auto;
 }
 
 .title a {
     color: #333;
 }
+
 .title a:hover {
     color: #0d0d0d;
 }
@@ -871,7 +868,6 @@ a.ast-type-item:hover {
     .ctrl-wr-asset {
         margin-left: 3%;
         width: 21%;
-        margin-bottom: 2%;
     }
 
     .ctrl-wr-asset .ast-img {
@@ -921,7 +917,6 @@ a.ast-type-item:hover {
 
     .ctrl-wr-asset .ast-img {
         width: 100%;
-        height: 156px;
         overflow: hidden;
     }
 }
@@ -937,7 +932,6 @@ a.ast-type-item:hover {
     .ctrl-wr-asset {
         width: 9%;
         margin-left: 0.5%;
-        background: none repeat scroll 0 0 #fff;
     }
 }
 
@@ -1352,8 +1346,7 @@ a.more:focus {
 
 a:hover, a:focus {
     opacity: 0.8;
-    color: #FFF;
-    text-decoration: none;}
+    text-decoration: none; }
 #content-asset-types{background-color: #101010;}
 .wr-action-btn-bar {
     background-color: #00344D;
@@ -1386,3 +1379,15 @@ a:hover, a:focus {
 }
 .grey{color: #c7c7c7;}
 .dropdown-menu > li > a .btn-primary { background-color: transparent;}
+.margin-top{margin-top: 5px;}
+.dropdown-menu > li > a:focus, .dropdown-menu > li > a:hover {
+    color: #f4f4f4;
+    background-color: #595959;
+    border-radius: 0px;
+}
+.dropdown-menu a { color: #f4f4f4;}
+.dropdown-menu a:hover  {   color: #f4f4f4;}
+.padding-left{padding-left: 10px;}
+.h1, .h2, .h3, h1, h2, h3 {
+    margin-top: 0px;
+}
