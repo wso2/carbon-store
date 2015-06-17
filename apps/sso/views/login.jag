@@ -49,7 +49,7 @@ var themeModule = require('/modules/theme.js');
 
 
                     <form id="loginForm" action="/commonauth" method="POST">
-                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
+                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">SIGN IN</h2>
 
 
                         <div class="boarder-all ">
