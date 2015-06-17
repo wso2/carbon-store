@@ -98,22 +98,38 @@ function getNextPage(param) {
  * @param {string} path  : string
  */
 var setSortingParams = function(path) {
-    var obj = path.split('?');
     var sorting = '';
-    if (obj[1]) {
-        var temp = obj[1].split('&');
-        var sortby = temp[0].split('=')[1];
-        var sort = temp[1].split('=')[1];
-    } else {
-        sort = 'DESC';
-        sortby = 'overview_createdtime';
-    }
-    if (sort == 'DESC') {
-        sorting = '&&sort=-' + sortby;
-    } else {
-        sorting = '&&sort=+' + sortby;
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("sort=") != -1){
+                sorting = '&&' + paramsPart;
+            }
+        }
+    }else{
+        sorting = '&&sort=+overview_createdtime';
     }
     return sorting;
+};
+/**
+ * Build query parameters based on page path
+ * @param {string} path  : string
+ */
+var setQueryParams = function(path) {
+    var query = '';
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("q=") != -1){
+                query = '&&' + paramsPart;
+            }
+        }
+    }
+    return query;
 };
 /**
  * scroll method bind to be scroll window function
@@ -195,7 +211,7 @@ var initCategorySelection = function() {
     });
 };
 // bind to window function
-$(window).bind('scroll', scroll);
+//$(window).bind('scroll', scroll);
 $(window).load(function() {
     //scroll();
     initSearch();
