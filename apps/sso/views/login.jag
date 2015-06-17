@@ -81,7 +81,7 @@ var themeModule = require('/modules/theme.js');
                     </form>
 
                     <form id="registerForm" style="display: none">
-                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Sign in</h2>
+                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
 
                          <div class="boarder-all ">
                             <div class="clear"></div>
