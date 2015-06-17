@@ -18,28 +18,21 @@
  */
 
 $(function() {
+    $('#editAssetButton').removeAttr('disabled');
     var obtainFormMeta = function(formId) {
         return $(formId).data();
     };
 
     $('#form-asset-update').ajaxForm({
         beforeSubmit:function(){
-            PublisherUtils.blockButtons({
-                container:'updateButtons',
-                msg:'Updating '+PublisherUtils.resolveCurrentPageAssetType()+' instance'
-            });
+            $('#editAssetButton').attr('disabled','disabled');
         },
         success: function() {
-            alert('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
-            PublisherUtils.unblockButtons({
-                container:'updateButtons'
-            });
+            messages.alertSuccess('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
+            $('#editAssetButton').removeAttr('disabled');
         },
         error: function() {
-            alert('Unable to update the '+PublisherUtils.resolveCurrentPageAssetType());
-            PublisherUtils.unblockButtons({
-                container:'updateButtons'
-            });
+            $('#editAssetButton').removeAttr('disabled');
         }
     });
 
