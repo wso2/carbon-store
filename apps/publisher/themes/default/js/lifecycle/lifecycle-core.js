@@ -410,7 +410,7 @@ var LifecycleUtils = {};
         render(inner, g);
         // Center the graph
         var initialScale = 1.2;
-        zoom.translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
+        zoom.translate([($(svgContainer).width() - g.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
         svg.attr('height', g.graph().height * initialScale + 40);
     };
     LifecycleImpl.prototype.fillGraphData = function() {
