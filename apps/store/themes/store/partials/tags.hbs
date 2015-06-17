@@ -15,7 +15,7 @@
   -->
 
 {{#if tags}}
-    <h4><i class="fa fa-star"></i>{{t "Tags"}}</h4>
+    <h4><i class="fa fw-tag"></i> {{t "Tags"}}</h4>
     {{#each tags}}
         <a class="tags" href='{{url ""}}/asts/{{../rxt.shortName}}/list?tag={{name}}'>{{name}}</a>
     {{/each}}
