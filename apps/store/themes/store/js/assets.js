@@ -76,7 +76,7 @@ store.infiniteScroll.getItems = function(from,to){
          }, {
              url : url,
              success : function(data, status, xhr) {
-                 caramel.render('asset-thumbnails', data.body.assets.context, function(info,content){
+                 caramel.render('assets-thumbnails', data.body.assets.context, function(info,content){
                      $('.assets-container section').append(content);
                  });
              },
