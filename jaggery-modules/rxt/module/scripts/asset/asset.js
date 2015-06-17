@@ -1298,7 +1298,58 @@ var asset = {};
     AssetManager.prototype.listAllAttachedLifecycles = function(id) {
         return this.am.listAllAttachedLifecycles(id);
     };
-    AssetManager.prototype.createVersion = function(options, newVersion) {};
+    AssetManager.prototype.createVersion = function(options, newAsset) {
+        var rxtModule = require('rxt');
+        var existingAttributes = {};
+        var isLCEnabled = false;
+        var isDefaultLCEnabled =false;
+        if (!options.id || !newAsset) {
+            log.error('Unable to process create-version without having a proper ID or a new asset instance.');
+            return false;
+        }
+        //TODO validate version exists ATM with advance search
+        var existingAsset = this.get(options.id);
+        var ctx = rxtModule.core.createUserAssetContext(session,options.type);
+        var context = rxtModule.core.createUserAssetContext(session, options.type);
+        //var nameAttribute = this.getName(existingAsset);
+        var oldId = existingAsset.id;
+        delete existingAsset.id;
+
+        for (var key in newAsset) {
+            existingAsset.attributes[key] = newAsset[key];
+        }
+
+        existingAttributes.attributes = existingAsset.attributes;
+        //TODO remove hardcoded attributename
+        existingAttributes.name = existingAsset.attributes['overview_name'];
+
+        this.create(existingAttributes);
+        createdAsset = this.get(existingAttributes.id);
+
+        isLCEnabled = context.rxtManager.isLifecycleEnabled(options.type);
+        isDefaultLCEnabled = context.rxtManager.isDefaultLifecycleEnabled(options.type);
+
+        this.postCreate(createdAsset,ctx);
+        this.update(existingAttributes);
+
+        //Continue attaching the lifecycle
+        if(isDefaultLCEnabled && isLCEnabled){
+            var isLcAttached = this.attachLifecycle(existingAttributes);
+            //Check if the lifecycle was attached
+            if (isLcAttached) {
+                var synched = this.synchAsset(existingAttributes);
+                if (synched) {
+                    this.invokeDefaultLcAction(existingAttributes);
+                } else {
+                    log.warn('Failed to invoke default action as the asset could not be synched.')
+                }
+            }
+        }
+
+        this.registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId,'/_system/governance/store/asset_resources/'+ options.type + '/' + existingAttributes.id);
+
+
+    };
     AssetManager.prototype.getName = function(asset) {
         var nameAttribute = this.rxtManager.getNameAttribute(this.type);
         if (asset.attributes) {

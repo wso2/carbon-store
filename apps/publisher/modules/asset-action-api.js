@@ -27,6 +27,7 @@ var api = {};
     var ACTION_ADD_TAGS = 'add-tags';
     var ACTION_REMOVE_TAGS = 'remove-tags';
     var ACTION_RETRIEVE_TAGS = 'tags';
+    var ACTION_CREATE_VERSION = 'create-version';
     var HTTP_ERROR_NOT_IMPLEMENTED = 501;
     var CONTENT_TYPE_JSON = 'application/json';
     var MSG_ERROR_NOT_IMPLEMENTED = 'The provided action is not supported by this endpoint';
@@ -34,6 +35,8 @@ var api = {};
     var utils = require('utils');
     var rxtModule = require('rxt');
     var tagsAPI = require('/modules/tags-api.js').api;
+    var assetAPI = require('/modules/asset-api.js').api;        
+    var utility = require('/modules/utility.js').rxt_utility();
     var exceptionModule = utils.exception;
     var constants = rxtModule.constants;
     var msg = function(code, message, data) {
@@ -188,6 +191,32 @@ var api = {};
         }
         return errorMsg(msg(500, 'Tags were not retrieved'));
     };
+    /**
+     * api to create  a new version of the given asset
+     * @param  options Object containing asset id, type, new version
+     * @param  req     jaggery request
+     * @param  res     jaggery response
+     * @param  session  sessionId
+     * @return The created asset or null if failed to create the asset
+     */
+    api.createVersion = function(req, res, session, options) {
+        var asset;
+        var createdAsset;
+        var attributes;
+        var assetModule = rxtModule.asset;
+        var am = assetModule.createUserAssetManager(session, options.type);
+        if(req.getMethod() !== 'POST'){
+            return errorMsg(msg(405, 'Create version should be done using a POST'));
+        }
+        try {
+            data = parse(req.getContent());
+            asset = am.createVersion(options, data.attributes);
+            return successMsg(msg(200, 'New version created successfully'));
+        } catch (e) {
+            log.error('Asset of type: ' + options.type + ' was not created due to ' ,e);
+            return null;
+        }
+    };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
         var result = errorMsg(msg(HTTP_ERROR_NOT_IMPLEMENTED, MSG_ERROR_NOT_IMPLEMENTED));
@@ -212,6 +241,9 @@ var api = {};
                 break;
             case ACTION_RETRIEVE_TAGS:
                 result = api.tags(req, res, session, options);
+                break;
+            case ACTION_CREATE_VERSION:
+                result = api.createVersion(req, res, session, options);
                 break;
             default:
                 break;

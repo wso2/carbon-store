@@ -245,6 +245,7 @@ asset.renderer = function(ctx) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
+        navList.push('Copy', 'btn-copy');
         return navList.list();
     };
     var buildAddLeftNav = function(page, util) {
