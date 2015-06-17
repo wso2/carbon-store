@@ -113,7 +113,8 @@ $(function() {
         html : true,
         content: function() {
             return $('#content-asset-types').html();
-        }
+        },
+        trigger:'focus'
     });
 
 
