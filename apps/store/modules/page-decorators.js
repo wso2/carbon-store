@@ -115,20 +115,18 @@ var pageDecorators = {};
         var ratingApi = require('/modules/rating-api.js').api;
         var q = page.assetMeta.q;
         var query = buildRecentAssetQuery(q);
-
-        if(query){
+        if (query) {
             log.info('#################### RECENT ASSETS QUERY ###################');
-            items = asset.advanceSearch(query,null,session,ctx.tenantId);
-            log.info('count: '+items.length);
+            items = asset.advanceSearch(query, null, session, ctx.tenantId);
+            log.info('count: ' + items.length);
         } else {
             for (var index in types) {
-            typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
-            type = typeDetails.shortName;
-            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
-                type: type
-            });
-            am = tenantAssetResources.am;
-
+                typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
+                type = typeDetails.shortName;
+                tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                    type: type
+                });
+                am = tenantAssetResources.am;
                 if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
                     assets = am.recentAssets();
                     if (assets.length > 0) {
@@ -145,7 +143,7 @@ var pageDecorators = {};
                     }
                 }
             }
-        }     
+        }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
     };

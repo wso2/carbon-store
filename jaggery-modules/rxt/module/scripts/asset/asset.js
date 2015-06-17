@@ -33,6 +33,7 @@ var asset = {};
     var DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime'; //TODO:Move to constants
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
@@ -424,6 +425,31 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
+    var buildQueryString = function(query,options) {
+        var queryString = [];
+        var value;  
+        options = options || {};
+        var wildcard = options.wildcard||true; //Default to a wildcard search
+
+        for(var key in query) {
+            //Drop the type property from the query
+            if((query.hasOwnProperty(key)) && (key!='type')){
+                value = query[key];
+                //If the key contains an underscore (_) we 
+                //need  replace it with a semi colon (:)
+                //as the underlying API requires this
+                //Note: This prevents us from searching props
+                //with a underscore (_)
+                key = key.replace('_',':');
+                //Check if wildcard search is enabled
+                if(wildcard){
+                    value = '*'+value+'*'; 
+                }
+                queryString.push(key+'='+value);
+            }
+        }
+        return queryString.join('&');
+    };
     //TODO:This is a temp fix
     var buildArtifact = function (type, artifact) {
         return {
@@ -500,33 +526,85 @@ var asset = {};
             addAssetMetaData(item,assetManager);
         }
     };
+    var defaultPaginationContext = function(){
+        var page = {};
+        page.start = 0;
+        page.count = 1000;
+        page.sortOrder = 'desc';
+        page.sortBy = 'overview_createdtime';
+        page.paginationLimit = 1000;
+        return page;
+    }
+    var buildPaginationContext = function(paging){
+        paging = paging || defaultPaginationContext();
+        PaginationContext.init(paging.start,paging.count,paging.sortOrder,
+            paging.sortBy,paging.paginationLimit);
+    };
+    var destroyPaginationContext = function(paginationContext) {
+        PaginationContext.destroy();
+    };
+    var buildQuery = function(query){
+        var q = '';
+        var options = {};
+        options.wildcard = false;
+        //Check if grouping is enabled
+         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
+            options.wildcard = query[constants.Q_PROP_GROUP];
+            delete query[constants.Q_PROP_GROUP];
+         } 
+         q  = buildQueryString(query, options);
+         return q;
+    };
+    var doAdvanceSearch = function(type,query,paging,registry,rxtManager) {
+        log.info('arguments count ');
+        log.info(arguments.length);
+        var assets = [];
+        var q;
+        var governanceRegistry;
+        var mediaType = '';
+        if(type){
+            mediaType = rxtManager.getMediaType(type);
+        }
+        try {
+            buildPaginationContext(paging);
+            q = buildQuery(query);
+            log.info('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);            
+            if(q.length>0){
+                governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
+                assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
+            }      
+        } catch (e) {
+            log.error('Unable to retrieve assets',e);
+        } finally {
+            destroyPaginationContext();
+        }
+        return assets;
+    };
     AssetManager.prototype.advanceSearch = function(query,paging) {
       var assets = [];
       var type = query.type;
       var mediaType = '';
-      var queryString;
       var registry = this.registry.registry;
-      var governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
-      var assetz =[];
+      var rm = this.rxtManager;
       //Note: This will restrict the search to this asset type
       type = this.type;
-      mediaType = this.rxtManager.getMediaType(type);    
-      queryString = buildQueryString(query);
-      //Check if a query string was created
-      if(queryString.length<=0){
-        return assets;
-      }
-      log.info('advance search query: '+queryString);
-      assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
-      assetz  = processAssets(type,assets,this.rxtManger);
+      query = query || {};
+      paging = paging || null;
+      assets =  doAdvanceSearch(type,query,paging,registry,rm);
+      //assets is a set that must be converted to a JSON array
+      assets  = processAssets(type,assets,this.rxtManger);
       //Add additional meta data
       addAssetsMetaData(assets,this);
-      return assetz;
+      return assets;
     };
     asset.advanceSearch = function(query,paging,session,tenantId) {
         var storeAPI = require('store');
         var user = storeAPI.server.current(session);
         var userRegistry;
+        var rxtManager;
+        var type = query.type;
+        var assets = [];
+        var registry;
         tenantId = tenantId || null;
         if((!user)&&(!tenantId)) {
             log.error('Unable to create registry instance without a tenantId when there is no logged in user');
@@ -540,46 +618,13 @@ var asset = {};
             log.info('Switching anonymous registry to perform advanced search as there is no logged in user');
             userRegistry = storeAPI.server.anonRegistry(tenantId);
         }
-        var rxtManager = core.rxtManager(tenantId);
-        var assets = [];
-        var type = query.type;
-        var mediaType = '';
-        var registry = userRegistry.registry;
-        var assetz = [];
-        var governanceRegistry =  GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
-        if(type){
-            mediaType = rxtManger.getMediaType(type);
-        }
-        queryString = buildQueryString(query);
-        if(queryString.length<=0){
-            return assets = [];
-        }
-        log.info('advance search query: '+queryString);
-        assets = GovernanceUtils.findGovernanceArtifacts(queryString,governanceRegistry,mediaType);
-        assetz = processAssets(null,assets,rxtManager);
-        addMetaDataToGenericAssets(assetz,session,tenantId);
-        return assetz;
-    };
-    var buildQueryString = function(query) {
-        var queryString = [];
-        var value;
-
-        for(var key in query) {
-            //Drop the type property from the query
-            if((query.hasOwnProperty(key)) && (key!='type')){
-                value = query[key];
-                //If the key contains an underscore (_) we 
-                //need  replace it with a semi colon (:)
-                //as the underlying API requires this
-                //Note: This prevents us from searching props
-                //with a underscore (_)
-                key = key.replace('_',':');
-                //We force a wildcard search
-                value = '*'+value+'*';
-                queryString.push(key+'='+value);
-            }
-        }
-        return queryString.join('&');
+        rxtManager = core.rxtManager(tenantId);
+        registry = userRegistry.registry;
+        assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
+        //assets is a set that must be converted to a JSON array
+        assets = processAssets(null,assets,rxtManager);
+        addMetaDataToGenericAssets(assets,session,tenantId);
+        return assets;
     };
     /**
      * Adds wild card search pattern to all
