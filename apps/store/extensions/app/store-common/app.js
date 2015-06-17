@@ -29,6 +29,11 @@ app.server = function(ctx) {
                 path:'my_items.jag',
                 secured:true,
                 permission:'APP_MYITEMS'
+            },{
+                title:'Store | Advance Search',
+                url:'advanced-search',
+                path:'advanced-search.jag',
+                secured:true
             }]
         },
         configs: {

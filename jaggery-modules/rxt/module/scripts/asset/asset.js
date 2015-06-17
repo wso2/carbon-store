@@ -604,7 +604,6 @@ var asset = {};
       query = query || {};
       paging = paging || null;
       assets =  doAdvanceSearch(type,query,paging,registry,rm);
-      log.info('[advance search] about to process result set');
       //assets is a set that must be converted to a JSON array
       assets  = processAssets(type,assets,rm);
       //Add additional meta data
