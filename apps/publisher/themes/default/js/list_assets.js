@@ -184,7 +184,10 @@ var parseArrToJSON = function(items){
     return obj;
 };
 var isTokenizedTerm = function(term){
-    return term.indexOf(':')<=-1;
+    return term.indexOf(':')>-1;
+};
+var isEmpty = function(input) {
+    return (input.length === 0); 
 };
 /**
  * Takes the users input and builds a query.This method
@@ -202,7 +205,7 @@ var parseUsedDefinedQuery = function(input) {
     var arr =[];
     var previous;
     //Use case #1 : The user has only entered a name
-    if(isTokenizedTerm(input)){
+    if((!isTokenizedTerm(input)) &&(!isEmpty(input))){
         q.name = input;
         return q;
     }
