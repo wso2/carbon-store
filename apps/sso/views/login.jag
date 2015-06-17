@@ -69,8 +69,8 @@ var themeModule = require('/modules/theme.js');
                                 <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large" type="submit">Sign in</button>
 
                                  <br><br><br>
-                                    <input type="checkbox" value="remember-me" style="display: inline"> Remember me
-                                    <br><br>
+                                    <!--<input type="checkbox" value="remember-me" style="display: inline"> Remember me
+                                    <br><br>-->
                                 <input type="hidden" name="sessionDataKey" value="<%=request.getParameter("sessionDataKey")%>">
                                 <% if(isPasswordRecoveryEnabled){ %>
                                     <a href="recovery-option">Forgot your password?</a>
