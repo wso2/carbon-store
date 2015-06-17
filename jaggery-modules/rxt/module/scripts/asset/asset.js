@@ -1094,7 +1094,9 @@ var asset = {};
         var userSpace = this.getSubscriptionSpace(session);
         var subscriptions = [];
         if (!userSpace) {
-            log.error('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');
+            if(log.isDebugEnabled()){
+                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');                
+            }
             return subscriptions;
         }
         subscriptions = obtainSubscriptions(userSpace, this, this.registry, this.type);
