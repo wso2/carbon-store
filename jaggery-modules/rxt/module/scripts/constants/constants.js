@@ -35,6 +35,7 @@ var constants = {};
     constants.DEFAULT_ASSET_EXTENSION='default';
     constants.APP_CONTEXT = 'rxt.app.context';
     constants.TAGS_QUERY_PATH = '/_system/config/repository/components/org.wso2.carbon.registry/queries/allTags';
+    constants.TAGS_SERVICE = 'org.wso2.carbon.registry.indexing.service.TermsSearchService';
     constants.DEFAULT_APP_EXTENSION = 'default';
     constants.AUTH_METHOD_BASIC = 'basic';
     constants.AUTH_METHOD_SSO = 'sso';
