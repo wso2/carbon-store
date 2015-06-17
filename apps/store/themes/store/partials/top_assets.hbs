@@ -48,7 +48,9 @@
                                     </div>
                                     <div class="pull-right">
                                         <div class="dropdown dropdown-asset-custom">
-                                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:return 0;"></a>
+                                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:return 0;">
+                                                <i class="fw fw-dots fw-1-5x fw-rotate-90"></i>
+                                            </a>
                                             <ul role="menu" class="dropdown-menu">
                                             {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../../../cuser.username tenantId=../../../../cuser.tenantId}}
                                                 <li>
@@ -56,7 +58,7 @@
                                                 </li>
                                             {{else}}
                                                 <li>
-                                                    <a class="btn btn-primary js_bookmark"
+                                                    <a class="btn js_bookmark"
                                                        href='{{url ""}}{{getLoginUrl .}}'> {{>process-asset-text }}</a>
                                                 </li>
                                             {{/hasAssetPermission}}
