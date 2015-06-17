@@ -19,7 +19,7 @@
 
 var resources = function (page, meta) {
     return {
-       	js:['libs/jquery.form.min.js','publisher-utils.js','create_asset.js','common/option_text.js','date_picker/datepicker.js'],
+       	js:['libs/jquery.form.min.js','publisher-utils.js','create_asset.js','date_picker/datepicker.js','notify.min.js','messages.js'],
        	css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css'],
        	code: ['publisher.assets.hbs']
     };

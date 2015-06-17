@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-//TODO: add delay before opening more details
 /*
  var timer;
  var details;
@@ -22,58 +21,41 @@
  */
 var rows_added = 0;
 var last_to = 0;
+var items_per_row = 0;
 var doPagination = true;
 store.infiniteScroll ={};
-
+store.infiniteScroll.recalculateRowsAdded = function(){
+    return (last_to - last_to%items_per_row)/items_per_row;
+};
 store.infiniteScroll.addItemsToPage = function(){
-    /*
-     clean the counted rows from the session
-     fist time load the viewable number of rows to the screen rows_per_page
-     - Data for this are viewable width and height in the screen ( screen_width, screen_height)
-     keep the rows counted in the session   (rows_added)
 
-     calculate the row suppose to be displayed (row_current)
-     -  rows_per_page and scroll position (scroll_pos)
-
-     if(row_current > rows_added ) then
-     - do a call to get the remaining rows and append them
-
-     */
     var screen_width = $(window).width();
     var screen_height = $(window).height();
 
     var thumb_width = 170;
-    var thumb_height = 270;
+    var thumb_height = 315;
 
-    var menu_width = 0;
+    var gutter_width = 40;
     var header_height = 163;
-    if($('#leftmenu').is(":visible")){
-        screen_width = screen_width - menu_width;
-    }
+    screen_width = screen_width - gutter_width; // reduce the padding from the screen size
     screen_height = screen_height - header_height;
 
-    var items_per_row = (screen_width-screen_width%thumb_width)/thumb_width;
-    var rows_per_page = (screen_height-screen_height%thumb_height)/thumb_height;
+    items_per_row = (screen_width-screen_width%thumb_width)/thumb_width;
+    //var rows_per_page = (screen_height-screen_height%thumb_height)/thumb_height;
     var scroll_pos = $(document).scrollTop();
     var row_current =  (screen_height+scroll_pos-(screen_height+scroll_pos)%thumb_height)/thumb_height;
-    row_current++; // We increase the row current by 1 since we need to provide one additional row to scroll down without loading it from backend
-    store.infiniteScroll.recalculateRowsAdded = function(){
-        return (last_to - last_to%items_per_row)/items_per_row;
-    };
+    row_current +=2 ; // We increase the row current by 2 since we need to provide one additional row to scroll down without loading it from backend
+
 
     var from = 0;
     var to = 0;
-    console.info("***************");
-    console.info(row_current);
-    console.info(rows_added);
     if(row_current > rows_added && doPagination){
         from = rows_added * items_per_row;
         to = row_current*items_per_row;
         last_to = to; //We store this os we can recalculate rows_added when resolution change
         rows_added = row_current;
-        console.info(from,to);
-        console.info("***************");
         store.infiniteScroll.getItems(from,to);
+        console.info('getting items from ' + from + " to " + to + " screen_width " + screen_width + " items_per_row " + items_per_row);
 
 
     }
@@ -89,19 +71,20 @@ store.infiniteScroll.getItems = function(from,to){
     var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);
     if(url.indexOf('tag')== -1){
         caramel.data({
-                         title : null,
-                         body : ['assets']
-                     }, {
-                         url : url,
-                         success : function(data, status, xhr) {
-                             caramel.render('assets', data.body.assets.context, function(info,content){
-                                 $('.assets-container section').append(content);
-                             });
-                         },
-                         error : function(xhr, status, error) {
-                             doPagination = false;
-                         }
-                     });
+             title : null,
+             body : ['assets']
+         }, {
+             url : url,
+             success : function(data, status, xhr) {
+                 caramel.render('assets-thumbnails', data.body.assets.context, function(info,content){
+                     $('.assets-container section').append(content);
+                 });
+             },
+             error : function(xhr, status, error) {
+                 doPagination = false;
+                 console.info(status);
+             }
+         });
     }
 
 };
@@ -150,45 +133,7 @@ $(function() {
     * Pagination for listing page
     * */
     store.infiniteScroll.showAll();
-	var loadAssetsScroll = function(url) {
-		//TO-DO
-		/* As tags are not Indexing so far
-		*  Assert pagination and is not supporteed and There for infiniteScroll is disable to 'Tag'
-		* */
-		if(url.indexOf('tag')== -1){
-		caramel.data({
-			title : null,
-			body : ['assets']
-		}, {
-			url : url,
-			success : function(data, status, xhr) {
-                infiniteScroll = data.body.assets.context.assets.length >= 12;
-                currentPag = 1;
-				renderAssetsScroll(data);
-				$('.loading-inf-scroll').hide();
-			},
-			error : function(xhr, status, error) {
-                infiniteScroll = false;
-			}
-		});
-		$('.loading-inf-scroll').show();
-		}
-	};
-	var scroll = function() {
-		if(infiniteScroll || (store.asset.paging.size >= 12 && infiniteScroll == null)) {
-			if($(window).scrollTop() + $(window).height() >= $(document).height() * .8) {
-				var assetCount = (++store.asset.count)*12;
-				var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+assetCount+"&count="+12);
-				loadAssetsScroll(url);
-				$(window).unbind('scroll', scroll);
-				setTimeout(function() {
-					$(window).bind('scroll', scroll);
-				}, 500);
-			}
-		} else {
-			$('.loading-inf-scroll').hide();
-		}
-	};
+
 	caramel.loaded('js', 'assets');
 	caramel.loaded('js', 'sort-assets');
 });

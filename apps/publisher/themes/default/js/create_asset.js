@@ -17,25 +17,24 @@
  *
  */
 $(function(){
-	var obtainFormMeta=function(formId){
+    $('#btn-create-asset').removeAttr('disabled');
+    var obtainFormMeta=function(formId){
 		return $(formId).data();
 	};
     $('#form-asset-create').ajaxForm({
         beforeSubmit:function(){
-            PublisherUtils.blockButtons({
-                container:'saveButtons',
-                msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
-            });
+            $('#btn-create-asset').attr('disabled','disabled');
         },
         success:function(){
+            messages.alertSuccess('Created the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
             var options=obtainFormMeta('#form-asset-create');
+            $('#btn-create-asset').removeAttr('disabled');
             window.location=options.redirectUrl;
         },
         error:function(){
-            alert('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
-            PublisherUtils.unblockButtons({
-                container:'saveButtons'
-            });
+            messages.alertError('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
+            $('#btn-create-asset').removeAttr('disabled');
+
         }
     });
     var initDatePicker =  function(){
