@@ -537,11 +537,13 @@ var asset = {};
     }
     var buildPaginationContext = function(paging){
         paging = paging || defaultPaginationContext();
+        log.info('[pagination-context] settting context to : '+stringify(paging));
         PaginationContext.init(paging.start,paging.count,paging.sortOrder,
             paging.sortBy,paging.paginationLimit);
     };
     var destroyPaginationContext = function(paginationContext) {
         PaginationContext.destroy();
+        log.info('[pagination-context] successfully destroyed context')
     };
     var buildQuery = function(query){
         var q = '';
@@ -556,8 +558,6 @@ var asset = {};
          return q;
     };
     var doAdvanceSearch = function(type,query,paging,registry,rxtManager) {
-        log.info('arguments count ');
-        log.info(arguments.length);
         var assets = [];
         var q;
         var governanceRegistry;
