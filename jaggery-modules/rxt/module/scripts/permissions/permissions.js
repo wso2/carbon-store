@@ -562,7 +562,9 @@ var permissions = {};
         var isAuthorized = false;
         try {
             if ((!username) || (username === wso2AnonUsername())) {
-                log.warn('[permissions] username not provided to check ' + permission + '.The anon role will be used to check permissions');
+                 if(log.isDebugEnabled()){
+                    log.debug('[permissions] username not provided to check ' + permission + '.The anon role will be used to check permissions');                    
+                 }
                 isAuthorized = authorizer.isRoleAuthorized(getAnonRole(), permission, action);
             } else {
                 if(log.isDebugEnabled()){
