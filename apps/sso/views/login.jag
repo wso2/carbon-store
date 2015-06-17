@@ -94,7 +94,7 @@ var themeModule = require('/modules/theme.js');
 
                                 <label class="float-left light-grey taxt-label">Username</label>
                                 <input id="reg-username"
-                                        name="reg-username" type="text" class="padding-double required usrName">
+                                        name="reg-username" type="text" class="padding-double required usrName usrNameLength">
 
                                 <br><br>
 
@@ -223,6 +223,9 @@ var themeModule = require('/modules/theme.js');
         jQuery.validator.addMethod("usrName", function (value, element) {
             return this.optional(element) || /^[a-zA-Z0-9\-]*$/.test(value);
         }, "Only alphanumeric characters and '-' allowed");
+        jQuery.validator.addMethod("usrNameLength", function (value, element) {
+            return value.length >= 3 && value.length <= 30;
+        }, "username must contain minimum 3 characters and maximum 30 characters");
 
          $('#signInLink').click(function(){
             $('#registerForm').fadeOut();
