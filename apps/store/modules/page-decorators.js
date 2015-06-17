@@ -106,6 +106,7 @@ var pageDecorators = {};
         var am;
         var type;
         var rxtDetails;
+        var assetMap = {};
         var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
         var tenantAssetResources;
         // Supporting cross tenant views
@@ -116,9 +117,24 @@ var pageDecorators = {};
         var q = page.assetMeta.q;
         var query = buildRecentAssetQuery(q);
         if (query) {
-            log.info('#################### RECENT ASSETS QUERY ###################');
-            items = asset.advanceSearch(query, null, session, ctx.tenantId);
-            log.info('count: ' + items.length);
+            items = asset.advanceSearch(query, null, session, ctx.tenantId)||[];
+            assetMap = {};
+            var template;
+            //Sort the results by type
+            items.forEach(function(item){
+                if(!assetMap[item.type]){
+                    assetMap[item.type] = [];
+                }
+                assetMap[item.type].push(item);
+            });
+            //Collect the asset result set along with the rxt definition
+            for(var key in assetMap){
+                template = ctx.rxtManager.getRxtTypeDetails(key);
+                assetsByType.push({
+                    assets:assetMap[key],
+                    rxt:template
+                });
+            }
         } else {
             for (var index in types) {
                 typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);

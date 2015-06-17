@@ -538,13 +538,14 @@ var asset = {};
     var generatePaginationContext = function(paging){
         var page = {};
         page.start = paging.start || 0;
-        page.count = paging.count || 1000;
-        page.sortOrder = paging.sortOrder || 'desc';
-        page.sortBy = paging.sortBy || 'overview_createdtime';
-        page.paginationLimit = paging.paginationLimit || 1000;
+        page.count = paging.count || constants.DEFAULT_ASSET_PAGIN.count;
+        page.sortOrder = paging.sortOrder || constants.DEFAULT_ASSET_PAGIN.sortOrder;
+        page.sortBy = paging.sortBy || constants.DEFAULT_ASSET_PAGIN.sortBy;
+        page.paginationLimit = paging.paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit;
         return page;
     }
     var buildPaginationContext = function(paging){
+        paging = paging || {};
         paging = generatePaginationContext(paging);
         log.info('[pagination-context] settting context to : '+stringify(paging));
         PaginationContext.init(paging.start,paging.count,paging.sortOrder,
