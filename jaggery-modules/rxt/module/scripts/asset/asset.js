@@ -451,14 +451,14 @@ var asset = {};
         return queryString.join('&');
     };
     //TODO:This is a temp fix
-    var buildArtifact = function (type, artifact) {
+    var buildArtifact = function (type,mediaType,artifact) {
         return {
             id: String(artifact.id),
             type: String(type),
             path: "/_system/governance" + String(artifact.getPath()),
             lifecycle: artifact.getLifecycleName(),
             lifecycleState: artifact.getLifecycleState(),
-            mediaType: String(artifact.getMediaType()),
+            mediaType: mediaType,
             attributes: (function () {
                 var i, name,
                     names = artifact.getAttributeKeys(),
@@ -491,16 +491,25 @@ var asset = {};
         var mediaType;
         var assetType;
         var item;
+        var rm = rxtManager;
         while(iterator.hasNext()){
             current = iterator.next();
             assetType = null;
             if(!type) {
-                mediaType = current.getMediaType();
-                assetType = rxtManager.getTypeFromMediaType(mediaType);
+                try{
+                    //This is wrapped in a try catch as
+                    //some generic artifacts do no have the getMediaType method
+                    mediaType = current.getMediaType(); 
+                } catch (e){
+                    log.error('Unable to resolve the media type of an asset returned from a cross type search.This asset will be dropped from the result set');
+                }
+
+                assetType = rm.getTypeFromMediaType(mediaType);
             } else {
                 assetType = type;
+                mediaType = rm.getMediaType(type);
             }
-            item = buildArtifact(assetType,current);
+            item = buildArtifact(assetType,mediaType,current);
             assets.push(item);
         }
         return assets;
@@ -526,17 +535,17 @@ var asset = {};
             addAssetMetaData(item,assetManager);
         }
     };
-    var defaultPaginationContext = function(){
+    var generatePaginationContext = function(paging){
         var page = {};
-        page.start = 0;
-        page.count = 1000;
-        page.sortOrder = 'desc';
-        page.sortBy = 'overview_createdtime';
-        page.paginationLimit = 1000;
+        page.start = paging.start || 0;
+        page.count = paging.count || 1000;
+        page.sortOrder = paging.sortOrder || 'desc';
+        page.sortBy = paging.sortBy || 'overview_createdtime';
+        page.paginationLimit = paging.paginationLimit || 1000;
         return page;
     }
     var buildPaginationContext = function(paging){
-        paging = paging || defaultPaginationContext();
+        paging = generatePaginationContext(paging);
         log.info('[pagination-context] settting context to : '+stringify(paging));
         PaginationContext.init(paging.start,paging.count,paging.sortOrder,
             paging.sortBy,paging.paginationLimit);
@@ -566,7 +575,9 @@ var asset = {};
             mediaType = rxtManager.getMediaType(type);
         }
         try {
+            log.info('[advance search] building pagination');
             buildPaginationContext(paging);
+            log.info('[advance search] building query ');
             q = buildQuery(query);
             log.info('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);            
             if(q.length>0){
@@ -574,6 +585,7 @@ var asset = {};
                 assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
             }      
         } catch (e) {
+            log.error(e);
             log.error('Unable to retrieve assets',e);
         } finally {
             destroyPaginationContext();
@@ -591,8 +603,9 @@ var asset = {};
       query = query || {};
       paging = paging || null;
       assets =  doAdvanceSearch(type,query,paging,registry,rm);
+      log.info('[advance search] about to process result set');
       //assets is a set that must be converted to a JSON array
-      assets  = processAssets(type,assets,this.rxtManger);
+      assets  = processAssets(type,assets,rm);
       //Add additional meta data
       addAssetsMetaData(assets,this);
       return assets;
@@ -622,6 +635,7 @@ var asset = {};
         registry = userRegistry.registry;
         assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
         //assets is a set that must be converted to a JSON array
+        log.info('[advance search] about to process result set');
         assets = processAssets(null,assets,rxtManager);
         addMetaDataToGenericAssets(assets,session,tenantId);
         return assets;
