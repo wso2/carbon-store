@@ -43,15 +43,11 @@ var render = function(theme, data, meta, require) {
             {
                 partial: 'sort-assets',
                 context: data
-             }, 
+             },
             {
                 partial: 'assets',
                 context: data
              }
-            // {
-            //     partial: 'pagination',
-            //     context: require('/helpers/pagination.js').format(data.paging)
-            // } 
         ]
     });
 };
