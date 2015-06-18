@@ -185,7 +185,24 @@ h2.app-title {
 .wr-global-header {
     background: #444;
 }
-
+#assets-container{
+    margin-top:20px;
+}
+.nav > li.advanced-search-link{
+    position: absolute;
+    right: 0;
+    float:right;
+}
+.nav > li.advanced-search-link span{
+    font-weight: 100;
+}
+div.asset-well div.advanced-search-form-container{
+    padding:0;
+}
+div.asset-well div.advanced-search-form-container h1{
+    font-weight: 200;
+    font-size: 28px;
+}
 .app-logo {
     height: 50px;
     padding: 12px 20px;
@@ -1305,6 +1322,33 @@ a.more:focus {
     outline: 0;
     text-align: left;
 }
+.btn-add-new {
+    background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
+}
+
+.btn-stats {
+    background:url('../img/icons/ico-stats.png') 0.8em 1em no-repeat;
+}
+
+.btn-edit {
+    background:url('../img/icons/ico-edit.png') 0.8em 1em no-repeat;
+}
+
+.btn-overview {
+    background:url('../img/icons/ico-overview.png') 0.8em 1em no-repeat;
+}
+
+.btn-lifecycle {
+    background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;
+}
+
+.btn-copy {
+    background:url('../img/icons/ico-edit.png') 0.8em 1em no-repeat;
+}
+
+.btn-collapsed {
+    background:url('../img/icons/wso2-logo-small.png') no-repeat;
+}
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
@@ -1398,4 +1442,56 @@ a:hover, a:focus {
 .padding-left{padding-left: 10px;}
 .h1, .h2, .h3, h1, h2, h3 {
     margin-top: 0px;
+}
+/* action buttons */
+a.cu-btn {
+    color:#fff;
+    text-decoration: none;
+    border:0px solid #ff0000;
+    padding:17px 10px 16px 45px;
+    margin:0 0 0 0px !important;
+    font-weight:100;
+    display:inline-block;
+    text-transform: uppercase;
+    background-size: 26px 26px;
+    border:0px solid #ff0000;
+    padding-left:45px !important;
+}
+
+a.cu-btn:hover {
+    background-color:#1965b2 !important;
+    color:#fafafa !important;
+}
+
+i.cu-btn-exp-col {
+    display:inline-block;
+
+    height:27px;
+    background-size: 26px 26px;
+    padding-left:35px;
+    font-style: normal;
+}
+h2.field-title {
+    margin:0 0 20px 0;
+    border-bottom:solid 1px #f0f0f0;
+    padding-bottom:10px;
+}
+h2.field-title a.collapsing-h2 {
+    color: #222222;
+    font-size: 22px;
+    font-weight: 200;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+a.collapsing-h2{
+    text-decoration: none;
+}
+
+h2.app-title {
+    font-weight:500;
+    font-size:17px;
+    margin:0;
+    padding:3px 0 0 0;
+    color:#fafafa;
+    text-transform: uppercase;
 }
