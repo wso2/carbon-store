@@ -41,6 +41,8 @@ store.infiniteScroll.addItemsToPage = function(){
 
 };
 
+var partialsLoaded = false;
+
 store.infiniteScroll.getItems = function(from,to){
     var count = to-from;
     var dynamicData = {};
@@ -52,24 +54,51 @@ store.infiniteScroll.getItems = function(from,to){
     var assetType = store.publisher.type; //load type from store global object
     var url = '/publisher/apis/assets?type=' + assetType + param ; // build url for the endpoint call
     //var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);     //TODO enable tenanted url thing..
-    console.info(url);
 
-    $.ajax({
-               url: url,
-               type: 'GET',
-               success: function(response) { //on success
-                   var assets = convertTimeToUTC(response.data);
-                   if (assets) {
-                       renderView('list_assets_table_body', assets, '#list_assets_content', null);
-                   } else { //if no assets retrieved for this page
+    var loadAssets = function () {
+        $.ajax({
+                   url: url,
+                   type: 'GET',
+                   success: function (response) { //on success
+                       var assets = convertTimeToUTC(response.data);
+                       if (assets) {
+                           caramel.render('list_assets_table_body', assets, function (info, content) {
+                               $('#list_assets_content').append(content);
+                           });
+                       } else { //if no assets retrieved for this page
+                           doPagination = false;
+                       }
+                   },
+                   error: function (response) { //on error
                        doPagination = false;
                    }
-               },
-               error: function(response) { //on error
-                   doPagination = false;
-               }
-           });
+               });
+    };
+
+    if(partialsLoaded) {
+        loadAssets();
+        return;
+    }
+
+    var initialUrl = '/publisher/asts/' + assetType + '/list';
+    caramel.data({
+                     "title": null,
+                     "listassets": ["list-assets"]
+                 }, {
+                     url: initialUrl,
+                     success: function (data, status, xhr) {
+                         caramel.partials(data._.partials, function () {
+                             partialsLoaded = true;
+                             loadAssets();
+                         });
+                     },
+                     error: function (xhr, status, error) {
+                         doPagination = false;
+                         console.info(status);
+                     }
+                 });
 };
+
 store.infiniteScroll.showAll = function(){
     $('.assets-container section').empty();
     store.infiniteScroll.addItemsToPage();
