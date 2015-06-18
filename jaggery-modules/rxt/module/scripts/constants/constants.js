@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) WSO2 Inc. (http://wso2.com) All Rights Reserved.
  *
@@ -14,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * The constants namespace defines a set of values which are used throughout the app and asset extensions
  * @namespace
- * @example 
+ * @example
  *     var constants = require('rxt').constants;
  *     print(constants.DEFAULT_TITLE);
  */
 var constants = {};
-(function(constants) {
+(function (constants) {
     constants.DEFAULT_TITLE = 'ES';
     constants.DEFAULT_DESCRIPTION = 'this is list of top assets';
     constants.MSG_PAGE_INFO_NOT_FOUND = 'Title not found';
@@ -32,8 +30,8 @@ var constants = {};
     constants.POPULAR_ASSET_COUNT = 1;
     constants.DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime';
     constants.SUBSCRIPTIONS_PATH = '/subscriptions';
-    constants.ASSET_EXTENSION_ROOT='/extensions/assets';
-    constants.DEFAULT_ASSET_EXTENSION='default';
+    constants.ASSET_EXTENSION_ROOT = '/extensions/assets';
+    constants.DEFAULT_ASSET_EXTENSION = 'default';
     constants.APP_CONTEXT = 'rxt.app.context';
     constants.TAGS_QUERY_PATH = '/_system/config/repository/components/org.wso2.carbon.registry/queries/allTags';
     constants.DEFAULT_APP_EXTENSION = 'default';
@@ -41,19 +39,19 @@ var constants = {};
      * ES Feature Constants
      */
 
-    constants.SOCIAL_FEATURE='social';
-    constants.SOCIAL_FEATURE_SCRIPT_KEY='socialScriptSource';
-    constants.SOCIAL_FEATURE_SCRIPT_TYPE_KEY='socialScriptType';
-    constants.SOCIAL_FEATURE_APP_URL_KEY='socialAppUrl';
-    constants.ASSET_DEFAULT_SORT='overview_createdtime';
-    constants.Q_SORT='sortBy';
-    constants.Q_TAG='tag';
-    constants.Q_SORT_ORDER='sort';
-    constants.ASSET_DEFAULT_SORT_ORDER='DESC';
+    constants.SOCIAL_FEATURE = 'social';
+    constants.SOCIAL_FEATURE_SCRIPT_KEY = 'socialScriptSource';
+    constants.SOCIAL_FEATURE_SCRIPT_TYPE_KEY = 'socialScriptType';
+    constants.SOCIAL_FEATURE_APP_URL_KEY = 'socialAppUrl';
+    constants.ASSET_DEFAULT_SORT = 'overview_createdtime';
+    constants.Q_SORT = 'sortBy';
+    constants.Q_TAG = 'tag';
+    constants.Q_SORT_ORDER = 'sort';
+    constants.ASSET_DEFAULT_SORT_ORDER = 'DESC';
     constants.Q_SORT_ORDER_ASCENDING = 'ASC';
     constants.Q_SORT_ORDER_DESCENDING = 'DESC'
     constants.Q_PROP_DEFAULT = '_default';
-    constants.Q_PROP_GROUP ='_group';
+    constants.Q_PROP_GROUP = '_group';
     constants.Q_PROP_WILDCARD = '_wildcard'
     constants.PROP_DEFAULT = 'default';
     constants.DEFAULT_NAME_ATTRIBUTE = 'overview_name';
@@ -76,16 +74,13 @@ var constants = {};
     constants.ASSET_API_URL_PATTERN = '/{context}/asts/{type}/apis/{+suffix}';
     constants.STORAGE_URL_PATTERN = '/{context}/storage/{type}/{id}/{uuid}/{fileName}';
     constants.ASSET_DETAIL_URL_PATTERN = '/{context}/asts/{type}/{pageName}/{+id}';
-
     constants.APP_TENANT_PAGE_URL_PATTERN = '/{context}/t/{domain}/pages/{+suffix}';
     constants.ASSET_TENANT_PAGE_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/{+suffix}';
     constants.ASSET_TENANT_API_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/apis/{+suffix}';
     constants.STORAGE_TENANT_URL_PATTERN = '/{context}/t/{domain}/storage/{type}/{id}/{uuid}/{fileName}';
     constants.ASSET_DETAIL_TENANT_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/{pageName}/{+id}';
-
     constants.TENANT_URL_PATTERN = '/{context}/t/{domain}/{+any}';
     constants.DEFAULT_SUPER_TENANT_URL_PATTERN = '/{context}/{+any}';
-
     /**
      * URLs
      */
@@ -102,22 +97,21 @@ var constants = {};
     constants.GET_ASSET_URL = '/{context}/apis/assets/{id}';
     constants.DELETE_ASSET_URL = '/{context}/apis/assets/{id}';
     constants.ASSET_STATE_URL = '/{context}/apis/assets/{id}/state';
-
     constants.GET_LIFECYCLES_URL = '/{context}/apis/lifecycles/';
     constants.GET_LIFECYCLE_DEFINITION_BY_NAME_URL = '/{context}/apis/lifecycles/{lifecycleName}';
     constants.GET_LIFECYCLE_STATE_URL = '/{context}/apis/lifecycles/{lifecycleName}/{currentState}';
-
     constants.STATUS_CODES = {
         OK: 200,
-        CREATED:201,
+        CREATED: 201,
         ACCEPTED: 202,
-        BAD_REQUEST:400,
-        UNAUTHORIZED:401,
-        NOT_FOUND:404,
-        INTERNAL_SERVER_ERROR:500,
-        NOT_IMPLEMENTED:501
+        BAD_REQUEST: 400,
+        UNAUTHORIZED: 401,
+        NOT_FOUND: 404,
+        INTERNAL_SERVER_ERROR: 500,
+        NOT_IMPLEMENTED: 501,
+        NOT_ACCEPTABLE: 406,
+        UNSUPPORTED_MEDIATYPE: 415
     };
-
     constants.THROW_EXCEPTION_TO_CLIENT = 'THROW_EXCEPTION_TO_CLIENT';
     constants.THROW_EXCEPTION_TO_CLIENT = 'THROW_EXCEPTION_TO_CLIENT';
     constants.LOG_EXCEPTION_AND_TERMINATE = 'LOG_EXCEPTION_AND_TERMINATE';
@@ -131,12 +125,11 @@ var constants = {};
         sortBy: '',
         sortOrder: 'DESC'
     };
-
-    constants.DEFAULT_POPULAR_ASSET_PAGIN={
-        start:0,
-        count:1,
-        sortBy:'',
-        sortOrder:'ASC'
+    constants.DEFAULT_POPULAR_ASSET_PAGIN = {
+        start: 0,
+        count: 1,
+        sortBy: '',
+        sortOrder: 'ASC'
     };
     constants.DEFAULT_TAG_PAGIN = {
         start: 0,
@@ -144,15 +137,12 @@ var constants = {};
         sortBy: 'overview_createdtime',
         sortOrder: 'DESC'
     };
-
-    constants.DEFAULT_ASSET_PAGIN={
-        start:0,
-        count:12,
+    constants.DEFAULT_ASSET_PAGIN = {
+        start: 0,
+        count: 12,
         sortBy: 'overview_createdtime',
         sortOrder: 'DESC',
         paginationLimit: 100
     };
-
     constants.MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
-
 }(constants));
