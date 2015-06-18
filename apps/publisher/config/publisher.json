@@ -57,7 +57,8 @@
                     "identityAlias": "wso2carbon",
                     "responseSigningEnabled": "true",
                     "acs": "%https.host%/publisher/acs",
-                    "keyStoreName": "/repository/resources/security/wso2carbon.jks"
+                    "keyStoreName": "/repository/resources/security/wso2carbon.jks",
+                    "useTenantKey": false
                 }
             },
             "basic": {
