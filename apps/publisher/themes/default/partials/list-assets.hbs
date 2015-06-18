@@ -63,7 +63,9 @@
         <!-- content -->
         <div class="ast-container" id="list_assets_table_body">
             {{#if assets}}
-                <div id="list_assets_content"></div>
+                <div id="list_assets_content">
+                    {{>list_assets_table_body .}}
+                </div>
             {{else}}
                 <div class="emptyAssets-MsgDiv">
                     
