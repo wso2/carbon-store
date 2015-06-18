@@ -16,10 +16,39 @@
  *  under the License.
  *
  */
-$(function() {
+$(function () {
     var TAG_SELECTBOX = tagsAPI.TAG_SELECTBOX;
     $(TAG_SELECTBOX).select2({
         tags: true,
-        placeholder: 'Please select a tag'
-    });
+        ajax: {
+            url: tagsAPI.tagSearchAPI,
+            dataType: "json",
+            delay: 250,
+            data: function (params) {
+                var query = '"name":"' + params.term + '"';
+                return {
+                    q: query
+                };
+            },
+            processResults: function (data, page) {
+                var i;
+                var o;
+                var length = data.length;
+                var results = [];
+                for (i = 0; i < length; i++) {
+                    o = data[i];
+                    results.push({ id: o.name, text: o.name});
+                }
+                return {
+                    results: results
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 2,
+        templateSelection: function (data) {
+            return data.text;
+        }
+
+    })
 });
