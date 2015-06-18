@@ -459,17 +459,24 @@ var result;
         paging.start = (request.getParameter("start") || paging.start);
         paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
         var q = (request.getParameter("q") || '');
+        var isGroupingEnabled = false;//Grouping is disabled by default
         try {
             var assets;
             if (q) { //if search-query parameters are provided
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
                 query = replaceCategoryQuery(query, rxtManager, options.type);
+                isGroupingEnabled = rxtManager.isGroupingEnabled(options.type);
+                if(isGroupingEnabled){
+                    query._group = true; //Signal grouping is enabled
+                    query.default = true; //Required for grouping query
+                }
                 //query = replaceNameQuery(query, rxtManager, options.type);
                 if (log.isDebugEnabled) {
                     //Need to log this as we perform some processing on the name and
                     //category values
                     log.debug('processed query used for searching: ' + stringify(query));
+                    log.debug('grouping enabled: '+isGroupingEnabled);
                 }
                 assets = assetManager.advanceSearch(query, paging); // asset manager back-end call with search-query
             } else {
@@ -528,6 +535,8 @@ var result;
                     //category values
                     log.debug('processed query used for searching: ' + stringify(query));
                 }
+                //TODO: The generic advance search does not honour grouping
+                //as grouping can be enabled/disabled per asset type
                 assets = assetAPI.advanceSearch(query, paging,session); // asset manager back-end call with search-query
             } else {
                 log.error('Unable to perform a bulk asset retrieval without a type been specified');

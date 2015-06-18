@@ -80,7 +80,8 @@ var pageDecorators = {};
         return page;
     };
     pageDecorators.authenticationDetails = function(ctx, page) {
-        var authenticationMethods = ctx.tenantConfigs.authentication ? ctx.tenantConfigs.authentication : {};
+        var configs = require('/config/store.json');
+        var authenticationMethods = configs.authentication ? configs.authentication : {};
         var activeMethod = authenticationMethods.activeMethod ? authenticationMethods.activeMethod : '';
         //Obtain the details for this method of authentication
         var authDetails = fetchActiveAuthDetails(activeMethod, authenticationMethods.methods || []);

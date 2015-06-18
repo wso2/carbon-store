@@ -98,22 +98,38 @@ function getNextPage(param) {
  * @param {string} path  : string
  */
 var setSortingParams = function(path) {
-    var obj = path.split('?');
     var sorting = '';
-    if (obj[1]) {
-        var temp = obj[1].split('&');
-        var sortby = temp[0].split('=')[1];
-        var sort = temp[1].split('=')[1];
-    } else {
-        sort = 'DESC';
-        sortby = 'overview_createdtime';
-    }
-    if (sort == 'DESC') {
-        sorting = '&&sort=-' + sortby;
-    } else {
-        sorting = '&&sort=+' + sortby;
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("sort=") != -1){
+                sorting = '&&' + paramsPart;
+            }
+        }
+    }else{
+        sorting = '&&sort=+overview_createdtime';
     }
     return sorting;
+};
+/**
+ * Build query parameters based on page path
+ * @param {string} path  : string
+ */
+var setQueryParams = function(path) {
+    var query = '';
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("q=") != -1){
+                query = '&&' + paramsPart;
+            }
+        }
+    }
+    return query;
 };
 /**
  * scroll method bind to be scroll window function
@@ -168,7 +184,10 @@ var parseArrToJSON = function(items){
     return obj;
 };
 var isTokenizedTerm = function(term){
-    return term.indexOf(':')<=-1;
+    return term.indexOf(':')>-1;
+};
+var isEmpty = function(input) {
+    return (input.length === 0); 
 };
 /**
  * Takes the users input and builds a query.This method
@@ -186,7 +205,7 @@ var parseUsedDefinedQuery = function(input) {
     var arr =[];
     var previous;
     //Use case #1 : The user has only entered a name
-    if(isTokenizedTerm(input)){
+    if((!isTokenizedTerm(input)) &&(!isEmpty(input))){
         q.name = input;
         return q;
     }
@@ -201,9 +220,9 @@ var parseUsedDefinedQuery = function(input) {
     for(var index = 0; index < terms.length; index++){
         term = terms[index];
         term = term.trim(); //Remove any whitespaces
-        //If this term is empty and does not have a : then it should be appended to the
+        //If this term is not empty and does not have a : then it should be appended to the
         //previous term
-        if((term.length>0)&&(isTokenizedTerm(term))){
+        if((!isEmpty(term))&&(!isTokenizedTerm(term))){
             previous = arr.length -1;
             if(previous>=0) {
                 arr[previous]= arr[previous]+' '+term;
@@ -260,7 +279,7 @@ var initCategorySelection = function() {
     });
 };
 // bind to window function
-$(window).bind('scroll', scroll);
+//$(window).bind('scroll', scroll);
 $(window).load(function() {
     //scroll();
     initSearch();

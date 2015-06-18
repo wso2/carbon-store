@@ -204,7 +204,6 @@ var engine = caramel.engine('handlebars', (function() {
             });
 
             Handlebars.registerHelper('hasAssetPermission',function(context,options){
-                log.info(options.hash);
                 var rxtAPI  = require('rxt');
                 var key = options.hash.key;
                 var type = options.hash.type;
@@ -224,7 +223,9 @@ var engine = caramel.engine('handlebars', (function() {
                 if(isAuthorized){
                     return options.fn(context);
                 }else{
-                    log.error('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                    if(log.isDebugEnabled()){
+                        log.debug('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');                        
+                    }
                     return options.inverse(context);
                 }
             });
@@ -249,7 +250,9 @@ var engine = caramel.engine('handlebars', (function() {
                 if(isAuthorized){
                     return options.fn(context);
                 }
-                log.error('[hasAppPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                if(log.isDebugEnabled()){
+                    log.debug('[hasAppPermission] User '+username+' does not have permission: '+key+' to see ui area');                    
+                }
                 return ;
             });
         },
