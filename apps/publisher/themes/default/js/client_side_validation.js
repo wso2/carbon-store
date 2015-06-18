@@ -47,9 +47,12 @@ $.validator.addMethod("FieldValidate", function (value, element) {
         url: caramel.url("/apis/assets?type=gadget&q=" + data),
         dataType: "json",
         async: false,
+        headers: {
+            Accept: "application/json"
+        },
         success: function (data, textStatus, xhr) {
             var obj = data;
-            if (obj.data.length > 0) {
+            if (obj.list.length > 0) {
                 result = false;
             } else {
                 result = true;
