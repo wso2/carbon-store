@@ -257,12 +257,7 @@ var engine = caramel.engine('handlebars', (function() {
             });
         },
         render: function(data, meta) {
-            if (request.getParameter('debug') == '1') {
-                response.addHeader("Content-Type", "application/json");
-                print(stringify(data));
-            } else {
-                this.__proto__.render.call(this, data, meta);
-            }
+            this.__proto__.render.call(this, data, meta);
         },
         globals: function(data, meta) {
             var store = require('/modules/store.js'),
