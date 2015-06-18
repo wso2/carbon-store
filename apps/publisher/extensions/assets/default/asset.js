@@ -131,6 +131,11 @@ asset.server = function(ctx) {
                 title: 'Statistics',
                 url: 'statistics',
                 path: 'statistics.jag'
+            }, {
+                title: 'Copy ' + type,
+                url: 'copy',
+                path: 'copy.jag',
+                permission: 'ASSET_CREATE'
             }]
         }
     };
@@ -245,7 +250,7 @@ asset.renderer = function(ctx) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
-        navList.push('Copy', 'btn-copy');
+        navList.push('Copy', 'btn-copy', util.buildUrl('copy') + '/' + id);
         return navList.list();
     };
     var buildAddLeftNav = function(page, util) {

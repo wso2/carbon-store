@@ -39,27 +39,4 @@
 {{/with}}
 {{> sidebar-container . }}
 
-<!-- Start of create new version modal -->
-<div class="modal fade" id="newVersionModal" role="dialog">
-    <div class="modal-dialog modal-sm">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">{{t "Create new version"}}</h4>
-        </div>
-        <div class="modal-body">
-          {{t "Version"}}: <input type="text" class="form-control" name="new-version" id="new-version">
-          <input type="hidden" id="asset-id" value="{{assets.id}}">
-          <input type="hidden" id="asset-type" value="{{assets.type}}">
-          <div class="alert alert-success hide" role="alert"></div>
-        </div>
-        <div class="modal-footer">
-            <button type="button" id="btn-create-version" class="btn btn-primary" >{{t "Create"}}</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{t "Reset"}}</button>
-        </div>
-      </div>
-    </div>
-</div>
-<!-- End of Create new version modal -->
-
 

@@ -237,7 +237,7 @@ $(document).ready(function() {
 		}
 	}
 
-	$('.btn-copy').on('click', function(e) {
+/*	$('.btn-copy').on('click', function(e) {
 		e.preventDefault();
 		$("#newVersionModal").modal('show');
 	});
@@ -266,6 +266,6 @@ $(document).ready(function() {
 			});
 			//$("#newVersionModal").modal('hide');
 			}
-	});
+	});*/
 
 });
