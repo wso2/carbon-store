@@ -52,3 +52,14 @@ app.server = function(ctx) {
         }
     }
 };
+
+app.renderer = function(ctx) {
+    var decoratorApi = require('/modules/page-decorators.js').pageDecorators;
+    return {
+        pageDecorators: {
+            navigationBar: function(page) {
+                return decoratorApi.navigationBar(ctx, page, this);
+            }
+        }
+    }
+};
