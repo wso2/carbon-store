@@ -1,5 +1,10 @@
 {{#each .}}
-    <legend>{{type}}</legend>
+<h2 class="field-title">
+    <a class="collapsing-h2" aria-expanded="false" href="#collapse{{type}}" data-toggle="collapse">
+        <i class="cu-btn-exp-col btn-collapsed">{{type}}</i>
+    </a>
+</h2>
+<div id="collapse{{type}}" class="collapse in responsive-form-container">
 {{#each assets}}
             {{#attributes}}
             <div class="ctrl-wr-asset ">
@@ -44,6 +49,7 @@
             </div>
             {{/attributes}}
         {{/each}}
-
+        </div>
+    <div class="clearfix"></div>
 {{/each}}
 
