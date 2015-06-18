@@ -502,7 +502,7 @@ i.cu-btn-exp-col {
 }
 
 .btn-copy {
-    background:url('../img/icons/ico-edit.png') 0.8em 1em no-repeat;   
+    background:url('../img/icons/ico-copy.png') 0.8em 1em no-repeat;
 }
 
 .btn-collapsed {
@@ -693,7 +693,11 @@ a.cu-ico-button-stats {
 .wr-search .glyphicon {
     color:#fff;
 }
-
+.advance-search-btn{
+    height: 42px;
+    padding-top:10px;
+    margin-left:-35px;
+}
 .wr-filters div.wr-filter-category, .wr-filters div.wr-search {
     float:left;
 }

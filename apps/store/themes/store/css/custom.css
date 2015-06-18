@@ -480,7 +480,15 @@ a.ast-name:hover {
     width: 100%;
     margin-bottom: 5px;
 }
-
+.advance-search-btn{
+    height: 42px;
+    padding-top:15px;
+    color:#fff;
+    padding-left:10px;
+}
+.advance-search-btn:hover {
+    color:#fff;
+}
 .register {
     width: auto;
     height: 50px;
@@ -569,7 +577,7 @@ a.login:focus {
 }
 
 .search-area {
-    width: 80%;
+    width: 50%;
     height: 42px;
     padding-left: 10px;
     float: left;
