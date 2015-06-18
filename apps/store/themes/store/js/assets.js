@@ -77,8 +77,10 @@ store.infiniteScroll.getItems = function(from,to){
          }, {
              url : url,
              success : function(data, status, xhr) {
-                 caramel.render('assets-thumbnails', data.body.assets.context, function(info,content){
-                     $('.assets-container section').append(content);
+                 caramel.partials(data._.partials, function() {
+                     caramel.render('assets-thumbnails', data.body.assets.context, function (info, content) {
+                         $('.assets-container section').append(content);
+                     });
                  });
              },
              error : function(xhr, status, error) {
