@@ -98,22 +98,38 @@ function getNextPage(param) {
  * @param {string} path  : string
  */
 var setSortingParams = function(path) {
-    var obj = path.split('?');
     var sorting = '';
-    if (obj[1]) {
-        var temp = obj[1].split('&');
-        var sortby = temp[0].split('=')[1];
-        var sort = temp[1].split('=')[1];
-    } else {
-        sort = 'DESC';
-        sortby = 'overview_createdtime';
-    }
-    if (sort == 'DESC') {
-        sorting = '&&sort=-' + sortby;
-    } else {
-        sorting = '&&sort=+' + sortby;
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("sort=") != -1){
+                sorting = '&&' + paramsPart;
+            }
+        }
+    }else{
+        sorting = '&&sort=+overview_createdtime';
     }
     return sorting;
+};
+/**
+ * Build query parameters based on page path
+ * @param {string} path  : string
+ */
+var setQueryParams = function(path) {
+    var query = '';
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("q=") != -1){
+                query = '&&' + paramsPart;
+            }
+        }
+    }
+    return query;
 };
 /**
  * scroll method bind to be scroll window function
@@ -150,16 +166,84 @@ var propCount = function(obj) {
     }
     return count;
 };
+var parseArrToJSON = function(items){
+    var item;
+    var components;
+    var obj = {};
+    var key;
+    var value;
+    for(var index = 0; index < items.length; index++){
+        item = items[index];
+        components = item.split(':');
+        if(components.length == 2) {
+            key = components[0];
+            value = components[1];
+            obj[key]=value;
+        }
+    }
+    return obj;
+};
+var isTokenizedTerm = function(term){
+    return term.indexOf(':')>-1;
+};
+var isEmpty = function(input) {
+    return (input.length === 0); 
+};
+/**
+ * Takes the users input and builds a query.This method
+ * first checks if the user is attempting to search by name , if not
+ * it will look for a : delimited complex query
+ *    E.g. name:wso2 tags:bubble
+ * @param  {[type]} input [description]
+ * @return {[type]}       [description]
+ */
+var parseUsedDefinedQuery = function(input) {
+    var terms;
+    var q = {};
+    var current;
+    var term;
+    var arr =[];
+    var previous;
+    //Use case #1 : The user has only entered a name
+    if((!isTokenizedTerm(input)) &&(!isEmpty(input))){
+        q.name = input;
+        return q;
+    }
+    //Remove trailing whitespaces if any
+    input = input.trim();
+    //Use case #2: The user has entered a complex query
+    //and one or more properties in the query could values
+    //with spaces
+    //E.g. name:This is a test tags:wso2
+    terms = input.split(' ');
+
+    for(var index = 0; index < terms.length; index++){
+        term = terms[index];
+        term = term.trim(); //Remove any whitespaces
+        //If this term is not empty and does not have a : then it should be appended to the
+        //previous term
+        if((!isEmpty(term))&&(!isTokenizedTerm(term))){
+            previous = arr.length -1;
+            if(previous>=0) {
+                arr[previous]= arr[previous]+' '+term;
+            }
+        } else {
+            arr.push(term);
+        }
+    }
+    return parseArrToJSON(arr);
+};
 var createQuery = function(options) {
     options = options || {};
     var searchUrl = caramel.url('/asts/' + store.publisher.type + '/list');
     var q = {};
-    var name = $('#inp_searchAsset').val();
+    var input = $('#inp_searchAsset').val();
     var category = options.category || undefined;
     var searchQueryString = '?';
-    if (name) {
-        q.name = name;
-    }
+    q = parseUsedDefinedQuery(input);
+    // if (name) {
+    //     q.name = name;
+    // }
     if (category) {
         if(category == "All Categories"){
             category = "";
@@ -195,7 +279,7 @@ var initCategorySelection = function() {
     });
 };
 // bind to window function
-$(window).bind('scroll', scroll);
+//$(window).bind('scroll', scroll);
 $(window).load(function() {
     //scroll();
     initSearch();

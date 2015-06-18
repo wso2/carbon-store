@@ -33,6 +33,7 @@ var asset = {};
     var DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime'; //TODO:Move to constants
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
@@ -410,6 +411,220 @@ var asset = {};
         //query = addWildcard(query);
         assets = this.am.search(query, paging);
         addAssetsMetaData(assets, this);
+        return assets;
+    };
+    var buildQueryString = function(query,options) {
+        var queryString = [];
+        var value;  
+        options = options || {};
+        var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
+        for(var key in query) {
+            //Drop the type property from the query
+            if((query.hasOwnProperty(key)) && (key!='type')){
+                value = query[key];
+                //If the key contains an underscore (_) we 
+                //need  replace it with a semi colon (:)
+                //as the underlying API requires this
+                //Note: This prevents us from searching props
+                //with a underscore (_)
+                key = key.replace('_',':');
+                //Check if wildcard search is enabled
+                if(wildcard){
+                    value = '*'+value+'*'; 
+                }
+                queryString.push(key+'='+value);
+            }
+        }
+        return queryString.join('&');
+    };
+    //TODO:This is a temp fix
+    var buildArtifact = function (type,mediaType,artifact) {
+        return {
+            id: String(artifact.id),
+            type: String(type),
+            path: "/_system/governance" + String(artifact.getPath()),
+            lifecycle: artifact.getLifecycleName(),
+            lifecycleState: artifact.getLifecycleState(),
+            mediaType: mediaType,
+            attributes: (function () {
+                var i, name,
+                    names = artifact.getAttributeKeys(),
+                    length = names.length,
+                    attributes = {};
+                for (i = 0; i < length; i++) {
+                    name = names[i];
+
+                    var data = artifact.getAttributes(name);
+
+                    //Check if there is only one element
+                    if (data.length == 1) {
+                        attributes[name] = String(artifact.getAttribute(name));
+                    }
+                    else {
+                        attributes[name] = data;
+                    }
+                }
+                return attributes;
+            }()),
+            content: function () {
+                return new Stream(new ByteArrayInputStream(artifact.getContent()));
+            }
+        };
+    };
+    var processAssets = function(type,set,rxtManager){
+        var iterator = set.iterator();
+        var assets = [];
+        var current;
+        var mediaType;
+        var assetType;
+        var item;
+        var rm = rxtManager;
+        while(iterator.hasNext()){
+            current = iterator.next();
+            assetType = null;
+            if(!type) {
+                try{
+                    //This is wrapped in a try catch as
+                    //some generic artifacts do no have the getMediaType method
+                    mediaType = current.getMediaType(); 
+                } catch (e){
+                    log.error('Unable to resolve the media type of an asset returned from a cross type search.This asset will be dropped from the result set');
+                }
+
+                assetType = rm.getTypeFromMediaType(mediaType);
+            } else {
+                assetType = type;
+                mediaType = rm.getMediaType(type);
+            }
+            item = buildArtifact(assetType,mediaType,current);
+            assets.push(item);
+        }
+        return assets;
+    };
+    var addMetaDataToGenericAssets = function(assets,session,tenantId){
+        var assetManagers = {};
+        var assetManager;
+        var item;
+        var server = require('store').server;
+        var user = server.current(session);
+        for(var index = 0; index < assets.length; index++){
+            item = assets[index];
+            if(!assetManagers[item.type]){
+                if(user){
+                    assetManager = asset.createUserAssetManager(session,item.type);
+                } else {
+                    assetManager = asset.createAnonAssetManager(session,item.type, tenantId);
+                }          
+                assetManagers[item.type] = assetManager;
+            } else {
+                assetManager = assetManagers[item.type];
+            }
+            addAssetMetaData(item,assetManager);
+        }
+    };
+    var generatePaginationContext = function(paging){
+        var page = {};
+        page.start = paging.start || 0;
+        page.count = paging.count || constants.DEFAULT_ASSET_PAGIN.count;
+        page.sortOrder = paging.sortOrder || constants.DEFAULT_ASSET_PAGIN.sortOrder;
+        page.sortBy = paging.sortBy || constants.DEFAULT_ASSET_PAGIN.sortBy;
+        page.paginationLimit = paging.paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit;
+        return page;
+    }
+    var buildPaginationContext = function(paging){
+        paging = paging || {};
+        paging = generatePaginationContext(paging);
+        log.info('[pagination-context] settting context to : '+stringify(paging));
+        PaginationContext.init(paging.start,paging.count,paging.sortOrder,
+            paging.sortBy,paging.paginationLimit);
+    };
+    var destroyPaginationContext = function(paginationContext) {
+        PaginationContext.destroy();
+        log.info('[pagination-context] successfully destroyed context')
+    };
+    var buildQuery = function(query){
+        var q = '';
+        var options = {};
+        options.wildcard = true; //Assume that wildcard is enabled
+        //Check if grouping is enabled
+         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
+            options.wildcard = false;//query[constants.Q_PROP_GROUP];
+            delete query[constants.Q_PROP_GROUP];
+         } 
+         q  = buildQueryString(query, options);
+         return q;
+    };
+    var doAdvanceSearch = function(type,query,paging,registry,rxtManager) {
+        var assets = [];
+        var q;
+        var governanceRegistry;
+        var mediaType = '';
+        if(type){
+            mediaType = rxtManager.getMediaType(type);
+        }
+        try {
+            log.info('[advance search] building pagination');
+            buildPaginationContext(paging);
+            log.info('[advance search] building query ');
+            q = buildQuery(query);
+            log.info('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);            
+            if(q.length>0){
+                governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
+                assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
+            }      
+        } catch (e) {
+            log.error(e);
+            log.error('Unable to retrieve assets',e);
+        } finally {
+            destroyPaginationContext();
+        }
+        return assets;
+    };
+    AssetManager.prototype.advanceSearch = function(query,paging) {
+      var assets = [];
+      var type = query.type;
+      var mediaType = '';
+      var registry = this.registry.registry;
+      var rm = this.rxtManager;
+      //Note: This will restrict the search to this asset type
+      type = this.type;
+      query = query || {};
+      paging = paging || null;
+      assets =  doAdvanceSearch(type,query,paging,registry,rm);
+      //assets is a set that must be converted to a JSON array
+      assets  = processAssets(type,assets,rm);
+      //Add additional meta data
+      addAssetsMetaData(assets,this);
+      return assets;
+    };
+    asset.advanceSearch = function(query,paging,session,tenantId) {
+        var storeAPI = require('store');
+        var user = storeAPI.server.current(session);
+        var userRegistry;
+        var rxtManager;
+        var type = query.type;
+        var assets = [];
+        var registry;
+        tenantId = tenantId || null;
+        if((!user)&&(!tenantId)) {
+            log.error('Unable to create registry instance without a tenantId when there is no logged in user');
+            throw 'Unable to create registry instance without a tenantId when there is no logged in user';
+        } 
+        //Determine if a user exists
+        if(user){
+            userRegistry = storeAPI.user.userRegistry(session);
+            tenantId = user.tenantId;
+        }  else {
+            log.info('Switching anonymous registry to perform advanced search as there is no logged in user');
+            userRegistry = storeAPI.server.anonRegistry(tenantId);
+        }
+        rxtManager = core.rxtManager(tenantId);
+        registry = userRegistry.registry;
+        assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
+        //assets is a set that must be converted to a JSON array
+        log.info('[advance search] about to process result set');
+        assets = processAssets(null,assets,rxtManager);
+        addMetaDataToGenericAssets(assets,session,tenantId);
         return assets;
     };
     /**
@@ -878,7 +1093,9 @@ var asset = {};
         var userSpace = this.getSubscriptionSpace(session);
         var subscriptions = [];
         if (!userSpace) {
-            log.error('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');
+            if(log.isDebugEnabled()){
+                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');                
+            }
             return subscriptions;
         }
         subscriptions = obtainSubscriptions(userSpace, this, this.registry, this.type);

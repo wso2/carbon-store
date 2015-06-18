@@ -28,15 +28,16 @@
                 sso = require('sso'),
                 sso_sessions = application.get('sso_sessions'),
                 sessionId = session.getId(),
-                encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], config.ssoConfiguration.issuer),
+                attr = config.authentication.methods.sso.attributes,
+                encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], attr.issuer),
                 //postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
-                postUrl = config.ssoConfiguration.identityProviderURL;
+                postUrl = attr.identityProviderURL;
         var log = new Log();
         log.debug("store session index : " + sso_sessions[session.getId()]);
 
         %>
         <div>
-           <p>You are now redirected to Stratos Identity. If the
+           <p>You are now redirected to Identity Server. If the
            redirection fails, please click the post button.</p>
 
             <form id="logoutForm" method="post" action="<%=postUrl%>">

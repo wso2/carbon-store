@@ -199,7 +199,7 @@ a.ctrl-filter-category:hover {
 }
 
 /* input */
-.form-control, .custom-form-right select, .custom-form-right textarea, .cu-data-table td select, .cu-data-table td textarea, .cu-data-table input,.input-large {
+.form-control, .custom-form-right select, .custom-form-right textarea, .cu-data-table td select, .cu-data-table td textarea, .cu-data-table input[type="text"],input[type="text"].input-large {
 	display: block;
 	width: 100%;
 	height: 34px;

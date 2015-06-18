@@ -80,7 +80,8 @@ var pageDecorators = {};
         return page;
     };
     pageDecorators.authenticationDetails = function(ctx, page) {
-        var authenticationMethods = ctx.tenantConfigs.authentication ? ctx.tenantConfigs.authentication : {};
+        var configs = require('/config/store.json');
+        var authenticationMethods = configs.authentication ? configs.authentication : {};
         var activeMethod = authenticationMethods.activeMethod ? authenticationMethods.activeMethod : '';
         //Obtain the details for this method of authentication
         var authDetails = fetchActiveAuthDetails(activeMethod, authenticationMethods.methods || []);
@@ -99,12 +100,14 @@ var pageDecorators = {};
     pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
+        var assetAPI = require('/modules/asset-api.js').api;
         var assets = {};
         var items = [];
         var assetsByType = [];
         var am;
         var type;
         var rxtDetails;
+        var assetMap = {};
         var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
         var tenantAssetResources;
         // Supporting cross tenant views
@@ -114,39 +117,47 @@ var pageDecorators = {};
         var ratingApi = require('/modules/rating-api.js').api;
         var q = page.assetMeta.q;
         var query = buildRecentAssetQuery(q);
-        for (var index in types) {
-            typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
-            type = typeDetails.shortName;
-            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
-                type: type
-            });
-            am = tenantAssetResources.am;
-            // if (ctx.isAnonContext) {
-            //     am = asset.createAnonAssetManager(ctx.session, type, ctx.tenantId);
-            // } else {
-            //     am = asset.createUserAssetManager(ctx.session, type);
-            // }
-            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
-                if (query) {
-                    query = replaceNameQuery(query, ctx.rxtManager, type);
-                    query = replaceCategoryQuery(query, ctx.rxtManager, type);
-                    assets = am.recentAssets({
-                        q: query
-                    });
-                } else {
-                    assets = am.recentAssets();
+        if (query) {
+            items = asset.advanceSearch(query, null, session, ctx.tenantId)||[];
+            assetMap = {};
+            var template;
+            //Sort the results by type
+            items.forEach(function(item){
+                if(!assetMap[item.type]){
+                    assetMap[item.type] = [];
                 }
-                if (assets.length > 0) {
-                    //Add subscription details if this is not an anon context
-                    if (!ctx.isAnonContext) {
-                        addSubscriptionDetails(assets, am, ctx.session);
+                assetMap[item.type].push(item);
+            });
+            //Collect the asset result set along with the rxt definition
+            for(var key in assetMap){
+                template = ctx.rxtManager.getRxtTypeDetails(key);
+                assetsByType.push({
+                    assets:assetMap[key],
+                    rxt:template
+                });
+            }
+        } else {
+            for (var index in types) {
+                typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
+                type = typeDetails.shortName;
+                tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                    type: type
+                });
+                am = tenantAssetResources.am;
+                if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                    assets = am.recentAssets();
+                    if (assets.length > 0) {
+                        //Add subscription details if this is not an anon context
+                        if (!ctx.isAnonContext) {
+                            addSubscriptionDetails(assets, am, ctx.session);
+                        }
+                        ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                        items = items.concat(assets);
+                        assetsByType.push({
+                            assets: assets,
+                            rxt: typeDetails
+                        });
                     }
-                    ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
-                    items = items.concat(assets);
-                    assetsByType.push({
-                        assets: assets,
-                        rxt: typeDetails
-                    });
                 }
             }
         }

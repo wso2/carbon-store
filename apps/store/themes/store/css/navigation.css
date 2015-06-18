@@ -232,14 +232,15 @@ hr.emboss {
 .dropdown-menu {
     background-color: #333;
     color: #ccc;
-    left: 255px;
+    left: 265px;
     max-height: 402px;
     overflow: hidden;
     padding-bottom: 10px;
     padding-left: 10px;
     padding-top: 10px;
-    top: 49px;
+    top: 42px;
     width: 211px;
+    border-radius: 0px;
 }
 .store-menu .dropdown-menu li a {
     color: #bdc3c7;
@@ -290,5 +291,9 @@ hr.emboss {
 .navbar-nav > li > a {
     padding-bottom: 4px;
     padding-top:8px;
+    color: #DDD;
 }
-.nav > li > a:focus, .nav > li > a:hover{ background-color:#3e3e3e; }
+.action-title {
+    padding: 8px 2px 2px 5px;
+    color: #ddd;}
+.nav > li > a:focus, .nav > li > a:hover{ background-color:#3e3e3e; color: #fff; }

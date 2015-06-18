@@ -439,6 +439,126 @@ var result;
         }
         return result;
     };
+    /**
+     * Performs an advance search on assets
+     * @param req      The request
+     * @param res      The response
+     * @param options  Object containing parameters
+     * @param session sessionID
+     */
+    api.advanceSearch = function(options, req, res, session) {
+        var asset = rxtModule.asset;
+        var assetManager = asset.createUserAssetManager(session, options.type);
+        var sort = (request.getParameter("sort") || '');
+        var paging = rxtModule.constants.DEFAULT_ASSET_PAGIN;
+        var server = require('store').server;
+        var user = server.current(session);
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        populateSortingValues(sort, paging); // populate sortOrder and sortBy
+        paging.count = (request.getParameter("count") || paging.count);
+        paging.start = (request.getParameter("start") || paging.start);
+        paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
+        var q = (request.getParameter("q") || '');
+        var isGroupingEnabled = false;//Grouping is disabled by default
+        try {
+            var assets;
+            if (q) { //if search-query parameters are provided
+                var qString = '{' + q + '}';
+                var query = validateQuery(qString);
+                query = replaceCategoryQuery(query, rxtManager, options.type);
+                isGroupingEnabled = rxtManager.isGroupingEnabled(options.type);
+                if(isGroupingEnabled){
+                    query._group = true; //Signal grouping is enabled
+                    query.default = true; //Required for grouping query
+                }
+                //query = replaceNameQuery(query, rxtManager, options.type);
+                if (log.isDebugEnabled) {
+                    //Need to log this as we perform some processing on the name and
+                    //category values
+                    log.debug('processed query used for searching: ' + stringify(query));
+                    log.debug('grouping enabled: '+isGroupingEnabled);
+                }
+                assets = assetManager.advanceSearch(query, paging); // asset manager back-end call with search-query
+            } else {
+                //If grouping is enabled then do a group search
+                if (rxtManager.isGroupingEnabled(options.type)) {
+                    assets = assetManager.searchByGroup();
+                } else {
+                    assets = assetManager.list(paging); // asset manager back-end call for asset listing
+                }
+            }
+            var expansionFieldsParam = (request.getParameter('fields') || '');
+            if (expansionFieldsParam) { //if field expansion is requested
+                options.fields = getExpansionFileds(expansionFieldsParam); //set fields
+                options.assets = assets; //set assets
+                result = fieldExpansion(options); //call field expansion methods to filter fields
+            } else {
+                result = assets;
+            }
+        } catch (e) {
+            result = null;
+            log.error(e);
+            if (log.isDebugEnabled()) {
+                log.debug("Error while searching assets as for the request : " + req.getQueryString());
+            }
+        }
+        return result;
+    };
+    /**
+     * Performs an asset independent advance search
+     * @param  {[type]} options [description]
+     * @param  {[type]} req     [description]
+     * @param  {[type]} res     [description]
+     * @param  {[type]} session [description]
+     * @return {[type]}         [description]
+     */
+    api.genericAdvanceSearch = function(options,req,res,session){
+        var assetAPI = rxtModule.asset;
+        var sort = (request.getParameter("sort") || '');
+        var paging = rxtModule.constants.DEFAULT_ASSET_PAGIN;
+        var server = require('store').server;
+        var user = server.current(session);
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        populateSortingValues(sort, paging); // populate sortOrder and sortBy
+        paging.count = (request.getParameter("count") || paging.count);
+        paging.start = (request.getParameter("start") || paging.start);
+        paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
+        var q = (request.getParameter("q") || '');
+        var result = [];
+        try {
+            var assets;
+            if (q) { //if search-query parameters are provided
+                var qString = '{' + q + '}';
+                var query = validateQuery(qString);
+                if (log.isDebugEnabled) {
+                    //Need to log this as we perform some processing on the name and
+                    //category values
+                    log.debug('processed query used for searching: ' + stringify(query));
+                }
+                //TODO: The generic advance search does not honour grouping
+                //as grouping can be enabled/disabled per asset type
+                assets = assetAPI.advanceSearch(query, paging,session); // asset manager back-end call with search-query
+            } else {
+                log.error('Unable to perform a bulk asset retrieval without a type been specified');
+                throw 'Unable to perform a bulk asset retrieval without a type been specified';
+            }
+            var expansionFieldsParam = (request.getParameter('fields') || '');
+            if (expansionFieldsParam) { //if field expansion is requested
+                options.fields = getExpansionFileds(expansionFieldsParam); //set fields
+                options.assets = assets; //set assets
+                result = fieldExpansion(options); //call field expansion methods to filter fields
+            } else {
+                result = assets;
+            }
+        } catch (e) {
+            result = null;
+            log.error(e);
+            if (log.isDebugEnabled()) {
+                log.debug("Error while searching assets as for the request : " + req.getQueryString());
+            }
+        }
+        return result;
+    };
     var replaceCategoryQuery = function(q, rxtManager, type) {
         //Determine if a category was provided
         if (!q.hasOwnProperty('category')) {

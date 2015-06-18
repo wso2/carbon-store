@@ -2,7 +2,7 @@
     var isSocial = ('{{features.social.enabled}}' == 'true');
     var guestDomain = '{{guestDomain}}';
 </script>
-<div class="asset-description padding-bottom-double ">
+<div class="asset-description">
 
     {{#with assets}}
 
@@ -10,7 +10,7 @@
         {{#with attributes}}
             <div class="asset-description-header">
                 <div class="col-lg-12 white-bg left ">
-                    <h3 >Gadget Details</h3>
+                    <h3 >{{../../rxt.singularLabel}} Details</h3>
                     <div class="clear"></div>
                     <hr>
                 </div>
@@ -23,18 +23,23 @@
                     {{> asset-thumbnail ..}}
                 </div>
                 <div class="details-container">
-                    <div class="col-lg-9">
+                    <div class="pull-left">
                         <h4 class="margin-none ">{{overview_name}}</h4>
                         <p class="grey padding-none margin-none">{{t "Version"}} {{overview_version}}</p>
                         <p class="light-blue padding-none margin-none">{{t "by"}} {{overview_provider}}</p>
                     </div>
-                    <div class="col-lg-5  padding-top right asset-rating margin-left-double">
+                    <div class="pull-right">
+                        <span class = "pull-right rating-count"> ( <i class="fa fa-users"></i> {{../count}} )</span>
+                        <span class="asset-rating pull-right">
+                        <div style="width:{{../ratingPx}}px"></div>
+                        </span>
+                        <div class="clearfix"></div>
+                        {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
+                        {{>asset-utilization ../../..}}
+                        {{/hasAssetPermission}}
+                        {{> asset-version-info ../..}}
                     </div>
                 </div>
-                 {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
-                    {{>asset-utilization ../../..}}
-                 {{/hasAssetPermission}}
-                 {{> asset-version-info ../..}}
              </div>
                 <!-- end of asset details-->
             </div>
@@ -51,7 +56,7 @@
             <!-- asset description -->
                 <div class="assetp-properties">
                     <hr class="margin-bottom-double">
-                    <ul class="nav nav-tabs padding-top-double" id="assetp-tabs" data-aid="{{../path}}">
+                    <ul class="nav nav-tabs" id="assetp-tabs" data-aid="{{../path}}">
                         <li class="active">
                             <a href="#tab-properties" data-toggle="tab" data-type="basic">{{t "Description"}}</a>
                         </li>

@@ -25,14 +25,14 @@
     var constants = rxtAPI.constants;
     var authMethod;
     var redirectURL;
+    var configs = require('/config/store.js').config();
     var context = rxtAPI.app.getContext();
     if (!user) {
         response.sendRedirect(context);
         return;
     }
     var resolveAuthMethod = function() {
-        var tenantId = carbon.server.superTenant.tenantId;
-        return rxtAPI.app.getAuthenticationMethod(tenantId);
+        return configs.authentication.activeMethod;
     };
     var getRedirectURL = function(authMethod, context) {
         var url;
@@ -55,7 +55,7 @@
     };
     authMethod = resolveAuthMethod();
     if (!authMethod) {
-        log.error('An authentication method has not been configured for this tenant.Please make sure the activeMethod property has been set in the authentication section of the publisher.json' + '.You can find this file in the /_system/config/publisher/configs/publisher.json file.');
+        log.error('An authentication method has not been configured. Please make sure the activeMethod property has been set in the authentication section of the publisher.json' + '.You can find this file in the /publisher/configs/publisher.json file.');
         response.sendError(500);
         return;
     }

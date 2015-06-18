@@ -318,7 +318,20 @@ a.ctrl-asset-type-switcher:hover {
 .wr-secondary-links, .wr-auth {
 	padding-top:10px;
 }
-
+.nav > li.advanced-search-link{
+    position: absolute;
+    right: 0;
+    float:right;
+}
+.nav > li.advanced-search-link span{
+    font-weight: 100;
+}
+div.asset-well div.advanced-search-form-container{
+    padding:0 20px 20px 20px;
+}
+div.asset-well div.advanced-search-form-container h1{
+    font-weight: 200;
+}
 a.ast-type-item {
 	width:77px;
 	height:77px;

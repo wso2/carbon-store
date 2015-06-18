@@ -211,6 +211,7 @@ button.font-extra-large{font-size:20px;}
 
 .blue-bg{background-color: #3a9ecf;}
 button.grey-bg{background-color: #222222;}
+button.grey-bg:hover{background-color: #3A9ECF;}
 
 .white{color:#FFF;}
 

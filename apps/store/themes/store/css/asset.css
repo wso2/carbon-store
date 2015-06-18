@@ -1,7 +1,7 @@
 body .store-left {
     padding-top: 0;
 }
-h4{font-weight: 500; font-size: 20px;}
+h4{font-weight: 400; font-size: 20px;}
 .asset-description {
     position: relative;
     padding-top: 0;
@@ -10,14 +10,17 @@ h4{font-weight: 500; font-size: 20px;}
 .asset-description-header h2 {
     margin-top: 12px;
 }
+.asset-description-header h3{
+    margin-top:10px;
+    font-weight: 200;
+    font-size: 26px;
+}
 .asset-description-header {
     background: #fff;
     display: inline-block;
     float: left;
     height: auto;
-    margin-top: 20px;
     width: 100%;
-    padding-bottom: 20px;
 }
 .asset-description-header .row > div {
     position: relative;
@@ -205,9 +208,9 @@ h4{font-weight: 400px;}
     right: -1px;
     background: #fff;
 }*/
-.details-image{padding: 18px 0 0; width:19%; float: left; transition:all 0.5s ease; margin-bottom: 15px;}
-.details-container{ float: left; transition:all 0.5s ease; width:81%;margin-top: 35px; }
-.action-container{width:auto;padding:15px; display:inline-block;}
+.details-image{padding: 0; width:27%; float: left; transition:all 0.5s ease; margin-bottom: 15px;}
+.details-container{ float: left; transition:all 0.5s ease; width:73%; padding-left: 10px; }
+.action-container{width:auto;padding:15px 0 15px 15px ; display:inline-block;}
 .action-sub-container{width: auto; height: auto; float: left; vertical-align:middle; padding-right: 6px;}
 .action-lable{width:85px; height: auto;}
 .blue-button {
@@ -219,12 +222,23 @@ h4{font-weight: 400px;}
     text-align: center;
     font-size: 16px;
 }
+a.gray-button {
+    background-color: #474747;
+}
+a.disabled-button,a.disabled-button:hover {
+    background-color: #c8c8c8;
+    color: #a0a0a0;
+    cursor: default;
+}
 .asset-details-wrapper {width:58.3%;  border-left: 1px solid #ccc; float: left;}
+.asset-details-wrapper h4{
+    margin-top:0;
+}
 .asset-description{ width: 100%; height: auto; float: left; background-color: #fff; margin-top: 20px;}
 .tags {
     background-color: #e3e3e3;
     display: inline-block;
-    margin-left: 1%;
+    margin-right: 1%;
     margin-top: 1%;
     padding: 1%;
     text-align: center;
@@ -310,3 +324,7 @@ h4{font-weight: 400px;}
 .relative{ position:relative;}
 .border-bottom{border-bottom: 1px solid #282828;}
 
+a:focus, a:hover {
+    color: #fff;
+    text-decoration: none;
+}

@@ -38,6 +38,10 @@ app.server = function(ctx) {
             },{
                 url:'basic-authenticator',
                 path:'basic-authenticator.jag'
+            },{
+                title:'Advanced Search',
+                url:'advanced-search',
+                path:'advanced-search.jag'
             }]
         },
         configs: {
