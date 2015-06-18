@@ -70,7 +70,7 @@ store.infiniteScroll.getItems = function(from,to){
     var path = window.location.href; //current page path
     // Returns the jQuery ajax method
     var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
-    if(url.indexOf('tag')== -1){
+    // if(url.indexOf('tag')== -1){
         caramel.data({
              title : null,
              body : ['assets']
@@ -86,7 +86,7 @@ store.infiniteScroll.getItems = function(from,to){
                  console.info(status);
              }
          });
-    }
+    //}
 
 };
 store.infiniteScroll.showAll = function(){
