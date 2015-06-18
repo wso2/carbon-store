@@ -501,6 +501,10 @@ i.cu-btn-exp-col {
     background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;   
 }
 
+.btn-copy {
+    background:url('../img/icons/ico-edit.png') 0.8em 1em no-repeat;   
+}
+
 .btn-collapsed {
     background:url('../img/icons/ico-collapsed.png') no-repeat;      
 }
