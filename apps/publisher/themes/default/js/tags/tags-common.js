@@ -36,6 +36,9 @@ $(function() {
     tagsAPI.tagsAPI = function() {
         return caramel.url('/apis/tags');
     };
+    tagsAPI.tagSearchAPI = function(){
+        return caramel.url('/apis/tags?type=' + getAssetType())
+    }
     tagsAPI.disableSelect2 = function() {
         $(this.TAG_SELECTBOX).prop('disabled', true);
     };
