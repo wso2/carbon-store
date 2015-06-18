@@ -417,8 +417,7 @@ var asset = {};
         var queryString = [];
         var value;  
         options = options || {};
-        var wildcard = options.wildcard||true; //Default to a wildcard search
-
+        var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
         for(var key in query) {
             //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
@@ -546,10 +545,10 @@ var asset = {};
     var buildQuery = function(query){
         var q = '';
         var options = {};
-        options.wildcard = false;
+        options.wildcard = true; //Assume that wildcard is enabled
         //Check if grouping is enabled
          if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
-            options.wildcard = query[constants.Q_PROP_GROUP];
+            options.wildcard = false;//query[constants.Q_PROP_GROUP];
             delete query[constants.Q_PROP_GROUP];
          } 
          q  = buildQueryString(query, options);

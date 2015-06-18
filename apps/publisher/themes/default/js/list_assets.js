@@ -220,9 +220,9 @@ var parseUsedDefinedQuery = function(input) {
     for(var index = 0; index < terms.length; index++){
         term = terms[index];
         term = term.trim(); //Remove any whitespaces
-        //If this term is empty and does not have a : then it should be appended to the
+        //If this term is not empty and does not have a : then it should be appended to the
         //previous term
-        if((term.length>0)&&(isTokenizedTerm(term))){
+        if((!isEmpty(term))&&(!isTokenizedTerm(term))){
             previous = arr.length -1;
             if(previous>=0) {
                 arr[previous]= arr[previous]+' '+term;
