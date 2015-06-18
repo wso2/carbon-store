@@ -267,6 +267,7 @@ var responseProcessor = require('utils').response;
         });
         var rxtModule = require('rxt');
         var rxtManager = rxtModule.core.rxtManager(tenantId);
+        var isGroupingEnabled = false; //Assume that grouping is disabled
         if (!userDetails) {
             assetManager = asset.createAnonAssetManager(session, options.type, tenantId);
         } else {
@@ -303,6 +304,11 @@ var responseProcessor = require('utils').response;
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
                 query = replaceCategoryQuery(query, rxtManager, options.type);
+                isGroupingEnabled  = rxtManager.isGroupingEnabled(options.type);
+                if(isGroupingEnabled){
+                    query._group = true;
+                    query.default = true;
+                }
                 //query = replaceNameQuery(query, rxtManager, options.type);
                 var assets = assetManager.advanceSearch(query, paging); //doesnt work properly
             } else {
@@ -382,7 +388,8 @@ var responseProcessor = require('utils').response;
                     //category values
                     log.debug('processed query used for searching: ' + stringify(query));
                 }
-                //Obtain the correct tenant Id to support /t/ urls
+                //Note: Advance generic searches will not support grouping as it can 
+                //be enabled/disabled per asset type
                 var assets = asset.advanceSearch(query,paging,session,tenantId); 
             } else {
                 log.error('Unable to perform a bulk asset retrieval without a type been specified');
