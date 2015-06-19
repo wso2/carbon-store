@@ -80,7 +80,7 @@ store.infiniteScroll.getItems = function(from,to){
         return;
     }
 
-    var initialUrl = '/publisher/asts/' + assetType + '/list';
+    var initialUrl = '/publisher/assets/' + assetType + '/list';
     caramel.data({
                      "title": null,
                      "listassets": ["list-assets"]
