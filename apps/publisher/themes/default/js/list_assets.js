@@ -235,7 +235,7 @@ var parseUsedDefinedQuery = function(input) {
 };
 var createQuery = function(options) {
     options = options || {};
-    var searchUrl = caramel.url('/asts/' + store.publisher.type + '/list');
+    var searchUrl = caramel.url('/assets/' + store.publisher.type + '/list');
     var q = {};
     var input = $('#inp_searchAsset').val();
     var category = options.category || undefined;

@@ -23,8 +23,8 @@
 	var constants=require('rxt').constants;
     var app = require('rxt').app;
     var context = app.getContext();
-	var apiEndpoint=constants.ASSET_API_URL_PATTERN;//'/{context}/asts/{type}/api/{+suffix}';
-	var pageEndpoint=constants.ASSET_PAGE_URL_PATTERN;//'/{context}/asts/{type}/{+suffix}';
+	var apiEndpoint=constants.ASSET_API_URL_PATTERN;//'/{context}/assets/{type}/api/{+suffix}';
+	var pageEndpoint=constants.ASSET_PAGE_URL_PATTERN;//'/{context}/assets/{type}/{+suffix}';
 	var rxtAPI = require('rxt');
 
 	var getPage=function(uri){

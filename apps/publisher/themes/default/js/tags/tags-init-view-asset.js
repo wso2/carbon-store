@@ -16,21 +16,11 @@
  *  under the License.
  *
  */
-var format = function(data){
-	var unixtime, newDate,
-		newDate = new Date(),
-		artifacts = data.artifacts;
-	for(var i in artifacts){
-		unixtime = artifacts[i].attributes['overview_createdtime'];
-		newDate.setTime(unixtime);
-		data.artifacts[i].attributes['overview_createdtime'] = newDate.toUTCString();
-	}
-	return data;
-}
-
-var resources = function(){
-	return {
-		js:['select2.min.js','tags/tags-common.js','tags/tags-init-view-asset.js'],
-		css:['select2.min.css']
-	}
-};
+$(function() {
+    var TAG_SELECTBOX = tagsAPI.TAG_SELECTBOX;
+    $(TAG_SELECTBOX).select2({
+        tags: true,
+        placeholder: 'Please select a tag',
+        disabled: true
+    });
+});

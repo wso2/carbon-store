@@ -4,7 +4,7 @@
         <div class="ast-container">
             <div class="container-fluid ">
                 <div class="title">
-                    <a class="asset-type-{{rxt.shortName}}" href="{{url "/asts"}}/{{key}}/subscriptions">{{value.meta.pluralLabel}}</a>
+                    <a class="asset-type-{{rxt.shortName}}" href="{{url "/assets"}}/{{key}}/subscriptions">{{value.meta.pluralLabel}}</a>
                 </div><!--title-->
                 <hr />
             </div>
@@ -13,12 +13,12 @@
             {{#attributes}}
                 <div class="ctrl-wr-asset">
                     <div class="itm-ast">
-                        <a class="ast-img " href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
+                        <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
                             <img class="img-responsive" src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
                         </a>
                         <div class="ast-content">
                             <div class="ast-title padding">
-                                <a class="ast-name truncate" href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
+                                <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
                                 <span class="ast-auth">{{overview_provider}}</span>
                             </div>
                             <div class="pull-left asset-rating-container">

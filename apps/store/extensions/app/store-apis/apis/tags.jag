@@ -17,7 +17,7 @@
  *  under the License.
  *
  */
-require('/modules/publisher.js').exec(function (ctx) {
+require('/modules/store.js').exec(function (ctx) {
     var utils = require('utils');
     var rxt = require('rxt');
     var ref = utils.request;
