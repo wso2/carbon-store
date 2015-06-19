@@ -20,6 +20,13 @@
 
 var e = request.getParameter('authFailure');
 
+var log = new Log();
+var relyingParty = request.getParameter('relyingParty');
+//TODO: this should be fixed properly
+if (relyingParty instanceof Array) {
+    relyingParty = relyingParty.pop();
+}
+
 var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();
 var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
@@ -59,9 +66,10 @@ var themeModule = require('/modules/theme.js');
                             <div class="wr-input-control padding-double">
                                 <br><br><br>
 
-                                <% if(e){ %>
+                                <% if (e) { %>
                                 <div class="alert alert-error">Username or password is invalid</div>
-                                <% } %>
+                                <%
+} %>
                                 <input id="username" name="username" type="text" class="input-block-level" placeholder="Username">
                                 <br><br>
                                 <input id="password" name="password" type="password" class="input-block-level" placeholder="Password">
@@ -72,9 +80,10 @@ var themeModule = require('/modules/theme.js');
                                     <!--<input type="checkbox" value="remember-me" style="display: inline"> Remember me
                                     <br><br>-->
                                 <input type="hidden" name="sessionDataKey" value="<%=request.getParameter("sessionDataKey")%>">
-                                <% if(isPasswordRecoveryEnabled){ %>
+                                <% if (isPasswordRecoveryEnabled) { %>
                                     <a href="recovery-option">Forgot your password?</a>
-                                <% }%>
+                                <%
+}%>
                                 <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
                             </div>
                         </div>
@@ -94,7 +103,7 @@ var themeModule = require('/modules/theme.js');
 
                                 <label class="float-left light-grey taxt-label">Username</label>
                                 <input id="reg-username"
-                                        name="reg-username" type="text" class="padding-double required usrName">
+                                        name="reg-username" type="text" class="padding-double required usrName usrNameLength">
 
                                 <br><br>
 
@@ -108,62 +117,64 @@ var themeModule = require('/modules/theme.js');
 
                                 <br><br>
                                 <%
-                                    var claimsModule = require('account-management');
-                                    var claims = claimsModule.getDefaultClaims();
-                                    var renderedClaims = {};
+var claimsModule = require('account-management');
+var claims = claimsModule.getDefaultClaims();
+var renderedClaims = {};
 
-                                    var claimUriOverrides = {
-                                        USERNAME: {
-                                            render: false // because this is already rendered by default
-                                        },
-                                        PASSWORD: {
-                                            render: false // because this is already rendered by default
-                                        },
-                                        EMAILADDRESS: {
-                                            render: true,
-                                            customClass: 'email'
-                                        }
-                                    }
+var claimUriOverrides = {
+    USERNAME: {
+        render: false // because this is already rendered by default
+    },
+    PASSWORD: {
+        render: false // because this is already rendered by default
+    },
+    EMAILADDRESS: {
+        render: true,
+        customClass: 'email'
+    }
+}
 
-                                    for (var claimIndex = 0; claimIndex < claims.length; claimIndex++) {
-
-                                        var override = claimUriOverrides[claims[claimIndex].claimUri.toUpperCase()];
-
-                                        // render claim if it's required and not overriden to --> render:false
-                                        if (claims[claimIndex].isRequired && (!override || override.render !== false)) {
-                                            var formElementName = 'reg-' + claims[claimIndex].displayTag
-                                                    .toLowerCase().replace(' ', '-');
-                                            %>
-                                                <label class="float-left light-grey taxt-label"><%=claims[claimIndex].displayTag%></label>
+for (var claimIndex = 0; claimIndex < claims.length; claimIndex++) {
+    var override = claimUriOverrides[claims[claimIndex].claimUri.toUpperCase()];
+    // render claim if it's required and not overriden to --> render:false
+    if (claims[claimIndex].isRequired && (!override || override.render !== false)) {
+        var formElementName = 'reg-' + claims[claimIndex].displayTag
+                        .toLowerCase().replace(' ', '-');
+        %>
+            <label class="float-left light-grey taxt-label"><%=claims[claimIndex].displayTag%></label>
                                                                                 <input type="text" name="<%=formElementName%>"
                                                                                        data-claim-uri="<%=claims[claimIndex].claimUri%>"
-                                                                                       class="padding-double required <%=claims[claimIndex].customClass%>">
-                                                                                       <br><br>
-                                                                            <%
-                                            renderedClaims[formElementName] = claims[claimIndex].claimUri;
-                                        }
-                                    }
-                                    %>
-                                        <label class="float-left light-grey taxt-label">Security Question</label>
-                                        <select id='secret-question' name='secret-question'>
-                                    <%
-                                    for (var challengeIndex = 0; challengeIndex < challengeSet.length; challengeIndex++) {
-                                        %>
-                                                <option value="<%=challengeSet[challengeIndex].getQuestion()%>">
-                                                                                        <%=challengeSet[challengeIndex].getQuestion()%>
-                                                                                    </option>
-                                                                            <%
-                                    }
-                                    %>
-                                    </select>
-                                    <br><br>
-                                    <label class="float-left light-grey taxt-label">Answer</label>
-                                    <input type='text' id='secret-answer' name="secret-answer"
-                                           class="padding-double required">
-                                    <br><br>
-                                    <input type="hidden" name="reg-claims" value='<%=renderedClaims%>'
+                                                                                       class="padding-double required <%=claims[claimIndex].customClass
+        %>">
+                                                                                               <br><br>
+                                                                                    <%
+        renderedClaims[formElementName] = claims[claimIndex].claimUri;
+    }
+}
+%>
+    <label class="float-left light-grey taxt-label">Security Question</label>
+    <select id='secret-question' name='secret-question'>
+<%
+for (var challengeIndex = 0; challengeIndex < challengeSet.length; challengeIndex++) {
+    %>
+            <option value="<%=challengeSet[challengeIndex].getQuestion()
+    %>">
+                                                                                            <%=challengeSet[challengeIndex].getQuestion()
+    %>
+                                                                                        </option>
+                                                                                <%
+}
+%>
+</select>
+<br><br>
+<label class="float-left light-grey taxt-label">Answer</label>
+<input type='text' id='secret-answer' name="secret-answer"
+       class="padding-double required">
+<br><br>
+<input type="hidden" name="reg-claims" value='<%=renderedClaims%>'
                                        class="input-block-level required">
                                     <input id="reg-action" name="action" type="hidden" value="register">
+                                    <input id="reg-relyingParty" name="relyingParty" type="hidden" value="<%=relyingParty%>">
                                     <button id="registrationSubmit" class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"
                                             type="button">Register
                                     </button>
@@ -223,6 +234,9 @@ var themeModule = require('/modules/theme.js');
         jQuery.validator.addMethod("usrName", function (value, element) {
             return this.optional(element) || /^[a-zA-Z0-9\-]*$/.test(value);
         }, "Only alphanumeric characters and '-' allowed");
+        jQuery.validator.addMethod("usrNameLength", function (value, element) {
+            return value.length >= 3 && value.length <= 30;
+        }, "username must contain minimum 3 characters and maximum 30 characters");
 
          $('#signInLink').click(function(){
             $('#registerForm').fadeOut();
