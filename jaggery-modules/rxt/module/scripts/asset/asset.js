@@ -106,7 +106,9 @@ var asset = {};
         } else {
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
-                log.info("setting the field " + attrName + ' with value ' + data[attrName]);
+                if(log.isDebugEnabled()){
+                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);                    
+                }
             } else {
                 log.debug(attrName + ' will not be saved.');
             }
