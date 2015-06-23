@@ -366,6 +366,82 @@ var pageDecorators = {};
             info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
     };
+    pageDecorators.sorting = function(ctx,page){
+        var sortBy = "";
+        var sort = "";
+        var sortHelp = "";
+        var sortHelpIcon = "fa-arrow-down";
+        var popularActive = false;
+        var nameActive = false;
+        var nameIcon = "fa-arrow-down";
+        var nameNextSort = "DESC";
+        var dateTimeActive = false;
+        var dateTimeIcon = "fa-arrow-down";
+        var dateTimeNextSort = "DESC";
+
+        var queryString = request.getQueryString();
+        if(queryString){
+            var parts = queryString.split('&');
+            for(var i=0;i<parts.length;i++){
+                if(parts[i].indexOf("=") != -1 ){
+                    var params = parts[i].split("=");
+                    if(params[0] == "sortBy"){
+                        sortBy = params[1];
+                    }else if(params[0] == "sort"){
+                        sort = params[1];
+                    }
+                }
+            }
+        }else{
+            sortBy = "overview_createdtime";
+            sort = "DESC";
+            sortHelp = 'Date/Time Created';
+        }
+
+        if(sortBy == "overview_name" && sort == "DESC"){
+            sortHelp = 'Name';
+            sortHelpIcon = "fa-arrow-down";
+            nameActive = true;
+            nameIcon = "fa-arrow-down";
+            nameNextSort = "ASC";
+        }else if(sortBy == "overview_name" && sort == "ASC"){
+            sortHelp = 'Name';
+            sortHelpIcon = "fa-arrow-up";
+            nameActive = true;
+            nameIcon = "fa-arrow-up";
+        }else if(sortBy == "overview_createdtime" && sort == "DESC"){
+            sortHelp = 'Date/Time Created';
+            sortHelpIcon = "fa-arrow-down";
+            dateTimeActive = true;
+            dateTimeIcon = "fa-arrow-down";
+            dateTimeNextSort = "ASC";
+        }else if(sortBy == "overview_createdtime" && sort == "ASC"){
+            sortHelp = 'Date/Time Created';
+            sortHelpIcon = "fa-arrow-up";
+            dateTimeActive = true;
+            dateTimeIcon = "fa-arrow-up";
+        }else if(sort == "popular"){
+            sortHelp = 'Popular';
+            sortHelpIcon = "fa-arrow-down";
+            popularActive = true;
+        }
+
+
+        page.sorting={
+            sort:sort,
+            sortBy:sortBy,
+            sortHelp:sortHelp,
+            sortHelpIcon:sortHelpIcon,
+            popularActive:popularActive,
+            nameActive:nameActive,
+            nameIcon:nameIcon,
+            nameNextSort:nameNextSort,
+            dateTimeActive:dateTimeActive,
+            dateTimeIcon:dateTimeIcon,
+            dateTimeNextSort:dateTimeNextSort
+        };
+        return page;
+    };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;
         var am;
