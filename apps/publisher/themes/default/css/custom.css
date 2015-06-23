@@ -297,11 +297,6 @@ a.ctrl-asset-type-switcher:hover {
     display:inline-block;
 }
 
-.ast-type-item div {
-    line-height: 16px;
-    padding-top:15px;
-}
-
 .wr-asset-type-switcher span.btn-asset {
 	width:54px;
 	height:54px;
@@ -344,12 +339,25 @@ a.ast-type-item {
 	float:left;
 	text-align: center;
 	color:#e4e4e4;
-	text-decoration: none;	
+	text-decoration: none;
+    padding: 10px;
 }
 
 a.ast-type-item:hover {
 	background:#3f75ff;
 	cursor: pointer;
+}
+
+.ast-type-item div {
+    line-height: 12px;
+    padding-top: 5px;
+    font-size: 12px;
+    vertical-align: middle;
+    height: 20px;
+}
+
+a.ast-type-item .icon {
+    font-size: 26px;
 }
 
 .wr-action-container {
@@ -608,17 +616,6 @@ a.cu-ico-button-stats {
 }
 
 /* buttons */
-.icon {
-  font-family: 'wso2metro';
-  speak: none;
-  font-style: normal;
-  font-weight: normal;
-  font-variant: normal;
-  text-transform: none;
-  line-height: 1;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
 
 
 /* filter */
