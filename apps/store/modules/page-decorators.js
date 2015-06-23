@@ -248,7 +248,11 @@ var pageDecorators = {};
     };
     pageDecorators.tags = function(ctx, page) {
         var am = getAssetManager(ctx);
-        page.tags = am.tags();
+        if(page.assets.id){
+            page.tags = am.getTags(page.assets.id);
+        }else {
+            page.tags = am.tags();
+        }
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {
