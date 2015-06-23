@@ -25,9 +25,9 @@
             requestURI,
             requestedPage = request.getParameter("requestedPage"),
             relayState = '/social?'+request.getQueryString(),
-            encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(dataConfi.ssoConfiguration.issuer),
+            encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(dataConfi.authentication.methods.sso.attributes.issuer),
             log = new Log(),
-            postUrl =dataConfi.ssoConfiguration.identityProviderURL; //"https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
+            postUrl =dataConfi.authentication.methods.sso.attributes.identityProviderURL; //"https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
 	    if(log.isDebugEnabled()){
             	log.debug('Social Login URL: '+postUrl);
 	    }

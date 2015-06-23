@@ -32,7 +32,8 @@
             keyStoreProps = {
                 KEY_STORE_NAME: process.getProperty('carbon.home') + attr.keyStoreName,
                 KEY_STORE_PASSWORD: attr.keyStorePassword,
-                IDP_ALIAS: attr.identityAlias
+                IDP_ALIAS: attr.identityAlias,
+                USE_ST_KEY: !attr.useTenantKey
             },
             sso_sessions = application.get('sso_sessions');
 

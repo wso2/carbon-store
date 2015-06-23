@@ -38,13 +38,14 @@
 
       <div class="wr-search">
         <div>
-        <form class="form-group" id="assetSearchForm" action='{{url "/asts/"}}{{rxt.shortName}}/list' style="margin-left:-4px">
+        <form class="form-group" id="assetSearchForm" action='{{url "/assets/"}}{{rxt.shortName}}/list' style="margin-left:-4px">
           <input type="text" name="query" class="" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{paging.query}}" /><a type="button" href="#" class="btn-search" id="searchButton"><span class="fa fa-search"></span></a>
           <input type="hidden" name="sortby" value="{{paging.sortBy}}"/>
           <input type="hidden" name="sort" value="{{paging.sortOrder}}"/>
         </form>
         </div>
-      </div>       
+      </div>
+    <a href="{{url ""}}/pages/advanced-search" class="btn btn-default pull-left advance-search-btn">Advanced Search</a>
     </div>
     <div class="col-lg-2 col-md-2 col-sm-1 col-xs-12 wr-filters">
         <div class="dropdown pull-right">
