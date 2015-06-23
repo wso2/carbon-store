@@ -250,7 +250,9 @@ asset.renderer = function(ctx) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
-        navList.push('Copy', 'btn-copy', util.buildUrl('copy') + '/' + id);
+        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
+            navList.push('Copy', 'btn-copy', util.buildUrl('copy') + '/' + id);
+        }
         return navList.list();
     };
     var buildAddLeftNav = function(page, util) {
