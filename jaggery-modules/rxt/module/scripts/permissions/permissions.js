@@ -99,10 +99,10 @@ var permissions = {};
         return permissions;
     };
     var buildAssetPagePermissions = function(url, type) {
-        return ['/asts/' + type + '/' + url];
+        return ['/assets/' + type + '/' + url];
     };
     var buildAssetAPIPermissions = function(url, type) {
-        var base = '/asts/' + type + '/apis/' + url;
+        var base = '/assets/' + type + '/apis/' + url;
         var verbs = ['get', 'post', 'delete', 'put'];
         var permissions = [];
         for (var index = 0; index < verbs.length; index++) {
@@ -301,7 +301,7 @@ var permissions = {};
         return buildAssetPagePermissions(path, type);
     };
     permissions.getAssetAPIPermission = function(path, httpMethod, type) {
-        return '/asts/' + type + '/apis/' + path + '/' + httpMethod;
+        return '/assets/' + type + '/apis/' + path + '/' + httpMethod;
     };
     permissions.getAppPagePermission = function(path) {
         var base = buildAppPagePermissions(path);

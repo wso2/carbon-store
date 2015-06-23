@@ -17,6 +17,7 @@
  *
  */
 var request = {};
+var log = new Log('request_module');
 (function(request) {
     var hasOwnProperty = function(obj, element) {
         return Object.prototype.hasOwnProperty.call(obj, element);
@@ -29,6 +30,19 @@ var request = {};
     var decodes = function(encodedURI) {
         return decodeURIComponent(encodedURI);
     };
+
+    request.validateQuery = function (query) {
+        var q = {};
+        try {
+            q = parse(query);
+        } catch (e) {
+            log.error("Invalid Query \'" + query + "\'");
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+        }
+        return q;
+    }
     request.getQueryOptions = function(queryString,opt) {
         var opt={};
         var sep = opt.sep || '&',
