@@ -18,10 +18,12 @@
         <div class="pagination top-asset-slideshow-pag assetSliderPag" id="top-asset-slideshow-pag-{{rxt.shortName}}"></div>
     </h3> -->
     {{#if assets}}
-        <section>
-        </section>
+    <section>
+        {{>assets-thumbnails .}}
+    </section>
     {{else}}
-        <div class="top-assets-empty-assert">{{t "We couldn't find anything for you."}}</div>
+    <div class="top-assets-empty-assert">{{t "We couldn't find anything for you."}}</div>
     {{/if}}
 </div>
+
 

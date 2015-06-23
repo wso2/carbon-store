@@ -1,16 +1,21 @@
 {{#each .}}
-    <legend>{{type}}</legend>
+<h2 class="field-title">
+    <a class="collapsing-h2" aria-expanded="false" href="#collapse{{type}}" data-toggle="collapse">
+        <i class="cu-btn-exp-col btn-collapsed">{{type}}</i>
+    </a>
+</h2>
+<div id="collapse{{type}}" class="collapse in responsive-form-container">
 {{#each assets}}
             {{#attributes}}
             <div class="ctrl-wr-asset ">
                 <div class="itm-ast">
-                    <a class="ast-img " href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">
-                        <img class="img-responsive" alt='thumbnail' src="{{tenantedUrl ""}}/storage/{{../type}}/{{../id}}/{{../thumbnail}}">
+                    <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
+                        <img alt='thumbnail' src='{{url ""}}/themes/store/img/default-thumbnail.png' class="img-responsive" >
                     </a>
                     <div class="ast-content">
                         <div class="ast-title padding">
 
-                            <a class="ast-name truncate" href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
+                            <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
                         <span class="ast-auth">{{overview_provider}}</span>
                         </div>
                         <div class="pull-left asset-rating-container">
@@ -35,7 +40,7 @@
                                     </li>
                                     {{/hasAssetPermission}}
                                     <!--<li><a href="#">Download</a></li>-->
-                                    <li><a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">More Details</a></li>
+                                    <li><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">More Details</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -44,6 +49,7 @@
             </div>
             {{/attributes}}
         {{/each}}
-
+        </div>
+    <div class="clearfix"></div>
 {{/each}}
 

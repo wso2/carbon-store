@@ -23,8 +23,8 @@
 	var constants=require('rxt').constants;
     var app = require('rxt').app;
     var context = app.getContext();
-	var apiEndpoint=constants.ASSET_API_URL_PATTERN;//'/{context}/asts/{type}/api/{+suffix}';
-	var pageEndpoint=constants.ASSET_PAGE_URL_PATTERN;//'/{context}/asts/{type}/{+suffix}';
+	var apiEndpoint=constants.ASSET_API_URL_PATTERN;//'/{context}/assets/{type}/api/{+suffix}';
+	var pageEndpoint=constants.ASSET_PAGE_URL_PATTERN;//'/{context}/assets/{type}/{+suffix}';
 	var rxtAPI = require('rxt');
 
 	var getPage=function(uri){
@@ -41,6 +41,10 @@
 	var handleApiEndpoint=function(request,session,uriParams){
 		
 		var type=uriParams.type;
+		if(!validateType(type)){
+			response.sendError(404, 'Unabled to locate a active endpoint for the type: ' + type);
+			return;
+		}
 		var page=getPage(uriParams.suffix);
 		
 		var endPoints=asset.getAssetApiEndpoints(session,type);
@@ -69,6 +73,10 @@
 
 	var handlePageEndpoint=function(request,session,uriParams){
 		var type=uriParams.type;
+		if(!validateType(type)){
+			response.sendError(404, 'Unabled to locate a active endpoint for the type: ' + type);
+			return;
+		}
 		var page=uriParams.suffix;
 		var type=uriParams.type;
 		var page=getPage(uriParams.suffix);
@@ -100,6 +108,20 @@
 	//Check if the user is logged
 	var server=require('store').server;
 	var user=server.current(session);
+
+	//Check if asset type is enabled
+	var validateType = function (type){
+	    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
+	    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+	    var availableTypes = rxt.app.getActivatedAssets(tenantId);
+
+	            for (var index in availableTypes) {
+	                if(availableTypes[index] === type){
+	                    return true;
+	                }
+	            }
+	    return false;
+	};
 
 	if(!user){
 		response.sendRedirect(context + '/login');//TODO:Remove this

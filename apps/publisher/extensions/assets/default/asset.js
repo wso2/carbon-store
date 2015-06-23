@@ -131,6 +131,11 @@ asset.server = function(ctx) {
                 title: 'Statistics',
                 url: 'statistics',
                 path: 'statistics.jag'
+            }, {
+                title: 'Copy ' + type,
+                url: 'copy',
+                path: 'copy.jag',
+                permission: 'ASSET_CREATE'
             }]
         }
     };
@@ -226,7 +231,7 @@ asset.renderer = function(ctx) {
         var navList = util.navList();
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
             navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
-            navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
+            navList.push('Statistics', 'btn-stats', '/assets/' + type + '/statistics');
         }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
@@ -245,6 +250,7 @@ asset.renderer = function(ctx) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
+        navList.push('Copy', 'btn-copy', util.buildUrl('copy') + '/' + id);
         return navList.list();
     };
     var buildAddLeftNav = function(page, util) {
@@ -381,6 +387,11 @@ asset.renderer = function(ctx) {
             },
             populateGroupingFeatureDetails: function(page) {
                 require('/modules/page-decorators.js').pageDecorators.populateGroupingFeatureDetails(ctx, page);
+            },
+            populateTags: function(page){
+                if(page.assets.id){
+                    require('/modules/page-decorators.js').pageDecorators.populateTagDetails(ctx,page);
+                }
             }
         }
     };

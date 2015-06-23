@@ -152,6 +152,9 @@ footer {
     height: 60px;
     background-color: #f5f5f5;
 }
+.wr-main-content div.asset-well img{
+max-width:270px;
+}
 
 .wrapper{
     min-width: 400px;
@@ -501,6 +504,10 @@ i.cu-btn-exp-col {
     background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;   
 }
 
+.btn-copy {
+    background:url('../img/icons/ico-copy.png') 0.8em 1em no-repeat;
+}
+
 .btn-collapsed {
     background:url('../img/icons/ico-collapsed.png') no-repeat;      
 }
@@ -689,7 +696,11 @@ a.cu-ico-button-stats {
 .wr-search .glyphicon {
     color:#fff;
 }
-
+.advance-search-btn{
+    height: 42px;
+    padding-top:10px;
+    margin-left:-35px;
+}
 .wr-filters div.wr-filter-category, .wr-filters div.wr-search {
     float:left;
 }

@@ -21,9 +21,22 @@ $(function(){
     var obtainFormMeta=function(formId){
 		return $(formId).data();
 	};
+    var populateTags = function(arr){
+        var entry;
+        for(var index = 0 ; index < arr.length; index++){
+            entry = arr [index];
+            if(entry.name === '_tags'){
+                entry.value = tagsAPI.selectedTags();
+            }
+        }
+    };
     $('#form-asset-create').ajaxForm({
-        beforeSubmit:function(){
-            $('#btn-create-asset').attr('disabled','disabled');
+        beforeSubmit:function(arr){
+            populateTags(arr);
+            PublisherUtils.blockButtons({
+                container:'saveButtons',
+                msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
+            });
         },
         success:function(){
             messages.alertSuccess('Created the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');

@@ -43,14 +43,12 @@
             {{#with searchBar}}
                 {{>search .}}
             {{/with}}
+            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn">Advanced Search</a>
         </div><!--search--->
     </div>
     <div class="col-sm-3 col-md-5 col-lg-3 top-menu-right-custom right">
         <div class="inline-block margin-top-sm">
             {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
-                <a href="{{url "/pages/my-items"}}" class="bookmark-link">
-                    My bookmarks <i class="fw fw-store fw-inverse fw-lg"></i>
-                </a>
             {{/hasAppPermission}}
 
 
