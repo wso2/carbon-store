@@ -16,7 +16,7 @@
 
 {{#if tags}}
     <h4><i class="fa fw-tag"></i> {{t "Tags"}}</h4>
-    {{#each tags}}
-        <a class="tags" href='{{url ""}}/assets/{{../rxt.shortName}}/list?q="tags":"{{name}}"'>{{name}}</a>
-    {{/each}}
+    {{#itr tags}}
+        <a class="tags" href='{{url ""}}/assets/{{../rxt.shortName}}/list?q="tags":"{{value}}"'>{{value}}</a>
+    {{/itr}}
 {{/if}}

@@ -394,6 +394,9 @@ asset.renderer = function(ctx) {
                 if(page.assets.id){
                     require('/modules/page-decorators.js').pageDecorators.populateTagDetails(ctx,page);
                 }
+            },
+            sorting: function(page){
+                require('/modules/page-decorators.js').pageDecorators.sorting(ctx,page);
             }
         }
     };

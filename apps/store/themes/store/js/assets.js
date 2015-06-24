@@ -141,15 +141,9 @@ $(function() {
     /*
     * Sort button event handler
     * */
-    $(document).on('click', '#ul-sort-assets li a', function(e) {
-        currentPage = 1;
-        $('#ul-sort-assets li a').removeClass('selected-type');
-        var thiz = $(this);
-        thiz.addClass('selected-type');
-        loadAssets(thiz.attr('href'));
-        mouseStop();
-        e.preventDefault();
-    });
+     $('#sortDropdown').click(function(e){
+         e.preventDefault();
+     });
     /*
     * Pagination for listing page
     * */

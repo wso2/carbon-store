@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 <div class="row">
-    <div class="col-lg-10 col-md-10 col-sm-11 col-xs-12 wr-filters">
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 wr-filters">
       {{#if assetCategoryDetails.hasCategories}}
         <div class="wr-filter-category">
           <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
@@ -47,16 +47,15 @@
       </div>
     <a href="{{url ""}}/pages/advanced-search" class="btn btn-default pull-left advance-search-btn">Advanced Search</a>
     </div>
-    <div class="col-lg-2 col-md-2 col-sm-1 col-xs-12 wr-filters">
+    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 wr-filters">
         <div class="dropdown pull-right">
             <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
+                <span class="sort-asset-info">( {{sorting.selected.help}} <i class="fa {{sorting.selected.helpIcon}}"></i> ) <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
             </a>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                <li role="presentation"><a class="filter-item" href="?sort=+overview_name">Name</a></li>
-                <li role="presentation"><a class="filter-item" href="?sort=+overview_version">Version</a></li>
-                <li role="presentation"><a class="filter-item" href="?sort=+overview_provider">Status</a></li>
-                <li role="presentation"><a class="filter-item" href="?sort=-overview_createdtime">Date/Time Created</a></li>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="ul-sort-assets">
+                {{#each sorting.list}}
+                    <li role="presentation" class="{{#if active}}active{{/if}}"><a class="filter-item" href="?sort={{sortNext}}{{sortBy.field}}"><span class="pull-left">{{sortBy.label}}</span><i class="fa {{sortIcon}} pull-right"></i> </a></li>
+                {{/each}}
             </ul>
     </div>
 </div>
