@@ -141,29 +141,40 @@ body{
 
 /* application top level header */
 h2.app-title {
-	font-weight:100;
-	font-size:20px;
-	margin:0;
-	padding:0;
-	color:#fff;
+    font-weight:500;
+    font-size:17px;
+    margin:0;
+    padding:3px 0 0 0;
+    color:#fafafa;
+    text-transform: uppercase;
 }
 
 .wr-global-header {
-	background:#282828;
+    background:#444444;
 }
 
 .app-logo {
 	height:50px;
-	padding:12px 10px;
+	padding:12px 20px 12px 16px;
 }
 
-.app-logo a {
+.app-logo a:hover {
     text-decoration: none;
+    color:#e4e4e4 !important;
 }
 
 .app-logo img {
 	float:left;
 	margin-right:20px;
+}
+
+.wr-app-bar {
+	background:#237bd5;
+	height:54px;    
+}
+
+header {
+	height:50px;
 }
 
 @media (max-width: 768px) {
@@ -209,7 +220,7 @@ button.font-extra-large{font-size:20px;}
 .uppercase{text-transform:uppercase;}
 
 
-.blue-bg{background-color: #3a9ecf;}
+.blue-bg{background-color: #237bd5;}
 button.grey-bg{background-color: #222222;}
 button.grey-bg:hover{background-color: #3A9ECF;}
 
