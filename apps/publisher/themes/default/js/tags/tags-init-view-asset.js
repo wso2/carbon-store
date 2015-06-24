@@ -20,7 +20,7 @@ $(function() {
     var TAG_SELECTBOX = tagsAPI.TAG_SELECTBOX;
     $(TAG_SELECTBOX).select2({
         tags: true,
-        placeholder: 'Please select a tag',
+        placeholder: 'No tags available',
         disabled: true
     });
 });

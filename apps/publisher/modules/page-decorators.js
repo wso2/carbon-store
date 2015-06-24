@@ -159,6 +159,62 @@ var pageDecorators = {};
         page.assetTags = am.getTags(page.assets.id);
         log.info(page.assetTags);
     };
+    pageDecorators.sorting = function(ctx,page){
+        var queryString = request.getQueryString();
+        var sortable = [
+            {field:"overview_name",label:"Name"},
+            {field:"overview_version",label:"Version"},
+            {field:"overview_provider",label:"Provider"},
+            {field:"overview_createdtime",label:"Date/Time"}];
+        var sortingList = [];
+        var sortingListSelected = {};
+        var sortBy = "overview_createdtime";
+        var sort = "-";
+        if(queryString){
+            var sortCombined = "";
+            var parts = queryString.split('&');
+            for(var i=0;i<parts.length;i++){
+                if(parts[i].indexOf("=") != -1 ){
+                    var params = parts[i].split("=");
+                    if(params[0] == "sort"){
+                        sortCombined = params[1];
+                    }
+                }
+            }
+            //sortCombined is a string in the format -overview_createdtime
+            if(new RegExp("^[+]").test(sortCombined)){
+                sort = "+";
+                sortBy = sortCombined.substring(1);
+            }else if(new RegExp("^[-]").test(sortCombined)){
+                sort = "-";
+                sortBy = sortCombined.substring(1);
+            }
+        }
+        for(i=0;i<sortable.length;i++){
+            var sortObj = {};
+            sortObj.sortBy = sortable[i];
+            sortObj.sort = "-";
+            sortObj.active = false;
+            sortObj.sortNext = "+";
+            sortObj.sortIcon = "fa-arrow-up";
+            if(sortable[i].field == sortBy){
+                if(sort == "+"){
+                    sortingListSelected.helpIcon = "fa-arrow-up";
+                    sortObj.sortNext = "-";
+                    sortObj.sortIcon = "fa-arrow-up";
+                }else if(sort == "-"){
+                    sortingListSelected.helpIcon = "fa-arrow-down";
+                    sortObj.sortNext = "+";
+                    sortObj.sortIcon = "fa-arrow-down";
+                }
+                sortingListSelected.help = sortable[i].label;
+                sortObj.active = true;
+            }
+            sortingList.push(sortObj);
+        }
+        page.sorting = {selected:sortingListSelected,list:sortingList};
+        return page;
+    };
     var assetManager = function(ctx) {
         var rxt = require('rxt');
         var type = ctx.assetType;

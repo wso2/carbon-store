@@ -680,10 +680,6 @@ div.top-menu-right-custom .navbar-nav > li > a:hover {
 .top-menu-right-custom a{
     color:#fff;
 }
-.dropdown-toggle:hover {
-    background-color: #237bd5;
-    color: #ffffff;
-}
 
 @media (max-width: 500px) {
 
@@ -1265,38 +1261,7 @@ a.more:focus {
     padding-bottom: 23px;
 }*/
 
-#ul-sort-assets {
-    display: inline-block;
-    margin-left: 10px;
-    margin-top: 10px;
-}
 
-#ul-sort-assets li {
-    display: inline-block;
-    margin-right: 20px;
-}
-
-#ul-sort-assets li a {
-    opacity: .5;
-    color: #34495E;
-    font-weight: bold;
-}
-
-#ul-sort-assets li a i {
-    font-size: 17px;
-}
-
-#ul-sort-assets i.icon-sort-alphabetical {
-    background: url("../img/icon-sort-alphabetical.png") no-repeat scroll left top transparent;
-    height: 14px;
-    width: 16px;
-    display: inline-block !important;
-}
-
-#ul-sort-assets li a.selected-type {
-    opacity: 1;
-    position: relative;
-}
 .top-assets-empty-assert{
     padding:20px;
     border:solid 1px #ccc;
@@ -1416,26 +1381,45 @@ a:hover, a:focus {
     overflow: hidden;
 }
 .white{color: #f3f3f3;}
+#sortDropdown:hover {
+    background: transparent;
+}
 #ul-sort-assets li a {
-    color: #333;
+    color: #888;
     opacity: 1;
+    text-transform: uppercase;
+    font-size: 12px;
+    height: 30px;
 }
 #ul-sort-assets li a:hover {
-    color: #237bd5;
+    color: #fff;
 }
 #ul-sort-assets li {
     color: #333;}
 #ul-sort-assets li:hover{
-    color: #237bd5;}
+    color: #fff;}
 
 #ul-sort-assets {
-    display: inline-block;
-    margin-left: 10px;
-    margin-top: 10px;
-    background-color: #f0f0f0;
-    padding-top: 10px ;
-    height: 45px;
-    padding-left: 20px;
+    background: #000 none repeat scroll 0 0;
+    border: 0 solid rgba(0, 0, 0, 0.15);
+    border-radius: 0;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0.176);
+    color: #fff;
+    font-size: 14px;
+    list-style: outside none none;
+    text-align: left;
+    padding:0;
+}
+#ul-sort-assets li.active a{
+    background: #5f5f5f;
+    color:#000;
+}
+.sort-asset-info{
+    color: #a5a5a5;
+    font-size: 11px;
+}
+.sort-asset-container{
+    position: relative;
 }
 .grey{color: #c7c7c7;}
 .dropdown-menu > li > a .btn-primary { background-color: transparent;}

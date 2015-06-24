@@ -189,6 +189,9 @@ asset.renderer = function(ctx) {
             populateGroupingFeatureDetails: function(page,meta){
                 return decoratorApi.populateGroupingFeatureDetails(ctx,page,this);
             },
+            sorting: function(page,meta){
+                return decoratorApi.sorting(ctx,page,this);
+            },
             populateActionBar: function(page,meta){
                 page.actionBar = {};
                 page.actionBar.actions = [];
