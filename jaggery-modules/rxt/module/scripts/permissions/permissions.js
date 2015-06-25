@@ -863,7 +863,7 @@ var permissions = {};
         permissionString = (typeof key === 'string') ? true : false;
         if (permissionString) {
             permission = null;
-            permission = mapToAppPermission(key, type, tenantId);
+            permission = mapToAppPermission(key, tenantId);
         }
         if (!permission) {
             log.error('[permissions] unable to locate a mapping for permission ' + key);
@@ -892,7 +892,7 @@ var permissions = {};
         permission = key; //Assume that the key may be a function
         permissionString = (typeof permission === 'string') ? true : false;
         if (permissionString) {
-            permission = mapToAppPermission(key, type, tenantId);
+            permission = mapToAppPermission(key, tenantId);
         }
         if (!permission) {
             log.error('[permissions] unable to locate a mapping for permission ' + key);
