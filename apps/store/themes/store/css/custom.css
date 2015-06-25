@@ -491,6 +491,11 @@ a.ast-name:hover {
 .advance-search-btn:hover {
     color:#fff;
 }
+
+.bookmark-link{
+    padding-top:6px;
+    display: block;
+}
 .register {
     width: auto;
     height: 50px;
@@ -1489,3 +1494,5 @@ h2.app-title {
     color:#fafafa;
     text-transform: uppercase;
 }
+
+
