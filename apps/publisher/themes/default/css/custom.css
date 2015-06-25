@@ -785,6 +785,15 @@ h2 span.fa-stack{
     height: 35px;
     width: 30px;
 }
+.tag-element{
+    background: #cdcdcd;
+    padding: 5px;
+    border-radius: 5px;
+    display: inline-block;
+}
+#tag-ui-container-view{
+    padding-top:10px;
+}
 .padding-bottom-xs{
     padding-bottom:5px;
 }.padding-bottom-sm{
