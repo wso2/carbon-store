@@ -48,7 +48,7 @@ var permissions = {};
      * @return {[type]}         A path in the permission tree alocated for the provided app
      */
     var esPermissionRoot = function(appName) {
-        return '/permission/enterprisestore/apps' + appName;
+        return '/permission/admin/enterprisestore/apps' + appName;
     };
     var esFeaturePermissionRoot = function() {
         return '/features';
