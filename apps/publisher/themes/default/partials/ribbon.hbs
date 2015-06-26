@@ -15,7 +15,7 @@
                 <span class="btn-asset"></span>
             </a>
 
-            <a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}{{ribbon.currentUrl}}'>{{rxt.pluralLabel}}</a>
+            {{#if rxt.pluralLabel}}<a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}{{ribbon.currentUrl}}'>{{rxt.pluralLabel}}</a>{{/if}}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             
