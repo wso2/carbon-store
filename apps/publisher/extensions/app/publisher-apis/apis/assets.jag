@@ -14,7 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /*
  Description :to route api calls to endpoints
  Filename: assets.jag
@@ -28,38 +27,47 @@ var req = require('utils').request;
 var responseProcessor = require('utils').response;
 var response = response;
 response.contentType = 'application/json';
-
 /**
  * getPage context
  * @param {uri} uri  : request uri
  */
-var getPage = function (uri) {
+var getPage = function(uri) {
     var comps = uri.split('/');
     return comps.length > 0 ? comps[0] : null;
 };
-
-var mapper = function (path) {
-    return function () {
+var mapper = function(path) {
+    return function() {
         return path;
     };
 };
-
+var getDefaultAssetSearchEndpoint = function() {
+    return '/extensions/assets/default/apis/assets.jag';
+};
 /**
- * To rout to asset endpoints
+ * To route to asset endpoints
  * @param request   The request object in the request call
  * @param session   The sessionID of the logged in user
  * @param uriParams  URI parameters sent in request
  */
-var handleApiEndpoint = function (request, session, uriParams) {
+var handleApiEndpoint = function(request, session, uriParams) {
     var options = req.getQueryOptions(request.getQueryString());
     var type = options.type;
     var page = getPage(uriParams.suffix);
     try {
-        var endPoints = asset.getAssetApiEndpoints(session, type);
-        var endpoint;
-        for (var index in endPoints) {
-            if (endPoints[index].url == page) {
-                endpoint = asset.getAssetApiEndpoint(type, endPoints[index].path);
+        if (type) {
+            var endPoints = asset.getAssetApiEndpoints(session, type);
+            var endpoint;
+            for (var index in endPoints) {
+                if (endPoints[index].url == page) {
+                    endpoint = asset.getAssetApiEndpoint(type, endPoints[index].path);
+                }
+            }
+        } else {
+            if (request.getMethod() === 'GET') {
+                log.warn('Using default search endpoint');
+                endpoint = getDefaultAssetSearchEndpoint();
+            } else {
+                throw 'Method ' + request.getMethod() + ' is not supported';
             }
         }
         if (endpoint) {
@@ -71,23 +79,18 @@ var handleApiEndpoint = function (request, session, uriParams) {
     } catch (e) {
         log.error(e);
         response = responseProcessor.buildErrorResponse(response, 404, e);
-
     }
 };
-
 var server = require('store').server;
 var user = server.current(session);
 //remove
-if (!user) {//unless user is authenticated
+if (!user) { //unless user is authenticated
     log.error('Auth failure');
     response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.UNAUTHORIZED, "Authorization Error");
-}
-else {
-    if (matcher.match(apiEndpoint)) {// if endpoint is defined
-        handleApiEndpoint(request, session, matcher.elements());	//route to the endpoint
-    }
-    else {
+} else {
+    if (matcher.match(apiEndpoint)) { // if endpoint is defined
+        handleApiEndpoint(request, session, matcher.elements()); //route to the endpoint
+    } else {
         response = responseProcessor.buildErrorResponse(response, 404, 'Unable to route the request to an appropriate endpoint');
     }
 }
- 	

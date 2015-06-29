@@ -1,14 +1,4 @@
 $(function () {
-    var $tab = $('#tab-reviews');
-    $('a').click(function(){
-        var tab = $(this).data("type");
-        if(tab=="comments"){
-            $tab.css({position:'static', visibility:'visible'});
-        }else{
-            $tab.css({position:'static', visibility:'hidden'});
-        }
-    });
-
     var SOCIAL_CONTAINER_ID='#socialIfr';
     var SOCIAL_PARAM_SCRIPT_TYPE='scriptType';
     var SOCIAL_PARAM_SCRIPT='script';

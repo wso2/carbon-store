@@ -15,19 +15,12 @@
  *  specific language governing permissions and limitations
  *  under the License.
  */
-
 var USER = 'server.user';
-
 var USER_REGISTRY = 'server.user.registry';
-
 var USER_OPTIONS = 'server.user.options';
-
 var USER_SPACE = 'server.user.space';
-
 var USER_ROLE_PREFIX = 'Internal/private_';
-
 var DEFAULT_USER_PROFILE = 'default';
-
 /**
  * Initializes the user environment for the specified tenant. If it is already initialized, then will be skipped.
  */
@@ -54,15 +47,10 @@ var init = function (options) {
          }*/
         //application.put(key, options);
     });
-
     event.on('tenantLoad', function (tenantId) {
-
     });
-
     event.on('tenantUnload', function (tenantId) {
-
     });
-
     event.on('login', function (tenantId, user, session) {
         var space, um, perms,
             log = new Log(),
@@ -94,14 +82,12 @@ var init = function (options) {
             }
         }
     });
-
     event.on('logout', function (tenantId, user, session) {
         session.remove(USER);
         session.remove(USER_SPACE);
         session.remove(USER_REGISTRY);
     });
 };
-
 /**
  * Returns user options of the tenant.
  * @return {Object}
@@ -110,7 +96,6 @@ var options = function (tenantId) {
     var server = require('/modules/server.js');
     return server.configs(tenantId)[USER_OPTIONS];
 };
-
 /**
  * Logs in a user to the store. Username might contains the domain part in case of MT mode.
  * @param username ruchira or ruchira@ruchira.com
@@ -128,7 +113,6 @@ var login = function (username, password, session) {
     }
     return permitted(username, session);
 };
-
 var permitted = function (username, session) {
     //load the tenant if it hasn't been loaded yet.
     var opts, um, user, perms, perm, actions, length, i,
@@ -143,7 +127,6 @@ var permitted = function (username, session) {
     if (!server.configs(usr.tenantId)[USER_OPTIONS]) {
         event.emit('tenantLoad', usr.tenantId);
     }
-
     opts = options(usr.tenantId);
     //log.debug(usr.tenantId);
     um = server.userManager(usr.tenantId);
@@ -172,7 +155,6 @@ var permitted = function (username, session) {
     }
     return true;
 };
-
 /**
  * Checks whether the logged in user has permission to the specified action.
  * @param user
@@ -185,7 +167,6 @@ var isAuthorized = function (user, permission, action) {
         um = server.userManager(user.tenantId);
     return um.getUser(user.username).isAuthorized(permission, action);
 };
-
 /**
  * Returns the user's registry space. This should be called once with the username,
  * then can be called without the username.
@@ -199,7 +180,6 @@ var userSpace = function (username) {
         return null;
     }
 };
-
 /**
  * Get the registry instance belongs to logged in user.
  * @return {*}
@@ -211,7 +191,6 @@ var userRegistry = function (session) {
         return null;
     }
 };
-
 /**
  * Logs out the currently logged in user.
  */
@@ -224,7 +203,6 @@ var logout = function () {
     }
     event.emit('logout', user.tenantId, user, session);
 };
-
 /**
  * Checks whether the specified username already exists.
  * @param username ruchira@ruchira.com(multi-tenanted) or ruchira
@@ -236,11 +214,27 @@ var userExists = function (username) {
         usr = carbon.server.tenantUser(username);
     return server.userManager(usr.tenantId).userExists(usr.username);
 };
-
 var privateRole = function (username) {
     return USER_ROLE_PREFIX + username;
 };
+var assignRolesOnRegister = function (username,relyingParty) {
+    var um;
+    var usr;
+    var user;
+    var server = require('/modules/server.js');
+    var carbon = require('carbon');
+    usr = carbon.server.tenantUser(username);
+    um = server.userManager(usr.tenantId);
+    user = um.getUser(usr.username);
+    var authorizedRoles = require('/config/sso.json');
+    log.info("%%%%% checking relying party %%%%%%"+relyingParty);
+    if(relyingParty == 'publisher'){
+        user.addRoles(authorizedRoles.registerPermissions.authorizedRolePublisher);
+    }else{
+        user.addRoles(authorizedRoles.registerPermissions.authorizedRoleStore);
+    }
 
+};
 var register = function (username, password, claims) {
     var user, role, id, perms, r, p,
         server = require('/modules/server.js'),
@@ -248,23 +242,18 @@ var register = function (username, password, claims) {
         event = require('event'),
         usr = carbon.server.tenantUser(username),
         um = server.userManager(usr.tenantId);
-
-
-
     if (!server.configs(usr.tenantId)) {
         event.emit('tenantCreate', usr.tenantId);
     }
     if (!server.configs(usr.tenantId)[USER_OPTIONS]) {
         event.emit('tenantLoad', usr.tenantId);
     }
-
     var opts = options(usr.tenantId);
-
     var claimsMap = new java.util.HashMap();
     for (var i = 0; i < claims.length; i++) {
         claimsMap.put(claims[i].claimURI, claims[i].value);
-    };
-    
+    }
+    ;
     um.addUser(usr.username, password, opts.userRoles, claimsMap, DEFAULT_USER_PROFILE);
     user = um.getUser(usr.username);
     role = privateRole(usr.username);
@@ -290,7 +279,6 @@ var register = function (username, password, claims) {
     event.emit('userRegister', usr.tenantId, user);
     //login(username, password);
 };
-
 /**
  * Returns the currently logged in user
  */
@@ -301,7 +289,6 @@ var current = function (session) {
         return null;
     }
 };
-
 var loginWithSAML = function (username) {
     return permitted(username, session);
 };

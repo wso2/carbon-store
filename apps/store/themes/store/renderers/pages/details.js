@@ -40,20 +40,7 @@ var render = function(theme, data, meta, require) {
         body: [{
             partial: 'asset',
             context: data
-        }],
-        right: [
-            {
-                partial: 'recent-assets',
-                context: data
-            },
-            {
-                partial: 'tags',
-                context: data
             }
-            // {
-            //     partial: 'more-assets-from-provider',
-            //     context: require('/helpers/asset.js').formatAssetFromProviderRatings(data.moreAssetsFromProvider)
-            // }
         ]
     });
 };

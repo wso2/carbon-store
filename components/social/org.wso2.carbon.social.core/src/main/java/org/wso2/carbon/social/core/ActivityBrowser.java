@@ -37,7 +37,7 @@ public interface ActivityBrowser {
 
 	JsonObject getTopComments(String targetId, int likes) throws SocialActivityException;
 
-	boolean isUserlikedActivity(String userId, String targetId, int like) throws SocialActivityException;
+	boolean isUserlikedActivity(String userId, int targetId, int like) throws SocialActivityException;
 
 	JsonObject pollNewestComments(String targetId, int timestamp) throws SocialActivityException;
 

@@ -73,7 +73,7 @@ var caramel;
             stream: {reviews: reviewsJSON, id: target, user: username, offset: 10, more: more}
         });
     } else {
-        print('please use the target URL parameter as the asset id, eg: http://localhost:9763/social/?target=33530252-rer-w345325');
+        print('please use the target URL parameter as the asset id, eg: http://<HOST_NAME>:<PORT>/social/?target=33530252-rer-w345325');
     }
 })();
 %>

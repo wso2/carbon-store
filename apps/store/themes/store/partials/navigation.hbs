@@ -13,41 +13,74 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+<!-- secondary header - app bar -->
+<div id="nav" class="row wr-app-bar">
+    <div class="col-sm-9 col-md-7 col-lg-9 wr-action-container">
+        <div class="wr-asset-type-switcher">
+            <a id="popoverExampleTwo" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="#" data-original-title="" title="">
+                <span class="btn-asset"></span>
+            </a>
 
-<div id="container-search" class="container">
-	<div class="row">
-		<div class="span12 search-bar">
-			<div class="row-fluid">
-				{{#with navigationBar}}
-				<div class="span9">
-					{{#each types}}
-					<a href="{{tenantedUrl ""}}{{this.listingUrl}}" data-toggle="dropdown" class="dropdown-toggle">
-					<li class="dropdown {{#if selected}} selected {{/if}}">
-						<div class="dropdown-icon-cont">
-							{{#if value.icon}}
-							<div style="background-image:url({{url ""}}{{ui.icon}})">
-							</div>
-							{{else}}
-								<i class="{{ui.icon}}"></i>
-							{{/if}}
-						</div>
+            <div class="popover menu fade bottom in">
+                <div class="arrow"></div>
+                <div class="popover-content">
+                    {{#with navigationBar}}
+                        {{#each types}}
+                            <a class="ast-type-item {{#if selected}} selected {{/if}}" href="{{tenantedUrl ""}}{{this.listingUrl}}">
+                                {{#if value.icon}}
+                                <div style="background-image:url({{url ""}}{{ui.icon}})"></div>
+                                {{else}}
+                                <i class="{{ui.icon}}"></i>
+                                {{/if}}
+                                {{singularLabel}}
+                            </a>
+                        {{/each}}
+                    {{/with}}
+                </div>
+            </div>
+        </div><! menu Button -->
+        <div class="search">
+            {{#with searchBar}}
+                {{>search .}}
+            {{/with}}
+            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn">Advanced Search</a>
+        </div><!--search--->
+    </div>
+    <div class="col-sm-3 col-md-5 col-lg-3 top-menu-right-custom right">
+        <div class="inline-block margin-top-sm">
+            {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
+            <a href="{{url "/pages/my-items"}}" class="bookmark-link">{{t "My bookmarks "}}<i class="fw fw-store fw-inverse fw-lg"></i></a>
+            {{/hasAppPermission}}
 
-						<span>{{singularLabel}}</span>
-					</li> </a>
 
-					{{/each}}
-				</div>
-				{{/with}}
-				<div class="span3">
-
-				{{#with searchBar}}	
-					{{>search .}}
-				{{/with}}
-				</div>
-			</div>
-
-		</div>
-
-	</div>
+        </div>
+    </div>
 </div>
+<!-- secondary header - app bar -->
+
+<!--Need to delete these sections down-->
+<div  style="display: none" id="content-asset-types">
+    <div>
+        {{#with navigationBar}}
+            {{#each types}}
+                <a class="ast-type-item" target="_self" href="{{tenantedUrl ""}}{{this.listingUrl}}">
+                    {{#if value.icon}}
+                        <div style="background-image:url({{url ""}}{{ui.icon}})">
+                        </div>
+                    {{else}}
+                        <i class="{{ui.icon}}"></i>
+                    {{/if}}
+                    {{singularLabel}}
+                </a>
+            {{/each}}
+        {{/with}}
+    </div>
+</div>
+<div class="row">
+  {{> action-bar .}}
+</div>
+
+
+
+
 

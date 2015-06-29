@@ -19,6 +19,46 @@
 var pageDecorators = {};
 (function(pageDecorators) {
     var log = new Log();
+    var isActivatedAsset = function(assetType, tenantId) {
+        var app = require('rxt').app;
+        var activatedAssets = app.getActivatedAssets(tenantId); //ctx.tenantConfigs.assets;
+        //return true;
+        if (!activatedAssets) {
+            throw 'Unable to load all activated assets for current tenant: ' + tenatId + '.Make sure that the assets property is present in the tenant config';
+        }
+        for (var index in activatedAssets) {
+            if (activatedAssets[index] == assetType) {
+                return true;
+            }
+        }
+        return false;
+    };
+    pageDecorators.navigationBar = function(ctx, page, utils) {
+        var permissionAPI = require('rxt').permissions;
+        var ribbon = page.ribbon = {};
+        var DEFAULT_ICON = 'icon-cog';
+        var assetTypes = [];
+        var assetType;
+        var assetList = ctx.rxtManager.listRxtTypeDetails();
+        for (var index in assetList) {
+            assetType = assetList[index];
+            //Only populate the link if the asset type is activated and the logged in user has permission to that asset
+            if ((isActivatedAsset(assetType.shortName, ctx.tenantId)) && (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIST, assetType.shortName, ctx.session))) {
+                assetTypes.push({
+                    url: utils.buildAssetPageUrl(assetType.shortName, '/list'),
+                    assetIcon: assetType.ui.icon || DEFAULT_ICON,
+                    assetTitle: assetType.singularLabel
+                });
+            }
+        }
+        ribbon.currentType = page.rxt.singularLabel;
+        ribbon.currentTitle = page.rxt.singularLabel;
+        ribbon.currentUrl = utils.buildAssetPageUrl(assetType.shortName, '/list'); //page.meta.currentPage;
+        ribbon.shortName = page.rxt.singularLabel;
+        ribbon.query = 'Query';
+        ribbon.breadcrumb = assetTypes;
+        return page;
+    };
     pageDecorators.assetCategoryDetails = function(ctx, page, utils) {
         page.assetCategoryDetails = {};
         page.assetCategoryDetails.hasCategories = false;
@@ -26,6 +66,13 @@ var pageDecorators = {};
         var categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
         var categoryValues = [];
         var field = ctx.rxtManager.getRxtField(ctx.assetType, categoryField);
+        var q = request.getParameter("q");
+        if (q) {
+            var options = parse("{" + q + "}");
+            if (options.category) {
+                page.assetCategoryDetails.selectedCategory = options.category;
+            }
+        }
         if (!field) {
             return;
         }
@@ -87,7 +134,6 @@ var pageDecorators = {};
                 return am.compareVersions(a1, a2);
             });
             info.isDefault = am.isDefaultAsset(page.assets);
-
             for (var index = 0; index < versions.length; index++) {
                 asset = versions[index];
                 entry = {};
@@ -95,11 +141,10 @@ var pageDecorators = {};
                 entry.name = asset.name;
                 entry.version = asset.version;
                 entry.isDefault = am.isDefaultAsset(asset);
-
                 if (asset.id == page.assets.id) {
                     entry.selected = true;
                     info.version = asset.version;
-                }else{
+                } else {
                     entry.selected = false;
                 }
                 entry.assetURL = utils.buildAssetPageUrl(ctx.assetType, '/details/' + entry.id);
@@ -107,6 +152,68 @@ var pageDecorators = {};
             }
             info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
+    };
+    pageDecorators.populateTagDetails = function(ctx,page,utils){
+        var am = assetManager(ctx);
+        log.info('Fetching tags!');
+        page.assetTags = am.getTags(page.assets.id);
+        log.info(page.assetTags);
+    };
+    pageDecorators.sorting = function(ctx,page){
+        var queryString = request.getQueryString();
+        var sortable = [
+            {field:"overview_name",label:"Name"},
+            {field:"overview_version",label:"Version"},
+            {field:"overview_provider",label:"Provider"},
+            {field:"overview_createdtime",label:"Date/Time"}];
+        var sortingList = [];
+        var sortingListSelected = {};
+        var sortBy = "overview_createdtime";
+        var sort = "-";
+        if(queryString){
+            var sortCombined = "";
+            var parts = queryString.split('&');
+            for(var i=0;i<parts.length;i++){
+                if(parts[i].indexOf("=") != -1 ){
+                    var params = parts[i].split("=");
+                    if(params[0] == "sort"){
+                        sortCombined = params[1];
+                    }
+                }
+            }
+            //sortCombined is a string in the format -overview_createdtime
+            if(new RegExp("^[+]").test(sortCombined)){
+                sort = "+";
+                sortBy = sortCombined.substring(1);
+            }else if(new RegExp("^[-]").test(sortCombined)){
+                sort = "-";
+                sortBy = sortCombined.substring(1);
+            }
+        }
+        for(i=0;i<sortable.length;i++){
+            var sortObj = {};
+            sortObj.sortBy = sortable[i];
+            sortObj.sort = "-";
+            sortObj.active = false;
+            sortObj.sortNext = "+";
+            sortObj.sortIcon = "fa-arrow-up";
+            if(sortable[i].field == sortBy){
+                if(sort == "+"){
+                    sortingListSelected.helpIcon = "fa-arrow-up";
+                    sortObj.sortNext = "-";
+                    sortObj.sortIcon = "fa-arrow-up";
+                }else if(sort == "-"){
+                    sortingListSelected.helpIcon = "fa-arrow-down";
+                    sortObj.sortNext = "+";
+                    sortObj.sortIcon = "fa-arrow-down";
+                }
+                sortingListSelected.help = sortable[i].label;
+                sortObj.active = true;
+            }
+            sortingList.push(sortObj);
+        }
+        page.sorting = {selected:sortingListSelected,list:sortingList};
+        return page;
     };
     var assetManager = function(ctx) {
         var rxt = require('rxt');

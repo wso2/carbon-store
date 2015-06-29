@@ -158,13 +158,14 @@ var engine = caramel.engine('handlebars', (function() {
                 var ref = require('utils').reflection;
                 for (var index = 0; index < rowCount; index++) {
                     out += '<tr>';
+                    var columnCount = Object.keys(fields).length;
                     for (var key in fields) {
                         //Determine if the value is an array
                         if (!ref.isArray(fields[key].value)) {
                             fields[key].value = [fields[key].value];
                         }
                         var value = fields[key].value[index] ? fields[key].value[index] : ' ';
-                        out += '<td>' + value + '</td>';
+                        out += '<td style="width:'+100/columnCount+'%">' + value + '</td>';
                     }
                     out += '</tr>';
                 }
@@ -208,6 +209,7 @@ var engine = caramel.engine('handlebars', (function() {
                 if(field.updatable == false){
                     isUpdatable = false;
                 }
+
                 var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
                 if(isRequired && field.type != 'file'){
                     meta+=' required';
@@ -224,7 +226,7 @@ var engine = caramel.engine('handlebars', (function() {
             var renderFieldLabel = function(field) {
                 var output = '';
                 var isHidden= (field.hidden)?field.hidden:false;
-                if (!isHidden){
+                if (!isHidden && field.type != "option-text"){
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name) + '</label>';
                 }
                 return output;
@@ -232,11 +234,30 @@ var engine = caramel.engine('handlebars', (function() {
             var renderOptions = function(value, values, field,count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
                 var out = '<select ' + renderFieldMetaData(field,id) + '>';
-                if (value) {
-                    out += '<option selected>' + value + '</option>';
-                }
+
                 for (var index in values) {
-                    out += '<option>' + values[index].value + '</option>';
+                    if (value && values[index].value == value) {
+                        out += '<option selected="selected">' + value + '</option>';
+                    }else{
+                        out += '<option>' + values[index].value + '</option>';
+                    }
+                }
+                //Filter out the selected
+                out += '</select>';
+                return out;
+            };
+
+
+            var renderOptionsForOptionsText = function(value, values, field) {
+                var id=field.name.tableQualifiedName+'_option';
+                var out = '<select ' + renderFieldMetaData(field,id) + '>';
+
+                for (var index in values) {
+                    if (value && values[index].value == value) {
+                        out += '<option selected="selected">' + value + '</option>';
+                    }else{
+                        out += '<option>' + values[index].value + '</option>';
+                    }
                 }
                 //Filter out the selected
                 out += '</select>';
@@ -247,8 +268,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var values = field.value;
                 var output = '';
                 var ref = require('utils').reflection;
-                var buttonName=field.name?field.name.label:'Cannot locate name';
-                output+='<tr><td colspan="3"><a class="btn-inline-form btn-add-dark" onClick="addOptionTextRow(this)">Add '+buttonName+'</a></td></tr>';
+                var buttonName = field.name?field.name.label:'Cannot locate name';
                 if (values) {
                     //If there is only a single entry then the registry API will send a string
                     //In order to uniformly handle these scenarios we must make it an array
@@ -261,17 +281,17 @@ var engine = caramel.engine('handlebars', (function() {
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
                         output += '<tr>';
-                        output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                        output += '<td valign="top"><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                        output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
+                        output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
+                        output += '<td valign="top"><input type="text" class="form-control" value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                        output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                         output += '</tr>';
                     }
                 } else {
-                    output += '<tr>';
+                    output += '<tr id="table_reference_'+field.name.name+'">';
                     var index='0';
-                    output += '<td valign="top">' + renderOptions(option, field.values[0].value, field,index) + '</td>';
-                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text_'+index) + ' /></td>';
-                    output+='<td valign="top"><a class="btn-inline-tr btn-delete-dark" onClick="removeOptionTextRow(this)" >Delete</a>';
+                    output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
+                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                    output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>'
                     output += '</tr>';
                 }
                 return output;
@@ -316,15 +336,35 @@ var engine = caramel.engine('handlebars', (function() {
                     case 'password':
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
+                    case 'option-text':
+                        if(field.maxoccurs && field.maxoccurs == "unbounded"){
+                            out = '<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding:0">&nbsp;</div>' +
+                                  '<div style="border:0px solid #ff0000; padding:0" class="col-lg-10 col-md-10 col-sm-12 col-xs-12">'+
+//                                      '<div class="add-unbounded-row"><a class="js-add-unbounded-row" data-name="'+field.name.name+'"><i class="fa fa-plus-circle"></i> Add '+field.name.name+'</a></div>' +
+                                      '<table class="tablex cu-data-table js-unbounded-table" id="table_'+field.name.name+'">'+
+                                      '<thead><tr style="display: none"><th></th><th></th><th></th></tr></thead>'+
+                                      '<tbody>'+
+                                       renderOptionsTextField(field)+
+                                      '</tbody>'+
+                                      '</table>'+
+                                  '</div>';
+
+                            /*out+= '<table style="display: none;" class="tmp_refernceTableForOptionText">'+
+                                    renderOptionsTextField({name:field.name,values:field.values,label:field.label})+
+                                  '</table>';*/
+                        }
+
+                        break;
                     default:
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">Normal Field' + field.type + '</div>';
                         break;
                 }
                 return out;
             };
-            var renderTableField = function(field) {
+            var renderTableField = function(field,mode) {
                 var out = '';
                 var value = field.value || '';
+
                 switch (field.type) {
                     case 'options':
                         out = '<td valign="top">' + renderOptions(field.value, field.values[0].value, field) + '</td>';
@@ -336,7 +376,26 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<td valign="top"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">'+value+'</textarea></td>';
                         break;
                     case 'file':
-                        out = '<td> valign="top"<input type="file" class="form-control" value="' + value + '" ' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<td valign="top"><input type="file" class="form-control" value="' + value + '" ' + renderFieldMetaData(field) + ' ></td>';
+                        break;
+                    case 'date':
+                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        break;
+                    case 'checkbox':
+                        var checkboxString = "";
+                        if(mode == "edit"){
+                            if(value == "on"){
+                                checkboxString = 'checked="checked"';
+                            }else{
+                                checkboxString = '';
+                            }
+                        }else{
+                            value="on";
+                        }
+                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' '+checkboxString+' ></td>';
+                        break;
+                    case 'password':
+                        out = '<td valign="top"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
                         break;
                     default:
                         out = '<td valign="top">Normal Field' + field.type + '</td>';
@@ -344,7 +403,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return out;
             };
-            var renderFieldValue = function(field, value) {
+            var renderFieldValue = function(field, value, mode) {
                 var out = '';
                 switch (field.type) {
                     case 'options':
@@ -358,6 +417,25 @@ var engine = caramel.engine('handlebars', (function() {
                         break;
                     case 'file':
                         out = '<td valign="top"><input type="text" value="' + value + '"' + renderFieldMetaData(field) + ' ></td>';
+                        break;
+                    case 'date':
+                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        break;
+                    case 'checkbox':
+                        var checkboxString = "";
+                        if(mode == "edit"){
+                            if(value == "on"){
+                                checkboxString = 'checked="checked"';
+                            }else{
+                                checkboxString = '';
+                            }
+                        }else{
+                            value="on";
+                        }
+                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' '+checkboxString+' ></td>';
+                        break;
+                    case 'password':
+                        out = '<td valign="top"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
                         break;
                     default:
                         out = '<td valign="top">Normal Field' + field.type + '</td>';
@@ -393,9 +471,24 @@ var engine = caramel.engine('handlebars', (function() {
                 var label = renderFieldLabel(field);
                 return new Handlebars.SafeString(label + renderField(field, options));
             });
+            Handlebars.registerHelper('renderEditableHeadingTableRow', function(table) {
+                var field = getFirstField(table);
+                var fieldValue = '';
+                if(field.values && typeof field.values === "object"){
+                    fieldValue = field.values[0].value;
+                }
+                var output = '';
+                output += '<tr id="table_reference_'+table.name+'">';
+                output += '<td valign="top">' + renderOptionsForOptionsText('', fieldValue, field) + '</td>';
+                output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
+                output += '</tr>';
+                return new Handlebars.SafeString(output);
+            });
             Handlebars.registerHelper('renderEditableHeadingTable', function(table) {
                 var fieldCount = getFieldCount(table);
                 var firstField = getFirstField(table);
+
                 //Determine if there is only one field and it is an option text
                 if ((fieldCount == 1) && (firstField.type == 'option-text')) {
                     return new Handlebars.SafeString(renderOptionsTextField(firstField));
@@ -403,11 +496,29 @@ var engine = caramel.engine('handlebars', (function() {
                     return new Handlebars.SafeString(renderEditableHeadingField(table));
                 }
             });
+            //If there is no rows then a single empty row with the fields should be rendererd
+            Handlebars.registerHelper('renderEditableUnboundTableRow', function(table) {
+                //Get the number of rows in the table
+
+                var fields = table.fields;
+                var out = '';
+                out += '<tr id="table_reference_'+table.name+'">';
+                for (var key in fields) {
+                    fields[key].value = "";
+                    out += renderTableField(fields[key]);
+                }
+                out += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
+                out += '</tr>';
+
+                return new Handlebars.SafeString(out);
+
+            });
             Handlebars.registerHelper('renderEditableUnboundTable', function(table) {
                 //Get the number of rows in the table
                 var rowCount = getNumOfRowsUnbound(table);
                 var fields = table.fields;
                 var out = '';
+                var mode=table.mode;
                 var ref = require('utils').reflection;
                 //If there is no rows then a single empty row with the fields should be rendererd
                 if (rowCount == 0) {
@@ -427,8 +538,9 @@ var engine = caramel.engine('handlebars', (function() {
                             }
                             var value = fields[key].value[index] ? fields[key].value[index] : ' ';
                             var field = fields[key];
-                            out += renderFieldValue(field, value);
+                            out += renderFieldValue(field, value, mode);
                         }
+                        out += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                         out += '</tr>';
                     }
                 }
@@ -455,14 +567,55 @@ var engine = caramel.engine('handlebars', (function() {
                 //Check if the table is a normal table
                 return new Handlebars.SafeString(defaultPtr(table));
             });
+            Handlebars.registerHelper('hasAssetPermission',function(context,options){
+                var rxtAPI  = require('rxt');
+                var key = options.hash.key;
+                var type = options.hash.type;
+                var tenantId = options.hash.tenantId;
+                var username = options.hash.username;
+                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var missingParams = (!key) || (!type) || (!tenantId) || (!username);
+                //If the user is forcing the view to render 
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                if(missingParams){
+                    log.error('[hasAssetPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
+                    return ;
+                }
+                isAuthorized = rxtAPI.permissions.hasAssetPermission(key,type,tenantId,username);
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                log.error('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                return ;
+            });
+            Handlebars.registerHelper('hasAppPermission',function(context,options){
+                var rxtAPI  = require('rxt');
+                var key = options.hash.key;
+                var type = options.hash.type;
+                var tenantId = options.hash.tenantId;
+                var username = options.hash.username;
+                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var missingParams = (!key) || (!tenantId) || (!username);
+                //If the user is forcing the view to render 
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                if(missingParams){
+                    log.error('[hasAppPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
+                    return ;
+                }
+                isAuthorized = rxtAPI.permissions.hasAppPermission(key,tenantId,username);
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                log.error('[hasAppPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                return ;
+            });
         },
         render: function(data, meta) {
-            if (request.getParameter('debug') == '1') {
-                response.addHeader("Content-Type", "application/json");
-                print(stringify(data));
-            } else {
-                this.__proto__.render.call(this, data, meta);
-            }
+            this.__proto__.render.call(this, data, meta);
         },
         globals: function(data, meta) {
             var publisher = require('/modules/publisher.js'),
@@ -482,7 +635,6 @@ var resolve = function(path) {
     var asset = require('rxt').asset;
     var app = require('rxt').app;
     for(var key in this.engine.partials){
-        log.info('key ' +key);
     }
     var appPath = app.resolve(request, path, this.name, this, themeResolver, session);
     if (!appPath) {

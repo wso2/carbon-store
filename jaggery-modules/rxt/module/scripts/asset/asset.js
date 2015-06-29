@@ -33,6 +33,7 @@ var asset = {};
     var DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime'; //TODO:Move to constants
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
@@ -40,20 +41,13 @@ var asset = {};
     };
     var getOptionTextField = function(attributes, tableName, fieldName, field, table) {
         //Determine the number of headings 
-        var subHeading = table.subheading ? table.subheading[0].heading : null;
-        if (!subHeading) {
-            return '';
-        }
-        var expression = tableName + '_' + fieldName;
-        //Get the number of subheadings
-        if (subHeading.length > 0) {
-            expression = tableName + '_entry';
-        }
+        var expression = tableName + '_entry';
         var value = attributes[expression];
         return value;
     };
     var resolveField = function(attributes, tableName, fieldName, field, table) {
         var value;
+        var ref = require('utils').reflection;
         switch (field.type) {
             case 'option-text':
                 value = getOptionTextField(attributes, tableName, fieldName, field, table);
@@ -80,46 +74,41 @@ var asset = {};
         return result;
     };
     var setField = function(field, attrName, data, attributes, table) {
-
-
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
-            var indexc;
-            var length;
-            var splitName;
             for (var dataField in data) {
-                if (dataField.hasOwnProperty(attrName + '_option') && dataField.indexOf(attrName + '_option') == 0) {
-                    splitName = dataField.split("_");
-                    length = splitName.length;
-                    indexc = splitName[length - 1];
-                    optionsSet[indexc] = data[dataField];
-                }
-                if (dataField.hasOwnProperty(attrName + '_text') && dataField.indexOf(attrName + '_text') == 0) {
-                    splitName = dataField.split("_");
-                    length = splitName.length;
-                    indexc = splitName[length - 1];
-                    textSet[indexc] = data[dataField];
+                if(data.hasOwnProperty(dataField)){
+                    if (dataField == attrName + '_option') {
+                        optionsSet = data[dataField];
+                    }else if(dataField == attrName + '_text'){
+                        textSet = data[dataField];
+                    }
                 }
             }
             var list = [];
-            for (var singleIndex = 0; singleIndex < optionsSet.length; singleIndex++) {
-                list.push(optionsSet[singleIndex]);
-                list.push(textSet[singleIndex]);
+            if (typeof optionsSet === 'string') {
+                list.push(optionsSet + ":" + textSet);
+            }else{
+                for(var i=0;i<optionsSet.length;i++){
+                    list.push(optionsSet[i] + ":" + textSet[i]);
+                }
             }
             //The options text fields need to be sent in with the name of table and entry postfix
             attrName = table.name + '_entry';
-            var items = processOptionTextList(list);
-            attributes[attrName] = items;
-        }else if(field.type == 'checkbox'){
-            if(data[attrName] == null || data[attrName] == undefined){
+            attributes[attrName] = list;
+        } else if (field.type == 'checkbox') {
+            if (data[attrName] == null || data[attrName] == undefined) {
                 attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
-            }else{
-                attributes[attrName] = "on";  //We set it's value to on
+            } else {
+                attributes[attrName] = "on"; //We set it's value to on
             }
-        }else {
-            if (data[attrName] != null) {
+        } else {
+            if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
+                if(log.isDebugEnabled()){
+                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);                    
+                }
             } else {
                 log.debug(attrName + ' will not be saved.');
             }
@@ -209,7 +198,6 @@ var asset = {};
             return;
         }
         asset = this.get(id);
-
         //If the default flag is true or if there are no other versions of this asset make this
         //asset the default asset
         if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
@@ -220,6 +208,32 @@ var asset = {};
             log.info('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
             return;
         }
+    };
+    AssetManager.prototype.postCreate = function(asset,ctx){
+        log.info('### Performing post create operations ###');
+        var username = ctx.username;
+        var permissionsAPI = require('rxt').permissions;
+        var userMod = require('store').user;
+        var userRole = user.privateRole(username);
+        var tenantId = ctx.tenantId;
+        var path = asset.path;
+        var actions = [];
+        if(!path) {
+            log.error('Unable to finish post create actions as the asset path was not located.Subsequent CRUD operations may fail for asset '+asset.id);
+            return false;
+        }
+        //Allow all actions for the user's role
+        actions.push(constants.REGISTRY_GET_ACTION);
+        actions.push(constants.REGISTRY_ADD_ACTION);
+        actions.push(constants.REGISTRY_DELETE_ACTION);
+        actions.push(constants.REGISTRY_AUTHORIZE_ACTION);
+        log.info('Authorizing actions for role ');
+        permissionsAPI.authorizeActionsForRole(tenantId, path, userRole, actions);
+
+        //Deny actions for the everyone role
+        permissionsAPI.denyActionsForEveryone(tenantId, path);
+        log.info('### Finished post create operations ###');
+        return true;
     };
     /**
      * Makes the provided asset the default asset by retrieving the group of assets it
@@ -260,7 +274,7 @@ var asset = {};
         }
         this.am.update(options);
         var asset = this.am.get(options.id);
-        if(!this.rxtManager.isGroupingEnabled(this.type)){
+        if (!this.rxtManager.isGroupingEnabled(this.type)) {
             log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
             return;
         }
@@ -401,6 +415,220 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
+    var buildQueryString = function(query,options) {
+        var queryString = [];
+        var value;  
+        options = options || {};
+        var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
+        for(var key in query) {
+            //Drop the type property from the query
+            if((query.hasOwnProperty(key)) && (key!='type')){
+                value = query[key];
+                //If the key contains an underscore (_) we 
+                //need  replace it with a semi colon (:)
+                //as the underlying API requires this
+                //Note: This prevents us from searching props
+                //with a underscore (_)
+                key = key.replace('_',':');
+                //Check if wildcard search is enabled
+                if(wildcard){
+                    value = '*'+value+'*'; 
+                }
+                queryString.push(key+'='+value);
+            }
+        }
+        return queryString.join('&');
+    };
+    //TODO:This is a temp fix
+    var buildArtifact = function (type,mediaType,artifact) {
+        return {
+            id: String(artifact.id),
+            type: String(type),
+            path: "/_system/governance" + String(artifact.getPath()),
+            lifecycle: artifact.getLifecycleName(),
+            lifecycleState: artifact.getLifecycleState(),
+            mediaType: mediaType,
+            attributes: (function () {
+                var i, name,
+                    names = artifact.getAttributeKeys(),
+                    length = names.length,
+                    attributes = {};
+                for (i = 0; i < length; i++) {
+                    name = names[i];
+
+                    var data = artifact.getAttributes(name);
+
+                    //Check if there is only one element
+                    if (data.length == 1) {
+                        attributes[name] = String(artifact.getAttribute(name));
+                    }
+                    else {
+                        attributes[name] = data;
+                    }
+                }
+                return attributes;
+            }()),
+            content: function () {
+                return new Stream(new ByteArrayInputStream(artifact.getContent()));
+            }
+        };
+    };
+    var processAssets = function(type,set,rxtManager){
+        var iterator = set.iterator();
+        var assets = [];
+        var current;
+        var mediaType;
+        var assetType;
+        var item;
+        var rm = rxtManager;
+        while(iterator.hasNext()){
+            current = iterator.next();
+            assetType = null;
+            if(!type) {
+                try{
+                    //This is wrapped in a try catch as
+                    //some generic artifacts do no have the getMediaType method
+                    mediaType = current.getMediaType(); 
+                } catch (e){
+                    log.error('Unable to resolve the media type of an asset returned from a cross type search.This asset will be dropped from the result set');
+                }
+
+                assetType = rm.getTypeFromMediaType(mediaType);
+            } else {
+                assetType = type;
+                mediaType = rm.getMediaType(type);
+            }
+            item = buildArtifact(assetType,mediaType,current);
+            assets.push(item);
+        }
+        return assets;
+    };
+    var addMetaDataToGenericAssets = function(assets,session,tenantId){
+        var assetManagers = {};
+        var assetManager;
+        var item;
+        var server = require('store').server;
+        var user = server.current(session);
+        for(var index = 0; index < assets.length; index++){
+            item = assets[index];
+            if(!assetManagers[item.type]){
+                if(user){
+                    assetManager = asset.createUserAssetManager(session,item.type);
+                } else {
+                    assetManager = asset.createAnonAssetManager(session,item.type, tenantId);
+                }          
+                assetManagers[item.type] = assetManager;
+            } else {
+                assetManager = assetManagers[item.type];
+            }
+            addAssetMetaData(item,assetManager);
+        }
+    };
+    var generatePaginationContext = function(paging){
+        var page = {};
+        page.start = paging.start || 0;
+        page.count = paging.count || constants.DEFAULT_ASSET_PAGIN.count;
+        page.sortOrder = paging.sortOrder || constants.DEFAULT_ASSET_PAGIN.sortOrder;
+        page.sortBy = paging.sortBy || constants.DEFAULT_ASSET_PAGIN.sortBy;
+        page.paginationLimit = paging.paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit;
+        return page;
+    }
+    var buildPaginationContext = function(paging){
+        paging = paging || {};
+        paging = generatePaginationContext(paging);
+        log.info('[pagination-context] settting context to : '+stringify(paging));
+        PaginationContext.init(paging.start,paging.count,paging.sortOrder,
+            paging.sortBy,paging.paginationLimit);
+    };
+    var destroyPaginationContext = function(paginationContext) {
+        PaginationContext.destroy();
+        log.info('[pagination-context] successfully destroyed context')
+    };
+    var buildQuery = function(query){
+        var q = '';
+        var options = {};
+        options.wildcard = true; //Assume that wildcard is enabled
+        //Check if grouping is enabled
+         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
+            options.wildcard = false;//query[constants.Q_PROP_GROUP];
+            delete query[constants.Q_PROP_GROUP];
+         } 
+         q  = buildQueryString(query, options);
+         return q;
+    };
+    var doAdvanceSearch = function(type,query,paging,registry,rxtManager) {
+        var assets = [];
+        var q;
+        var governanceRegistry;
+        var mediaType = '';
+        if(type){
+            mediaType = rxtManager.getMediaType(type);
+        }
+        try {
+            log.info('[advance search] building pagination');
+            buildPaginationContext(paging);
+            log.info('[advance search] building query ');
+            q = buildQuery(query);
+            log.info('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);            
+            if(q.length>0){
+                governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
+                assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
+            }      
+        } catch (e) {
+            log.error(e);
+            log.error('Unable to retrieve assets',e);
+        } finally {
+            destroyPaginationContext();
+        }
+        return assets;
+    };
+    AssetManager.prototype.advanceSearch = function(query,paging) {
+      var assets = [];
+      var type = query.type;
+      var mediaType = '';
+      var registry = this.registry.registry;
+      var rm = this.rxtManager;
+      //Note: This will restrict the search to this asset type
+      type = this.type;
+      query = query || {};
+      paging = paging || null;
+      assets =  doAdvanceSearch(type,query,paging,registry,rm);
+      //assets is a set that must be converted to a JSON array
+      assets  = processAssets(type,assets,rm);
+      //Add additional meta data
+      addAssetsMetaData(assets,this);
+      return assets;
+    };
+    asset.advanceSearch = function(query,paging,session,tenantId) {
+        var storeAPI = require('store');
+        var user = storeAPI.server.current(session);
+        var userRegistry;
+        var rxtManager;
+        var type = query.type;
+        var assets = [];
+        var registry;
+        tenantId = tenantId || null;
+        if((!user)&&(!tenantId)) {
+            log.error('Unable to create registry instance without a tenantId when there is no logged in user');
+            throw 'Unable to create registry instance without a tenantId when there is no logged in user';
+        } 
+        //Determine if a user exists
+        if(user){
+            userRegistry = storeAPI.user.userRegistry(session);
+            tenantId = user.tenantId;
+        }  else {
+            log.info('Switching anonymous registry to perform advanced search as there is no logged in user');
+            userRegistry = storeAPI.server.anonRegistry(tenantId);
+        }
+        rxtManager = core.rxtManager(tenantId);
+        registry = userRegistry.registry;
+        assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
+        //assets is a set that must be converted to a JSON array
+        log.info('[advance search] about to process result set');
+        assets = processAssets(null,assets,rxtManager);
+        addMetaDataToGenericAssets(assets,session,tenantId);
+        return assets;
+    };
     /**
      * Adds wild card search pattern to all
      * query properties
@@ -437,7 +665,7 @@ var asset = {};
         addAssetsMetaData(assets, this);
         return assets;
     };
-    var createGroupingQuery = function(query,groupingAttributeValues){
+    var createGroupingQuery = function(query, groupingAttributeValues) {
         query = query || {};
         // var attribute;
         // if(groupingAttributeValu.length === 0) {
@@ -446,21 +674,21 @@ var asset = {};
         // }
         //attribute = groupingAttributes[0];
         //query[attribute] = target;
-        for(var key in groupingAttributeValues){
-            query [key] = groupingAttributeValues[key];
+        for (var key in groupingAttributeValues) {
+            query[key] = groupingAttributeValues[key];
         }
         return query;
     };
-    var getGroupAttributeValues = function(asset,attributes){
+    var getGroupAttributeValues = function(asset, attributes) {
         //Handle cases where the full asset is provided
-        if(asset.hasOwnProperty('attributes')){
+        if (asset.hasOwnProperty('attributes')) {
             asset = asset.attributes;
         }
         var values = {};
         var groupAttrKey;
-        for(var index in attributes){
+        for (var index in attributes) {
             groupAttrKey = attributes[index];
-            if(asset.hasOwnProperty(groupAttrKey)){
+            if (asset.hasOwnProperty(groupAttrKey)) {
                 values[groupAttrKey] = asset[groupAttrKey];
             }
         }
@@ -482,18 +710,18 @@ var asset = {};
             //name = target;
             throw 'getAssetGroup no longer supports querying by name.Please provide an asset instance';
         } else if (typeof target === 'object') {
-            groupingAttributeValues = getGroupAttributeValues(target,groupingAttributes); //this.getName(target);//target[nameField];
+            groupingAttributeValues = getGroupAttributeValues(target, groupingAttributes); //this.getName(target);//target[nameField];
         } else {
             throw 'Cannot get the asset group when target is not an object';
         }
         if (groupingAttributes.length === 0) {
-            throw 'No grouping attributes have been provided for type: '+this.type;
+            throw 'No grouping attributes have been provided for type: ' + this.type;
         }
         var query = {};
         var assets = [];
         query.mediaType = this.rxtManager.getMediaType(this.type);
         //query[nameField] = name;
-        query = createGroupingQuery(query,groupingAttributeValues);
+        query = createGroupingQuery(query, groupingAttributeValues);
         paging = paging || this.defaultPaging;
         assets = this.am.strictSearch(query, paging);
         addAssetsMetaData(assets, this);
@@ -599,46 +827,75 @@ var asset = {};
         return items;
     };
     /**
-     * Returns the set of tags for a given asset instance or asset type
-     * If an id is provided then the tags of that particular asset is returned,else
-     * all of the tags applied to the current asset type are returned
+     * Returns the set of tags for a given asset type or given query
      * @example
-     *     var tags = am.tags(); //This will return all tags of the am's type
+     *     option 1
+     *     pass the asset type ( tags?type=gadget )
+     *          returns names of all tag and their count for the given asset type
      *
-     *     var tagName=tags[0].name;
-     *     var tagAppliedCount=tags[0].count;
+     *     option 2
+     *     pass a query (tags?type=gadget&q="name":"wso2")
+     *          returns names of all tags which has the word wso2 in the name and their respective counts
      *
-     * @param  {String} id A UUID representing an asset instance
-     * @return {Array}     An array of tag name value pairs
+     * @param  {String} optional query parameter
+     * @return {Array}     An array of tag name count pairs
      */
-    AssetManager.prototype.tags = function() {
-        var tag, tags, assetType, i, length, count;
-        var tagz = [];
-        var tz = {};
-        tags = this.registry.query(constants.TAGS_QUERY_PATH);
-        length = tags.length;
-        for (i = 0; i < length; i++) {
-            assetType = tags[i].split(';')[0].split('/')[3];
-            if (assetType != undefined) {
-                if (assetType.contains(this.type)) {
-                    tag = tags[i].split(';')[1].split(':')[1];
-                    count = tz[tag];
-                    count = count ? count + 1 : 1;
-                    tz[tag] = count;
+    AssetManager.prototype.tags = function(query) {
+        var result;
+        if (!query) {
+            var tagsArr =[];
+            var tagsResults = {};
+            var tag,tags, assetType, i, length, count;
+            tags = this.registry.query(constants.TAGS_QUERY_PATH);
+            length = tags.length;
+            for (i = 0; i < length; i++) {
+                assetType = tags[i].split(';')[0].split('/')[3];
+                if (assetType != undefined) {
+                    if (assetType.contains(this.type)) {
+                        tag = tags[i].split(';')[1].split(':')[1];
+                        count = tagsResults[tag];
+                        count = count ? count + 1 : 1;
+                        tagsResults[tag] = count;
+                    }
                 }
             }
+            for (tag in tagsResults) {
+                if (tagsResults.hasOwnProperty(tag)) {
+                    tagsArr.push({
+                        name: String(tag),
+                        count: tagsResults[tag]
+                    });
+                }
+            }
+            result = tagsArr;
+        } else {
+            var mediaType = this.rxtManager.getMediaType(this.type);
+            result = tagsQuerySearch(mediaType,query)
         }
-        //api setter
-        for (tag in tz) {
-            if (tz.hasOwnProperty(tag)) {
-                tagz.push({
-                    name: String(tag),
-                    count: tz[tag]
+        return result;
+    };
+    var tagsQuerySearch =function(mediaType,query){
+        var tagsArr =[];
+        var tag;
+        var tagsResults = {};
+        var carbon = require('carbon');
+        var osgiServiceName = constants.TAGS_SERVICE;
+        var osgiService = carbon.server.osgiService(osgiServiceName);
+        var map = new java.util.HashMap();
+        map.put("facet.field", "tags");
+        map.put("facet.prefix", query.name);
+        map.put("mediaType", mediaType);
+        tagsResults = osgiService.search(map);
+        for (tag in tagsResults) {
+            if (tagsResults.hasOwnProperty(tag)) {
+                tagsArr.push({
+                    name: tagsResults[tag].getTerm(),
+                    count:tagsResults[tag].getFrequency()
                 });
             }
         }
-        return tagz;
-    };
+        return tagsArr;
+    }
     /**
      * Returns the list of assets that have the provided tag
      * attached to it.If a paging value is provided then it is used,else
@@ -681,8 +938,80 @@ var asset = {};
      * @param {String} id  A UUID representing an asset instance
      * @param {String} tag  The name of the tag
      */
-    AssetManager.prototype.addTag = function(id, tag) {};
-    AssetManager.prototype.untag = function(id, tag) {};
+    AssetManager.prototype.addTags = function(id, tags) {
+        var asset = this.get(id);
+        var tagged; //Assume that the tag will not be applied
+        var utilsAPI = require('utils');
+        //If the user has provided a single tag then it should be 
+        //assigned to an array to keep the registry invocation uniform
+        if (!utilsAPI.reflection.isArray(tags)) {
+            tags = [tags];
+        }
+        if (!asset) {
+            log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
+        }
+        try {
+            this.registry.tag(asset.path, tags);
+            tagged = true;
+        } catch (e) {
+            log.error('Unable to add tags: ' + stringify(tags), e);
+        }
+        return tagged;
+    };
+    AssetManager.prototype.removeTags = function(id, tags) {
+        var asset = this.get(id);
+        var tag;
+        var untagged; //Assume that the tags will not be removed
+        var utilsAPI = require('utils');
+        if (!utilsAPI.reflection.isArray(tags)) {
+            tags = [tags];
+        }
+        if (!asset) {
+            log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
+        }
+        try{
+            for(var index =0; index< tags.length; index++){
+                tag = tags[index];
+                this.registry.untag(asset.path,tag);
+            }
+            //TODO: Make the untagging process atomic
+            untagged = true;
+        } catch(e){
+            log.error('One or more tags were not untagged ',e);
+        }
+        return untagged;
+    };
+    /**
+     * Returns the set of tags applied to an asset
+     * TODO: This method should be called in the tags method
+     * @param  {[type]} id [description]
+     * @return {[type]}    [description]
+     */
+    AssetManager.prototype.getTags = function(id){
+        var asset = this.get(id);
+        var tags;
+        if (!asset) {
+            log.error('Unable to retrieve tags of asset: ' + id + ' as it was not located.');
+            return tagged;
+        }
+        if (!asset.path) {
+            log.error('Unable to retrieve the tags of the asset : ' + id + ' as the asset path was not located');
+        }
+        try{
+            tags = this.registry.tags(asset.path)||[];
+        } catch(e){
+            log.error('Unable to retrieve the tags of the provided asset ',e);
+        }
+        return tags;
+    };
     /**
      * The method returns the rating value of a given asset
      * @param  {String} id A UUID representing an asset instance
@@ -795,7 +1124,9 @@ var asset = {};
         var userSpace = this.getSubscriptionSpace(session);
         var subscriptions = [];
         if (!userSpace) {
-            log.error('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');
+            if(log.isDebugEnabled()){
+                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');                
+            }
             return subscriptions;
         }
         subscriptions = obtainSubscriptions(userSpace, this, this.registry, this.type);
@@ -998,7 +1329,58 @@ var asset = {};
     AssetManager.prototype.listAllAttachedLifecycles = function(id) {
         return this.am.listAllAttachedLifecycles(id);
     };
-    AssetManager.prototype.createVersion = function(options, newVersion) {};
+    AssetManager.prototype.createVersion = function(options, newAsset) {
+        var rxtModule = require('rxt');
+        var existingAttributes = {};
+        var isLCEnabled = false;
+        var isDefaultLCEnabled =false;
+        if (!options.id || !newAsset) {
+            log.error('Unable to process create-version without having a proper ID or a new asset instance.');
+            return false;
+        }
+        //TODO validate version exists ATM with advance search
+        var existingAsset = this.get(options.id);
+        var ctx = rxtModule.core.createUserAssetContext(session,options.type);
+        var context = rxtModule.core.createUserAssetContext(session, options.type);
+        //var nameAttribute = this.getName(existingAsset);
+        var oldId = existingAsset.id;
+        delete existingAsset.id;
+
+        for (var key in newAsset) {
+            existingAsset.attributes[key] = newAsset[key];
+        }
+
+        existingAttributes.attributes = existingAsset.attributes;
+        //TODO remove hardcoded attributename
+        existingAttributes.name = existingAsset.attributes['overview_name'];
+
+        this.create(existingAttributes);
+        createdAsset = this.get(existingAttributes.id);
+
+        isLCEnabled = context.rxtManager.isLifecycleEnabled(options.type);
+        isDefaultLCEnabled = context.rxtManager.isDefaultLifecycleEnabled(options.type);
+
+        this.postCreate(createdAsset,ctx);
+        this.update(existingAttributes);
+
+        //Continue attaching the lifecycle
+        if(isDefaultLCEnabled && isLCEnabled){
+            var isLcAttached = this.attachLifecycle(existingAttributes);
+            //Check if the lifecycle was attached
+            if (isLcAttached) {
+                var synched = this.synchAsset(existingAttributes);
+                if (synched) {
+                    this.invokeDefaultLcAction(existingAttributes);
+                } else {
+                    log.warn('Failed to invoke default action as the asset could not be synched.')
+                }
+            }
+        }
+
+        this.registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId,'/_system/governance/store/asset_resources/'+ options.type + '/' + existingAttributes.id);
+
+
+    };
     AssetManager.prototype.getName = function(asset) {
         var nameAttribute = this.rxtManager.getNameAttribute(this.type);
         if (asset.attributes) {
@@ -1019,7 +1401,7 @@ var asset = {};
                 log.warn('Unable to locate versionAttribute: ' + versionAttribute + ' in asset ' + stringify(asset));
                 return '';
             }
-            return version;
+            return asset.attributes[versionAttribute];
         }
         return '';
     };
@@ -1054,8 +1436,8 @@ var asset = {};
     AssetManager.prototype.getTimeStamp = function(asset) {
         var timestampAttribute = this.rxtManager.getTimeStampAttribute(this.type);
         if (asset.attributes) {
-            var banner = asset.attributes[timestampAttribute];
-            if (!banner) {
+            var timeStamp = asset.attributes[timestampAttribute];
+            if (!timeStamp) {
                 log.warn('Unable to locate bannerAttribute ' + timestampAttribute + ' in asset ' + asset.id);
                 return '';
             }
@@ -1451,9 +1833,9 @@ var asset = {};
                 assetResources = assetResourcesTemplate._default.manager(context);
             }
             //Check if there is a default manager provided by an app default asset extension
-            if(defaultAppExtensionMediator){
+            if (defaultAppExtensionMediator) {
                 log.debug('using custom default asset extension to load an asset manager');
-                assetResources = defaultAppExtensionMediator.manager()?defaultAppExtensionMediator.manager()(context) : assetResources;
+                assetResources = defaultAppExtensionMediator.manager() ? defaultAppExtensionMediator.manager()(context) : assetResources;
             }
         } else {
             assetResources = assetResourcesTemplate.manager(context);
@@ -1482,10 +1864,9 @@ var asset = {};
         var defaultRenderer = assetResources._default.renderer ? assetResources._default.renderer(context) : {};
         var defaultAppExtensionMediator = core.defaultAppExtensionMediator();
         var customDefaultRenderer = {};
-        if(defaultAppExtensionMediator){
-            customDefaultRenderer = defaultAppExtensionMediator.renderer()?defaultAppExtensionMediator.renderer()(context):{};                
+        if (defaultAppExtensionMediator) {
+            customDefaultRenderer = defaultAppExtensionMediator.renderer() ? defaultAppExtensionMediator.renderer()(context) : {};
         }
-        
         reflection.override(renderer, defaultRenderer);
         reflection.override(renderer, customDefaultRenderer);
         reflection.override(renderer, customRenderer);
@@ -1567,6 +1948,45 @@ var asset = {};
         }
         return defaultCb;
     };
+    var createSessionlessServer = function(type, tenantId) {
+        var context = core.createAnonAssetContext(null, type, tenantId);
+        var assetResources = core.assetResources(tenantId, type);
+        var reflection = require('utils').reflection;
+        var serverCb = assetResources.server;
+        var defaultCb = assetResources._default.server;
+        if (!assetResources._default) {
+            log.warn('A default object has not been defined for the type: ' + type + ' for tenant: ' + tenantId);
+            throw 'A default object has not been defined for the type: ' + type + ' for tenant: ' + tenantId + '.Check if a default folder is present';
+        }
+        //Check if there is a type level server callback
+        if (!serverCb) {
+            defaultCb = defaultCb(context);
+            serverCb = defaultCb;
+        } else {
+            defaultCb = defaultCb(context);
+            serverCb = serverCb(context);
+            //Combine the endpoints 
+            var defaultApiEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.apis)) ? defaultCb.endpoints.apis : [];
+            var defaultPageEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.pages)) ? defaultCb.endpoints.pages : [];
+            var serverApiEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.apis)) ? serverCb.endpoints.apis : [];
+            var serverPageEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.pages)) ? serverCb.endpoints.pages : [];
+            combineEndpoints(defaultApiEndpoints, serverApiEndpoints);
+            combineEndpoints(defaultPageEndpoints, serverPageEndpoints);
+            if (!defaultCb.endpoints) {
+                throw 'No endpoints found for the type: ' + type;
+            }
+            if (!serverCb.endpoints) {
+                serverCb.endpoints = {};
+                log.warn('Creating endpoints object for type: ' + type);
+            }
+            defaultCb.endpoints.apis = defaultApiEndpoints;
+            serverCb.endpoints.apis = defaultApiEndpoints;
+            defaultCb.endpoints.pages = defaultPageEndpoints;
+            serverCb.endpoints.pages = defaultPageEndpoints;
+            reflection.override(defaultCb, serverCb);
+        }
+        return defaultCb;
+    };
     /**
      * Creates an Asset Manager instance using the registry of the currently
      * logged in user.This asset manager can be used to perform CRUD operations on pages
@@ -1614,6 +2034,18 @@ var asset = {};
     };
     asset.createRenderer = function(session, type) {
         return createRenderer(session, type);
+    };
+    asset.getSessionlessAssetEndpoints = function(type, tenantId) {
+        var serverCb = createSessionlessServer(type, tenantId);
+        return serverCb ? serverCb.endpoints : {};
+    };
+    asset.getSessionlessAssetPageEndpoints = function(type, tenantId) {
+        var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
+        return endpoints['pages'] || [];
+    };
+    asset.getSessionlessAssetApiEndpoints = function(type, tenantId) {
+        var endpoints = this.getSessionlessAssetEndpoints(type, tenantId);
+        return endpoints['apis'] || [];
     };
     /**
      * Returns a list of all endpoints available to currently
@@ -1664,7 +2096,7 @@ var asset = {};
         return asset.getBaseUrl() + type;
     };
     asset.getBaseUrl = function() {
-        return '/asts/';
+        return '/assets/';
     };
     /**
      * Returns the details of a specific API endpoint matched by the provided endpoint name
@@ -1707,15 +2139,19 @@ var asset = {};
     asset.resolve = function(request, path, themeName, themeObj, themeResolver) {
         var log = new Log();
         var resPath = path;
-        var appExtensionMediator = core.defaultAppExtensionMediator()|| {resolveCaramelResources:function(path){return path;}};
+        var appExtensionMediator = core.defaultAppExtensionMediator() || {
+            resolveCaramelResources: function(path) {
+                return path;
+            }
+        };
         path = '/' + path;
         //Determine the type of the asset
         var uriMatcher = new URIMatcher(request.getRequestURI());
         var extensionMatcher = new URIMatcher(path);
         //TODO: Use the constants
-        var uriPattern = '/{context}/asts/{type}/{+options}';
+        var uriPattern = '/{context}/assets/{type}/{+options}';
         var extensionPattern = '/{root}/extensions/assets/{type}/{+suffix}';
-        var tenantedUriPattern = '/{context}/t/{domain}/asts/{type}/{+suffix}';
+        var tenantedUriPattern = '/{context}/t/{domain}/assets/{type}/{+suffix}';
         uriMatcher.match(uriPattern) || uriMatcher.match(tenantedUriPattern); //TODO check with samples
         extensionMatcher.match(extensionPattern);
         var pathOptions = extensionMatcher.elements() || {};
@@ -1730,7 +2166,7 @@ var asset = {};
             }
             var basePath = themeResolver.call(themeObj, path);
             basePath = appExtensionMediator.resolveCaramelResources(basePath);
-            return basePath;//themeResolver.call(themeObj, path);
+            return basePath; //themeResolver.call(themeObj, path);
         }
         //Check if type has a similar path in its extension directory
         var extensionPath = '/extensions/assets/' + uriOptions.type + '/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;

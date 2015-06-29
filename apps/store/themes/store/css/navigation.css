@@ -53,7 +53,8 @@
     color: #FFFFFF;
 }
 .modal-blue .modal-body {
-    background: none repeat scroll 0 0 #229a55;
+    background: none repeat scroll 0 0 #333;
+    color: #ffffff;
 }
 .modal-blue .btn-primary {
     color: #333333;
@@ -69,7 +70,7 @@ hr.emboss {
 .nav .dropdown-toggle .caret {
     border-bottom-color: #CCCCCC;
     border-top-color: #CCCCCC;
-    margin-top: 13px !important;
+    margin-top: 0px;
 }
 
 .nav .dropdown-toggle:hover .caret {
@@ -152,34 +153,40 @@ hr.emboss {
     padding: 0 10px;
 }
 
-.dropdown-menu, .dropdown-submenu > .dropdown-menu {
-    border-radius: 0;
-    background: #ffffff;
-    color: #34495E;
-    box-shadow: none;
-    padding: 0;
-       border-bottom: 1px solid #CCCCCC;
-    border-left: 1px solid #CCCCCC;
-    border-right: 1px solid #CCCCCC;
-}
+/*.dropdown-menu, .dropdown-submenu > .dropdown-menu {*/
+    /*border-radius: 0;*/
+    /*background: #ffffff;*/
+    /*color: #34495E;*/
+    /*box-shadow: none;*/
+    /*padding: 0;*/
+       /*border-bottom: 1px solid #CCCCCC;*/
+    /*border-left: 1px solid #CCCCCC;*/
+    /*border-right: 1px solid #CCCCCC;*/
+/*}*/
 
-.dropdown-menu li {
+/*.dropdown-menu li {*/
 
-}
+/*}*/
 
-.dropdown-menu.dropdown-account {
-    margin-top: 0;
-    padding: 8px 5px;
-    overflow: hidden;
-}
-.dropdown-menu li > a {
-    color: #34495E;
-    line-height: 30px;
-}
-.dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {
-    background: #229a55;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#0016a085,endColorstr=#0016a085);
-}
+/*.dropdown-menu.dropdown-account {*/
+    /*margin-top: 0;*/
+    /*padding: 8px 15px;*/
+    /*overflow: hidden;*/
+    /*left: 253px;*/
+    /*border: 0px;*/
+    /*background-color: #282828;*/
+    /*color: #ffffff;*/
+    /*margin-top: 8px;*/
+
+/*}*/
+/*.dropdown-menu li > a {*/
+    /*color: #34495E;*/
+    /*line-height: 30px;*/
+/*}*/
+/*.dropdown-menu li > a:hover, .dropdown-menu li > a:focus, .dropdown-submenu:hover > a {*/
+    /*background: #229a55;*/
+    /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#0016a085,endColorstr=#0016a085);*/
+/*}*/
 
 .navbar .nav > li > .dropdown-menu:after, .navbar .nav > li > .dropdown-menu:before {
     border: none;
@@ -223,10 +230,17 @@ hr.emboss {
 }
 
 .dropdown-menu {
-    max-height: 400px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    width: 200px;
+    background-color: #333;
+    color: #ccc;
+    left: 265px;
+    max-height: 402px;
+    overflow: hidden;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    padding-top: 10px;
+    top: 42px;
+    width: 211px;
+    border-radius: 0px;
 }
 .store-menu .dropdown-menu li a {
     color: #bdc3c7;
@@ -269,6 +283,17 @@ hr.emboss {
     border-bottom: 6px solid transparent;
     left: 10px;
     top: 11px;
-    left: -6px;
 }
-
+.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
+    background-color: #333;
+    border-color: #337ab7;
+}
+.navbar-nav > li > a {
+    padding-bottom: 4px;
+    padding-top:8px;
+    color: #DDD;
+}
+.action-title {
+    padding: 8px 2px 2px 5px;
+    color: #ddd;}
+.nav > li > a:focus, .nav > li > a:hover{ background-color:#3e3e3e; color: #fff; }

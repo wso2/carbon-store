@@ -7,11 +7,11 @@
         "username": "admin",
         "password": "admin"
     },
-    "rxt":{
-        "CONFIG_BASE_PATH":"/_system/config/store/configs/",
-        "EXTENSION_PATH":"extensions/assets/",
-        "ASSET_SCRIPT_PATH":"/asset.js",
-        "DEFAULT_ASSET_SCRIPT":"/extensions/assets/default/asset.js"
+    "rxt": {
+        "CONFIG_BASE_PATH": "/_system/config/store/configs/",
+        "EXTENSION_PATH": "extensions/assets/",
+        "ASSET_SCRIPT_PATH": "/asset.js",
+        "DEFAULT_ASSET_SCRIPT": "/extensions/assets/default/asset.js"
     },
     "tenantConfigs": "/_system/config/publisher/configs/publisher.json",
     "app": {
@@ -20,20 +20,17 @@
         "MODEL_MANAGER": "model_manager"
     },
     "lifeCycleBehaviour": {
-
         "SampleLifeCycle2": {
-
             "onAttach": {
                 "action": "Promote"
             }
         },
-        "MobileAppLifeCycle":{
-            "onAttach":{
-                "action":"Create"
+        "MobileAppLifeCycle": {
+            "onAttach": {
+                "action": "Create"
             }
         }
     },
-
     "paths": {
         "ASSET_EXT_PATH": "/assets",
         "ASSET_DEFAULT_PATH": "/assets/default",
@@ -41,28 +38,35 @@
         "ASSETS_DEFAULT_PATH": "/assets/default",
         "RXT_EXTENSION_PATH": "/config/ext/"
     },
-
     "urls": {
         "ASSET": "/asset",
         "ASSETS": "/assets",
         "EXTENSIONS": "/extensions"
     },
-
     "router": {
         "RENDERER": "/modules/router.caramel-renderer.js"
     },
-    "ssoConfiguration": {
-        "enabled": false,
-        "issuer": "publisher",
-        "identityProviderURL": "%https.carbon.local.ip%/samlsso",
-        "keyStorePassword": "wso2carbon",
-        "identityAlias": "wso2carbon",
-        "responseSigningEnabled": "true",
-        "publisherAcs": "%https.host%/publisher/sso",
-        "keyStoreName": "/repository/resources/security/wso2carbon.jks"
+    "authentication": {
+        "activeMethod": "sso",
+        "methods": {
+            "sso": {
+                "attributes": {
+                    "issuer": "publisher",
+                    "identityProviderURL": "%https.carbon.local.ip%/samlsso",
+                    "keyStorePassword": "wso2carbon",
+                    "identityAlias": "wso2carbon",
+                    "responseSigningEnabled": "true",
+                    "acs": "%https.host%/publisher/acs",
+                    "keyStoreName": "/repository/resources/security/wso2carbon.jks",
+                    "useTenantKey": false
+                }
+            },
+            "basic": {
+                "attributes": {}
+            }
+        }
     },
-    "constants" :{
-    "assetCreatedDateLength" : 20
+    "constants": {
+        "assetCreatedDateLength": 20
     }
-
 }

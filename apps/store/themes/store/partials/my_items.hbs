@@ -1,0 +1,47 @@
+<div id="myasset-container">
+    {{#if assets}}
+    {{#itr assets}}
+        <div class="ast-container">
+            <div class="container-fluid ">
+                <div class="title">
+                    <a class="asset-type-{{rxt.shortName}}" href="{{url "/assets"}}/{{key}}/subscriptions">{{value.meta.pluralLabel}}</a>
+                </div><!--title-->
+                <hr />
+            </div>
+        </div>
+        {{#each value.assets}}
+            {{#attributes}}
+                <div class="ctrl-wr-asset">
+                    <div class="itm-ast">
+                        <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
+                            <img class="img-responsive" src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
+                        </a>
+                        <div class="ast-content">
+                            <div class="ast-title padding">
+                                <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
+                                <span class="ast-auth">{{overview_provider}}</span>
+                            </div>
+                            <div class="pull-left asset-rating-container">
+                                <span class="asset-rating">
+                                    <div style="width:{{../ratingPx}}px"></div>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/attributes}}
+        {{/each}}
+    {{/itr}}
+    {{else}}
+        <div id="no-data-my-items" class="no-data">
+            <i class="icon-inbox"></i>
+            <p>
+            {{t "You still haven't any bookmarks from the Store."}}
+            </p>
+            <p>
+                <a href="{{url "/assets/gadget/"}}" class="btn btn-primary">{{t "Bookmark now"}}</a>
+            </p>
+        </div>
+    {{/if}}
+    </div>
+</div>

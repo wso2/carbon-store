@@ -26,36 +26,36 @@ var storageModule = function () {
 
     function StorageManager(options) {
 
-        this.connectionInfo = null;
-        this.context = null;
-        this.isCached = false;
-
-
-
-        this.init(options);
-
-
-
-        //If caching is enabled obtain
-        if (this.isCached) {
-            var cached = getCached();
-
-            if (cached) {
-                //Attach a new driver to the cached version
-                var driver = cached.driverManager.get('default');
-                cached.modelManager.driver = driver;
-                return cached;
-            }
-
-            //Store in the cache
-            putInCache(this);
-        }
-
-        this.prepare();
-
-        //Attach a new driver
-        var driver = this.driverManager.get(this.connectionInfo.dataSource);
-        this.modelManager.driver = driver;
+//        this.connectionInfo = null;
+//        this.context = null;
+//        this.isCached = false;
+//
+//
+//
+//        this.init(options);
+//
+//
+//
+//        //If caching is enabled obtain
+//        if (this.isCached) {
+//            var cached = getCached();
+//
+//            if (cached) {
+//                //Attach a new driver to the cached version
+//                var driver = cached.driverManager.get('default');
+//                cached.modelManager.driver = driver;
+//                return cached;
+//            }
+//
+//            //Store in the cache
+//            putInCache(this);
+//        }
+//
+//        this.prepare();
+//
+//        //Attach a new driver
+//        var driver = this.driverManager.get(this.connectionInfo.dataSource);
+//        this.modelManager.driver = driver;
 
     };
 

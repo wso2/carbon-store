@@ -74,10 +74,10 @@ var engine = caramel.engine('handlebars', (function() {
                 //log.info('options: '+stringify(options));
                 switch (options.type) {
                     case 'text':
-                        output = '<input type="text" class="span12" name="' + options.name.fullName + '" />';
+                        output = '<input type="text" class="search-input" name="' + options.name.fullName + '" />';
                         break;
                     case 'options':
-                        output = '<select id="' + options.name.fullName + '" class="span12 selectpicker " name="' + options.name.fullName + '">';
+                        output = '<select id="' + options.name.fullName + '" class="selectpicker " name="' + options.name.fullName + '">';
                         var valueObj = options.values ? options.values[0] : {};
                         var values = valueObj.value ? valueObj.value : [];
                         for (var index in values) {
@@ -203,14 +203,61 @@ var engine = caramel.engine('handlebars', (function() {
                 return output + path;
             });
 
+            Handlebars.registerHelper('hasAssetPermission',function(context,options){
+                var rxtAPI  = require('rxt');
+                var key = options.hash.key;
+                var type = options.hash.type;
+                var tenantId = options.hash.tenantId;
+                var username = options.hash.username||rxtAPI.permissions.wso2AnonUsername();
+                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var missingParams = (!key) || (!type) || (!tenantId)||(!username);
+                //If the user is forcing the view to render 
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                if(missingParams){
+                    log.error('[hasAssetPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
+                    return ;
+                }
+                isAuthorized = rxtAPI.permissions.hasAssetPermission(key,type,tenantId,username);
+                if(isAuthorized){
+                    return options.fn(context);
+                }else{
+                    if(log.isDebugEnabled()){
+                        log.debug('[hasAssetPermission] User '+username+' does not have permission: '+key+' to see ui area');                        
+                    }
+                    return options.inverse(context);
+                }
+            });
+
+            Handlebars.registerHelper('hasAppPermission',function(context,options){
+                var rxtAPI  = require('rxt');
+                var key = options.hash.key;
+                var type = options.hash.type;
+                var tenantId = options.hash.tenantId;
+                var username = options.hash.username||rxtAPI.permissions.wso2AnonUsername();
+                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var missingParams = (!key) || (!tenantId)||(!username);
+                //If the user is forcing the view to render 
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                if(missingParams){
+                    log.error('[hasAppPermission] Helper not executed since insufficient number of parameters were provided (required parameters: key,type,tenantId,username)');
+                    return ;
+                }
+                isAuthorized = rxtAPI.permissions.hasAppPermission(key,tenantId,username);
+                if(isAuthorized){
+                    return options.fn(context);
+                }
+                if(log.isDebugEnabled()){
+                    log.debug('[hasAppPermission] User '+username+' does not have permission: '+key+' to see ui area');                    
+                }
+                return ;
+            });
         },
         render: function(data, meta) {
-            if (request.getParameter('debug') == '1') {
-                response.addHeader("Content-Type", "application/json");
-                print(stringify(data));
-            } else {
-                this.__proto__.render.call(this, data, meta);
-            }
+            this.__proto__.render.call(this, data, meta);
         },
         globals: function(data, meta) {
             var store = require('/modules/store.js'),

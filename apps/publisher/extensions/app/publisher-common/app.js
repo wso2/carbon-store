@@ -23,13 +23,43 @@ app.server = function(ctx) {
                 title: 'Publisher | Splash page',
                 url: 'splash',
                 path: 'splash.jag'
+            },{
+                url:'sso-login',
+                path:'sso-auth-login-controller.jag'
+            },{
+                url:'basic-auth-login',
+                path:'basic-auth-login-controller.jag'
+            },{
+                url:'sso-logout',
+                path:'sso-auth-logout-controller.jag'
+            },{
+                url:'basic-auth-logout',
+                path:'basic-auth-logout-controller.jag'
+            },{
+                url:'basic-authenticator',
+                path:'basic-authenticator.jag'
+            },{
+                title:'Advanced Search',
+                url:'advanced-search',
+                path:'advanced-search.jag'
             }]
         },
         configs: {
-            landingPage: '/asts/gadget/list',
+            landingPage: '/assets/gadget/list',
             disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint']
         },
         onLoadedServerConfigs:function(configs){
+        }
+    }
+};
+
+app.renderer = function(ctx) {
+    var decoratorApi = require('/modules/page-decorators.js').pageDecorators;
+    return {
+        pageDecorators: {
+            navigationBar: function(page) {
+                return decoratorApi.navigationBar(ctx, page, this);
+            }
         }
     }
 };

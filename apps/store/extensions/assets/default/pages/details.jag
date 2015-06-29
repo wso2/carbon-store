@@ -18,6 +18,7 @@ var caramel;
 require('/modules/store.js').exec(function(ctx) {
     caramel = require('caramel');
     var rxt = require('rxt');
+    var process = require('process');
     var ratingApi = require('/modules/rating-api.js').api;
     var tenantApi = require('/modules/tenant-api.js').api;
     var asset = rxt.asset;
@@ -27,9 +28,10 @@ require('/modules/store.js').exec(function(ctx) {
     var constants = rxt.constants;
     var log = ctx.log;
     var pageEndpoint = constants.ASSET_DETAIL_URL_PATTERN;
-    //'/{context}/asts/{type}/{pageName}/{+id}';
+    var guestDomain = process.getProperty('server.host') + ':' + process.getProperty('https.port');
+    //'/{context}/assets/{type}/{pageName}/{+id}';
     var tenantedPageEndpoint = constants.ASSET_DETAIL_TENANT_URL_PATTERN;
-    //'/{context}/t/{domain}/asts/{type}/{pageName}/{+id}';
+    //'/{context}/t/{domain}/assets/{type}/{pageName}/{+id}';
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     var options = uriMatcher.match(pageEndpoint) || uriMatcher.match(tenantedPageEndpoint);
     if (!options) {
@@ -65,6 +67,7 @@ require('/modules/store.js').exec(function(ctx) {
             response.sendError(404, 'The asset with id: ' + options.id + ' could not be located.');
         } else {
             var output = am.renderBasic(assets, page).details();
+            output.guestDomain = guestDomain;
             caramel.render(output);
         }
     }

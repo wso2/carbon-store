@@ -25,8 +25,8 @@ var constants = rxt.constants;
 var core = rxt.core;
 var carbon = require('carbon');
 
-var apiEndpoint = '/{context}/t/{domain}/asts/{type}/api/{+suffix}';
-var assetEndpoint = '/{context}/t/{domain}/asts/{type}/{+suffix}';
+var apiEndpoint = '/{context}/t/{domain}/assets/{type}/api/{+suffix}';
+var assetEndpoint = '/{context}/t/{domain}/assets/{type}/{+suffix}';
 var pageEndpoint = '/{context}/t/{domain}/pages/{+suffix}';
 var storageEndpoint = '/{context}/t/{domain}/storage/{+suffix}';
 

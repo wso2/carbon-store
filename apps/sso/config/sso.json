@@ -35,6 +35,10 @@
             }
         ]
     },
+    "registerPermissions":{
+        "authorizedRolePublisher":["Internal/publisher"],
+        "authorizedRoleStore":["Internal/store"]
+    },
     "storeSpace": {
         "space": "store",
         "options": {
@@ -55,7 +59,7 @@
         "keyStoreName" : "/repository/resources/security/wso2carbon.jks"
     },
     "urls" : {
-        "publisher" : "https://localhost:9443/publisher",
-        "store" : "https://localhost:9443/store"
+        "publisher" : "%https.host%/publisher",
+        "store" : "%https.host%/store"
     }
 }

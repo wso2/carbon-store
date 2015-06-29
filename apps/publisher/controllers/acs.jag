@@ -20,18 +20,38 @@
 (function () {
     var log = new Log(),
             configs = require('/config/publisher.js').config(),
+            app = require('rxt').app,
+            context = app.getContext(),
             samlResponse = request.getParameter('SAMLResponse'),
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
             relayState = request.getParameter('RelayState'),
             sso = require('sso'),
             samlRespObj,
+            attr = configs.authentication.methods.sso.attributes,
             keyStoreProps = {
-                KEY_STORE_NAME: process.getProperty('carbon.home') + configs.ssoConfiguration.keyStoreName,
-                KEY_STORE_PASSWORD: configs.ssoConfiguration.keyStorePassword,
-                IDP_ALIAS: configs.ssoConfiguration.identityAlias
+                KEY_STORE_NAME: process.getProperty('carbon.home') + attr.keyStoreName,
+                KEY_STORE_PASSWORD: attr.keyStorePassword,
+                IDP_ALIAS: attr.identityAlias,
+                USE_ST_KEY: !attr.useTenantKey
             },
             sso_sessions = application.get('sso_sessions');
+
+    var loadTenant = function(username) {
+        var carbon = require('carbon');
+        var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+        var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
+        var TenantAxisUtils = Packages.org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+
+        var service;
+        var ctx;
+        var domain = MultitenantUtils.getTenantDomain(username);
+        if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
+            service = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+            ctx = service.getServerConfigContext();
+            TenantAxisUtils.setTenantAccessed(domain, ctx);
+        }
+    };
 
     if (!sso_sessions) {
         application.put('sso_sessions', {});
@@ -43,12 +63,13 @@
         if (!sso.client.isLogoutResponse(samlRespObj)) {
 
             // validating the signature
-            if (configs.ssoConfiguration.responseSigningEnabled) {
+            if (attr.responseSigningEnabled) {
 
                 if (sso.client.validateSignature(samlRespObj, keyStoreProps)) {
                     var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
                     if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
+                        loadTenant(sessionObj.loggedInUser);
                         session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
                         session.put("Loged", "true");
 
@@ -68,7 +89,7 @@
 
                         if (user.loginWithSAML(sessionObj.loggedInUser)) {
                             log.debug('user is set :::' + sessionObj.loggedInUser);
-                            response.sendRedirect('/publisher');
+                            response.sendRedirect(context);
                         }
                         else{
                             session.invalidate();
@@ -82,7 +103,7 @@
 
         } else {
             session.invalidate();
-            response.sendRedirect('/publisher');
+            response.sendRedirect(context);
         }
     }
 

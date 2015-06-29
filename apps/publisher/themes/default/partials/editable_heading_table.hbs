@@ -1,30 +1,29 @@
 
-<a data-toggle="collapse" href="#collapse{{name}}" aria-expanded="false" class="collapsing-h2" >
-     <h2>
+<h2 class="field-title">
+    <a data-toggle="collapse" href="#collapse{{name}}" aria-expanded="false" class="collapsing-h2" >
         <i class="cu-btn-exp-col btn-collapsed">{{label}}</i>
-    </h2>
-</a>
-
+    </a>
+</h2>
 <div class="collapse in responsive-form-container" id="collapse{{name}}">
-
-
-
-<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding:0">
-&nbsp;
+    <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding:0">
+    &nbsp;
+    </div>
+    <div style="border:0px solid #ff0000; padding:0" class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        <div class="add-unbounded-row"><a class="js-add-unbounded-row" data-name="{{name}}"><i class="fa fa-plus-circle"></i> Add {{label}}</a></div>
+        <table class='tablex cu-data-table js-unbounded-table' id="table_{{name}}">
+            <thead>
+                {{#each subheading}}
+                    <th>{{heading}}</th>
+                {{/each}}
+                <th></th>
+            </thead>
+            <tbody>
+                {{renderEditableHeadingTable .}}
+            </tbody>
+        </table>
+    </div>
 </div>
-
-<div style="border:0px solid #ff0000; padding:0" class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
-	<table class='tablex table-responsivex cu-data-table'>
-		<thead>
-			{{#each subheading}}
-				<th>{{heading}}</th>
-			{{/each}}
-		</thead>
-		<tbody>
-			{{renderEditableHeadingTable .}}
-		</tbody>
-	</table>
-</div>
-
-</div>
+<table style="display: none;" class="tmp_refernceTableForOptionText">
+    {{renderEditableHeadingTableRow .}}
+</table>
 

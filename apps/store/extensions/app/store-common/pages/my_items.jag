@@ -21,6 +21,7 @@ var caramel;
 require('/modules/store.js').exec(function(ctx) {
     caramel = require('caramel');
     var tenantApi = require('/modules/tenant-api.js').api;
+    var ratingApi = require('/modules/rating-api.js').api;
     var app = require('rxt').app;
     var constants = require('rxt').constants;
     var asset = require('rxt').asset;
@@ -53,6 +54,7 @@ require('/modules/store.js').exec(function(ctx) {
             subs = am.subscriptions(ctx.session);
             //Only create an entry if there are any subscriptions
             if (subs.length > 0) {
+                ratingApi.addRatings(subs, am, context.tenantId, context.username);
                 assets[type] = {};
                 assets[type].assets = subs;
                 assets[type].meta = rxtManager.getRxtTypeDetails(type);

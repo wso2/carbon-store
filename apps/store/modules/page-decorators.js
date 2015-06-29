@@ -20,6 +20,7 @@ var pageDecorators = {};
 (function() {
     var storeConstants = require('store').storeConstants;
     var tenantApi = require('/modules/tenant-api.js').api;
+    var permissionsAPI = require('rxt').permissions;
     var log = new Log('store-page-decorators');
     pageDecorators.navigationBar = function(ctx, page, utils) {
         var app = require('rxt').app;
@@ -36,13 +37,15 @@ var pageDecorators = {};
         page.navigationBar = {};
         for (var index in availableTypes) {
             type = availableTypes[index];
-            currentType = rxtManager.getRxtTypeDetails(type);
-            currentType.selected = false;
-            currentType.listingUrl = utils.buildAssetPageUrl(currentType.shortName, '/list');
-            if (currentType.shortName == ctx.assetType) {
-                currentType.selected = true;
+            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                currentType = rxtManager.getRxtTypeDetails(type);
+                currentType.selected = false;
+                currentType.listingUrl = utils.buildAssetPageUrl(currentType.shortName, '/list');
+                if (currentType.shortName == ctx.assetType) {
+                    currentType.selected = true;
+                }
+                types.push(currentType);
             }
-            types.push(currentType);
         }
         page.navigationBar.types = types;
         return page;
@@ -77,7 +80,8 @@ var pageDecorators = {};
         return page;
     };
     pageDecorators.authenticationDetails = function(ctx, page) {
-        var authenticationMethods = ctx.tenantConfigs.authentication ? ctx.tenantConfigs.authentication : {};
+        var configs = require('/config/store.json');
+        var authenticationMethods = configs.authentication ? configs.authentication : {};
         var activeMethod = authenticationMethods.activeMethod ? authenticationMethods.activeMethod : '';
         //Obtain the details for this method of authentication
         var authDetails = fetchActiveAuthDetails(activeMethod, authenticationMethods.methods || []);
@@ -96,12 +100,14 @@ var pageDecorators = {};
     pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
+        var assetAPI = require('/modules/asset-api.js').api;
         var assets = {};
         var items = [];
         var assetsByType = [];
         var am;
         var type;
         var rxtDetails;
+        var assetMap = {};
         var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
         var tenantAssetResources;
         // Supporting cross tenant views
@@ -111,38 +117,48 @@ var pageDecorators = {};
         var ratingApi = require('/modules/rating-api.js').api;
         var q = page.assetMeta.q;
         var query = buildRecentAssetQuery(q);
-        for (var index in types) {
-            typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
-            type = typeDetails.shortName;
-            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
-                type: type
-            });
-            am = tenantAssetResources.am;
-            // if (ctx.isAnonContext) {
-            //     am = asset.createAnonAssetManager(ctx.session, type, ctx.tenantId);
-            // } else {
-            //     am = asset.createUserAssetManager(ctx.session, type);
-            // }
-            if (query) {
-                query = replaceNameQuery(query,ctx.rxtManager,type);
-                query = replaceCategoryQuery(query,ctx.rxtManager,type);
-                assets = am.recentAssets({
-                    q: query
-                });
-            } else {
-                assets = am.recentAssets();
-            }
-            if (assets.length > 0) {
-                //Add subscription details if this is not an anon context
-                if (!ctx.isAnonContext) {
-                    addSubscriptionDetails(assets, am, ctx.session);
+        if (query) {
+            items = asset.advanceSearch(query, null, session, ctx.tenantId)||[];
+            assetMap = {};
+            var template;
+            //Sort the results by type
+            items.forEach(function(item){
+                if(!assetMap[item.type]){
+                    assetMap[item.type] = [];
                 }
-                ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
-                items = items.concat(assets);
+                assetMap[item.type].push(item);
+            });
+            //Collect the asset result set along with the rxt definition
+            for(var key in assetMap){
+                template = ctx.rxtManager.getRxtTypeDetails(key);
                 assetsByType.push({
-                    assets: assets,
-                    rxt: typeDetails
+                    assets:assetMap[key],
+                    rxt:template
                 });
+            }
+        } else {
+            for (var index in types) {
+                typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
+                type = typeDetails.shortName;
+                tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                    type: type
+                });
+                am = tenantAssetResources.am;
+                if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                    assets = am.recentAssets();
+                    if (assets.length > 0) {
+                        //Add subscription details if this is not an anon context
+                        if (!ctx.isAnonContext) {
+                            addSubscriptionDetails(assets, am, ctx.session);
+                        }
+                        ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                        items = items.concat(assets);
+                        assetsByType.push({
+                            assets: assets,
+                            rxt: typeDetails
+                        });
+                    }
+                }
             }
         }
         page.recentAssets = items;
@@ -232,7 +248,11 @@ var pageDecorators = {};
     };
     pageDecorators.tags = function(ctx, page) {
         var am = getAssetManager(ctx);
-        page.tags = am.tags();
+        if(page.assets.id){
+            page.tags = am.getTags(page.assets.id);
+        }else {
+            page.tags = am.tags();
+        }
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {
@@ -345,6 +365,82 @@ var pageDecorators = {};
             info.isDefault = am.isDefaultAsset(page.assets);
             info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
+    };
+    pageDecorators.sorting = function(ctx,page){
+        var sortBy = "";
+        var sort = "";
+        var sortHelp = "";
+        var sortHelpIcon = "fa-arrow-down";
+        var popularActive = false;
+        var nameActive = false;
+        var nameIcon = "fa-arrow-down";
+        var nameNextSort = "DESC";
+        var dateTimeActive = false;
+        var dateTimeIcon = "fa-arrow-down";
+        var dateTimeNextSort = "DESC";
+
+        var queryString = request.getQueryString();
+        if(queryString){
+            var parts = queryString.split('&');
+            for(var i=0;i<parts.length;i++){
+                if(parts[i].indexOf("=") != -1 ){
+                    var params = parts[i].split("=");
+                    if(params[0] == "sortBy"){
+                        sortBy = params[1];
+                    }else if(params[0] == "sort"){
+                        sort = params[1];
+                    }
+                }
+            }
+        }else{
+            sortBy = "overview_createdtime";
+            sort = "DESC";
+            sortHelp = 'Date/Time Created';
+        }
+
+        if(sortBy == "overview_name" && sort == "DESC"){
+            sortHelp = 'Name';
+            sortHelpIcon = "fa-arrow-down";
+            nameActive = true;
+            nameIcon = "fa-arrow-down";
+            nameNextSort = "ASC";
+        }else if(sortBy == "overview_name" && sort == "ASC"){
+            sortHelp = 'Name';
+            sortHelpIcon = "fa-arrow-up";
+            nameActive = true;
+            nameIcon = "fa-arrow-up";
+        }else if(sortBy == "overview_createdtime" && sort == "DESC"){
+            sortHelp = 'Date/Time Created';
+            sortHelpIcon = "fa-arrow-down";
+            dateTimeActive = true;
+            dateTimeIcon = "fa-arrow-down";
+            dateTimeNextSort = "ASC";
+        }else if(sortBy == "overview_createdtime" && sort == "ASC"){
+            sortHelp = 'Date/Time Created';
+            sortHelpIcon = "fa-arrow-up";
+            dateTimeActive = true;
+            dateTimeIcon = "fa-arrow-up";
+        }else if(sort == "popular"){
+            sortHelp = 'Popular';
+            sortHelpIcon = "fa-arrow-down";
+            popularActive = true;
+        }
+
+
+        page.sorting={
+            sort:sort,
+            sortBy:sortBy,
+            sortHelp:sortHelp,
+            sortHelpIcon:sortHelpIcon,
+            popularActive:popularActive,
+            nameActive:nameActive,
+            nameIcon:nameIcon,
+            nameNextSort:nameNextSort,
+            dateTimeActive:dateTimeActive,
+            dateTimeIcon:dateTimeIcon,
+            dateTimeNextSort:dateTimeNextSort
+        };
+        return page;
     };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;

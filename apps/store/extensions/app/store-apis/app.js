@@ -29,9 +29,12 @@ app.server = function(ctx) {
                 secured:true
             }, {
                 url: 'authenticate',
-                path: 'authenticate.jag',
-                secured:true
-            }, {
+                path: 'authenticate.jag'
+            },{
+                url: 'tags',
+                path: 'tags.jag',
+                secured: true
+            },{
                 url: 'logout',
                 path: 'logout.jag',
                 secured:true

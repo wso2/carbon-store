@@ -35,7 +35,11 @@ var constants = {};
     constants.DEFAULT_ASSET_EXTENSION='default';
     constants.APP_CONTEXT = 'rxt.app.context';
     constants.TAGS_QUERY_PATH = '/_system/config/repository/components/org.wso2.carbon.registry/queries/allTags';
+    constants.TAGS_SERVICE = 'org.wso2.carbon.registry.indexing.service.TermsSearchService';
     constants.DEFAULT_APP_EXTENSION = 'default';
+    constants.AUTH_METHOD_BASIC = 'basic';
+    constants.AUTH_METHOD_SSO = 'sso';
+    constants.AUTH_METHOD_OTHER = 'other';
     /***
      * ES Feature Constants
      */
@@ -57,19 +61,30 @@ var constants = {};
     constants.PROP_DEFAULT = 'default';
     constants.DEFAULT_NAME_ATTRIBUTE = 'overview_name';
     /**
+     * Registry actions
+     */
+    constants.REGISTRY_GET_ACTION = 'http://www.wso2.org/projects/registry/actions/get';
+    constants.REGISTRY_ADD_ACTION = 'http://www.wso2.org/projects/registry/actions/add';
+    constants.REGISTRY_DELETE_ACTION = 'http://www.wso2.org/projects/registry/actions/delete';
+    constants.REGISTRY_AUTHORIZE_ACTION = 'authorize';
+    /**
+     * Registry roles
+     */
+    constants.ROLE_EVERYONE = 'Internal/everyone';
+    /**
      * URL Patterns
      */
     constants.APP_PAGE_URL_PATTERN = '/{context}/pages/{+suffix}';
-    constants.ASSET_PAGE_URL_PATTERN = '/{context}/asts/{type}/{+suffix}';
-    constants.ASSET_API_URL_PATTERN = '/{context}/asts/{type}/apis/{+suffix}';
+    constants.ASSET_PAGE_URL_PATTERN = '/{context}/assets/{type}/{+suffix}';
+    constants.ASSET_API_URL_PATTERN = '/{context}/assets/{type}/apis/{+suffix}';
     constants.STORAGE_URL_PATTERN = '/{context}/storage/{type}/{id}/{uuid}/{fileName}';
-    constants.ASSET_DETAIL_URL_PATTERN = '/{context}/asts/{type}/{pageName}/{+id}';
+    constants.ASSET_DETAIL_URL_PATTERN = '/{context}/assets/{type}/{pageName}/{+id}';
 
     constants.APP_TENANT_PAGE_URL_PATTERN = '/{context}/t/{domain}/pages/{+suffix}';
-    constants.ASSET_TENANT_PAGE_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/{+suffix}';
-    constants.ASSET_TENANT_API_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/apis/{+suffix}';
+    constants.ASSET_TENANT_PAGE_URL_PATTERN = '/{context}/t/{domain}/assets/{type}/{+suffix}';
+    constants.ASSET_TENANT_API_URL_PATTERN = '/{context}/t/{domain}/assets/{type}/apis/{+suffix}';
     constants.STORAGE_TENANT_URL_PATTERN = '/{context}/t/{domain}/storage/{type}/{id}/{uuid}/{fileName}';
-    constants.ASSET_DETAIL_TENANT_URL_PATTERN = '/{context}/t/{domain}/asts/{type}/{pageName}/{+id}';
+    constants.ASSET_DETAIL_TENANT_URL_PATTERN = '/{context}/t/{domain}/assets/{type}/{pageName}/{+id}';
 
     constants.TENANT_URL_PATTERN = '/{context}/t/{domain}/{+any}';
     constants.DEFAULT_SUPER_TENANT_URL_PATTERN = '/{context}/{+any}';
@@ -77,7 +92,7 @@ var constants = {};
     /**
      * URLs
      */
-    constants.ASSET_BASE_URL = '/asts/';
+    constants.ASSET_BASE_URL = '/assets/';
     constants.ASSET_API_URL = '/apis/';
     constants.APP_PAGE_URL = '/pages/';
     constants.APP_API_URL = '/apis/';
