@@ -968,14 +968,6 @@ a.ast-type-item:hover {
     }
 }
 
-.wr-asset-type-switcher {
-    float: left;
-    padding-right: 0;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
 @media (max-width: 568px) {
     body {
         background-color: #f9f9f9;
@@ -1079,11 +1071,6 @@ a.ast-type-item:hover {
     }
 }
 
-
-.wr-asset-type-switcher span {
-    float: left;
-}
-
 .wr-asset-type-switcher span.btn-asset {
     width: 54px;
     height: 54px;
@@ -1100,10 +1087,6 @@ a.ast-type-item:hover {
     float: left;
     height: 54px;
     width: 54px;
-}
-
-.wr-asset-type-switcher span {
-    float: left;
 }
 
 .wr-asset-type-switcher span.btn-asset {
@@ -1124,98 +1107,9 @@ a.ast-type-item:hover {
     background-color: #444;
 }
 
-/* asset filter window styles */
-.wr-asset-type-switcher .popover.menu {
-    display: none;
-    top: 54px;
-    left: 17px;
-    min-width: 290px;
-    color: #ffffff;
-    padding-bottom: 10px;
-}
-
-.wr-asset-type-switcher .popover.menu .arrow {
-    left: 27px;
-}
-
-.wr-asset-type-switcher .popover.menu .popover-content {
-    padding: 10px;
-}
-
-/* asset type switcher */
-.wr-asset-type-switcher .popover {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1060;
-    display: none;
-    width: 451px;
-    padding: 1px;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857143;
-    text-align: left;
-    white-space: normal;
-    background-color: #232323;
-    -webkit-background-clip: padding-box;
-    background-clip: padding-box;
-    border: 0px solid #232323;
-    border-radius: 0px;
-    -webkit-box-shadow: 0 0px 0px rgba(0, 0, 0, .2);
-    box-shadow: 0 0px 0px rgba(0, 0, 0, .2);
-    padding-bottom: 8px;
-    margin-left: 10px;
-    margin-top: 20px;
-}
-
-.wr-asset-type-switcher .popover.bottom > .arrow {
-    top: -11px;
-    left: 50%;
-    margin-left: -11px;
-    border-top-width: 0;
-    border-bottom-color: #232323;
-}
-
-.wr-asset-type-switcher .popover > .arrow {
-    border-width: 11px;
-}
-
-.wr-asset-type-switcher .popover.bottom > .arrow:after {
-    top: 1px;
-    margin-left: -10px;
-    content: " ";
-    border-top-width: 0;
-    border-bottom-color: #232323;
-}
-
-.wr-asset-type-switcher .popover > .arrow, .popover > .arrow:after {
-    position: absolute;
-    display: block;
-    width: 0;
-    height: 0;
-    border-color: transparent;
-    border-style: solid;
-}
-
-.wr-asset-type-switcher .popover-content {
-    padding: 6px 6px;
-}
-
-.wr-asset-type-switcher .arrow {
-    left: 25px
-}
 #social-button-div img{
     width: 40px;
 }
-/* login page styles */
-
-/* form styles */
-
-/* asset filter tags on search field styles */
-
-/* search field styles */
-
-/* search */
 
 @media (max-width: 1100px) {
 }
@@ -1495,4 +1389,77 @@ h2.app-title {
     text-transform: uppercase;
 }
 
+/* popover window styles */
+.popover {
+    border-radius: 0;
+    box-shadow: none;
+    background: #222;
+    max-width: 384px;
+}
 
+.popover.bottom > .arrow:after {
+    border-bottom-color: #222;
+}
+
+.popover.bottom.right > .arrow {
+    top: 0;
+    left: 25px;
+    border-right-color: transparent;
+}
+
+.popover.bottom.right > .arrow:after {
+    border-right-color: transparent;
+    border-left-width: 10px;
+}
+
+.popover.bottom {
+    top: 100%;
+}
+
+.popover-content {
+    padding: 4px;
+}
+
+.popover ul.tiles, .popover ul.tiles > li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.popover ul.tiles > li {
+    display: inline-block;
+    float: left;
+}
+
+.popover ul.tiles li a {
+    display: block;
+    margin: 4px;
+    padding: 5px;
+    list-style: none;
+    width: 85px;
+    height: 85px;
+    text-align: center;
+    vertical-align: text-bottom;
+    color: #fff;
+    text-decoration: none;
+    background: #444;
+}
+
+.popover ul.tiles li a:hover {
+    background: #555;
+}
+
+.popover ul.tiles li a .icon {
+    display: block;
+    font-size: 35px;
+    margin: 3px 0 7px;
+    height: 35px;
+}
+
+.popover ul.tiles li a .name {
+    display: block;
+    line-height: 14px;
+    font-size: 12px;
+    height: 28px;
+    overflow: hidden;
+}
