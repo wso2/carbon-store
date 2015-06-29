@@ -15,7 +15,7 @@
         "landingPage": "/assets/gadget/list"
     },
     "assets":["gadget","site"],
-    "diabledAssets":[],
+    "disabledAssets":[],
     "userRoles": ["Internal/publisher"],
     "permissions": {
         "login": {
