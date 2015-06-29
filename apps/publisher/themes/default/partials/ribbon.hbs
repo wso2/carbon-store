@@ -18,19 +18,19 @@
             {{#if rxt.pluralLabel}}<a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}{{ribbon.currentUrl}}'>{{rxt.pluralLabel}}</a>{{/if}}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
-
+            
             <div class="wr-action-btn-bar">
-                <ul class="nav navbar-nav">
-
-                    {{#each leftNav}}
-                        <li>
-                            <a id="{{this.id}}" href='{{url ""}}{{this.url}}' class="cu-btn {{this.iconClass}}">
-                                {{this.name}}
-                            </a>
-                        </li>
-                    {{/each}}
-                </ul>
-            </div>
+            <ul class="nav navbar-nav">
+                
+                {{#each leftNav}}
+                <li>
+                    <a id="{{this.id}}" href='{{url ""}}{{this.url}}' class="cu-btn {{this.iconClass}}">
+                        {{this.name}}
+                    </a>
+                </li>
+                {{/each}}
+            </ul>
+            </div> 
 
         </div><!--/.nav-collapse -->
     </div>

@@ -15,7 +15,6 @@
  */
 var resources = function(page,meta){
     return {
-        css:['fontwso2.css','fontwso2-extend.css'],
         js:['ribbon_front.js']
     }
 }
