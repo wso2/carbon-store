@@ -48,7 +48,7 @@ var permissions = {};
      * @return {[type]}         A path in the permission tree alocated for the provided app
      */
     var esPermissionRoot = function(appName) {
-        return '/permission/enterprisestore/apps' + appName;
+        return '/permission/admin/enterprisestore/apps' + appName;
     };
     var esFeaturePermissionRoot = function() {
         return '/features';
@@ -863,7 +863,7 @@ var permissions = {};
         permissionString = (typeof key === 'string') ? true : false;
         if (permissionString) {
             permission = null;
-            permission = mapToAppPermission(key, type, tenantId);
+            permission = mapToAppPermission(key, tenantId);
         }
         if (!permission) {
             log.error('[permissions] unable to locate a mapping for permission ' + key);
@@ -892,7 +892,7 @@ var permissions = {};
         permission = key; //Assume that the key may be a function
         permissionString = (typeof permission === 'string') ? true : false;
         if (permissionString) {
-            permission = mapToAppPermission(key, type, tenantId);
+            permission = mapToAppPermission(key, tenantId);
         }
         if (!permission) {
             log.error('[permissions] unable to locate a mapping for permission ' + key);

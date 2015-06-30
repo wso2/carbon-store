@@ -188,7 +188,7 @@ asset.configure = function() {
                 lifecycleEnabled: true
             },
             ui: {
-                icon: 'icon-cog'
+                icon: 'fw fw-resource'
             },
             categories: {
                 categoryField: 'overview_category'
@@ -354,7 +354,7 @@ asset.renderer = function(ctx) {
             },
             ribbon: function(page) {
                 var ribbon = page.ribbon = {};
-                var DEFAULT_ICON = 'icon-cog';
+                var DEFAULT_ICON = 'fw fw-circle';
                 var assetTypes = [];
                 var assetType;
                 var assetList = ctx.rxtManager.listRxtTypeDetails();

@@ -125,7 +125,7 @@ asset.configure = function() {
                 lifecycleEnabled:true
             },
             ui: {
-                icon_src: '/store/themes/store/img/icons/view-source.png'
+                icon: 'fw fw-resource'
             },
             categories: {
                 categoryField: 'overview_category'
