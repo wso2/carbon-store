@@ -152,7 +152,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                 } else {
                     response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, "error on get api", response, "The requested media type is not supported", "this is more information about accept header", []);
                 }
-                response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, assets);
+                //response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, assets);
             } else if (uriMatcher.match(GET_ASSET_URL)) {//return asset by id
                 options.id = uriMatcher.elements().id;
                 var acceptHeader = req.getHeader('Accept');
