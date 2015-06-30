@@ -25,6 +25,7 @@
 var constants = {};
 (function(constants) {
     constants.DEFAULT_TITLE = 'ES';
+    constants.DEFAULT_DESCRIPTION = 'this is list of top assets';
     constants.MSG_PAGE_INFO_NOT_FOUND = 'Title not found';
     constants.DEFAULT_TENANT = -1234;
     constants.RECENT_ASSET_COUNT = 5; //The default number of recent assets to be retrieved

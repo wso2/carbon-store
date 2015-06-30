@@ -93,4 +93,35 @@ var log = new Log("response");
          return resp;
      };
 
+    response.buildErrorResponseDefault = function (statusCode, desc, resp, msg, moreInfo, error) {
+        var errObj = {};
+        errObj.code = statusCode;
+        errObj.error = error;
+        errObj.description = desc;
+        errObj.message = msg;
+        errObj.moreInfomation = moreInfo;
+        log.info(resp);
+        resp.status = statusCode;
+        resp.contentType = 'application/json';
+        resp.content = errObj;
+        return resp;
+    };
+    response.buildSuccessResponseDefault = function (statusCode, resp, data) {
+        var sucessObj = {};
+        sucessObj.count = data.length;
+        sucessObj.list = data;
+        resp.code = statusCode;
+        resp.contentType = 'application/json';
+        resp.content = sucessObj;
+        return resp;
+    };
+    response.buildSuccessResponseDefaultLC = function (statusCode, resp, data) {
+        var sucessObj = {};
+        sucessObj.current_state = data.id;
+        sucessObj.listNextState = data.nextStates;
+        resp.code = statusCode;
+        resp.contentType = 'application/json';
+        resp.content = sucessObj;
+        return resp;
+    };
 }(response))
