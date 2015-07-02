@@ -141,7 +141,6 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: #f9f9f9;
     font-family: 'Open Sans';
     padding-bottom: 40px;
 }
@@ -482,6 +481,11 @@ a.ast-name:hover {
     width: 100%;
     margin-bottom: 5px;
 }
+
+#search-results-loader {
+    text-align: center;
+}
+
 .advance-search-btn{
     height: 42px;
     padding-top:15px;
@@ -845,7 +849,7 @@ a.ast-type-item:hover {
     float: left;
     margin: 0.5%;
     transition: all 0.5s ease;
-    height: 280px;
+    height: 315px;
 }
 
 .itm-ast {
