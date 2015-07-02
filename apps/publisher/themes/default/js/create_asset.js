@@ -33,16 +33,13 @@ $(function(){
     $('#form-asset-create').ajaxForm({
         beforeSubmit:function(arr){
             populateTags(arr);
-            PublisherUtils.blockButtons({
-                container:'saveButtons',
-                msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
-            });
         },
-        success:function(){
+        success:function(data){
             messages.alertSuccess('Created the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
             var options=obtainFormMeta('#form-asset-create');
             $('#btn-create-asset').removeAttr('disabled');
-            window.location=options.redirectUrl;
+            $.cookie("new-asset-"+data.data.type , data.data.id + ":" + data.data.type + ":" + data.data.name );
+            window.location = options.redirectUrl;
         },
         error:function(){
             messages.alertError('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
