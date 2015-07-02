@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 /**
  * Description: The response of the currently invoked api endpoint is organized
  */
 
 var response = {};
 var log = new Log("response");
-
-(function(response) {
-
+(function (response) {
     /**
      * Build Error response
      * @param  resp     jaggery-response object to retrieve to client
@@ -30,13 +27,12 @@ var log = new Log("response");
      * @param  message  message to the client side
      * @return return   response
      */
-    response.buildErrorResponse = function(resp,code,message) {
-        var content={};
+    response.buildErrorResponse = function (resp, code, message) {
+        var content = {};
         content.error = message;
-        resp = processResponse(resp,code,content);
+        resp = processResponse(resp, code, content);
         return resp;
     };
-
     /**
      * Build success response
      * @param  resp     jaggery response object
@@ -44,13 +40,12 @@ var log = new Log("response");
      * @param  data     the result to client
      * @return return   response
      */
-    response.buildSuccessResponse= function(resp, code, data){
-        var content={};
+    response.buildSuccessResponse = function (resp, code, data) {
+        var content = {};
         content.data = data;
-        resp = processResponse(resp,code,content);
+        resp = processResponse(resp, code, content);
         return resp;
     };
-
     /**
      * process General response
      * @param  resp  jaggery response
@@ -58,12 +53,11 @@ var log = new Log("response");
      * @param  data  success result
      * @return resp  jaggery response
      */
-    response.buildSuccessResponseForRxt= function(resp, code, data){
+    response.buildSuccessResponseForRxt = function (resp, code, data) {
         resp.status = code;
         resp.content = data;
         return resp;
     };
-
     /**
      * General response builder
      * @param  resp     jaggery response
@@ -71,14 +65,12 @@ var log = new Log("response");
      * @param  content  what ever the content to be sent as response
      * @return resp     jaggery response
      */
-    function processResponse(resp, code, content){
+    function processResponse(resp, code, content) {
         resp.status = code;
         resp.contentType = 'application/json';
         resp.content = content;
         return resp;
-
     };
-
     /**
      *
      * @param resp
@@ -86,42 +78,60 @@ var log = new Log("response");
      * @param data
      * @return The http response
      */
-    response.buildSuccessResponseForRxt= function(resp, code, data){
-         resp.contentType = 'application/json';
-         resp.status = code;
-         resp.content = data;     
-         return resp;
-     };
-
+    response.buildSuccessResponseForRxt = function (resp, code, data) {
+        resp.contentType = 'application/json';
+        resp.status = code;
+        resp.content = data;
+        return resp;
+    };
     response.buildErrorResponseDefault = function (statusCode, desc, resp, msg, moreInfo, error) {
-        var errObj = {};
-        errObj.code = statusCode;
-        errObj.error = error;
-        errObj.description = desc;
-        errObj.message = msg;
-        errObj.moreInfomation = moreInfo;
-        log.info(resp);
+        var errObj = {
+            code: statusCode,
+            error: error,
+            description: desc,
+            message: msg,
+            moreInfomation: moreInfo,
+        };
         resp.status = statusCode;
         resp.contentType = 'application/json';
         resp.content = errObj;
         return resp;
     };
     response.buildSuccessResponseDefault = function (statusCode, resp, data) {
-        var sucessObj = {};
-        sucessObj.count = data.length;
-        sucessObj.list = data;
-        resp.code = statusCode;
-        resp.contentType = 'application/json';
-        resp.content = sucessObj;
-        return resp;
+        if (data instanceof Array) {
+            var sucessObj = {
+                count: data.length,
+                list: data,
+            };
+            resp.code = statusCode;
+            resp.contentType = 'application/json';
+            resp.content = sucessObj;
+            return resp;
+        } else {
+            resp.code = statusCode;
+            resp.contentType = 'application/json';
+            resp.content = data;
+            return resp;
+        }
     };
     response.buildSuccessResponseDefaultLC = function (statusCode, resp, data) {
-        var sucessObj = {};
-        sucessObj.current_state = data.id;
-        sucessObj.listNextState = data.nextStates;
-        resp.code = statusCode;
-        resp.contentType = 'application/json';
-        resp.content = sucessObj;
-        return resp;
+        if (typeof data == 'object') {
+            var sucessObj = {
+                current_state: data.id,
+                listNextState: data.nextStates,
+            };
+            resp.code = statusCode;
+            resp.contentType = 'application/json';
+            resp.content = sucessObj;
+            return resp;
+        } else {
+            var sucessObj = {
+                status: data,
+            };
+            resp.code = statusCode;
+            resp.contentType = 'application/json';
+            resp.content = sucessObj;
+            return resp;
+        }
     };
 }(response))
