@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
-<artifactType type="application/vnd.wso2-ebook+xml" shortName="ebook" singularLabel="E-Book" pluralLabel="E-Books"
+<artifactType type="application/vnd.wso2-site+xml" shortName="site" singularLabel="Site" pluralLabel="Sites"
               hasNamespace="false" iconSet="10">
-    <storagePath>/ebooks/@{overview_provider}/@{overview_name}/@{overview_version}</storagePath>
+    <storagePath>/sites/@{overview_provider}/@{overview_name}/@{overview_version}</storagePath>
     <nameAttribute>overview_name</nameAttribute>
     <ui>
         <list>
@@ -30,22 +30,8 @@
             <field type="text">
                 <name>Createdtime</name>
             </field>
-	    <field type="options">
-                <name label="Category">Category</name>
-                <values>
-                    <value>Technical</value>
-                    <value>Novels</value>
-                    <value>Horror</value>
-                </values>
-            </field>
-	    <field type="text" url="true">
+            <field type="text" url="true" required="true">
                 <name>URL</name>
-            </field>
-	    <field type="text" required="true">
-                <name>Author</name>
-            </field>
-	    <field type="text" required="true">
-                <name>ISBN</name>
             </field>
             <field type="text-area">
                 <name>Description</name>

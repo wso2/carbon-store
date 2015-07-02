@@ -47,7 +47,7 @@
         <module>features/org.wso2.es.feature</module>
         <module>features/org.wso2.store.feature</module>
         <module>features/social</module>
-
+        <module>features/extensions</module>
     </modules>
     <build>
         <extensions>
