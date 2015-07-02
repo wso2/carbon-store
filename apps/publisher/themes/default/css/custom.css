@@ -530,11 +530,11 @@ a.cu-ico-right-button {
 }
 
 a.cu-ico-button-user {
-    background:url('../images/icons/ico-user.png') right  no-repeat;
+    background:url('../img/icons/ico-user.png') right  no-repeat;
 }
 
 a.cu-ico-button-stats {
-    background:url('../images/icons/ico-meter.png') right  no-repeat;
+    background:url('../img/icons/ico-meter.png') right  no-repeat;
 }
 
 
@@ -1008,7 +1008,9 @@ h2 span.fa-stack{
 .decorated-table-heading tr th {
     background: #ccc;
 }
-
+div.notifyjs-happyblue-base {
+    padding: 19px;
+}
 /* popover window styles */
 .popover {
     border-radius: 0;
@@ -1082,4 +1084,5 @@ h2 span.fa-stack{
     font-size: 12px;
     height: 28px;
     overflow: hidden;
+>>>>>>> b53137d41d73a35892ab2bebc0e7c2ddb597bbba
 }

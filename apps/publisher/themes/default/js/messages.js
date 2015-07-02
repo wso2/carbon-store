@@ -18,19 +18,29 @@ messages.alertInfo = function(value){
     });
 };
 messages.alertInfoLoader = function(value){
-    var loadingImage = caramel.url('/themes/default/img/preloader-40x40.gif');
-    value = '<img src="' + loadingImage + '" /> ' + value;
-    $.notify(value, {
-        globalPosition: 'top center',
-        className: 'info'
+    $.notify.addStyle('happyblue', {
+        html: "<div><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "lightblue",
+                "padding": "5px"
+            },
+            superblue: {
+                "color": "white",
+                "background-color": "blue"
+            }
+        }
     });
-};
-messages.alertWarn = function(value){
-    var value = params.value;
+
     $.notify(value, {
-        globalPosition: 'top center',
-        className: 'warn'
+        globalPosition: 'right bottom',
+        elementPosition: 'right bottom',
+        className: 'info',
+        autoHide: false,
+        style: 'happyblue'
     });
+
 };
 messages.alertWarn = function(value){
     var value = params.value;
