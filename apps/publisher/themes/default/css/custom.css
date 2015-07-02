@@ -534,11 +534,11 @@ a.cu-ico-right-button {
 }
 
 a.cu-ico-button-user {
-    background:url('../images/icons/ico-user.png') right  no-repeat;
+    background:url('../img/icons/ico-user.png') right  no-repeat;
 }
 
 a.cu-ico-button-stats {
-    background:url('../images/icons/ico-meter.png') right  no-repeat;
+    background:url('../img/icons/ico-meter.png') right  no-repeat;
 }
 
 
@@ -1003,11 +1003,15 @@ h2 span.fa-stack{
     width:400px !important;
     height:34px !important;
 }
-#saveButtons{
-    margin-top:30px;
-    padding-top:10px;
-    border-top:1px solid #f5f5f5;
+#saveButtons {
+    margin-top: 30px;
+    padding-top: 10px;
+    border-top: 1px solid #f5f5f5;
+}
 
 .decorated-table-heading tr th{
     background: #ccc;
+}
+div.notifyjs-happyblue-base{
+    padding:19px;
 }

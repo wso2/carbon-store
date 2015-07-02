@@ -131,32 +131,6 @@ var setQueryParams = function(path) {
     }
     return query;
 };
-/**
- * scroll method bind to be scroll window function
- *
- */
-var scroll = function() {
-    var startInitItems = store.publisher.itemsPerPage; // items-per-page by global store object
-    if (infiniteScroll && startInitItems > 1) { //if scroll enabled
-        if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
-            var start = startInitItems * (currentPage++);
-            var path = window.location.href; //current page path
-            var param = '&&start=' + start + '&&count=' + startInitItems + setSortingParams(path);
-            getNextPage(param); // get next set of assets
-            $('.loading-inf-scroll').hide();
-            $(window).unbind('scroll', scroll);
-            infiniteScroll = false;
-            setTimeout(function() {
-                if (infiniteScroll) {
-                    $(window).bind('scroll', scroll);
-                    $('.loading-inf-scroll').show();
-                }
-            }, 500);
-        }
-    } else { // if infinite scroll is not enabled
-        $('.loading-inf-scroll').hide();
-    }
-};
 var propCount = function(obj) {
     var count = 0;
     for (var key in obj) {
@@ -278,10 +252,46 @@ var initCategorySelection = function() {
         });
     });
 };
+var  initAssetCreationChecker = function(){
+    var cookieName = 'new-asset-'+store.publisher.type;
+    var newAsset = $.cookie(cookieName);
+    if(!newAsset){
+        return;
+    }
+    var newAssetId =  newAsset.split(":")[0].trim();
+    var newAssetType = newAsset.split(":")[1].trim();
+    var newAssetName = newAsset.split(":")[2].trim();
+
+    var urlApi = caramel.url('/apis/assets'+'?type='+newAssetType + '&q="name":"'+newAssetName+'"');
+    var url = caramel.url('/assets/'+newAssetType + '/details/' + newAssetId);
+
+
+    $.ajax({
+        url:urlApi,
+        type:'GET',
+        success:function(data){
+            if(data.data.length == 0 ){
+                if($('#assetLoader').length < 1) {
+                    messages.alertInfoLoader('Asset added successfully .. Please wait while the indexing is complete.. <i class="fa fa-spinner fa-pulse" id="assetLoader"></i>');
+                }
+                setTimeout(initAssetCreationChecker,3000);
+            }else{
+                $('#assetLoader').parent().parent().remove();
+                messages.alertInfoLoader('Indexing is complete .. <a href="'+url+'">'+ newAssetName + '</a>');
+                $.removeCookie(cookieName);
+            }
+        },
+        error:function(){
+            $.removeCookie(cookieName);
+        }
+   });
+};
+
 // bind to window function
 //$(window).bind('scroll', scroll);
 $(window).load(function() {
     //scroll();
     initSearch();
     initCategorySelection();
+    initAssetCreationChecker();
 });
