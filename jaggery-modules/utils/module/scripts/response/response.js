@@ -103,16 +103,15 @@ var log = new Log("response");
                 count: data.length,
                 list: data,
             };
-            resp.code = statusCode;
+            resp.status = statusCode;
             resp.contentType = 'application/json';
             resp.content = sucessObj;
             return resp;
-        } else {
-            resp.code = statusCode;
-            resp.contentType = 'application/json';
-            resp.content = data;
-            return resp;
         }
+        resp.status = statusCode;
+        resp.contentType = 'application/json';
+        resp.content = data;
+        return resp;
     };
     response.buildSuccessResponseDefaultLC = function (statusCode, resp, data) {
         if (typeof data == 'object') {
@@ -120,18 +119,17 @@ var log = new Log("response");
                 current_state: data.id,
                 listNextState: data.nextStates,
             };
-            resp.code = statusCode;
-            resp.contentType = 'application/json';
-            resp.content = sucessObj;
-            return resp;
-        } else {
-            var sucessObj = {
-                status: data,
-            };
-            resp.code = statusCode;
+            resp.status = statusCode;
             resp.contentType = 'application/json';
             resp.content = sucessObj;
             return resp;
         }
+        var sucessObj = {
+            status: data,
+        };
+        resp.status = statusCode;
+        resp.contentType = 'application/json';
+        resp.content = sucessObj;
+        return resp;
     };
 }(response))
