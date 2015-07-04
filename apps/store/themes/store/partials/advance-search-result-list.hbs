@@ -1,55 +1,9 @@
-{{#each .}}
 <h2 class="field-title">
     <a class="collapsing-h2" aria-expanded="false" href="#collapse{{type}}" data-toggle="collapse">
         <i class="cu-btn-exp-col btn-collapsed">{{type}}</i>
     </a>
 </h2>
 <div id="collapse{{type}}" class="collapse in responsive-form-container">
-{{#each assets}}
-            {{#attributes}}
-            <div class="ctrl-wr-asset ">
-                <div class="itm-ast">
-                    <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
-                        <img alt='thumbnail' src='{{url ""}}/themes/store/img/default-thumbnail.png' class="img-responsive" >
-                    </a>
-                    <div class="ast-content">
-                        <div class="ast-title padding">
-
-                            <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
-                        <span class="ast-auth">{{overview_provider}}</span>
-                        </div>
-                        <div class="pull-left asset-rating-container">
-                            <span class="asset-rating">
-                                <div style="width:{{../ratingPx}}px"></div>
-                            </span>
-                        </div>
-                        <div class="pull-right">
-                            <div class="dropdown dropdown-asset-custom">
-                                <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:void(0)"></a>
-                                <ul role="menu" class="dropdown-menu">
-                                    {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../../rxt.shortName username=../../../cuser.username tenantId=../../../cuser.tenantId}}
-                                    <li>
-                                        {{#mergeContext ssoParam=../../../sso userParam=../../../user thisAsset=../../this}}
-                                        {{>assets-utilization .}}
-                                        {{/mergeContext}}
-                                    </li>
-                                    {{else}}
-                                    <li>
-                                        <a class="btn btn-primary js_bookmark"
-                                           href='{{url ""}}{{getLoginUrl .}}'> {{>process-asset-text }}</a>
-                                    </li>
-                                    {{/hasAssetPermission}}
-                                    <!--<li><a href="#">Download</a></li>-->
-                                    <li><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">More Details</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {{/attributes}}
-        {{/each}}
-        </div>
+    {{>assets .}}
     <div class="clearfix"></div>
-{{/each}}
-
+</div>

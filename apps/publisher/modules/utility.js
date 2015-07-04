@@ -305,10 +305,7 @@ var rxt_utility = function () {
         },
 
         findInArray: function (array, fn) {
-            for each(var item
-            in
-            array
-            )
+            for (var item in array)
             {
                 if (fn(item)) {
                     return item;
