@@ -86,7 +86,7 @@ var pageDecorators = {};
         //Obtain the details for this method of authentication
         var authDetails = fetchActiveAuthDetails(activeMethod, authenticationMethods.methods || []);
         page.security.method = activeMethod;
-        page.security.details = authDetails;
+        page.security.details = sanitizeAuthDetails(activeMethod, authDetails);
         return page;
     };
     pageDecorators.recentAssets = function(ctx, page) {
@@ -467,6 +467,17 @@ var pageDecorators = {};
         //        }
         return am;
     };
+    var sanitizeAuthDetails = function (method, authDetails) {
+        if (method == 'sso') {
+            //this is done so we don't expose key store pass and other sensitive info to page.
+            return {attributes: {identityProviderURL:
+                (authDetails.attributes ? authDetails.attributes.identityProviderURL : '')
+            }};
+        } else {
+            return {};
+        }
+    };
+
     var fetchActiveAuthDetails = function(method, methods) {
         for (var key in methods) {
             if (key == method) {
