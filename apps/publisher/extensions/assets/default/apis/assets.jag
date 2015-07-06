@@ -35,58 +35,8 @@
  /apis/assets/{id}
 
  */
-var assetApi = require('/modules/asset-api.js').api;
-var lcApi = require('/modules/lifecycle/lifecycle-api.js').api;
-var responseProcessor = require('utils').response;
-var constants = require('rxt').constants;
-var addAsset = function (options, req, res, session) {
-    var requestURI = req.getRequestURI();
-    var response;
-    var newAsset = assetApi.create(options, req, res, session);
-    if (!newAsset) {
-        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on create asset', res, 'Failed to create asset of type: ' + options.type, 'more information on create asset error', []);
-        return;
-    }
-    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.CREATED, res, newAsset);
-    response.addHeader('Location', requestURI + '/' + newAsset.id + '?type=' + newAsset.type);
-};
-var updateAsset = function (options, req, res, session) {
-    var response;
-    var updatedAsset = assetApi.update(options, req, res, session);
-    log.info(stringify(updatedAsset));
-    if (!updatedAsset) {
-        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on update api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
-        return;
-    }
-    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.ACCEPTED, res, updatedAsset);
-};
-var getAsset = function (options, req, res, session) {
-    var asset = assetApi.get(options, req, res, session);
-    var response;
-    if (!asset) {
-        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on get api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
-        return;
-    }
-    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, asset);
-};
-var deleteAsset = function (options, req, res, session) {
-    var done = assetApi.remove(options, req, res, session);
-    var response;
-    if (!done) {
-        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on delete api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
-        return;
-    }
-    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, 'Asset Deleted Successfully');
-};
-var getAssetState = function (options, req, res, session) {
-    var state = lcApi.getState(options, req, res, session);
-    var response;
-    if (!state) {
-        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on get lifecycle api', res, 'No matching lifecycle found for asset id : ' + options.id, 'this is more information', []);
-        return;
-    }
-    response = responseProcessor.buildSuccessResponseDefaultLC(constants.STATUS_CODES.OK, res, state);
-};
+
+
 require('/modules/publisher.js').exec(function (ctx) {
     var log = new Log('asset_api_endpoints');
     var ref = require('utils').request;
@@ -109,6 +59,43 @@ require('/modules/publisher.js').exec(function (ctx) {
     //response.contentType = 'application/json';
     var constants = require('rxt').constants;
     var contentTypeheader, jsonHeader, multipartHeader, formHeader, acceptHeader, jsonHeaderAccept;
+    var addAsset = function (options, req, res, session) {
+        var requestURI = req.getRequestURI();
+        var newAsset = assetApi.create(options, req, res, session);
+        if (!newAsset) {
+            return responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on create asset', res, 'Failed to create asset of type: ' + options.type, 'more information on create asset error', []);
+        }
+        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.CREATED, res, newAsset);
+        response.addHeader('Location', requestURI + '/' + newAsset.id + '?type=' + newAsset.type);
+    };
+    var updateAsset = function (options, req, res, session) {
+        var updatedAsset = assetApi.update(options, req, res, session);
+        if (!updatedAsset) {
+            return responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on update api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
+        }
+        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.ACCEPTED, res, updatedAsset);
+    };
+    var getAsset = function (options, req, res, session) {
+        var asset = assetApi.get(options, req, res, session);
+        if (!asset) {
+            return responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on get api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
+        }
+        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, asset);
+    };
+    var deleteAsset = function (options, req, res, session) {
+        var done = assetApi.remove(options, req, res, session);
+        if (!done) {
+            return responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on delete api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
+        }
+        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, 'Asset Deleted Successfully');
+    };
+    var getAssetState = function (options, req, res, session) {
+        var state = lcApi.getState(options, req, res, session);
+        if (!state) {
+            return responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on get lifecycle api', res, 'No matching lifecycle found for asset id : ' + options.id, 'this is more information', []);
+        }
+        response = responseProcessor.buildSuccessResponseDefaultLC(constants.STATUS_CODES.OK, res, state);
+    };
     switch (method) {
         case 'POST':// POST endpoints
             if (uriMatcher.match(CREATE_URL)) {//to create asset
