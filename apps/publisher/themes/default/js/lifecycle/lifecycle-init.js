@@ -18,6 +18,10 @@
  */
 $(function() {
     'use strict';
+    $.ajaxSetup ({
+        // Disable caching of AJAX responses STORE-711/STORE-712
+        cache: false
+    });
     var constants = LifecycleAPI.constants;
     var id = function(name) {
         return '#' + name;
