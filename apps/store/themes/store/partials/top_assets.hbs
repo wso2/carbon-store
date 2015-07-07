@@ -22,58 +22,11 @@
                     <i class="fw fw-circle fw-stack-1-5x grey"></i>
                     <i class="fw fw-dots fw-stack-1x white"></i>
                 </span>
-                See More</a></div>
+                <span class="asset-more-in-listing">See More</span></a></div>
             <hr>
         </div>
     </div>
-    <div class="assets-container">
-        {{#if assets}}
-            <section>
-                {{#each assets}}
-                    {{#attributes}}
-                        <div class="ctrl-wr-asset">
-                            <div class="itm-ast">
-                                <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
-                                    {{> top-assets-thumbnail ..}}
-                                </a>
-                                <div class="ast-content">
-                                    <div class="ast-title padding">
-                                        <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
-                                        <span class="ast-auth">{{overview_provider}}</span>
-                                    </div>
-                                    <div class="pull-left asset-rating-container">
-                                        <span class="asset-rating">
-                                            <div style="width:{{../ratingPx}}px"></div>
-                                        </span>
-                                    </div>
-                                    <div class="pull-right">
-                                        <div class="dropdown dropdown-asset-custom">
-                                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:return 0;">
-                                                <i class="fw fw-dots fw-1-5x fw-rotate-90"></i>
-                                            </a>
-                                            <ul role="menu" class="dropdown-menu">
-                                            {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../../../cuser.username tenantId=../../../../cuser.tenantId}}
-                                                <li>
-                                                        {{>top-assets-utilization ../..}}
-                                                </li>
-                                            {{else}}
-                                                <li>
-                                                    <a class="btn js_bookmark"
-                                                       href='{{url ""}}{{getLoginUrl .}}'> {{>process-asset-text }}</a>
-                                                </li>
-                                            {{/hasAssetPermission}}
-                                                 <li><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">More Details</a></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    {{/attributes}}
-                {{/each}}
-            </section>
-        {{else}}
-            <div class="top-assets-empty-assert">{{t "We couldn't find anything for you."}}</div>
-        {{/if}}
-    </div>
+    {{#dyn asset=rxt.shortName}}
+            {{>assets}}
+    {{/dyn}}
 {{/each}}

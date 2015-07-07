@@ -213,6 +213,8 @@ h2.app-title {
     padding:3px 0 0 0;
     color:#fafafa;
     text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .wr-global-header {
@@ -1084,5 +1086,7 @@ div.notifyjs-happyblue-base {
     font-size: 12px;
     height: 28px;
     overflow: hidden;
->>>>>>> b53137d41d73a35892ab2bebc0e7c2ddb597bbba
+}
+.navbar-header{
+   float: right;
 }
