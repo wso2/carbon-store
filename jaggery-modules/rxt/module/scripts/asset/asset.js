@@ -473,7 +473,7 @@ var asset = {};
             }
         };
     };
-    var processAssets = function(type,set,rxtManager){
+    var processAssets = function(type,set,rxtManager,tenantId){
         var iterator = set.iterator();
         var assets = [];
         var current;
@@ -481,6 +481,7 @@ var asset = {};
         var assetType;
         var item;
         var rm = rxtManager;
+        var app = require('rxt').app;
         while(iterator.hasNext()){
             current = iterator.next();
             assetType = null;
@@ -498,8 +499,14 @@ var asset = {};
                 assetType = type;
                 mediaType = rm.getMediaType(type);
             }
-            item = buildArtifact(assetType,mediaType,current);
-            assets.push(item);
+            var tenantId = tenantId || constants.DEFAULT_TENANT;
+            var availableTypes = app.getActivatedAssets(tenantId);
+            for (var index in availableTypes) {
+                if(availableTypes[index] === assetType){
+                    item = buildArtifact(assetType,mediaType,current);
+                    assets.push(item);
+                }
+            }
         }
         return assets;
     };
@@ -625,7 +632,7 @@ var asset = {};
         assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
         //assets is a set that must be converted to a JSON array
         log.info('[advance search] about to process result set');
-        assets = processAssets(null,assets,rxtManager);
+        assets = processAssets(null,assets,rxtManager,tenantId);
         addMetaDataToGenericAssets(assets,session,tenantId);
         return assets;
     };
