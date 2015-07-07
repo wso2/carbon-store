@@ -30,7 +30,7 @@
             <field type="text">
                 <name>Createdtime</name>
             </field>
-            <field type="text" url="true">
+            <field type="text" url="true" required="true">
                 <name>URL</name>
             </field>
             <field type="text-area">

@@ -15,72 +15,43 @@
   -->
 <!-- secondary header - app bar -->
 <div id="nav" class="row wr-app-bar">
-    <div class="col-sm-9 col-md-7 col-lg-9 wr-action-container">
+    <div class="wr-action-container">
         <div class="wr-asset-type-switcher">
-            <a id="popoverExampleTwo" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="#" data-original-title="" title="">
+            <a id="popoverExampleTwo" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="javascript:void(0)" data-click-event="popover">
                 <span class="btn-asset"></span>
             </a>
-
-            <div class="popover menu fade bottom in">
-                <div class="arrow"></div>
+            <div class="popover bottom right fade clearfix">
+                <div class="arrow left"></div>
                 <div class="popover-content">
-                    {{#with navigationBar}}
-                        {{#each types}}
-                            <a class="ast-type-item {{#if selected}} selected {{/if}}" href="{{tenantedUrl ""}}{{this.listingUrl}}">
-                                {{#if value.icon}}
-                                <div style="background-image:url({{url ""}}{{ui.icon}})"></div>
-                                {{else}}
-                                <i class="{{ui.icon}}"></i>
-                                {{/if}}
-                                {{singularLabel}}
-                            </a>
-                        {{/each}}
-                    {{/with}}
+                    <ul class="tiles clearfix">
+                        {{#with navigationBar}}
+                            {{#each types}}
+                                <li>
+                                    <a target="_self" href='{{tenantedUrl ""}}{{this.listingUrl}}'>
+                                        <i class="icon {{ui.icon}}"></i>
+                                        <span class="name">{{singularLabel}}</span>
+                                    </a>
+                                </li>
+                            {{/each}}
+                        {{/with}}
+                    </ul>
                 </div>
             </div>
-        </div><! menu Button -->
+        </div>
         <div class="search">
             {{#with searchBar}}
                 {{>search .}}
             {{/with}}
-            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn">Advanced Search</a>
+            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn" title="Advanced Search - All Assets"><span class="fa fa-search-plus advanced-search-icons"></span><span class="advanced-search-text">Advanced Search</span></a>
         </div><!--search--->
     </div>
-    <div class="col-sm-3 col-md-5 col-lg-3 top-menu-right-custom right">
+    <div class="site-wide-menu">
         <div class="inline-block margin-top-sm">
             {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
-            <a href="{{url "/pages/my-items"}}" class="bookmark-link">{{t "My bookmarks "}}<i class="fw fw-store fw-inverse fw-lg"></i></a>
+            <a href="{{url "/pages/my-items"}}" class="bookmark-link" title="{{t "My bookmarks "}}"><span class="bookmark-link-text">{{t "My bookmarks "}}</span><i class="fw fw-store fw-inverse fw-lg bookmark-link-icon"></i></a>
             {{/hasAppPermission}}
-
-
         </div>
     </div>
 </div>
 <!-- secondary header - app bar -->
-
-<!--Need to delete these sections down-->
-<div  style="display: none" id="content-asset-types">
-    <div>
-        {{#with navigationBar}}
-            {{#each types}}
-                <a class="ast-type-item" target="_self" href="{{tenantedUrl ""}}{{this.listingUrl}}">
-                    {{#if value.icon}}
-                        <div style="background-image:url({{url ""}}{{ui.icon}})">
-                        </div>
-                    {{else}}
-                        <i class="{{ui.icon}}"></i>
-                    {{/if}}
-                    {{singularLabel}}
-                </a>
-            {{/each}}
-        {{/with}}
-    </div>
-</div>
-<div class="row">
-  {{> action-bar .}}
-</div>
-
-
-
-
-
+{{> action-bar .}}

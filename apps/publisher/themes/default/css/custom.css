@@ -213,6 +213,8 @@ h2.app-title {
     padding:3px 0 0 0;
     color:#fafafa;
     text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .wr-global-header {
@@ -286,10 +288,6 @@ a.ctrl-asset-type-switcher {
 
 a.ctrl-asset-type-switcher:hover {
 	color:#fff;
-}
-
-.wr-asset-type-switcher span {
-	float:left;
 }
 
 .wr-asset-type-switcher .ast-type-item {
@@ -512,26 +510,6 @@ i.cu-btn-exp-col {
     background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;   
 }
 
-.btn-cog {
-    background:url('../img/icons/ico-cog.png') 0.8em 1em no-repeat;
-}
-
-.btn-subscribe {
-    background:url('../img/icons/ico-subscribe.png') 0.8em 1em no-repeat;
-}
-
-.btn-versions {
-    background:url('../img/icons/ico-versions.png') 0.8em 1em no-repeat;
-}
-
-.btn-docs {
-    background:url('../img/icons/ico-docs.png') 0.8em 1em no-repeat;
-}
-
-.btn-users {
-    background:url('../img/icons/ico-users.png') 0.8em 1em no-repeat;
-}
-
 .btn-copy {
     background:url('../img/icons/ico-copy.png') 0.8em 1em no-repeat;
 }
@@ -539,7 +517,6 @@ i.cu-btn-exp-col {
 .btn-collapsed {
     background:url('../img/icons/ico-collapsed.png') no-repeat;      
 }
-
 .sort-asset-info{
     color: #a5a5a5;
     font-size: 11px;
@@ -555,11 +532,11 @@ a.cu-ico-right-button {
 }
 
 a.cu-ico-button-user {
-    background:url('../images/icons/ico-user.png') right  no-repeat;
+    background:url('../img/icons/ico-user.png') right  no-repeat;
 }
 
 a.cu-ico-button-stats {
-    background:url('../images/icons/ico-meter.png') right  no-repeat;
+    background:url('../img/icons/ico-meter.png') right  no-repeat;
 }
 
 
@@ -1028,7 +1005,88 @@ h2 span.fa-stack{
     margin-top:30px;
     padding-top:10px;
     border-top:1px solid #f5f5f5;
+}
 
-.decorated-table-heading tr th{
+.decorated-table-heading tr th {
     background: #ccc;
+}
+div.notifyjs-happyblue-base {
+    padding: 19px;
+}
+/* popover window styles */
+.popover {
+    border-radius: 0;
+    box-shadow: none;
+    background: #222;
+    max-width: 384px;
+}
+
+.popover.bottom > .arrow:after {
+    border-bottom-color: #222;
+}
+
+.popover.bottom.right > .arrow {
+    top: 0;
+    left: 25px;
+    border-right-color: transparent;
+}
+
+.popover.bottom.right > .arrow:after {
+    border-right-color: transparent;
+    border-left-width: 10px;
+}
+
+.popover.bottom {
+    top: 100%;
+}
+
+.popover-content {
+    padding: 4px;
+}
+
+.popover ul.tiles, .popover ul.tiles > li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.popover ul.tiles > li {
+    display: inline-block;
+    float: left;
+}
+
+.popover ul.tiles li a {
+    display: block;
+    margin: 4px;
+    padding: 5px;
+    list-style: none;
+    width: 85px;
+    height: 85px;
+    text-align: center;
+    vertical-align: text-bottom;
+    color: #fff;
+    text-decoration: none;
+    background: #444;
+}
+
+.popover ul.tiles li a:hover {
+    background: #555;
+}
+
+.popover ul.tiles li a .icon {
+    display: block;
+    font-size: 35px;
+    margin: 3px 0 7px;
+    height: 35px;
+}
+
+.popover ul.tiles li a .name {
+    display: block;
+    line-height: 14px;
+    font-size: 12px;
+    height: 28px;
+    overflow: hidden;
+}
+.navbar-header{
+   float: right;
 }

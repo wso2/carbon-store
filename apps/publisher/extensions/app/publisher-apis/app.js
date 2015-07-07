@@ -44,6 +44,9 @@ app.server = function(ctx) {
             }, {
                 url: 'statistics',
                 path: 'statistics.jag'
+            }, {
+                url: 'partials',
+                path: 'partials.jag'
             }]
         }
     };

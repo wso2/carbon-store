@@ -72,7 +72,9 @@ require('/modules/publisher.js').exec(function (ctx) {
                     //If the asset is successfully created then return the asset
                     if (newAsset) {
                         response = responseProcessor.buildSuccessResponse(res,
-                                constants.STATUS_CODES.CREATED, newAsset)
+                                constants.STATUS_CODES.CREATED, newAsset);
+                        // We set this as a helper to alert the user if the asset creation time is long
+                        //session.put("latest-asset",options.attributes.overview_name);
                     } else {
                         response = responseProcessor.buildErrorResponse(res,
                                 constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'Failed to create asset of type: ' +
