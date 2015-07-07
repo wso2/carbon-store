@@ -20,7 +20,7 @@
  */
 var api = {};
 var result;
-(function(api) {
+(function (api) {
     var utils = require('utils');
     var rxtModule = require('rxt');
     var log = new Log('asset_api');
@@ -32,14 +32,14 @@ var result;
      * @param  fieldParam   The raw string comes as field parameter of the request
      * @return Array of fields which are required to be filtered out from assets
      */
-    var getExpansionFileds = function(fieldParam) {
+    var getExpansionFileds = function (fieldParam) {
         var rawFields = fieldParam.split(','); //set fields
         for (var fieldIndex = 0; fieldIndex < rawFields.length; fieldIndex++) {
             rawFields[fieldIndex] = rawFields[fieldIndex].trim();
         }
         return rawFields;
     };
-    var getRxtManager = function(session, type) {
+    var getRxtManager = function (session, type) {
         var context = rxtModule.core.createUserAssetContext(session, type);
         return context.rxtManager;
     };
@@ -47,7 +47,7 @@ var result;
      * The function filter the requested fields from assets objects and build new asset object with requested fields
      * @param  options   The object contains array of required fields and array of assets for filtering fields
      */
-    var fieldExpansion = function(options) {
+    var fieldExpansion = function (options) {
         var fields = options.fields;
         var artifacts = options.assets;
         var artifact;
@@ -80,7 +80,7 @@ var result;
      * @param am The asset manager instance
      * @param asset The asset to be saved
      */
-    var putInStorage = function(asset, am, tenantId) {
+    var putInStorage = function (asset, am, tenantId) {
         var resourceFields = am.getAssetResources();
         var ref = utils.file;
         var storageModule = require('/modules/data/storage.js').storageModule();
@@ -125,7 +125,7 @@ var result;
      * @param original  The current asset resources available in the store
      * @param asset     The new asset resources to continue with updating
      */
-    var putInOldResources = function(original, asset, am) {
+    var putInOldResources = function (original, asset, am) {
         var resourceFields = am.getAssetResources();
         var resourceField;
         for (var index in resourceFields) {
@@ -143,7 +143,7 @@ var result;
     /**
      *Check whether key:value available in data
      */
-    var isPresent = function(key, data) {
+    var isPresent = function (key, data) {
         return (data[key]) || (data[key] == '');
     };
     /**
@@ -153,7 +153,7 @@ var result;
      * @param  sentData to change
      * @return The updated-asset
      */
-    var putInUnchangedValues = function(original, asset, sentData) {
+    var putInUnchangedValues = function (original, asset, sentData) {
         for (var key in original.attributes) {
             //We need to add the original values if the attribute was not present in the data object
             // sent from the client
@@ -168,7 +168,7 @@ var result;
             }
         }
     };
-    var extractMetaProps = function(asset) {
+    var extractMetaProps = function (asset) {
         var meta = {};
         for (var key in asset) {
             if (key.charAt(0) === '_') {
@@ -180,16 +180,16 @@ var result;
         }
         return meta;
     };
-    var setMetaProps = function(asset, meta) {
+    var setMetaProps = function (asset, meta) {
         for (var key in meta) {
             asset[key] = meta[key];
         }
     };
-    var processContentType = function(contentType) {
+    var processContentType = function (contentType) {
         var comps = contentType.split(';');
         return comps[0];
     };
-    var processRequestBody = function(req, assetReq) {
+    var processRequestBody = function (req, assetReq) {
         var contentType = processContentType(req.getContentType());
         if (contentType !== CONTENT_TYPE_JSON) {
             return assetReq;
@@ -200,7 +200,7 @@ var result;
         }
         return assetReq;
     };
-    var processTags = function(assetReq) {
+    var processTags = function (assetReq) {
         var tags = assetReq._tags || '';
         return tags.split(',');
     };
@@ -212,7 +212,7 @@ var result;
      * @param  session  sessionId
      * @return The created asset or null if failed to create the asset
      */
-    api.create = function(options, req, res, session) {
+    api.create = function (options, req, res, session) {
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var assetReq = req.getAllParameters('UTF-8'); //get asset attributes from the request
@@ -224,7 +224,7 @@ var result;
         var rxtManager = getRxtManager(session, options.type);
         var isLCEnabled = false;
         var isDefaultLCEnabled = false;
-        var ctx = rxtModule.core.createUserAssetContext(session,options.type);
+        var ctx = rxtModule.core.createUserAssetContext(session, options.type);
         var createdAsset;
         assetReq = processRequestBody(req, assetReq);
         tags = processTags(assetReq);
@@ -240,7 +240,7 @@ var result;
             log.info(asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
-            am.postCreate(createdAsset,ctx);
+            am.postCreate(createdAsset, ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
@@ -281,12 +281,16 @@ var result;
      * @param  session  sessionID
      * @return updated-asset
      */
-    api.update = function(options, req, res, session) {
+    api.update = function (options, req, res, session) {
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var server = require('store').server;
         var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
+        //TODO this code should be improve for each and every content type
+        if(req.getContentType() === "application/json"){
+            assetReq = processRequestBody(req, assetReq);
+        }
         var asset = null;
         var meta;
         if (request.getParameter("asset")) {
@@ -337,7 +341,7 @@ var result;
      * @param sortParam The sort query parameter comes with request
      * @param paging    Paging object populated with default paging values
      */
-    var populateSortingValues = function(sortParam, paging) {
+    var populateSortingValues = function (sortParam, paging) {
         var constants = rxtModule.constants;
         var sortBy;
         if (sortParam) {
@@ -352,6 +356,7 @@ var result;
             paging.sortBy = (sortBy || paging.sortBy);
         }
     };
+
     /**
      * This function id to validate and build the query object from the string
      * @param query This is the query string to be parsed
@@ -369,6 +374,7 @@ var result;
         }
         return q;
     }
+
     /**
      * Checks if the user has provided a grouping query parameter and then
      * changes the query to do a group search
@@ -377,7 +383,7 @@ var result;
      * @param {[type]} req        [description]
      * @param {[type]} rxtManager [description]
      */
-    var addGroupingStateToQuery = function(q, type, req, rxtManager) {
+    var addGroupingStateToQuery = function (q, type, req, rxtManager) {
         if (!rxtManager.isGroupingEnabled(type)) {
             return q;
         }
@@ -395,7 +401,7 @@ var result;
      * @param options  Object containing parameters
      * @param session sessionID
      */
-    api.search = function(options, req, res, session) {
+    api.search = function (options, req, res, session) {
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         var sort = (request.getParameter("sort") || '');
@@ -453,7 +459,7 @@ var result;
      * @param options  Object containing parameters
      * @param session sessionID
      */
-    api.advanceSearch = function(options, req, res, session) {
+    api.advanceSearch = function (options, req, res, session) {
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         var sort = (request.getParameter("sort") || '');
@@ -474,7 +480,7 @@ var result;
                 var query = validateQuery(qString);
                 query = replaceCategoryQuery(query, rxtManager, options.type);
                 isGroupingEnabled = rxtManager.isGroupingEnabled(options.type);
-                if(isGroupingEnabled){
+                if (isGroupingEnabled) {
                     query._group = true; //Signal grouping is enabled
                     query.default = true; //Required for grouping query
                 }
@@ -483,7 +489,7 @@ var result;
                     //Need to log this as we perform some processing on the name and
                     //category values
                     log.debug('processed query used for searching: ' + stringify(query));
-                    log.debug('grouping enabled: '+isGroupingEnabled);
+                    log.debug('grouping enabled: ' + isGroupingEnabled);
                 }
                 assets = assetManager.advanceSearch(query, paging); // asset manager back-end call with search-query
             } else {
@@ -519,7 +525,7 @@ var result;
      * @param  {[type]} session [description]
      * @return {[type]}         [description]
      */
-    api.genericAdvanceSearch = function(options,req,res,session){
+    api.genericAdvanceSearch = function (options, req, res, session) {
         var assetAPI = rxtModule.asset;
         var sort = (request.getParameter("sort") || '');
         var paging = rxtModule.constants.DEFAULT_ASSET_PAGIN;
@@ -544,7 +550,7 @@ var result;
                 }
                 //TODO: The generic advance search does not honour grouping
                 //as grouping can be enabled/disabled per asset type
-                assets = assetAPI.advanceSearch(query, paging,session); // asset manager back-end call with search-query
+                assets = assetAPI.advanceSearch(query, paging, session); // asset manager back-end call with search-query
             } else {
                 log.error('Unable to perform a bulk asset retrieval without a type been specified');
                 throw 'Unable to perform a bulk asset retrieval without a type been specified';
@@ -566,7 +572,7 @@ var result;
         }
         return result;
     };
-    var replaceCategoryQuery = function(q, rxtManager, type) {
+    var replaceCategoryQuery = function (q, rxtManager, type) {
         //Determine if a category was provided
         if (!q.hasOwnProperty('category')) {
             return q;
@@ -581,7 +587,7 @@ var result;
         q[categoryField] = categoryValue;
         return q;
     };
-    var replaceNameQuery = function(q, rxtManager, type) {
+    var replaceNameQuery = function (q, rxtManager, type) {
         //Determine if a name was provided
         if (!q.hasOwnProperty('name')) {
             return q;
@@ -604,7 +610,7 @@ var result;
      * @param session  A string containing sessionID
      * @return The retrieved asset or null if an asset not found
      */
-    api.get = function(options, req, res, session) {
+    api.get = function (options, req, res, session) {
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         try {
@@ -632,11 +638,12 @@ var result;
         }
         return result;
     };
-    api.setDefaultAsset = function(options, req, res, session) {
+    api.setDefaultAsset = function (options, req, res, session) {
         var asset = rxtModule.asset;
         //var assetManager = asset.creat
     };
-    api.getGroup = function(options, req, res, session) {};
+    api.getGroup = function (options, req, res, session) {
+    };
     /**
      * The function deletes an asset by id
      * @param options  Object containing parameters id, type
@@ -645,7 +652,7 @@ var result;
      * @param session  A string containing sessionID
      * @return Boolean value whether deleted or not
      */
-    api.remove = function(options, req, res, session) {
+    api.remove = function (options, req, res, session) {
         var asset = rxtModule.asset;
         var am = asset.createUserAssetManager(session, options.type);
         var retrievedAsset = api.get(options, req, res, session);
