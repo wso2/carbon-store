@@ -251,7 +251,7 @@ asset.renderer = function(ctx) {
             }
         }
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
-            navList.push('Copy', 'btn-copy', util.buildUrl('copy') + '/' + id);
+            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
         return navList.list();
     };
