@@ -282,7 +282,7 @@ a.ctrl-filter-category:hover {
 }
 .dropdown-menu {
 	position: absolute;
-	top: 40px;
+	top: 32px;
 	left: 0;
 	z-index: 1000;
 	display: none;
