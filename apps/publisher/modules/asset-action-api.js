@@ -211,7 +211,7 @@ var api = {};
         try {
             data = parse(req.getContent());
             asset = am.createVersion(options, data.attributes);
-            return successMsg(msg(200, 'New version created successfully'));
+            return successMsg(msg(200, 'New version created successfully.', asset));
         } catch (e) {
             log.error('Asset of type: ' + options.type + ' was not created due to ' ,e);
             return null;
