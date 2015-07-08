@@ -130,7 +130,7 @@ var responseProcessor = require('utils').response;
         try {
             am.create(asset);
         } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
+            log.error('Asset of type: ' + options.type + ' was not created due to ', e);
             //print(responseProcessor.buildErrorResponse(500, 'Failed to create asset of type: ' + options.type));
             return null;
         }
@@ -490,7 +490,7 @@ var responseProcessor = require('utils').response;
             am.remove(options.id);
             result = true;
         } catch (e) {
-            log.error('Asset with id: ' + asset.id + ' was not deleted due to ' + e);
+            log.error('Asset with id: ' + asset.id + ' was not deleted due to ', e);
             result = false;
         }
         return result;

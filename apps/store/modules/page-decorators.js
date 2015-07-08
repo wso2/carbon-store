@@ -211,7 +211,7 @@ var pageDecorators = {};
         try {
             queryObj = parse(query);
         } catch (e) {
-            log.error('Unable to parse query string: ' + query + ' to an object.Exception: ' + e);
+            log.error('Unable to parse query string: ' + query + ' to an object.Exception: ', e);
         }
         return queryObj;
     };
