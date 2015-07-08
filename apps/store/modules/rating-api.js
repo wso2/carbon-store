@@ -39,7 +39,7 @@ var api = {};
             success = am.rate(asst.path, options.value);
             //TODO get a api from registry to get ratings by id
         } catch (e) {
-            log.error('Could not rate the asset type: ' + options.type + ' id: ' + options.id + ' with rating: ' + options.value + '.Exception: ' + e);
+            log.error('Could not rate the asset type: ' + options.type + ' id: ' + options.id + ' with rating: ' + options.value + '.Exception: ', e);
         }
         return success;
     };

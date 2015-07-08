@@ -65,7 +65,7 @@ require('/modules/publisher.js').exec(function(ctx) {
             msg['status'] = 'ok';
             print(msg);
         } catch (e) {
-            log.error('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            log.error('The asset with id: ' + id + ' could not be found.The following exception was thrown: ', e);
             response.sendError(404, 'The asset with id: ' + id + ' could not be found.Please refere to the server log.');
         }
     });
@@ -85,7 +85,7 @@ require('/modules/publisher.js').exec(function(ctx) {
             var msg = {};
             msg['status'] = 'ok';
         } catch (e) {
-            log.debug('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            log.debug('The asset with id: ' + id + ' could not be found.The following exception was thrown: ', e);
             response.sendError(404, 'The asset with id: ' + id + ' could not be found.Please refer to the server log.');
         }
     });
@@ -167,7 +167,7 @@ require('/modules/publisher.js').exec(function(ctx) {
                 }
                 print(msg);
             } catch (e) {
-                log.error('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+                log.error('The asset with id: ' + id + ' could not be found.The following exception was thrown: ', e);
                 response.sendError(404, 'The asset with id: ' + id + ' could not be found.Please refer to the server log.');
             }
         }
@@ -214,7 +214,7 @@ require('/modules/publisher.js').exec(function(ctx) {
             log.debug(msg);
             print(msg);
         } catch (e) {
-            log.error('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            log.error('The asset with id: ' + id + ' could not be found.The following exception was thrown: ', e);
             response.sendError(404, 'The asset with id: ' + id + ' could not be found.Please refere to the server log.');
         }
     });
