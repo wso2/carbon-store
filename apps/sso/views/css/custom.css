@@ -352,8 +352,6 @@ input:-ms-input-placeholder{
     text-align: center;
     padding: 30px;
 }
-
-
 .wr-modelpopup .modelpopup-bg {
     position:absolute;
     z-index: 10000;
@@ -375,4 +373,20 @@ a.ctrl-filter-category:hover {
 }
 .login-link{
     cursor: pointer;
+}
+.error-msg{
+    color: #aa2d1e;
+    text-align: left;
+    padding: 10px 0 10px 0;
+    display: block;
+}
+label.error{
+    color:#aa2d1e;
+    margin-top:5px;
+    font-weight: normal;
+}
+input[type="text"].error, input[type="password"].error{
+    -webkit-box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
+    -moz-box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
+    box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
 }
