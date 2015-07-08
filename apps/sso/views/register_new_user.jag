@@ -116,25 +116,6 @@ var themeModule = require('/modules/theme.js');
                                         }
                                     }
                                     %>
-                                        <label class="float-left light-grey taxt-label">Security Question</label>
-                                        <select id='secret-question' name='secret-question'>
-                                    <%
-                                    for (var challengeIndex = 0; challengeIndex < challengeSet.length; challengeIndex++) {
-                                        %>
-                                                <option value="<%=challengeSet[challengeIndex].getQuestion()
-                                        %>">
-                                                                                                                                <%=challengeSet[challengeIndex].getQuestion()
-                                        %>
-                                                                                                                            </option>
-                                                                                                                    <%
-                                    }
-                                    %>
-                                    </select>
-                                    <br><br>
-                                    <label class="float-left light-grey taxt-label">Answer</label>
-                                    <input type='text' id='secret-answer' name="secret-answer"
-                                           class="padding-double required">
-                                    <br><br>
                                     <input type="hidden" name="reg-claims" value='<%=renderedClaims%>'
                                        class="input-block-level required">
                                     <input id="reg-action" name="action" type="hidden" value="register">
