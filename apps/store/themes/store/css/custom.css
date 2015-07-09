@@ -499,8 +499,14 @@ a.ast-name:hover {
 }
 
 .bookmark-link{
-    padding-top:6px;
     display: block;
+    color:#fff;
+}
+.bookmark-link span{
+    padding-right:4px;
+}
+.bookmark-link i{
+    line-height:30px;
 }
 .register {
     width: auto;
@@ -880,6 +886,15 @@ a.more:focus {
 .wr-filter-category {
     float: left;
 }
+#ul-sort-assets li{
+    color:#333;
+    background:#e2e2e2;
+}
+#ul-sort-assets li a span,
+#ul-sort-assets li a  i{
+    line-height:2;
+}
+
 .action-wrapper{
     border-radius: 2px;
     color: #fff;
@@ -1002,6 +1017,7 @@ a:hover, a:focus {
 }
 #ul-sort-assets li a:hover {
     color: #fff;
+    background: #666;
 }
 #ul-sort-assets li {
     color: #333;}
@@ -1018,10 +1034,11 @@ a:hover, a:focus {
     list-style: outside none none;
     text-align: left;
     padding:0;
+    margin-right:0px;
 }
 #ul-sort-assets li.active a{
-    background: #5f5f5f;
-    color:#000;
+    background: #ccc;
+    color:#333;
 }
 .sort-asset-info{
     color: #a5a5a5;
