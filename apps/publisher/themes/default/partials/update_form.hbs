@@ -1,4 +1,4 @@
- <form class="form-horizontal" id='form-asset-update' method='post' action='{{url ""}}/apis/assets/{{assets.id}}?type={{rxt.shortName}}' >
+ <form class="form-horizontal" id='form-asset-update' method='post' action='{{url ""}}/apis/assets/{{assets.id}}?type={{rxt.shortName}}' data-redirect-url='{{url ""}}/assets/{{rxt.shortName}}/details/' >
     <div class="control-group">
              {{#each assets.tables}}
                     {{renderTable . mode="edit"}}

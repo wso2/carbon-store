@@ -69,7 +69,7 @@ var themeModule = require('/modules/theme.js');
                                 <br><br>
 
                                 <label class="float-left light-grey taxt-label">Password</label>
-                                <input id="reg-password" name="reg-password" type="password" class="padding-double required">
+                                <input id="reg-password" name="reg-password" type="password" class="padding-double required passwordLength">
 
                                 <br><br>
 
@@ -182,6 +182,9 @@ var themeModule = require('/modules/theme.js');
         jQuery.validator.addMethod("usrNameLength", function (value, element) {
             return value.length >= 3 && value.length <= 30;
         }, "username must contain minimum 3 characters and maximum 30 characters");
+        jQuery.validator.addMethod("passwordLength", function (value, element) {
+            return this.optional(element) || /^[\S]{5,30}$/.test(value);
+        }, "password must contain minimum 5 characters and maximum 30 characters");
     });
 </script>
 </body>
