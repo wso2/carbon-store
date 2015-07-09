@@ -230,6 +230,8 @@ a.ctrl-filter-category:hover {
         text-align: right;
     }
     .advanced-search-icons{
+        color:#999;
+        line-height:20px;
         display: inline-block;
     }
     .advanced-search-text{
