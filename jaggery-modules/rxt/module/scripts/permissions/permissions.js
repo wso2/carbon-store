@@ -328,6 +328,7 @@ var permissions = {};
     permissions.ASSET_SEARCH = 'ASSET_SEARCH';
     permissions.ASSET_LIFECYCLE = 'ASSET_LIFECYCLE';
     permissions.ASSET_BOOKMARK = 'ASSET_BOOKMARK';
+    permissions.APP_LOGIN = 'APP_LOGIN'
     permissions.APP_STATISTICS = 'APP_STATISTICS';
     permissions.APP_MYITEMS = 'APP_MYITEMS';
     var buildEmptyPermissionMap = function() {
@@ -553,6 +554,7 @@ var permissions = {};
     var mapToAppPermission = function(key, tenantId, appName) {
         var permissions = assetPermissionMap(DEFAULT_ASSET, tenantId);
         var permission = permissions[key];
+        log.info('mapToAppPermission ' + permission)
         if (!permission) {
             log.error('[permissions] unable to locate permissions for ' + key);
         }
@@ -567,7 +569,7 @@ var permissions = {};
                  }
                 isAuthorized = authorizer.isRoleAuthorized(getAnonRole(), permission, action);
             } else {
-                if(log.isDebugEnabled()){
+                if(log.isDebugEnabled()) {
                     log.debug('[permissions] using username: ' + username + ' to check permission');
                 }
                 isAuthorized = authorizer.isUserAuthorized(username, permission, action);

@@ -86,7 +86,7 @@ if(RelayState){
                                 <input type="hidden" name="sessionDataKey" value="<%=request.getParameter("sessionDataKey")%>">
                                 <input type="hidden" name="RelayState" value="<%=RelayState%>">
                                 <% if (isPasswordRecoveryEnabled) { %>
-                                    <a href="recovery-option">Forgot your password?</a>
+                                    <a href="confirm-recovery">Forgot your password?</a>
                                 <%
 }%>
                                 <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
