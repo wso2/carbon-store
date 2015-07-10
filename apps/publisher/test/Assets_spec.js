@@ -44,11 +44,11 @@ describe('Assets POST - Publisher API', function () {
         } catch (e) {
             log.error(e);
         } finally {
-            deleteAssetWithID(response.data.data.id);
+            deleteAssetWithID(response.data.id);
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            expect(response.data.data.name).toEqual(asset.overview_name);
-            expect(response.data.data.attributes.overview_description).toEqual(asset.overview_description);
+            expect(response.data).not.toBe(undefined);
+            expect(response.data.name).toEqual(asset.overview_name);
+            expect(response.data.attributes.overview_description).toEqual(asset.overview_description);
         }
     });
 
@@ -70,7 +70,7 @@ describe('Assets POST - Publisher API', function () {
         } finally {
             deleteAssetWithID(assetId);
             logoutAuthorizedUser(header);
-            expect(response.data.data).toEqual(' State changed successfully to In-Review!');
+            expect(response.data.status).toEqual(' State changed successfully to In-Review!');
         }
     });
 
@@ -92,7 +92,7 @@ describe('Assets POST - Publisher API', function () {
         } finally {
             deleteAssetWithID(assetId);
             logoutAuthorizedUser(header);
-            expect(response.data.error).toEqual(' Please provide a comment for this state transition!');
+            expect(response.data.moreInfomation).toEqual(' Please provide a comment for this state transition!');
         }
     });
 
@@ -113,7 +113,7 @@ describe('Assets POST - Publisher API', function () {
             log.error(e);
         } finally {
             logoutAuthorizedUser(header);
-            expect(response.data.error).toEqual('Unable to locate the asset with id: ' + Id);
+            expect(response.data.moreInfomation).toEqual('Unable to locate the asset with id: ' + Id);
         }
     });
 
@@ -135,7 +135,7 @@ describe('Assets POST - Publisher API', function () {
         } finally {
             deleteAssetWithID(assetId);
             logoutAuthorizedUser(header);
-            expect(response.data.error).toEqual('Checklist items or next state is not provided!');
+            expect(response.data.moreInfomation).toEqual('Checklist items or next state is not provided!');
         }
     });
 
@@ -159,9 +159,9 @@ describe('Assets POST - Publisher API', function () {
         } finally {
             deleteAssetWithID(assetId);
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            expect(response.data.data.attributes.overview_description).toBe('Test rest api testing update');
-            expect(response.data.data.attributes.overview_category).toBe('Template');
+            expect(response.data).not.toBe(undefined);
+            expect(response.data.attributes.overview_description).toBe('Test rest api testing update');
+            expect(response.data.attributes.overview_category).toBe('Template');
         }
     });
 
@@ -204,8 +204,8 @@ describe('Assets GET - Publisher API', function () {
         } finally {
             deleteAssetWithID(assetId);
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            expect(response.data.data.attributes.overview_name).toEqual(name);
+            expect(response.data).not.toBe(undefined);
+            expect(response.data.attributes.overview_name).toEqual(name);
         }
     });
 
@@ -225,8 +225,8 @@ describe('Assets GET - Publisher API', function () {
             log.debug(e);
         } finally {
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            expect(response.data.data.length).toEqual(12);
+            expect(response.data).not.toBe(undefined);
+            expect(response.data.list.length).toEqual(12);
         }
     });
 
@@ -246,8 +246,8 @@ describe('Assets GET - Publisher API', function () {
             log.debug(e);
         } finally {
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            expect(response.data.data.length).toEqual(5);
+            expect(response.data).not.toBe(undefined);
+            expect(response.data.list.length).toEqual(5);
         }
     });
 
@@ -269,8 +269,8 @@ describe('Assets GET - Publisher API', function () {
         } finally {
             deleteAssetWithID(id)
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            var count = Object.keys(response.data.data[0].attributes).length;
+            expect(response.data).not.toBe(undefined);
+            var count = Object.keys(response.data.list[0].attributes).length;
             expect(count).toEqual(3);
         }
     });
@@ -292,8 +292,8 @@ describe('Assets GET - Publisher API', function () {
         } finally {
             deleteAssetWithID(id)
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            var count = Object.keys(response.data.data[0]).length;
+            expect(response.data).not.toBe(undefined);
+            var count = Object.keys(response.data.list[0]).length;
             expect(count).toEqual(3);
         }
     });
@@ -315,10 +315,10 @@ describe('Assets GET - Publisher API', function () {
         } finally {
             deleteAssetWithID(id);
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            var count = Object.keys(response.data.data[0]).length;
+            expect(response.data).not.toBe(undefined);
+            var count = Object.keys(response.data.list[0]).length;
             expect(count).toEqual(4);
-            var attributeCount = Object.keys(response.data.data[0].attributes).length;
+            var attributeCount = Object.keys(response.data.list[0].attributes).length;
             expect(attributeCount).toEqual(2);
         }
     });
@@ -340,8 +340,8 @@ describe('Assets GET - Publisher API', function () {
         } finally {
             deleteAssetWithID(id);
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            var count = Object.keys(response.data.data[0]).length;
+            expect(response.data).not.toBe(undefined);
+            var count = Object.keys(response.data.list[0]).length;
             expect(count).toEqual(3);
         }
     });
@@ -362,10 +362,10 @@ describe('Assets GET - Publisher API', function () {
         } finally {
             deleteAssetWithID(id);
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
-            var count = Object.keys(response.data.data[0]).length;
+            expect(response.data).not.toBe(undefined);
+            var count = Object.keys(response.data.list[0]).length;
             expect(count).toEqual(4);
-            var attributeCount = Object.keys(response.data.data[0].attributes).length;
+            var attributeCount = Object.keys(response.data.list[0].attributes).length;
             expect(attributeCount).toEqual(1);
         }
     });
@@ -385,10 +385,10 @@ describe('Assets GET - Publisher API', function () {
             log.debug(e);
         } finally {
             logoutAuthorizedUser(header);
-            for (var index = 0; index < response.data.data.length; index++) {
-                var nextAsset = response.data.data[index + 1];
+            for (var index = 0; index < response.data.list.length; index++) {
+                var nextAsset = response.data[index + 1];
                 if (nextAsset) {
-                    var isLessthan = compareStrings(response.data.data[index].name, nextAsset.name, 'isLessThan');
+                    var isLessthan = compareStrings(response.data[index].name, nextAsset.name, 'isLessThan');
                     expect(isLessthan).toBe(true);
                 }
             }
@@ -411,12 +411,12 @@ describe('Assets GET - Publisher API', function () {
             log.debug(e);
         } finally {
             logoutAuthorizedUser(header);
-            expect(response.data.data).not.toBe(undefined);
+            expect(response.data).not.toBe(undefined);
 
-            for (var index = 0; index < response.data.data.length; index++) {
-                var nextAsset = response.data.data[index + 1];
+            for (var index = 0; index < response.data.list.length; index++) {
+                var nextAsset = response.data[index + 1];
                 if (nextAsset) {
-                    var isGreaterThan = compareStrings(response.data.data[index].name, nextAsset.name, 'isGreaterThan');
+                    var isGreaterThan = compareStrings(response.data[index].name, nextAsset.name, 'isGreaterThan');
                     expect(isGreaterThan).toBe(true);
                 }
             }
@@ -441,8 +441,8 @@ describe('Assets GET - Publisher API', function () {
             log.debug(e);
         } finally {
             logoutAuthorizedUser(header);
-            for (var i in response.data.data) {
-                expect(response.data.data[i].attributes.overview_version).toEqual('1.0.0');
+            for (var i in response.data.list) {
+                expect(response.data.list[i].attributes.overview_version).toEqual('1.0.0');
             }
         }
     });
@@ -500,12 +500,12 @@ describe('Assets DELETE - Publisher API', function () {
         var url = server_url + '/assets/' + assetId + '?type=gadget';
         var header = obtainAuthorizedHeaderForAPICall();
         try {
-            var response = del(url, {}, header, 'json');
+            var response = del(url, {}, header);
         } catch (e) {
             log.debug(e);
         } finally {
             logoutAuthorizedUser(header);
-            expect(response.data.data).toEqual('Asset Deleted Successfully');
+            expect(response.xhr.status).toEqual(200);
         }
     });
 
@@ -533,11 +533,11 @@ var getAssetID = function (asset_name) {
     } catch (e) {
         log.error(e);
     } finally {
-        assetId = response.data.data.id;
+        assetId = response.data.id;
         logoutAuthorizedUser(header);
-        expect(response.data.data).not.toBe(undefined);
+        expect(response.data).not.toBe(undefined);
     }
-    return response.data.data.id;
+    return response.data.id;
 };
 
 /**
@@ -546,8 +546,11 @@ var getAssetID = function (asset_name) {
  */
 var obtainAuthorizedHeaderForAPICall = function () {
     var authenticate = post(server_url + '/authenticate', {"password": password, "username": username }, {}, 'json');
-    var header = {'Cookie': "JSESSIONID=" + authenticate.data.data.sessionId + ";"};
-    return header
+    var header = {
+        'Cookie': "JSESSIONID=" + authenticate.data.data.sessionId + ";",
+        'Accept': 'application/json'
+    };
+    return header;
 };
 
 /**
@@ -567,12 +570,12 @@ var deleteAssetWithID = function (id) {
     var header = obtainAuthorizedHeaderForAPICall();
     var response;
     try {
-        response = del(url, {}, header, 'json');
+        response = del(url, {}, header);
     } catch (e) {
-        log.debug(e);
+        log.error(e);
     } finally {
         logoutAuthorizedUser(header);
-        expect(response.data.data).toEqual('Asset Deleted Successfully');
+        expect(response.xhr.status).toEqual(200);
     }
 };
         
