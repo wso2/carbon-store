@@ -31,7 +31,7 @@ $(function() {
             messages.alertSuccess('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
             var options=obtainFormMeta('#form-asset-update');
             $('#editAssetButton').removeAttr('disabled');
-            window.location = options.redirectUrl + data.data.id;
+            window.location = options.redirectUrl + data.id;
         },
         error: function() {
             $('#editAssetButton').removeAttr('disabled');
