@@ -87,8 +87,19 @@
 
                         var user = require('store').user;
 
-                        if (user.loginWithSAML(sessionObj.loggedInUser)) {
-                            log.debug('user is set :::' + sessionObj.loggedInUser);
+                        var username = sessionObj.loggedInUser;
+                        user.loadTenant(username)
+
+                        var permissionAPI = require('rxt').permissions;
+                        var carbon = require('carbon');
+                        var usr = carbon.server.tenantUser(username);
+                        var modifiedUsername = user.removeTenantDomainFromUsername(username);
+                        var hasPublisherLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
+                                modifiedUsername);
+
+                        if (hasPublisherLoginPermission) {
+                            user.emitLogin(username)
+                            log.debug('user is set :::' + username);
                             response.sendRedirect(context);
                         }
                         else{

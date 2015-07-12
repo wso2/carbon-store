@@ -175,6 +175,7 @@ var user = {};
             for (perm in perms) {
                 if (perms.hasOwnProperty(perm)) {
                     actions = perms[perm];
+                    var log = new Log();
                     length = actions.length;
                     for (i = 0; i < length; i++) {
                         if (usr.isAuthorized(perm, actions[i])) {
@@ -268,7 +269,30 @@ var user = {};
         //login(username, password);
     };
 
+    user.loadTenant = function(username){
+        var carbon = require('carbon'),
+            event = require('event'),
+            usr = carbon.server.tenantUser(username);
+        if (!user.configs(usr.tenantId)) {
+            event.emit('tenantLoad', usr.tenantId);
+        }
+
+    };
+
+    user.emitLogin = function (username){
+        var event = require('event');
+        var usr = carbon.server.tenantUser(username);
+        var um = server.userManager(usr.tenantId);
+        var usr = um.getUser(usr.username);
+        event.emit('login', usr.tenantId, usr, session);
+    }
+
     user.loginWithSAML = function (username) {
         return user.permitted(username, session);
     };
+
+    user.removeTenantDomainFromUsername = function(username){
+        var userCoreUtil = new org.wso2.carbon.user.core.util.UserCoreUtil();
+        return userCoreUtil.removeDistinguishedName(username);
+    }
 }(server, user));

@@ -20,18 +20,13 @@
                             <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:void(0)"><i class="fa fa-ellipsis-v"></i>
                             </a>
                             <ul role="menu" class="dropdown-menu">
-                                {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
+                                {{#if ../bookmarkable}}
                                 <li>
-                                    {{#mergeContext ssoParam=../../sso userParam=../../user thisAsset=../this}}
+                                    {{#mergeContext ssoParam=../../sso userParam=../../user thisAsset=../../this}}
                                     {{>assets-utilization .}}
                                     {{/mergeContext}}
                                 </li>
-                                {{else}}
-                                <li>
-                                    <a class="btn btn-primary js_bookmark"
-                                       href='{{url ""}}{{getLoginUrl .}}'> {{>process-asset-text }}</a>
-                                </li>
-                                {{/hasAssetPermission}}
+                                {{/if}}
                                 <!--<li><a href="#">Download</a></li>-->
                                 <li><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">More Details</a></li>
                             </ul>

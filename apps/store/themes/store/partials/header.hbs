@@ -16,32 +16,33 @@
 <!-- header -->
 <header>
     <div class="row wr-global-header">
-        <div class="col-sm-6 col-xs-8 app-logo">
+        <div class="col-xs-8 col-sm-8 app-logo">
             <a href="{{tenantedUrl ""}}{{meta.landingPage}}">
                 <img src="{{url "/themes/store/img/logo.png"}}" />
                 <h2 class="app-title">Enterprise Store</h2>
             </a>
         </div>
-        <div class="col-sm-6 col-xs-4  top-menu-right-custom">
-            <ul class="nav navbar-nav navbar-right">
-                {{#if cuser.username}}
-                <li>
-                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                        <span id="logedInUser">{{cuser.username}}</span> <i class="fw fw-user"></i>
-                    </a>
-                    <ul class="dropdown-menu dropdown-account" role="menu" aria-labelledby="dLabel">
-                        <li>
-                            {{signout .}}
-                        </li>
-                    </ul>
 
-                </li>
-                {{else}}
+        <div class="col-xs-4 col-sm-4 wr-auth-container">
+            <div class="wr-auth pull-right">
+            {{#if cuser.username}}
+                <a href="#" data-toggle="dropdown" class="">
+                    <div class="auth-img">
+                        <span id="logedInUser" class="hidden-xs-320">{{cuser.username}}&nbsp;&nbsp;</span><i class="fw fw-user"></i>
+                    </div>
+                </a>
+                <div class="dropdown-menu">
+                    <div class="cu-arrow"></div>
+                    <div class="dropdown-menu-content">
+                        {{signout .}}
+                    </div>
+                </div>
+            {{else}}
                 {{authentication .}}
-                {{/if}}
-
-            </ul>
+            {{/if}}
+            </div>
         </div>
+
     </div>
 </header>
 <!-- /header -->

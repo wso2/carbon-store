@@ -25,6 +25,7 @@
 var constants = {};
 (function(constants) {
     constants.DEFAULT_TITLE = 'ES';
+    constants.DEFAULT_DESCRIPTION = 'this is list of top assets';
     constants.MSG_PAGE_INFO_NOT_FOUND = 'Title not found';
     constants.DEFAULT_TENANT = -1234;
     constants.RECENT_ASSET_COUNT = 5; //The default number of recent assets to be retrieved
@@ -114,11 +115,13 @@ var constants = {};
         OK: 200,
         CREATED:201,
         ACCEPTED: 202,
-        BAD_REQUEST:400,
-        UNAUTHORIZED:401,
-        NOT_FOUND:404,
-        INTERNAL_SERVER_ERROR:500,
-        NOT_IMPLEMENTED:501
+        BAD_REQUEST: 400,
+        UNAUTHORIZED: 401,
+        NOT_FOUND: 404,
+        INTERNAL_SERVER_ERROR: 500,
+        NOT_IMPLEMENTED: 501,
+        NOT_ACCEPTABLE: 406,
+        UNSUPPORTED_MEDIATYPE: 415
     };
 
     constants.THROW_EXCEPTION_TO_CLIENT = 'THROW_EXCEPTION_TO_CLIENT';
