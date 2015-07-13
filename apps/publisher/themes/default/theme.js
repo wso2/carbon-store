@@ -203,14 +203,19 @@ var engine = caramel.engine('handlebars', (function() {
             });
             var renderFieldMetaData = function(field,name,options) {
                 var isRequired=(field.required)?field.required:false;
-                var isReadOnly=(field.readonly)?field.readonly:false;
+                var isReadOnly=false;
+                var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
                 var isUpdatable = true;
                 if(field.updatable == false){
                     isUpdatable = false;
                 }
-
                 var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
+                if(mode == "edit"){
+                    isReadOnly = field.readonly || field.auto;
+                }else{
+                    isReadOnly = (field.auto)?field.auto:false;
+                }
                 if(isRequired && field.type != 'file'){
                     meta+=' required';
                 } else if (isRequired && field.type == 'file' && mode == 'create') {
@@ -221,6 +226,10 @@ var engine = caramel.engine('handlebars', (function() {
                 } else if(!isUpdatable && mode == 'edit'){
                     meta+=' readonly';
                 }
+                if(placeHolder){
+                    meta += ' placeholder="'+ placeHolder +'"';
+                }
+
                 return meta;
             };
             var renderFieldLabel = function(field) {

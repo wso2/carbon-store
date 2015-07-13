@@ -19,6 +19,7 @@ var PAGING = {};
 var log = new Log();
 require('/modules/store.js').exec(function(ctx) {
     caramel = require('caramel');
+    var permissions = require('rxt').permissions;
     var asset = require('rxt').asset;
     var core = require('rxt').core;
     var ui = require('rxt').ui;
@@ -132,6 +133,11 @@ require('/modules/store.js').exec(function(ctx) {
             }
         }
     }
+    var username = user ? user.username : null;
+    var bookmarkable = permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
+    assets.forEach(function(asset) {
+        asset.bookmarkable = bookmarkable;
+    });
     //Add subscription details to the assets
     //tenantApi.debug();
     subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);

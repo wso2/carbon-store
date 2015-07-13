@@ -723,8 +723,8 @@ var permissions = {};
             tenantId = arguments[2];
             username = arguments[3];
         }
-        if ((!username) || (!tenantId)) {
-            throw 'Unable to resolve permissions without the tenantId and username';
+        if ((!tenantId)) {
+            throw 'Unable to resolve permissions without the tenantId';
         }
         if(log.isDebugEnabled()){
             log.debug('[permissions] checking permission ' + key + ' for ' + username + ' tenantId ' + tenantId + ' type ' + type);        
