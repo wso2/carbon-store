@@ -146,7 +146,7 @@ asset.configure = function() {
             overview: {
                 fields: {
                     provider: {
-                        readonly: true
+                        auto: true
                     },
                     name: {
                         name: {
