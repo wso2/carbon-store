@@ -204,6 +204,7 @@ var engine = caramel.engine('handlebars', (function() {
             var renderFieldMetaData = function(field,name,options) {
                 var isRequired=(field.required)?field.required:false;
                 var isReadOnly=(field.readonly)?field.readonly:false;
+                var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
                 var isUpdatable = true;
                 if(field.updatable == false){
@@ -221,6 +222,10 @@ var engine = caramel.engine('handlebars', (function() {
                 } else if(!isUpdatable && mode == 'edit'){
                     meta+=' readonly';
                 }
+                if(placeHolder){
+                    meta += ' placeholder="'+ placeHolder +'"';
+                }
+
                 return meta;
             };
             var renderFieldLabel = function(field) {
