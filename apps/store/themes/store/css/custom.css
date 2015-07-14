@@ -645,7 +645,7 @@ a.login:focus {
     color: #fff;
     float: right;
     font-size: 14px;
-    left: 0;
+    left: 9px;
     list-style: outside none none;
     margin: 0 0 0 -121px;
     width: 120px;
@@ -653,9 +653,10 @@ a.login:focus {
     padding: 5px 0;
     position: absolute;
     text-align: left;
-    top: 32px;
+    top: 30px;
     z-index: 1000;
     box-shadow: none;
+    min-width:150px;
 }
 
 .dropdown-asset-custom ul.dropdown-menu a {
@@ -1258,9 +1259,12 @@ h2.app-title {
     width:150px;
     float:left;
     margin-right:22px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+}
+.ctrl-wr-asset .ast-content{
     border: solid 1px #efefef;
 }
+
 
 .itm-ast {
     width: 100%;
@@ -1278,11 +1282,12 @@ h2.app-title {
     float: right;
     color: #333;
     height: 28px;
-    opacity: 0.5;
+
     padding: 3px 0 0 2px;
     width: 37px;
 }
 .more-list i{
+    opacity: 0.5;
     color:#000;
     font-size: 24px;
     margin-left: 15px;
@@ -1310,6 +1315,24 @@ span.advanced-search-icons{
     float:right;
     padding-right:25px;
 }
+.visible-xs-320{
+    display:none;
+}
+
+.signup-actions{
+    margin:0px;
+    padding:14px;
+    list-style:none;
+}
+
+.signup-actions li{
+    display:inline;
+}
+.signup-actions li a{
+    color:#fff;
+}
+
+
 @media (max-width: 768px) {
     .top-menu-right-custom ul li{
         float: right;
@@ -1334,6 +1357,7 @@ span.advanced-search-icons{
     .navbar-nav{
         margin: 0;
     }
+
 }
 @media (max-width: 540px) {
     .ro-text {
@@ -1385,6 +1409,7 @@ span.advanced-search-icons{
     .site-wide-menu{
         padding-right:10px;
     }
+
 }
 @media all and (max-width:320px){
     .search-area{
@@ -1392,5 +1417,8 @@ span.advanced-search-icons{
     }
     .hidden-xs-320{
         display:none;
+    }
+    .visible-xs-320{
+        display:block;
     }
 }
