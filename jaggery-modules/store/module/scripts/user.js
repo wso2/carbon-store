@@ -292,7 +292,11 @@ var user = {};
     };
 
     user.removeTenantDomainFromUsername = function(username){
-        var userCoreUtil = new org.wso2.carbon.user.core.util.UserCoreUtil();
-        return userCoreUtil.removeDistinguishedName(username);
+        //TODO need to fix removeDomainFromName within usercore-util
+        var lastIndex = username.lastIndexOf("@");
+            if(lastIndex != -1){
+                username = username.substring(0, lastIndex);
+            }
+        return username;
     }
 }(server, user));
