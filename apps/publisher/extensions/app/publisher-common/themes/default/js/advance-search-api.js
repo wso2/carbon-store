@@ -183,7 +183,7 @@ $(function(){
 			url:url,
 			method:'GET',
 			success:function(data){
-				var results = data.data || [];
+				var results = data.list || [];
 				if(results.length<=0) {
 					renderEmptyResults();
 				} else {
