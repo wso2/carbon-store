@@ -54,7 +54,7 @@ store.infiniteScroll.getItems = function (from, to) {
                 var assets = convertTimeToUTC(response.list);
                 if (assets) {
                     caramel.render('list_assets_table_body', assets, function (info, content) {
-                        $('#list_assets_content').append(content);
+                        $('#list_assets_content').append($(content));
                     });
                 } else { //if no assets retrieved for this page
                     doPagination = false;

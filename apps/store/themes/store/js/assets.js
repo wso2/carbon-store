@@ -69,7 +69,7 @@ store.infiniteScroll.getItems = function(from,to){
     dynamicData["to"] = to;
     var path = window.location.href; //current page path
     // Returns the jQuery ajax method
-    var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
+    var url = caramel.tenantedUrl(store.asset.paging.url+"&paginationLimit=" + to + "&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
     // if(url.indexOf('tag')== -1){
         caramel.data({
              title : null,
@@ -79,13 +79,12 @@ store.infiniteScroll.getItems = function(from,to){
              success : function(data, status, xhr) {
                  caramel.partials(data._.partials, function() {
                      caramel.render('assets-thumbnails', data.body.assets.context, function (info, content) {
-                         $('.assets-container section').append(content);
+                         $('.assets-container section').append($(content));
                      });
                  });
              },
              error : function(xhr, status, error) {
                  doPagination = false;
-                 console.info(status);
              }
          });
     //}
