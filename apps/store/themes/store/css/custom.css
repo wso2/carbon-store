@@ -447,11 +447,10 @@ a.ast-name:hover {
     border: 1px solid #eae9e9;
     display: none;
     height: auto;
-    left: 60px;
-    padding: 10px 30px 30px 10px;
+    left: 61px;
     position: absolute;
-    top: 100px;
-    width: 50.2%;
+    top: 98px;
+    width: 50.3%;
     z-index: 1000;
     max-height: 800px;
     overflow-y:auto;
@@ -459,7 +458,7 @@ a.ast-name:hover {
 
 #advanced-search label {
     width: 100%;
-    margin-left: 10px;
+    font-weight:normal;
 }
 
 #search-button2 {
@@ -470,7 +469,6 @@ a.ast-name:hover {
 #advanced-search input[type="text"] {
     border: 1px solid #ccc;
     color: #999;
-    margin-left: 10px;
     padding: 5px 5px 8px 8px;
     width: 100%;
     height: 33px;
