@@ -17,7 +17,7 @@
 var caramel;
 var PAGING = {};
 var log = new Log();
-require('/modules/store.js').exec(function(ctx) {
+require('/modules/store.js').exec(function(ctx) {      xxxxxx
     caramel = require('caramel');
     var permissions = require('rxt').permissions;
     var asset = require('rxt').asset;

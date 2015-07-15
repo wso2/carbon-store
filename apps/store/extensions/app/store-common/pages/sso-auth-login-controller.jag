@@ -44,6 +44,7 @@
             if(log.isDebugEnabled()){
                 log.debug('Login URL: '+postUrl);
             }
+    session.remove("Loged");
     if (!session.get("Loged")) {
         %>
 
