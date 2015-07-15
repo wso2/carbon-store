@@ -180,8 +180,15 @@ require('/modules/publisher.js').exec(function (ctx) {
                 jsonHeaderAccept = acceptHeader.indexOf('application/json');
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader === '*/*') {
-                        var assets = assetApi.search(options, req, res, session);
-                        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, assets);
+                        var assets = [];
+                        if(options.type) {
+                            log.info('*** TYPE SPECIFIC ADVANCED SEARCH ***');
+                            assets = assetApi.advanceSearch(options, req, res, session);
+                        } else {
+                            log.info('*** GENERIC ADVANCED SEARCH ***');
+                            assets = assetApi.genericAdvanceSearch(options,req,res,session);
+                        }
+                    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, assets);
                         return;
                     }
                     response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, 'error on get api', res, 'The requested media type is not supported', 'this is more information about accept header', []);
