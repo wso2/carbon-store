@@ -18,10 +18,9 @@
  *
  */
 (function(){
-    var user = session.get("LOGGED_IN_USER");//require('store').server.current(session).username;
+    var user = require('store').server.current(session).username;//session.get("LOGGED_IN_USER");
     var caramel = require('caramel');
     var context = caramel.configs().context;
-    var log = new Log("sso-auth-logout-controller");
     if(user === null) {
         response.sendRedirect(context);
     } else {
@@ -31,13 +30,13 @@
                 sessionId = session.getId(),
                 attr = config.authentication.methods.sso.attributes,
                 encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], attr.issuer),
-                postUrl = attr.identityProviderURL,
-                ignoreReferer = request.getParameter("ignoreReferer"),
-                relayState = request.getHeader('referer') ? request.getHeader('referer') : caramel.configs().context;
-
-        relayState = (!ignoreReferer) ? relayState : context + '/login?ignoreReferer=true';
+                relayState = context,
+                //postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
+                postUrl = attr.identityProviderURL;
+        var log = new Log();
 
         log.debug("portal session index : " + sso_sessions[session.getId()]);
+         log.info('Logout URL: '+postUrl);
         %>
         <div>
            <p>You are now redirected to Stratos Identity. If the
