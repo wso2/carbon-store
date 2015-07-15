@@ -88,7 +88,7 @@ $(function(flotUtils, graphUtils) {
     var API_URL = '/apis/statistics';
     var buildApiUrl = function(type, startDate, endDate, onChoice) {
         onChoice = onChoice || false;
-        var choice = (onChoice) ? ('&onchoice' + onChoice) : '';
+        var choice = (onChoice) ? ('&onchoice=' + onChoice) : '';
         var context = caramel.context;
         return context + API_URL + '?type=' + type + '&start=' + startDate + '&end=' + endDate + choice;
     };
@@ -157,7 +157,7 @@ $(function(flotUtils, graphUtils) {
             url: buildApiUrl(type, from, to, true),
             type: 'GET',
             success: function(response) {
-                var parsedResponse = JSON.parse(response);
+                var parsedResponse = JSON.parse(JSON.stringify(response));
                 /* Hot assets stats graph */
                 var data2 = [{
                     data: parsedResponse.hotAssetStats,
