@@ -50,12 +50,11 @@ require('/modules/publisher.js').exec(function(ctx) {
         statOptions.endDate = statsModule.normalizeDate(tempEndDate.toDateString());
 
         //Create the structure of the output object
-        //Obtain the Bookmark statistics if the flag is enabled
-        if (onChoice) {
-            var bookmarkResults = statsModule.getBookmarkAssetStats(statOptions);
-            output.bookmarkStats = bookmarkResults.bookmarkStats;
-            output.bookmarkTicks = bookmarkResults.bookmarkTicks;
-        }
+        //Obtain the Bookmark statistics
+        var bookmarkResults = statsModule.getBookmarkAssetStats(statOptions);
+        output.bookmarkStats = bookmarkResults.bookmarkStats;
+        output.bookmarkTicks = bookmarkResults.bookmarkTicks;
+
         //Obtain the Hot asset statistics
         var hotResults = statsModule.getHotAssetStats(statOptions);
         output.hotAssetStats = hotResults.hotAssetStats;
