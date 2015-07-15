@@ -447,11 +447,11 @@ a.ast-name:hover {
     border: 1px solid #eae9e9;
     display: none;
     height: auto;
-    left: 61px;
+    left: 60px;
     padding: 10px 30px 30px 10px;
     position: absolute;
     top: 100px;
-    width: 70%;
+    width: 50.2%;
     z-index: 1000;
     max-height: 800px;
     overflow-y:auto;
@@ -1011,6 +1011,18 @@ a:hover, a:focus {
 .wr-auth-container {
   padding-right: 0px;
 }
+.auth-links{
+    white-space: nowrap;
+}
+.auth-links li{
+    float: right;
+    color:#fff;
+    list-style-type: none;
+    padding: 10px;
+}
+.auth-links li a{
+    color: #fff;
+}
 .auth-img:hover {
   background: #5c5c5c;
 }
@@ -1409,7 +1421,14 @@ span.advanced-search-icons{
     .site-wide-menu{
         padding-right:10px;
     }
-
+    .auth-links li{
+        padding:10px 3px;
+    }
+}
+@media all and (max-width: 360px) {
+    .auth-links li{
+        padding:10px 1px;
+    }
 }
 @media all and (max-width:320px){
     .search-area{

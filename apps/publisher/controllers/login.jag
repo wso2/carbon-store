@@ -28,6 +28,7 @@
     var redirectURL;
     var config = require('/config/publisher.js').config();
     var context = rxtAPI.app.getContext();
+    var queryString = request.getQueryString();
     if (user) {
         log.info('User is already logged in');
         response.sendRedirect(context);
@@ -64,5 +65,8 @@
         return;
     }
     redirectURL = getRedirectURL(authMethod, context);
+    if(queryString){
+        redirectURL = redirectURL + "?" +  queryString;
+    }
     response.sendRedirect(redirectURL);
 }(session, request, response)); %>
