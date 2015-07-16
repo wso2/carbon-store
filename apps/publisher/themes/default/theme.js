@@ -207,9 +207,6 @@ var engine = caramel.engine('handlebars', (function() {
                 var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
                 var isUpdatable = true;
-                if(field.updatable == false){
-                    isUpdatable = false;
-                }
                 var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
                 if(mode == "edit"){
                     isReadOnly = field.readonly || field.auto;

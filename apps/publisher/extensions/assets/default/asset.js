@@ -159,7 +159,7 @@ asset.configure = function() {
                             name: 'name',
                             label: 'Name'
                         },
-                        updatable: false,
+                        readonly: true,
                         validation: function() {}
                     },
                     version: {
