@@ -20,17 +20,13 @@
 (function(session, request, response) {
     var log = new Log();
     var server = require('store').server;
-    var user = session.get("LOGGED_IN_USER");
-
-    //var user = server.current(session);
+    var user = server.current(session);
     var rxtAPI = require('rxt');
     var constants = rxtAPI.constants;
     var authMethod;
     var redirectURL;
     var configs = require('/config/store.js').config();
     var context = rxtAPI.app.getContext();
-    var queryString = request.getQueryString();
-
     if (!user) {
         response.sendRedirect(context);
         return;
@@ -64,8 +60,5 @@
         return;
     }
     redirectURL = getRedirectURL(authMethod, context);
-    if(queryString){
-        redirectURL = redirectURL + "?" +  queryString;
-    }
     response.sendRedirect(redirectURL);
 }(session, request, response)); %>

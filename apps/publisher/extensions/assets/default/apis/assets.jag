@@ -179,19 +179,12 @@ require('/modules/publisher.js').exec(function (ctx) {
                 acceptHeader = req.getHeader('Accept');
                 jsonHeaderAccept = acceptHeader.indexOf('application/json');
                 try {
-                    if (jsonHeaderAccept >= 0 || acceptHeader === '*/*') {
-                        var assets = [];
-                        if(options.type) {
-                            log.info('*** TYPE SPECIFIC ADVANCED SEARCH ***');
-                            assets = assetApi.advanceSearch(options, req, res, session);
-                        } else {
-                            log.info('*** GENERIC ADVANCED SEARCH ***');
-                            assets = assetApi.genericAdvanceSearch(options,req,res,session);
-                        }
-                    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, assets);
+                    if (jsonHeaderAccept < 0) {
+                        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, 'error on get api', res, 'The requested media type is not supported', 'this is more information about accept header', []);
                         return;
                     }
-                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, 'error on get api', res, 'The requested media type is not supported', 'this is more information about accept header', []);
+                    var assets = assetApi.search(options, req, res, session);
+                    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, assets);
                 } catch (e) {
                     if (log.isDebugEnabled()) {
                         log.debug("Error while getting assets for the request : " + e);
@@ -206,11 +199,11 @@ require('/modules/publisher.js').exec(function (ctx) {
                 acceptHeader = req.getHeader('Accept');
                 jsonHeaderAccept = acceptHeader.indexOf('application/json');
                 try {
-                    if (jsonHeaderAccept >= 0 || acceptHeader === '*/*') {
-                        getAsset(options, req, res, session);
+                    if (jsonHeaderAccept < 0) {
+                        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, 'error on get api', res, 'The requested media type is not supported or add content-type for request', 'this is more information about accept header', []);
                         return;
                     }
-                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, 'error on get api', res, 'The requested media type is not supported or add content-type for request', 'this is more information about accept header', []);
+                    getAsset(options, req, res, session);
                 } catch (e) {
                     if (log.isDebugEnabled()) {
                         log.debug("Error while getting a asset for the request : " + e);
@@ -225,11 +218,11 @@ require('/modules/publisher.js').exec(function (ctx) {
                     options.id = uriMatcher.elements().id;
                     acceptHeader = req.getHeader('Accept');
                     jsonHeaderAccept = acceptHeader.indexOf('application/json');
-                    if (jsonHeaderAccept >= 0 || acceptHeader === '*/*') {
-                        getAssetState(options, req, res, session);
+                    if (jsonHeaderAccept < 0) {
+                        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, 'error on get api', res, 'The requested media type is not supported', 'this is more information about accept header', []);
                         return;
                     }
-                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_ACCEPTABLE, 'error on get api', res, 'The requested media type is not supported', 'this is more information about accept header', []);
+                    getAssetState(options, req, res, session);
                 } catch (e) {
                     if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
                         log.error(e.message, e);

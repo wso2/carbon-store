@@ -98,6 +98,16 @@ hr.emboss {
     width: 171px;
 }
 
+
+.back-office-label {
+    background: url("../img/back-office-label.png") no-repeat scroll left top rgba(0, 0, 0, 0);
+    float: left;
+    height: 27px;
+    margin: 18px 0 0 5px;
+    padding: 0;
+    width: 171px;
+}
+
 .navbar .nav > li > a {
     text-shadow: none;
     font-weight: bold;
