@@ -190,6 +190,9 @@ var asset = {};
             delete options[constants.Q_PROP_DEFAULT];
             isDefault = true;
         }
+        if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+            options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
+        }
         var id = this.am.add(options);
         var asset;
         options.id = id;
@@ -271,6 +274,9 @@ var asset = {};
         var isDefault = false;
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             isDefault = true;
+        }
+        if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+            options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
         }
         this.am.update(options);
         var asset = this.am.get(options.id);

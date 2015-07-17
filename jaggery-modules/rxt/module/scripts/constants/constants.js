@@ -31,6 +31,7 @@ var constants = {};
     constants.RECENT_ASSET_COUNT = 5; //The default number of recent assets to be retrieved
     constants.POPULAR_ASSET_COUNT = 1;
     constants.DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime';
+    constants.ASSET_PROVIDER = 'overview_provider';
     constants.SUBSCRIPTIONS_PATH = '/subscriptions';
     constants.ASSET_EXTENSION_ROOT='/extensions/assets';
     constants.DEFAULT_ASSET_EXTENSION='default';
