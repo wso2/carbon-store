@@ -50,6 +50,7 @@ asset.manager = function(ctx) {
             if(options.attributes.overview_provider){
                 provider = options.attributes.overview_provider;
             }
+            provider = provider.replace(':', '@');
             //Subscribe the asset author for LC update event and asset update event
             notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
             notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);

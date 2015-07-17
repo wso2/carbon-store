@@ -302,6 +302,7 @@ var buildPermissionsList = function(tenantId, username, permissions) {
     var actions;
     var collection;
     var sysRegistry = server.systemRegistry(tenantId);
+    username = store.user.cleanUsername(username);
     //Go through all of the accessible directives
     for (var index in accessible) {
         accessibleContext = accessible[index];
