@@ -448,10 +448,9 @@ a.ast-name:hover {
     display: none;
     height: auto;
     left: 61px;
-    padding: 10px 30px 30px 10px;
     position: absolute;
-    top: 100px;
-    width: 70%;
+    top: 98px;
+    width: 50.3%;
     z-index: 1000;
     max-height: 800px;
     overflow-y:auto;
@@ -459,7 +458,7 @@ a.ast-name:hover {
 
 #advanced-search label {
     width: 100%;
-    margin-left: 10px;
+    font-weight:normal;
 }
 
 #search-button2 {
@@ -470,7 +469,6 @@ a.ast-name:hover {
 #advanced-search input[type="text"] {
     border: 1px solid #ccc;
     color: #999;
-    margin-left: 10px;
     padding: 5px 5px 8px 8px;
     width: 100%;
     height: 33px;
@@ -645,7 +643,7 @@ a.login:focus {
     color: #fff;
     float: right;
     font-size: 14px;
-    left: 0;
+    left: 9px;
     list-style: outside none none;
     margin: 0 0 0 -121px;
     width: 120px;
@@ -653,9 +651,10 @@ a.login:focus {
     padding: 5px 0;
     position: absolute;
     text-align: left;
-    top: 32px;
+    top: 30px;
     z-index: 1000;
     box-shadow: none;
+    min-width:150px;
 }
 
 .dropdown-asset-custom ul.dropdown-menu a {
@@ -1270,9 +1269,12 @@ h2.app-title {
     width:150px;
     float:left;
     margin-right:22px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
+}
+.ctrl-wr-asset .ast-content{
     border: solid 1px #efefef;
 }
+
 
 .itm-ast {
     width: 100%;
@@ -1290,11 +1292,12 @@ h2.app-title {
     float: right;
     color: #333;
     height: 28px;
-    opacity: 0.5;
+
     padding: 3px 0 0 2px;
     width: 37px;
 }
 .more-list i{
+    opacity: 0.5;
     color:#000;
     font-size: 24px;
     margin-left: 15px;
@@ -1322,6 +1325,24 @@ span.advanced-search-icons{
     float:right;
     padding-right:25px;
 }
+.visible-xs-320{
+    display:none;
+}
+
+.signup-actions{
+    margin:0px;
+    padding:14px;
+    list-style:none;
+}
+
+.signup-actions li{
+    display:inline;
+}
+.signup-actions li a{
+    color:#fff;
+}
+
+
 @media (max-width: 768px) {
     .top-menu-right-custom ul li{
         float: right;
@@ -1346,6 +1367,7 @@ span.advanced-search-icons{
     .navbar-nav{
         margin: 0;
     }
+
 }
 @media (max-width: 540px) {
     .ro-text {
@@ -1412,5 +1434,8 @@ span.advanced-search-icons{
     }
     .hidden-xs-320{
         display:none;
+    }
+    .visible-xs-320{
+        display:block;
     }
 }
