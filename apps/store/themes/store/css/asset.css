@@ -240,7 +240,7 @@ a.disabled-button,a.disabled-button:hover {
     display: inline-block;
     margin-right: 1%;
     margin-top: 1%;
-    padding: 1%;
+    padding: 4px 8px;
     text-align: center;
     min-width: 100px;
     color: #282828;
