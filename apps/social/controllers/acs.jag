@@ -28,11 +28,15 @@
             relayState = request.getParameter('RelayState'),
             sso = require('sso'),
             samlRespObj,
-            attr = configs.authentication.methods.sso.attributes,
-            keyStoreProps = {
-                KEY_STORE_NAME: process.getProperty('carbon.home') + attr.keyStoreName,
-                KEY_STORE_PASSWORD: attr.keyStorePassword,
-                IDP_ALIAS: attr.identityAlias,
+            attr = configs.authentication.methods.sso.attributes;
+    var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Password");
+    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Location");
+    var identityAlias = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.KeyAlias");
+    var keyStoreProps = {
+                KEY_STORE_NAME: keyStoreName,
+                KEY_STORE_PASSWORD: keyStorePassword,
+                IDP_ALIAS: identityAlias,
                 USE_ST_KEY: !attr.useTenantKey
             },
             sso_sessions = application.get('sso_sessions');
