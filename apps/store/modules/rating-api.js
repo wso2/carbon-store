@@ -74,7 +74,7 @@ var api = {};
         }
     };
     var calculateRatingPixel = function(avgRating) {
-        var STAR_WIDTH = 84;
+        var STAR_WIDTH = 100;
         var MAX_RATING = 5;
         var ratingPx = (avgRating / MAX_RATING) * STAR_WIDTH;
         return ratingPx;
