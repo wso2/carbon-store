@@ -808,6 +808,31 @@ var app = {};
         return configs.features[featureName];
     };
     /**
+     * Returns whether the asset types are hot deployed
+     * @param  {[type]}  tenantId The tenant Id
+     * @return {Boolean}          True if asset type hot deployment is enabled
+     */
+    app.isAssetTypesHotDeployed = function(tenantId){
+        return this.isFeatureEnabled(tenantId,constants.ASSET_TYPES_HOTDEPLOYMENT);
+    };
+    app.hotDeployAssetTypes = function(tenantId){
+        var server = require('store').server;
+        var systemRegistry = server.systemRegistry(tenantId);
+        var collection = systemRegistry.get(constants.ASSET_TYPES_PATH)||[];
+        var typeCollection = collection.content ||[];
+        var typeResource;
+        var event = require('event');
+        var assetsUpdated = core.isAssetTypesUpdated(tenantId);
+        if(!assetsUpdated){
+            log.info('#### CANCELING asset deployment ####');
+            return;
+        }
+        log.info('#### STARTED asset deployment ####');
+        event.emit('assetTypesHotDeploy',tenantId);
+        //Update the deployment time
+        core.recordAssetTypeDeploymentDetails(tenantId);
+    };
+    /**
      * Returns whether a particular extensible application feature is enabled.If the feature is not located then the method will
      * always return false.This method will first internally call the getFeatureDetails method to locate the feature
      * @param  {Number}  tenantId     The tenant ID for which the feature details must be returned

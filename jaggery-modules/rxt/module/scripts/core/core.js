@@ -1048,6 +1048,45 @@ var core = {};
     core.getAssetSubscriptionSpace = function(type) {
         return constants.SUBSCRIPTIONS_PATH + (type ? '/' + type : '');
     };
+    var typeName = function(path){
+        path = String(path);
+        var arr = path.split('/');
+        var file = arr[arr.length-1] || '';
+        return file.split('.')[0];
+    }; 
+    core.assetTypeDeploymentTimeMap = function(tenantId){
+        var server = require('store').server;
+        var systemRegistry = server.systemRegistry(tenantId);
+        var collection = systemRegistry.get(constants.ASSET_TYPES_PATH)||[];
+        var typeCollection = collection.content ||[];
+        var typeResource;
+        var typeResourcePath;
+        var map = {};
+        for(var index = 0; index <  typeCollection.length;index++){
+            typeResourcePath = typeCollection[index];
+            typeResource = systemRegistry.get(typeResourcePath);
+            type = typeName(typeResourcePath);
+            map[type] = typeResource.updated;
+        }
+        return map;
+    };
+    core.isAssetTypesUpdated = function(tenantId){
+        var configs = core.configs(tenantId);
+        var timeMap = configs.assetTimeMap;
+        var currentTimeMap = this.assetTypeDeploymentTimeMap(tenantId);
+        var updated = false;
+        for(var key in timeMap){
+            if(timeMap[key].time!== currentTimeMap[key].time){
+                updated = true;
+            }
+        }
+        return updated;
+    };
+    core.recordAssetTypeDeploymentDetails = function(tenantId){
+        var configs = this.configs(tenantId);
+        var timeMap = this.assetTypeDeploymentTimeMap(tenantId);
+        configs.assetTimeMap = timeMap;
+    };
     /**
      * Initializes the logic which loads the RXT definitions and creates the RxtManagers
      */
@@ -1057,10 +1096,16 @@ var core = {};
         var options = server.options();
         var map = {};
         application.put(RXT_MAP, map);
+        var that =  this;
         event.on('tenantLoad', function(tenantId) {
             map = application.get(RXT_MAP);
             createTenantRxtMap(tenantId, map);
             createRxtManager(tenantId, map);
+            //Record the asset type time details
+            that.recordAssetTypeDeploymentDetails(tenantId);
+        });
+        event.on('assetTypesHotDeploy',function(tenantId){
+            log.info('### CORE HOT DEPLOYED ###');
         });
     };
     /**
