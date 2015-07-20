@@ -127,6 +127,7 @@ var pageDecorators = {};
         var bookmarkPerms = {};
         if (query) {
             items = asset.advanceSearch(query, null, session, ctx.tenantId)||[];
+            ratingApi.addRatings(items, am, ctx.tenantId, ctx.username);
             assetMap = {};
             var template;
             //Sort the results by type

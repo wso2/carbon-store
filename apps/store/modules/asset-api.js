@@ -346,6 +346,7 @@ var responseProcessor = require('utils').response;
         var userDetails = server.current(session);
         var assetManager = null;
         var domain = options.domain || carbon.server.superTenant.domain;
+        var ratingApi = require('/modules/rating-api.js').api;
         var tenantId = carbon.server.tenantId({
             domain: domain
         });
@@ -411,6 +412,7 @@ var responseProcessor = require('utils').response;
             result = null;
             log.error(e);
         }
+        ratingApi.addRatings(result);
         return result;  
     };
     var replaceCategoryQuery = function(q, rxtManager, type) {
