@@ -30,11 +30,8 @@
                 "attributes": {
                     "issuer": "store",
                     "identityProviderURL": "%https.carbon.local.ip%/samlsso",
-                    "keyStorePassword": "wso2carbon",
-                    "identityAlias": "wso2carbon",
                     "responseSigningEnabled": "true",
                     "acs": "%https.host%/store/acs",
-                    "keyStoreName": "/repository/resources/security/wso2carbon.jks",
                     "useTenantKey": false
                 }
             },
