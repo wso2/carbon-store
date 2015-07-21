@@ -1075,8 +1075,18 @@ var core = {};
         var timeMap = configs.assetTimeMap;
         var currentTimeMap = this.assetTypeDeploymentTimeMap(tenantId);
         var updated = false;
-        for(var key in timeMap){
-            if(timeMap[key].time!== currentTimeMap[key].time){
+        //Case 1:Look for new RXTs and altered RXTs
+        for(var key in currentTimeMap){
+            if((!timeMap.hasOwnProperty(key))||(timeMap[key].time!== currentTimeMap[key].time)){
+                updated = true;
+            }
+        }
+        if(updated){
+            return updated;
+        }
+        //Case 2: Look for removed RXTs
+        for(var types in timeMap){
+            if(!currentTimeMap.hasOwnProperty(type)){
                 updated = true;
             }
         }
