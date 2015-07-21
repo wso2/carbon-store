@@ -954,6 +954,14 @@ var exec = function (fn, request, response, session) {
         response.sendError(404,'Tenant:'+tenantDetails.domain+' not registered');
         return;
     }
+    var app = require('rxt').app;
+    log.info('### Checking for asset types hot deployment ###');
+    if(app.isAssetTypesHotDeployed(tenantId)){
+        log.info('Hot deploying asset types');
+        app.hotDeployAssetTypes(tenantId);
+        log.info('Finished hot deployment of asset types');
+    }
+    log.info('### Finished checking for asset types hot deployment ###');
     es.server.sandbox({
         tenantId: tenantId,
         username: user ? user.username : carbon.user.anonUser,

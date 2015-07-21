@@ -10,6 +10,9 @@
                 "socialScriptType": "text/javascript",
                 "socialAppUrl": "%https.host%/social"
             }
+        },
+        "assetTypesHotDelploy": {
+            "enabled": false
         }
     },
     "assets": ["gadget", "site"],
