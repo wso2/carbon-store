@@ -389,6 +389,8 @@ var resources = {};
         });
         event.on('assetTypesHotDeploy',function(tenantId){
             log.info('### RESOURCES HOT DEPLOYED ###');
+            log.info('TENANT ID: '+tenantId);
+            init(tenantId);
         });
     };
 }(core, resources, artifacts));

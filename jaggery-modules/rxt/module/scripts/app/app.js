@@ -471,6 +471,10 @@ var app = {};
         event.on('tenantLoad', function(tenantId) {
             init(tenantId, context);
         });
+
+        event.on('assetTypesHotDeploy',function(tenantId){
+            init(tenantId,context);
+        });
     };
     /**
      * Returns the context of the application

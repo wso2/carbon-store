@@ -1106,6 +1106,12 @@ var core = {};
         });
         event.on('assetTypesHotDeploy',function(tenantId){
             log.info('### CORE HOT DEPLOYED ###');
+            log.info('TENANT ID: '+tenantId);
+            map = application.get(RXT_MAP);
+            createTenantRxtMap(tenantId, map);
+            createRxtManager(tenantId, map);
+            //Record the asset type time details
+            that.recordAssetTypeDeploymentDetails(tenantId);
         });
     };
     /**
