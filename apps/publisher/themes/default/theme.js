@@ -235,7 +235,7 @@ var engine = caramel.engine('handlebars', (function() {
                 if (!isHidden && field.type != "option-text"){
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name);
                     if (field.required){
-                        output += '<i class="fa fa-asterisk required-field"></i>';
+                        output += '<sup class="required-field">*</sup>';
                     }
                     output += '</label>';
                 }
