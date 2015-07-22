@@ -81,7 +81,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var valueObj = options.values ? options.values[0] : {};
                         var values = valueObj.value ? valueObj.value : [];
                         for (var index in values) {
-                            output += '<option>' + values[index].value + '</option>';
+                            output += '<option>' + Handlebars.Utils.escapeExpression(values[index].value) + '</option>';
                         }
                         output += '</select>';
                         break;
