@@ -38,6 +38,7 @@
                 postUrl = attr.identityProviderURL;
         var log = new Log();
         log.debug("store session index : " + sso_sessions[session.getId()]);
+        session.invalidate();
         %>
         <div>
            <p>You are now redirected to Identity Server. If the
