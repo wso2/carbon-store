@@ -75,6 +75,13 @@ store.infiniteScroll.getItems = function (from, to) {
     var param = '&&paginationLimit=' + to + '&&start=' + from + '&&count=' + count + setSortingParams(path) + setQueryParams(path);
     var assetType = store.publisher.type; //load type from store global object
     var url = '/publisher/apis/assets?type=' + assetType + param; // build url for the endpoint call
+    caramel.render('loading','Loading assets from ' + from + ' to ' + to + '.', function( info , content ){
+        $('.loading-animation-big').remove();
+        $('#list_assets_content').prepend($(content));
+        var loadingAnimationTop = $(document).height() - 320;
+        $('.loading-animation-big').css('top',loadingAnimationTop+'px');
+    });
+    console.info(url);
     //var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);     //TODO enable tenanted url thing..
     var loadAssets = function () {
         $.ajax({
@@ -84,13 +91,15 @@ store.infiniteScroll.getItems = function (from, to) {
                 Accept: "application/json; charset=utf-8"
             },
             success: function (response) { //on success
-                var assets = convertTimeToUTC(response.list);
-                if (assets) {
+                if (response) {
+                    var assets = convertTimeToUTC(response.list);
                     caramel.render('list_assets_table_body', assets, function (info, content) {
+                        $('.loading-animation-big').remove();
                         $('#list_assets_content').append($(content));
                     });
                 } else { //if no assets retrieved for this page
                     doPagination = false;
+                    $('.loading-animation-big').remove();
                 }
             },
             error: function (response) { //on error
