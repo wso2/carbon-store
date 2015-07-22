@@ -462,7 +462,6 @@ a.ast-name:hover {
 }
 
 #search-button2 {
-    margin-left: 10px;
     margin-top: 10px;
 }
 
@@ -477,7 +476,6 @@ a.ast-name:hover {
 
 #advanced-search select {
     height: 33px;
-    margin-left: 10px;
     width: 100%;
     margin-bottom: 5px;
 }
