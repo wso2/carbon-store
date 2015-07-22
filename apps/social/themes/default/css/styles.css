@@ -166,7 +166,7 @@ button:hover {
     margin-left: 9px;
     margin-top: -2px;
     overflow: hidden;
-    width: 84px;
+    width: 103px;
 }
 .com-rating > div {
     background: url('../img/store-stars.png') no-repeat bottom left;
@@ -178,23 +178,23 @@ button:hover {
     display: block;
 }
 .com-rating-1star {
-    width: 16px;
+    width: 20px;
     display: block;
 }
 .com-rating-2star {
-    width: 32px;
+    width: 40px;
     display: block;
 }
 .com-rating-3star {
-    width: 48px;
+    width: 60px;
     display: block;
 }
 .com-rating-4star {
-    width: 64px;
+    width: 80px;
     display: block;
 }
 .com-rating-5star {
-    width: 80px;
+    width: 100px;
     display: block;
 }
 
