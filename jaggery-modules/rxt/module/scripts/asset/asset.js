@@ -192,6 +192,9 @@ var asset = {};
             delete options[constants.Q_PROP_DEFAULT];
             isDefault = true;
         }
+        if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+            options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
+        }
         var id = this.am.add(options);
         var asset;
         options.id = id;
@@ -272,6 +275,9 @@ var asset = {};
         var isDefault = false;
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             isDefault = true;
+        }
+        if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+            options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
         }
         this.am.update(options);
         var asset = this.am.get(options.id);
@@ -580,7 +586,8 @@ var asset = {};
             }
         };
     };
-    var processAssets = function (type, set, rxtManager, tenantId) {
+
+    var processAssets = function(type,set,rxtManager,tenantId){
         var iterator = set.iterator();
         var assets = [];
         var current;
@@ -589,7 +596,8 @@ var asset = {};
         var item;
         var rm = rxtManager;
         var app = require('rxt').app;
-        while (iterator.hasNext()) {
+
+        while(iterator.hasNext()){
             current = iterator.next();
             assetType = null;
             if (!type) {
@@ -608,8 +616,9 @@ var asset = {};
             var tenantId = tenantId || constants.DEFAULT_TENANT;
             var availableTypes = app.getActivatedAssets(tenantId);
             for (var index in availableTypes) {
-                if (availableTypes[index] === assetType) {
-                    item = buildArtifact(assetType, mediaType, current);
+
+                if(availableTypes[index] === assetType){
+                    item = buildArtifact(assetType,mediaType,current);
                     assets.push(item);
                 }
             }
@@ -738,8 +747,9 @@ var asset = {};
         assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
         //assets is a set that must be converted to a JSON array
         log.info('[advance search] about to process result set');
-        assets = processAssets(null, assets, rxtManager, tenantId);
-        addMetaDataToGenericAssets(assets, session, tenantId);
+
+        assets = processAssets(null,assets,rxtManager,tenantId);
+        addMetaDataToGenericAssets(assets,session,tenantId);
         return assets;
     };
     /**
@@ -1483,7 +1493,12 @@ var asset = {};
                 }
             }
         }
-        this.registry.registry.copy('/_system/governance/store/asset_resources/' + options.type + '/' + oldId, '/_system/governance/store/asset_resources/' + options.type + '/' + existingAttributes.id);
+
+        if(this.registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId)){
+            this.registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId,'/_system/governance/store/asset_resources/'+ options.type + '/' + existingAttributes.id);
+        }
+        return existingAttributes.id;
+
     };
     AssetManager.prototype.getName = function (asset) {
         var nameAttribute = this.rxtManager.getNameAttribute(this.type);

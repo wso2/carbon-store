@@ -200,6 +200,7 @@ h2.field-title a.collapsing-h2 {
     font-size: 22px;
     font-weight: 200;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    cursor:pointer;
 }
 
 a.collapsing-h2{
@@ -517,6 +518,11 @@ i.cu-btn-exp-col {
 .btn-collapsed {
     background:url('../img/icons/ico-collapsed.png') no-repeat;      
 }
+
+.collapsed .btn-collapsed {
+     background:url('../img/icons/ico-expanded.png') no-repeat;
+}
+
 .sort-asset-info{
     color: #a5a5a5;
     font-size: 11px;
@@ -593,7 +599,7 @@ a.btn-inline-form:hover {
 }
 #ul-sort-assets li a:hover {
     color: #fff;
-    background: #444;
+    background: #666;
 }
 #ul-sort-assets li {
     color: #333;}
@@ -610,10 +616,11 @@ a.btn-inline-form:hover {
     list-style: outside none none;
     text-align: left;
     padding:0;
+    margin-right:0px;
 }
 #ul-sort-assets li.active a{
-    background: #5f5f5f;
-    color:#000;
+    background: #ccc;
+    color:#333;
 }
 .btn-add-new {
 	background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
@@ -640,6 +647,15 @@ a.cu-ico-button-stats {
 /* filter */
 .wr-filters {
 	padding:18px 30px 15px 15px;
+}
+
+.wr-filters .dropdown-menu .filter-item{
+    color:#333;
+    background:#e2e2e2;
+}
+.wr-filters .dropdown-menu .filter-item span,
+.wr-filters .dropdown-menu .filter-item i{
+    line-height:2;
 }
 
 .wr-secondary-bar {
@@ -937,6 +953,7 @@ h2 span.fa-stack{
 
 #navbar {
     float:left;
+    padding-left:0px;
 }
 
 .wr-main-content {
@@ -1089,4 +1106,26 @@ div.notifyjs-happyblue-base {
 }
 .navbar-header{
    float: right;
+}
+.loading-animation-big{
+    background: #fefefe;
+    padding:10px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #efefef;
+    border-top: 1px solid #efefef;
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+.loading-animation-big i{
+    font-size: 50px;
+    color: #4290ef;
+}
+.loading-animation-big span{
+    font-size: 14px;
+    line-height: 50px;
+    text-indent: 20px;
+    display: inline-block;
+    position: absolute;
 }

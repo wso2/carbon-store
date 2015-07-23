@@ -165,7 +165,7 @@ var engine = caramel.engine('handlebars', (function() {
                             fields[key].value = [fields[key].value];
                         }
                         var value = fields[key].value[index] ? fields[key].value[index] : ' ';
-                        out += '<td style="width:'+100/columnCount+'%">' + value + '</td>';
+                        out += '<td style="width:'+100/columnCount+'%">' + Handlebars.Utils.escapeExpression(value) + '</td>';
                     }
                     out += '</tr>';
                 }
@@ -203,14 +203,16 @@ var engine = caramel.engine('handlebars', (function() {
             });
             var renderFieldMetaData = function(field,name,options) {
                 var isRequired=(field.required)?field.required:false;
-                var isReadOnly=(field.readonly)?field.readonly:false;
+                var isReadOnly=false;
+                var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
                 var isUpdatable = true;
-                if(field.updatable == false){
-                    isUpdatable = false;
-                }
-
                 var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
+                if(mode == "edit"){
+                    isReadOnly = field.readonly || field.auto;
+                }else{
+                    isReadOnly = (field.auto)?field.auto:false;
+                }
                 if(isRequired && field.type != 'file'){
                     meta+=' required="required"';
                 } else if (isRequired && field.type == 'file' && mode == 'create') {
@@ -221,13 +223,21 @@ var engine = caramel.engine('handlebars', (function() {
                 } else if(!isUpdatable && mode == 'edit'){
                     meta+=' readonly="readonly"';
                 }
+                if(placeHolder){
+                    meta += ' placeholder="'+ placeHolder +'"';
+                }
+
                 return meta;
             };
             var renderFieldLabel = function(field) {
                 var output = '';
                 var isHidden= (field.hidden)?field.hidden:false;
                 if (!isHidden && field.type != "option-text"){
-                    output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name) + '</label>';
+                    output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name);
+                    if (field.required){
+                        output += '<sup class="required-field">*</sup>';
+                    }
+                    output += '</label>';
                 }
                 return output;
             };
@@ -237,9 +247,9 @@ var engine = caramel.engine('handlebars', (function() {
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
-                        out += '<option selected="selected">' + value + '</option>';
+                        out += '<option selected="selected">' + Handlebars.Utils.escapeExpression(value) + '</option>';
                     }else{
-                        out += '<option>' + values[index].value + '</option>';
+                        out += '<option>' + Handlebars.Utils.escapeExpression(values[index].value) + '</option>';
                     }
                 }
                 //Filter out the selected
@@ -254,9 +264,9 @@ var engine = caramel.engine('handlebars', (function() {
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
-                        out += '<option selected="selected">' + value + '</option>';
+                        out += '<option selected="selected">' + Handlebars.Utils.escapeExpression(value) + '</option>';
                     }else{
-                        out += '<option>' + values[index].value + '</option>';
+                        out += '<option>' + Handlebars.Utils.escapeExpression(values[index].value) + '</option>';
                     }
                 }
                 //Filter out the selected
@@ -282,7 +292,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var text = value.substring(delimter + 1, value.length);
                         output += '<tr>';
                         output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
-                        output += '<td valign="top"><input type="text" class="form-control '+ validationCls +'"'+defaultCls+' value="' + text + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                        output += '<td valign="top"><input type="text" class="form-control'+validationCls+'"'+defaultCls+' value="' + Handlebars.Utils.escapeExpression(text) + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
                         output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                         output += '</tr>';
                     }
@@ -297,8 +307,8 @@ var engine = caramel.engine('handlebars', (function() {
                 return output;
             };
             var renderFileField = function(field, value) {
-                var out = '<td><input type="hidden" name="old_' + field.name.tableQualifiedName + '" value="' + value + '" >';
-                out += '<input type="file" value="' + value + '" ' + renderFieldMetaData(field) + '></td>';
+                var out = '<td><input type="hidden" name="old_' + field.name.tableQualifiedName + '" value="' + Handlebars.Utils.escapeExpression(value) + '" >';
+                out += '<input type="file" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field) + '></td>';
                 return out;
             };
             var formatted_date = function(timestamp){
@@ -337,16 +347,16 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">' + renderOptions(field.value, field.values[0].value, field,'',cls,validationCls) + '</div>';
                         break;
                     case 'text':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="form-control '+ validationCls +'"'+ cls +'  value="' + value + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8"></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="form-control '+validationCls+'"'+cls+'  value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
                         break;
                     case 'text-area':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px" class="'+ validationCls+'"' + renderFieldMetaData(field, null, options) + ' class="width-full" '+ cls +'>'+value+'</textarea></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full '+validationCls+'"'+cls+'>' + Handlebars.Utils.escapeExpression(value) + '</textarea></div>';
                         break;
                     case 'file':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file"  value="' + value + '" class="'+ validationCls +'"'+ cls + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file" class="'+validationCls+'"'+cls+'  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'date':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" data-render-options="date-time"  class="'+ validationCls+ '" value="' + value + '" ' + renderFieldMetaData(field, null, options) + cls +' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="'+validationCls+'"'+cls+' data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'checkbox':
                         var checkboxString = "";
@@ -362,7 +372,8 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="checkbox" '+ validationCls+ cls + renderFieldMetaData(field, null, options) + ' '+checkboxString+' ></div>';
                         break;
                     case 'password':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" value="' + value + '" class=" '+ validationCls +'"'+ cls + renderFieldMetaData(field, null, options) + ' ></div>';
+
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" class="'+validationCls+'"'+cls+' value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'option-text':
                         if(field.maxoccurs && field.maxoccurs == "unbounded"){
@@ -398,16 +409,16 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<td valign="top">' + renderOptions(field.value, field.values[0].value, field) + '</td>';
                         break;
                     case 'text':
-                        out = '<td valign="top"><input type="text" class="form-control" value="' + value + '"" ' + renderFieldMetaData(field) + ' class="span8" ></td>';
+                        out = '<td valign="top"><input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field) + ' class="span8" ></td>';
                         break;
                     case 'text-area':
-                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">'+value+'</textarea></td>';
+                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">' + Handlebars.Utils.escapeExpression(value) + '</textarea></td>';
                         break;
                     case 'file':
-                        out = '<td valign="top"><input type="file" class="form-control" value="' + value + '" ' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<td valign="top"><input type="file" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     case 'date':
-                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
                         break;
                     case 'checkbox':
                         var checkboxString = "";
@@ -420,10 +431,10 @@ var engine = caramel.engine('handlebars', (function() {
                         }else{
                             value="on";
                         }
-                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' '+checkboxString+' ></td>';
+                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' ></td>';
                         break;
                     case 'password':
-                        out = '<td valign="top"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        out = '<td valign="top"><input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
                         break;
                     default:
                         out = '<td valign="top">Normal Field' + field.type + '</td>';
@@ -438,16 +449,16 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<td valign="top">' + renderOptions(value, field.values[0].value, field) + '</td>';
                         break;
                     case 'text':
-                        out = '<td valign="top"><input type="text" value="' + value + '"' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     case 'text-area':
-                        out = '<td valign="top"><input type="text-area" value="' + value + '"' + renderFieldMetaData(field) + '></td>';
+                        out = '<td valign="top"><input type="text-area" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + '></td>';
                         break;
                     case 'file':
-                        out = '<td valign="top"><input type="text" value="' + value + '"' + renderFieldMetaData(field) + ' ></td>';
+                        out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     case 'date':
-                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
                         break;
                     case 'checkbox':
                         var checkboxString = "";
@@ -460,10 +471,10 @@ var engine = caramel.engine('handlebars', (function() {
                         }else{
                             value="on";
                         }
-                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' '+checkboxString+' ></td>';
+                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' ></td>';
                         break;
                     case 'password':
-                        out = '<td valign="top"><input type="password" value="' + value + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        out = '<td valign="top"><input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
                         break;
                     default:
                         out = '<td valign="top">Normal Field' + field.type + '</td>';
@@ -638,7 +649,7 @@ var engine = caramel.engine('handlebars', (function() {
                 if(isAuthorized){
                     return options.fn(context);
                 }
-                log.error('[hasAppPermission] User '+username+' does not have permission: '+key+' to see ui area');
+                log.error('[hasAppPermission] User ' + username + ' does not have permission: ' + key + ' to see ui area');
                 return ;
             });
         },

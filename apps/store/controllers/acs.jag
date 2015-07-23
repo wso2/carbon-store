@@ -26,14 +26,18 @@
             relayState = request.getParameter('RelayState'),
             attr = configs.authentication.methods.sso.attributes,
             sso = require('sso'),
-            samlRespObj,
-            keyStoreProps = {
-                KEY_STORE_NAME: process.getProperty('carbon.home') + attr.keyStoreName,
-                KEY_STORE_PASSWORD: attr.keyStorePassword,
-                IDP_ALIAS: attr.identityAlias,
+            samlRespObj;
+    var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Password");
+    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Location");
+    var identityAlias = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.KeyAlias");
+    var     keyStoreProps = {
+                KEY_STORE_NAME: keyStoreName,
+                KEY_STORE_PASSWORD: keyStorePassword,
+                IDP_ALIAS: identityAlias,
                 USE_ST_KEY: !attr.useTenantKey
-            },
-            sso_sessions = application.get('sso_sessions');
+            };
+    var sso_sessions = application.get('sso_sessions');
 
     var loadTenant = function(username) {
         var carbon = require('carbon');
@@ -75,12 +79,23 @@
 
                         var user = require('store').user;
 
-                        if (user.loginWithSAML(sessionObj.loggedInUser)) {
-                            log.debug('user is set :::' + sessionObj.loggedInUser);
-                            response.sendRedirect(relayState);
+                        var username = sessionObj.loggedInUser;
+                        user.loadTenant(username)
+
+                        var permissionAPI = require('rxt').permissions;
+                        var carbon = require('carbon');
+                        var usr = carbon.server.tenantUser(username);
+                        var modifiedUsername = user.removeTenantDomainFromUsername(username);
+                        var hasStoreLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
+                                modifiedUsername);
+
+                        if (hasStoreLoginPermission) {
+                             user.emitLogin(username)
+                             log.debug('user is set :::' + username);
+                             response.sendRedirect(relayState);
                         }
                         else{
-                            session.invalidate();
+                            //session.invalidate();
                             log.warn('User '+sessionObj.loggedInUser+' does not have permission to access the store application.Make sure the user has the store role.');
                             response.sendError(401,'You do not have permission to login to this application.Please contact your administrator and request permission.');
                         }

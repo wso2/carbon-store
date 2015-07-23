@@ -251,7 +251,7 @@ var result;
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
+            log.error('Asset of type: ' + options.type + ' was not created due to ', e);
             return null;
         }
         //Attempt to apply tags
@@ -678,7 +678,7 @@ var result;
             am.remove(options.id); //call asset manager to remove asset
             return true;
         } catch (e) {
-            log.error('Asset with id: ' + asset.id + ' was not deleted due to ' + e);
+            log.error('Asset with id: ' + asset.id + ' was not deleted due to ', e);
             return false;
         }
     };

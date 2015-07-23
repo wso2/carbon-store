@@ -130,7 +130,7 @@ var responseProcessor = require('utils').response;
         try {
             am.create(asset);
         } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
+            log.error('Asset of type: ' + options.type + ' was not created due to ', e);
             //print(responseProcessor.buildErrorResponse(500, 'Failed to create asset of type: ' + options.type));
             return null;
         }
@@ -346,6 +346,7 @@ var responseProcessor = require('utils').response;
         var userDetails = server.current(session);
         var assetManager = null;
         var domain = options.domain || carbon.server.superTenant.domain;
+        var ratingApi = require('/modules/rating-api.js').api;
         var tenantId = carbon.server.tenantId({
             domain: domain
         });
@@ -411,6 +412,7 @@ var responseProcessor = require('utils').response;
             result = null;
             log.error(e);
         }
+        ratingApi.addRatings(result);
         return result;  
     };
     var replaceCategoryQuery = function(q, rxtManager, type) {
@@ -490,7 +492,7 @@ var responseProcessor = require('utils').response;
             am.remove(options.id);
             result = true;
         } catch (e) {
-            log.error('Asset with id: ' + asset.id + ' was not deleted due to ' + e);
+            log.error('Asset with id: ' + asset.id + ' was not deleted due to ', e);
             result = false;
         }
         return result;

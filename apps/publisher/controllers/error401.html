@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Internal Server Error - Error 500</title>
+    <title>Unauthorized - Error 401</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -11,11 +11,13 @@
         a{color: #2578ff}
         body{border-top:solid 20px #444;padding:0;margin:0;}
     </style>
+</head>
+
 <body>
-    <i class="icon-ambulance error-icon"></i>
-    <h1>Error 500</h1>
-    <h3>Something went wrong and we're trying to fix it.</h3>
-    <h4>Please check back later</h4>
-    <h4><a href="/store">Home Page</a></h4>
+<i class="icon-unlink error-icon"></i>
+<h1>Error 401</h1>
+<h3>You do not have permission to login to this application.Please contact your administrator and request permission.</h3>
+<h4><a href="/publisher/logout?ignoreReferer=true">Go to Login Page</a></h4>
 </body>
 </html>
+

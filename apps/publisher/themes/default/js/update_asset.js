@@ -30,9 +30,11 @@ $(function() {
         beforeSubmit:function(){
             $('#editAssetButton').attr('disabled','disabled');
         },
-        success: function() {
+        success: function(data) {
             messages.alertSuccess('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
+            var options=obtainFormMeta('#form-asset-update');
             $('#editAssetButton').removeAttr('disabled');
+            window.location = options.redirectUrl + data.id;
         },
         error: function() {
             $('#editAssetButton').removeAttr('disabled');

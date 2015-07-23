@@ -62,18 +62,11 @@ var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
         }
     };
 
-    var setChallenge = function(username) {
-        var recovery = require('account-management').recovery;
-        var qList = [{question:question, answer:answer, id:QUESTION_SET_ID}];
-        recovery.setChallengeQuestionForUser(username, qList);
-    }
-
     if (action == 'register') {
         var claims = JSON.parse(request.getParameter("reg-claims"));
         var claimValues = getClaimValues(claims, request);
 
         registerUser(username, password, claimValues);
-        setChallenge(username);
     }
 
 }());

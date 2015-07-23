@@ -100,6 +100,7 @@ var pageDecorators = {};
     pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
+        var permissions = require('rxt').permissions;
         var assetAPI = require('/modules/asset-api.js').api;
         var assets = {};
         var items = [];
@@ -108,6 +109,7 @@ var pageDecorators = {};
         var type;
         var rxtDetails;
         var assetMap = {};
+        var bookmarkable;
         var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);
         var tenantAssetResources;
         // Supporting cross tenant views
@@ -117,16 +119,29 @@ var pageDecorators = {};
         var ratingApi = require('/modules/rating-api.js').api;
         var q = page.assetMeta.q;
         var query = buildRecentAssetQuery(q);
+        var username = ctx.username || null;
+        var tenantId = ctx.tenantId;
+        var canBookmark = function(type) {
+            return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
+        };
+        var bookmarkPerms = {};
         if (query) {
             items = asset.advanceSearch(query, null, session, ctx.tenantId)||[];
+            ratingApi.addRatings(items, am, ctx.tenantId, ctx.username);
             assetMap = {};
             var template;
             //Sort the results by type
             items.forEach(function(item){
-                if(!assetMap[item.type]){
-                    assetMap[item.type] = [];
+                var type = item.type;
+                if(!assetMap[type]){
+                    assetMap[type] = [];
                 }
-                assetMap[item.type].push(item);
+                bookmarkable = bookmarkPerms[type];
+                if (bookmarkable === undefined) {
+                    bookmarkable = (bookmarkPerms[type] = canBookmark(type));
+                }
+                item.bookmarkable = bookmarkable;
+                assetMap[type].push(item);
             });
             //Collect the asset result set along with the rxt definition
             for(var key in assetMap){
@@ -143,13 +158,17 @@ var pageDecorators = {};
                 tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
                     type: type
                 });
+                bookmarkable = bookmarkPerms[type];
+                if(bookmarkable === undefined) {
+                    bookmarkable = (bookmarkPerms[type] = canBookmark(type));
+                }
                 am = tenantAssetResources.am;
                 if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
                     assets = am.recentAssets();
                     if (assets.length > 0) {
                         //Add subscription details if this is not an anon context
                         if (!ctx.isAnonContext) {
-                            addSubscriptionDetails(assets, am, ctx.session);
+                            addSubscriptionDetails(assets, am, ctx.session, bookmarkable);
                         }
                         ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
                         items = items.concat(assets);
@@ -194,9 +213,12 @@ var pageDecorators = {};
         q[nameField] = nameValue;
         return q;
     };
-    var addSubscriptionDetails = function(assets, am, session) {
+    var addSubscriptionDetails = function(assets, am, session, bookmarkable) {
+        var asset;
         for (var index = 0; index < assets.length; index++) {
-            assets[index].isSubscribed = am.isSubscribed(assets[index].id, session);
+            asset = assets[index];
+            asset.isSubscribed = am.isSubscribed(asset.id, session);
+            asset.bookmarkable = bookmarkable;
         }
     };
     var buildRecentAssetQuery = function(q) {
@@ -211,7 +233,7 @@ var pageDecorators = {};
         try {
             queryObj = parse(query);
         } catch (e) {
-            log.error('Unable to parse query string: ' + query + ' to an object.Exception: ' + e);
+            log.error('Unable to parse query string: ' + query + ' to an object.Exception: ', e);
         }
         return queryObj;
     };
