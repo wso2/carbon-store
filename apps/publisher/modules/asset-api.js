@@ -238,6 +238,13 @@ var result;
         try {
             //throw 'This is to stop asset creation!';
             log.info(asset);
+            var checkValidate = am.validate(asset);
+            if (checkValidate.length > 0) {
+                for (var key in checkValidate) {
+                    log.error(checkValidate[key].message);
+                }
+                return null;
+            }
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
@@ -288,7 +295,7 @@ var result;
         var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
         //TODO this code should be improve for each and every content type
-        if(req.getContentType() === "application/json"){
+        if (req.getContentType() === "application/json") {
             assetReq = processRequestBody(req, assetReq);
         }
         var asset = null;
@@ -322,6 +329,13 @@ var result;
             }
             try {
                 //Set any meta properties provided by the API call (e.g. _default)
+                var checkValidate = am.validate(asset);
+                if (checkValidate.length > 0) {
+                    for (var key in checkValidate) {
+                        log.error(checkValidate[key].message);
+                    }
+                    return null;
+                }
                 setMetaProps(asset, meta);
                 am.update(asset);
             } catch (e) {

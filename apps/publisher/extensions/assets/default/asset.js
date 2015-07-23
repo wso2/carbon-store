@@ -90,6 +90,12 @@ asset.server = function(ctx) {
             }, {
                 url: 'statistics',
                 path: 'statistics.jag'
+            },{
+                url: 'validation',
+                path: 'validate.jag'
+            },{
+                url: 'assetsanon',
+                path: 'assets.jag'
             }],
             pages: [{
                 title: 'Asset: ' + type,
@@ -154,7 +160,11 @@ asset.configure = function() {
                             label: 'Name'
                         },
                         updatable: false,
-                        validation: function() {}
+                        validations: {
+                            client: ['isUniqueField'],
+                            server: ['isAlphaNumericOnly']
+                        }
+
                     },
                     version: {
                         name: {
@@ -213,6 +223,17 @@ asset.configure = function() {
                     log.debug('[configure-registry-permissions] assigning permissions to static path ' + staticPath);
                     Utils.authorizeActionsForEveryone(tenantId, staticPath);
                 }
+            },
+            validationMappings : {
+                type : {
+                    text : ['isAlphaNumericOnly']
+                    //,
+                    //url : ['url'],
+                    //email : ['email']
+                },
+                required : [],
+                updatable : [],
+                readonly : []
             }
         }
     };

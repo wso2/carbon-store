@@ -18,12 +18,15 @@
  */
 
 $(function() {
+    var $form_asset_update = $('#form-asset-update');
     $('#editAssetButton').removeAttr('disabled');
     var obtainFormMeta = function(formId) {
         return $(formId).data();
     };
-
-    $('#form-asset-update').ajaxForm({
+    $form_asset_update.validate({
+        ignore : ".isUniqueField"
+    });
+    $form_asset_update.ajaxForm({
         beforeSubmit:function(){
             $('#editAssetButton').attr('disabled','disabled');
         },

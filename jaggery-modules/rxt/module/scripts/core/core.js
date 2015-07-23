@@ -270,6 +270,18 @@ var core = {};
         }
         return list;
     };
+    RxtManager.prototype.isValidationMappings = function (type) {
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if validationMappings of assets is required';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.validationMappings)) {
+            return rxtDefinition.meta.validationMappings || null;
+        }
+        log.warn('Unable to locate the  meta property to determine whether asset validationMappings is required for ' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        return null;
+    };
     /**
      * Returns meta information about either the provided RXT type or all of the RXTs in the governance registry.The object
      * returned is similar to the result returned by the @see getRxtTypeDetails
