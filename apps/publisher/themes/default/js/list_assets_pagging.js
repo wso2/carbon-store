@@ -81,7 +81,6 @@ store.infiniteScroll.getItems = function (from, to) {
         var loadingAnimationTop = $(document).height() - 320;
         $('.loading-animation-big').css('top',loadingAnimationTop+'px');
     });
-    console.info(url);
     //var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);     //TODO enable tenanted url thing..
     var loadAssets = function () {
         $.ajax({
@@ -94,7 +93,7 @@ store.infiniteScroll.getItems = function (from, to) {
                 if (response) {
                     var assets = convertTimeToUTC(response.list);
                     caramel.render('list_assets_table_body', assets, function (info, content) {
-                        $('.loading-animation-big').remove();
+                        $('.loading-animation').addClass('loading-animation-big').remove();
                         $('#list_assets_content').append($(content));
                     });
                 } else { //if no assets retrieved for this page
