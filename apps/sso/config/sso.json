@@ -19,9 +19,6 @@
 //             }
 //         }
     "permissions": {
-        "login": {
-            "/permission/admin/login": ["ui.execute"]
-        }
     },
     "userSpace": {
         "space": "portal",
