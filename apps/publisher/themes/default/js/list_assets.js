@@ -207,6 +207,10 @@ var initCategorySelection = function() {
         });
     });
 };
+var clearWaiting = function(){
+    var cookieName = 'new-asset-'+store.publisher.type;
+    $.removeCookie(cookieName);
+};
 var  initAssetCreationChecker = function(){
     var cookieName = 'new-asset-'+store.publisher.type;
     var newAsset = $.cookie(cookieName);
@@ -227,12 +231,12 @@ var  initAssetCreationChecker = function(){
         success:function(data){
             if(data.list.length == 0 ){
                 if($('#assetLoader').length < 1) {
-                    messages.alertInfoLoader('Asset added successfully .. Please wait while the indexing is complete.. <i class="fa fa-spinner fa-pulse" id="assetLoader"></i>');
+                    messages.alertInfoLoader('Asset added successfully. Please wait. <i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <i class="fa fa-close" onclick="clearWaiting()"></i>');
                 }
                 setTimeout(initAssetCreationChecker,3000);
             }else{
                 $('#assetLoader').parent().parent().remove();
-                messages.alertInfoLoader('Indexing is complete .. <a href="'+url+'">'+ newAssetName + '</a>');
+                messages.alertInfoLoader('Now you can access the asset. <a href="'+url+'">'+ newAssetName + '</a>');
                 $.removeCookie(cookieName);
             }
         },
@@ -241,7 +245,6 @@ var  initAssetCreationChecker = function(){
         }
    });
 };
-
 // bind to window function
 //$(window).bind('scroll', scroll);
 $(window).load(function() {
