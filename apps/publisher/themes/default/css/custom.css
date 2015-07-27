@@ -1107,6 +1107,10 @@ div.notifyjs-happyblue-base {
 .navbar-header{
    float: right;
 }
+.loading-animation{
+    padding:15px 0 0 0;
+    font-size: 15px;
+}
 .loading-animation-big{
     background: #fefefe;
     padding:10px;

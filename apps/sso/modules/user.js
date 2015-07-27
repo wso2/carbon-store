@@ -227,7 +227,6 @@ var assignRolesOnRegister = function (username,relyingParty) {
     um = server.userManager(usr.tenantId);
     user = um.getUser(usr.username);
     var authorizedRoles = require('/config/sso.json');
-    log.info("%%%%% checking relying party %%%%%%"+relyingParty);
     if(relyingParty == 'publisher'){
         user.addRoles(authorizedRoles.registerPermissions.authorizedRolePublisher);
     }else{
@@ -236,7 +235,7 @@ var assignRolesOnRegister = function (username,relyingParty) {
 
 };
 var register = function (username, password, claims) {
-    var user, role, id, perms, r, p,
+    var user, role, id, perms, permission, permissionSet, permissionType
         server = require('/modules/server.js'),
         carbon = require('carbon'),
         event = require('event'),
@@ -265,10 +264,14 @@ var register = function (username, password, claims) {
         'http://www.wso2.org/projects/registry/actions/delete',
         'authorize'
     ];
-    p = opts.permissions.login;
-    for (r in p) {
-        if (p.hasOwnProperty(r)) {
-            perms[r] = p[r];
+    for (permissionType in opts.permissions) {
+        if (opts.permissions.hasOwnProperty(permissionType)) {
+            permissionSet = opts.permissions[permissionType];
+            for (permission in permissionSet) {
+                if (permissionSet.hasOwnProperty(permission)) {
+                    perms[permission] = permissionSet[permission];
+                }
+            }
         }
     }
     um.addRole(role, [], perms);

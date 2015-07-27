@@ -211,14 +211,6 @@ asset.configure = function() {
             },
             permissions: {
                 configureRegistryPermissions: function(ctx) {
-                    var type = ctx.type;
-                    var tenantId = ctx.tenantId;
-                    var rxtManager = ctx.rxtManager;
-                    var staticPath = rxtManager.getStaticRxtStoragePath(type);
-                    var Utils = ctx.utils;
-                    staticPath = Utils.governanceRooted(staticPath);
-                    log.debug('[configure-registry-permissions] assigning permissions to static path ' + staticPath);
-                    Utils.authorizeActionsForEveryone(tenantId, staticPath);
                 }
             }
         }

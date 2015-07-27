@@ -16,16 +16,14 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
     <parent>
         <groupId>org.wso2.carbon.store</groupId>
         <artifactId>carbon-store</artifactId>
         <version>2.3.1-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.es.feature</artifactId>
+    <artifactId>org.wso2.carbon.store.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2 Enterprise Store Feature</name>
     <url>http://wso2.org</url>
@@ -38,17 +36,14 @@
             <groupId>org.apache.httpcomponents.wso2</groupId>
             <artifactId>httpcore</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.wso2.carbon.store</groupId>
             <artifactId>org.wso2.store.bamclient</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.wso2.carbon.store</groupId>
             <artifactId>org.wso2.store.util</artifactId>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
@@ -63,7 +58,7 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>org.wso2.es</id>
+                            <id>org.wso2.store</id>
                             <propertiesFile>../etc/feature.properties</propertiesFile>
                             <bundles>
                                 <bundleDef>slf4j.wso2:slf4j:${slf4j.wso2.version}</bundleDef>
@@ -152,6 +147,10 @@
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.contentsearch.server:${carbon.registry.version}
                                 </importFeatureDef>
+                                <!--importFeatureDef>
+                                    org.wso2.carbon.jaxws.webapp.mgt.server:${carbon.platform.version}
+                                </importFeatureDef-->
+                                <!-- SSO -->
                                 <importFeatureDef>
                                     org.wso2.carbon.security.mgt:${carbon.identity.version}
                                 </importFeatureDef>
@@ -167,6 +166,9 @@
                                 <feaureArtifactDef>
                                     org.wso2.carbon.identity.sso.saml.server:${carbon.identity.version}
                                 </feaureArtifactDef>
+                                <!--feaureArtifactDef>
+                                    org.wso2.stratos.identity.saml2.sso.mgt.server:${carbon.platform.version}
+                                </feaureArtifactDef-->
                                 <feaureArtifactDef>
                                     org.wso2.carbon.identity.core:${carbon.identity.version}
                                 </feaureArtifactDef>
@@ -180,7 +182,7 @@
                                     org.wso2.carbon.module.mgt.server:${carbon.deployment.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.user.mgt:${carbon.commons.version}
+                                    org.wso2.carbon.user.mgt:${carbon.identity.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.event.server:${carbon.commons.version}
@@ -248,6 +250,12 @@
                                     <directory>../../</directory>
                                     <includes>
                                         <include>resources/dbscripts/**</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>../../components/asset-client</directory>
+                                    <includes>
+                                        <include>client/*.jar</include>
                                     </includes>
                                 </resource>
                             </resources>
