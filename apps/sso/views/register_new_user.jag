@@ -17,11 +17,17 @@
  *  under the License.
  *
  */
-
+var configs = require('/config/sso.js').config();
 var e = request.getParameter('authFailure');
 
 var log = new Log();
 var relyingParty = request.getParameter('relyingParty');
+
+if(!request.isSecure()){
+    response.content = { 'authFailure' : e , 'relyingParty' : relyingParty };
+    response.sendRedirect(configs.server.https + request.getRequestURI());
+}
+
 //TODO: this should be fixed properly
 if (relyingParty instanceof Array) {
     relyingParty = relyingParty.pop();
