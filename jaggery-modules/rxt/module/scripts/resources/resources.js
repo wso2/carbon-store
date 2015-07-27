@@ -387,5 +387,10 @@ var resources = {};
         event.on('tenantLoad', function(tenantId) {
             init(tenantId);
         });
+        event.on('assetTypesHotDeploy',function(tenantId){
+            log.info('### RESOURCES HOT DEPLOYED ###');
+            log.info('TENANT ID: '+tenantId);
+            init(tenantId);
+        });
     };
 }(core, resources, artifacts));
