@@ -23,7 +23,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>org.wso2.store.feature</artifactId>
+    <artifactId>org.wso2.carbon.store.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2 Enterprise Store Feature</name>
     <url>http://wso2.org</url>
