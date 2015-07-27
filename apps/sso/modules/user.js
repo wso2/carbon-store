@@ -227,7 +227,6 @@ var assignRolesOnRegister = function (username,relyingParty) {
     um = server.userManager(usr.tenantId);
     user = um.getUser(usr.username);
     var authorizedRoles = require('/config/sso.json');
-    log.info("%%%%% checking relying party %%%%%%"+relyingParty);
     if(relyingParty == 'publisher'){
         user.addRoles(authorizedRoles.registerPermissions.authorizedRolePublisher);
     }else{

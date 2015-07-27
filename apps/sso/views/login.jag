@@ -27,6 +27,12 @@ var RelayState = request.getParameter('RelayState');
 if (relyingParty instanceof Array) {
     relyingParty = relyingParty.pop();
 }
+var canRegister = false;
+if (relyingParty == 'publisher') {
+    canRegister = (configs.registerPermissions.authorizedRolePublisher.length > 0);
+} else {
+    canRegister = (configs.registerPermissions.authorizedRoleStore.length > 0);
+}
 
 var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();

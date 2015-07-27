@@ -41,7 +41,7 @@
         ]
     },
     "registerPermissions":{
-        "authorizedRolePublisher":["Internal/publisher"],
+        "authorizedRolePublisher":[],
         "authorizedRoleStore":["Internal/store"]
     },
     "storeSpace": {
