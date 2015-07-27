@@ -58,7 +58,7 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>org.wso2.store</id>
+                            <id>org.wso2.carbon.store</id>
                             <propertiesFile>../etc/feature.properties</propertiesFile>
                             <bundles>
                                 <bundleDef>slf4j.wso2:slf4j:${slf4j.wso2.version}</bundleDef>
