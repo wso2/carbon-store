@@ -37,6 +37,7 @@ var constants = {};
     constants.DEFAULT_ASSET_EXTENSION='default';
     constants.APP_CONTEXT = 'rxt.app.context';
     constants.TAGS_QUERY_PATH = '/_system/config/repository/components/org.wso2.carbon.registry/queries/allTags';
+    constants.ASSET_TYPES_PATH ='/_system/governance/repository/components/org.wso2.carbon.governance/types';
     constants.TAGS_SERVICE = 'org.wso2.carbon.registry.indexing.service.TermsSearchService';
     constants.DEFAULT_APP_EXTENSION = 'default';
     constants.AUTH_METHOD_BASIC = 'basic';
@@ -45,7 +46,7 @@ var constants = {};
     /***
      * ES Feature Constants
      */
-
+    constants.ASSET_TYPES_HOTDEPLOYMENT = "assetTypesHotDelploy";
     constants.SOCIAL_FEATURE='social';
     constants.SOCIAL_FEATURE_SCRIPT_KEY='socialScriptSource';
     constants.SOCIAL_FEATURE_SCRIPT_TYPE_KEY='socialScriptType';

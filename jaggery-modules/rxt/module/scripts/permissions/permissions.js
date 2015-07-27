@@ -289,6 +289,11 @@ var permissions = {};
             loadPermissions(tenantId);
             loadRegistryPermissions(tenantId);
         });
+        event.on('assetTypesHotDeploy',function(tenantId){
+            log.info('### PERMISSIONS HOT DEPLOYED ###');
+            loadPermissions(tenantId);
+            loadRegistryPermissions(tenantId);
+        });
     };
     permissions.force = function(tenantId) {
         //registerAppAPIPermissions(tenantId);
