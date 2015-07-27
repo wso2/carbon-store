@@ -26,6 +26,13 @@ var relyingParty = request.getParameter('relyingParty');
 if (relyingParty instanceof Array) {
     relyingParty = relyingParty.pop();
 }
+var signInUrl;
+
+if (relyingParty == 'publisher') {
+    signInUrl = configs.urls.publisher;
+} else {
+    signInUrl = configs.urls.store + '/login?ignoreReferer=true';
+}
 
 var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();
@@ -126,7 +133,7 @@ var themeModule = require('/modules/theme.js');
 
                                     <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
                                             <span class="margin-top padding-top-double font-large"><br>Already have an account? </span>
-                                            <a href="../store/login?ignoreReferer=true" id="signInLink">Sign in</a>
+                                            <a href="<%= signInUrl %>" id="signInLink">Sign in</a>
                                     </div>
                                 </div>
                             </div>
