@@ -10,10 +10,15 @@
         "password": "admin"
     },
     "userRoles": [],
+
+//    permissions to be assigned to user's private role ( {username}_private )
+//    eg:-
+//         "permissions": {
+//             "login": {
+//                 "/permission/admin/login": ["ui.execute"]
+//             }
+//         }
     "permissions": {
-        "login": {
-            "/permission/admin/login": ["ui.execute"]
-        }
     },
     "userSpace": {
         "space": "portal",

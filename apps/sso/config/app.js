@@ -24,11 +24,7 @@ event.on('tenantCreate', function (tenantId) {
         system = server.systemRegistry(tenantId);
     system.put(STORE_CONFIG_PATH, {
         content: JSON.stringify({
-            "permissions": {
-                "login": {
-                    "/permission/admin/login": ["ui.execute"]
-                }
-            }
+            "permissions": configs.permissions
         }),
         mediaType: 'application/json'
     });
@@ -46,31 +42,6 @@ event.on('tenantLoad', function (tenantId) {
     event.emit('tenantCreate', tenantId);
 
     config[user.USER_OPTIONS] = {
-        "permissions": {
-            "login": {
-                "/permission/admin/login": ["ui.execute"]
-            }
-        }
+        "permissions": configs.permissions
     };
 });
-
-/*
-var log = new Log();
-log.debug('XXXXXXXXXXXXXXXXXXXXXXX');
-
-event.on('tenantLoad', function (tenantId) {
-
-    var log = new Log();
-    log.debug('======================================================================================');
-    event.emit('tenantCreate', tenantId);
-    var server = require('/modules/server.js');
-    var user = require('/modules/user.js');
-    var config = server.configs(tenantId);
-    config[user.USER_OPTIONS] = {
-        "permissions": {
-            "login": {
-                "/permission/admin/login": ["ui.execute"]
-            }
-        }
-    };
-});*/

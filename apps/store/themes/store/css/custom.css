@@ -1439,3 +1439,26 @@ span.advanced-search-icons{
         display:block;
     }
 }
+.loading-animation-big{
+    background: #fefefe;
+    padding:10px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #efefef;
+    border-top: 1px solid #efefef;
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: 55px;
+}
+.loading-animation-big i{
+    font-size: 50px;
+    color: #4290ef;
+}
+.loading-animation-big span{
+    font-size: 14px;
+    line-height: 50px;
+    text-indent: 20px;
+    display: inline-block;
+    position: absolute;
+}
