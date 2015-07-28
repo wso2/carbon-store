@@ -516,11 +516,11 @@ i.cu-btn-exp-col {
 }
 
 .btn-collapsed {
-    background:url('../img/icons/ico-collapsed.png') no-repeat;      
+    background:url('../img/icons/ico-expanded.png') no-repeat;
 }
 
 .collapsed .btn-collapsed {
-     background:url('../img/icons/ico-expanded.png') no-repeat;
+     background:url('../img/icons/ico-collapsed.png') no-repeat;
 }
 
 .sort-asset-info{
@@ -646,7 +646,8 @@ a.cu-ico-button-stats {
 
 /* filter */
 .wr-filters {
-	padding:18px 30px 15px 15px;
+	/*padding:18px 30px 15px 15px;*/
+	padding-top:15px;
 }
 
 .wr-filters .dropdown-menu .filter-item{

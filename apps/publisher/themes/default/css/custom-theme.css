@@ -222,7 +222,7 @@ a.ctrl-filter-category:hover {
 }
 @media all and (max-width: 1024px){
     #inp_searchAsset{
-        width: 250px;
+        width: 251px;
     }
 }
 @media all and (max-width: 992px) {
@@ -255,13 +255,15 @@ a.ctrl-filter-category:hover {
         padding:0;
         margin: 0;
     }
-    #categoryDropDown span:first-child{
-        display: none;
-    }
+
     a.ctrl-filter-category{
-        width: 20px;
-        padding-bottom: 12px;
+        width: 180px;
+        padding-bottom: 7px;
     }
+    a.ctrl-filter-category span{
+        padding-bottom: 4px;
+    }
+    padding-bottom: 4px;
     span.sort-asset-info span{
         display: none;
     }
@@ -271,8 +273,20 @@ a.ctrl-filter-category:hover {
     }
 }
 @media all and (max-width: 460px){
+    #assetSearchForm{
+        margin-top:15px;
+    }
+    .wr-filters .advance-search-btn{
+        margin-top:15px;
+    }
     #inp_searchAsset{
-        width:150px;
+        width:251px;
+    }
+    #categoryDropDown span:first-child{
+            /*display: none;*/
+    }
+    a.ctrl-filter-category{
+       width: 305px;
     }
 }
 

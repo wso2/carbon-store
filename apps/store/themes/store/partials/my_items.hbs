@@ -11,7 +11,7 @@
         </div>
         {{#each value.assets}}
             {{#attributes}}
-                <div class="ctrl-wr-asset">
+                <div class="ctrl-wr-asset margin-top-lg">
                     <div class="itm-ast">
                         <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
                             <img class="img-responsive" src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
@@ -26,6 +26,7 @@
                                     <div style="width:{{../ratingPx}}px"></div>
                                 </span>
                             </div>
+                            <div class="clearfix padding-bottom-sm"></div>
                         </div>
                     </div>
                 </div>

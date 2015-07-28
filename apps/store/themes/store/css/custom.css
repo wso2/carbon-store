@@ -501,6 +501,9 @@ a.ast-name:hover {
 .bookmark-link span{
     padding-right:4px;
 }
+.bookmark-link:hover{
+    color:#fff;
+}
 .bookmark-link i{
     line-height:30px;
 }
@@ -612,7 +615,10 @@ a.login:focus {
     float: left;
     border-radius: 0;
 }
-
+.details-container .asset-rating{
+    margin-top:3px;
+    margin-right:6px;
+}
 .asset-rating-container {
     margin-left: 10px;
 }
@@ -620,8 +626,8 @@ a.login:focus {
 .asset-rating {
     background: url('../img/store-stars.png') no-repeat top left;
     display: block;
-    height: 20px;
-    width: 100px;
+    height: 14px;
+    width: 70px;
     overflow: hidden;
 }
 
@@ -641,7 +647,7 @@ a.login:focus {
     color: #fff;
     float: right;
     font-size: 14px;
-    left: 9px;
+    left: 7px;
     list-style: outside none none;
     margin: 0 0 0 -121px;
     width: 120px;
@@ -652,7 +658,7 @@ a.login:focus {
     top: 30px;
     z-index: 1000;
     box-shadow: none;
-    min-width:150px;
+    min-width:152px;
 }
 
 .dropdown-asset-custom ul.dropdown-menu a {
@@ -1270,18 +1276,17 @@ h2.app-title {
     margin-bottom: 40px;
 }
 .ctrl-wr-asset .ast-content{
-    border: solid 1px #efefef;
+
 }
 
 
 .itm-ast {
-    width: 100%;
     display:block;
     cursor: pointer;
     padding:0;
     margin-bottom:0px;
-    width:100%;
-    border:0px solid #ff0000;
+    width:152px;
+    border: 1px solid #efefef;
 }
 .itm-ast:hover h3, .itm-ast:hover .ast-auth {
     color:#3f75ff;
@@ -1290,21 +1295,22 @@ h2.app-title {
     float: right;
     color: #333;
     height: 28px;
-
     padding: 3px 0 0 2px;
     width: 37px;
 }
 .more-list i{
-    opacity: 0.5;
-    color:#000;
+    color:#666;
     font-size: 24px;
     margin-left: 15px;
 }
+.more-list i:hover{
+    opacity: .2;
+}
 a.more-list:hover {
-    background-color: #cccccc;
+    background-color: #dfdfdf;
     float: right;
     height: 58px;
-    opacity: .5;
+    opacity: 1;
     padding-right: 22px
 }
 div.body-container{

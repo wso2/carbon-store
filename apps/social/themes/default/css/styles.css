@@ -162,11 +162,11 @@ button:hover {
 .com-rating {
     background: url("../img/store-stars.png") no-repeat scroll left top transparent;
     display: inline-block;
-    height: 20px;
+    height: 14px;
+    width: 70px;
     margin-left: 9px;
     margin-top: -2px;
     overflow: hidden;
-    width: 103px;
 }
 .com-rating > div {
     background: url('../img/store-stars.png') no-repeat bottom left;
