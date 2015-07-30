@@ -256,10 +256,10 @@ var result;
         if (!isLCEnabled) {
             return asset;
         }
-        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
-        if (!isDefaultLCEnabled) {
-            return asset;
-        }
+//        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
+//        if (!isDefaultLCEnabled) {
+//            return asset;
+//        }
         //Continue attaching the lifecycle
         var isLcAttached = am.attachLifecycle(asset);
         //Check if the lifecycle was attached

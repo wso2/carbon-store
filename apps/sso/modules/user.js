@@ -221,6 +221,7 @@ var assignRolesOnRegister = function (username,relyingParty) {
     var um;
     var usr;
     var user;
+    var rolesToAdd;
     var server = require('/modules/server.js');
     var carbon = require('carbon');
     usr = carbon.server.tenantUser(username);
@@ -228,11 +229,16 @@ var assignRolesOnRegister = function (username,relyingParty) {
     user = um.getUser(usr.username);
     var authorizedRoles = require('/config/sso.json');
     if(relyingParty == 'publisher'){
-        user.addRoles(authorizedRoles.registerPermissions.authorizedRolePublisher);
+        rolesToAdd = authorizedRoles.registerPermissions.authorizedRolePublisher;
     }else{
-        user.addRoles(authorizedRoles.registerPermissions.authorizedRoleStore);
+        rolesToAdd = authorizedRoles.registerPermissions.authorizedRoleStore;
     }
 
+    for (var i = 0; i < rolesToAdd.length; i++) {
+        if (um.roleExists(rolesToAdd[i])) {
+            user.addRoles([rolesToAdd[i]]);
+        }
+    }
 };
 var register = function (username, password, claims) {
     var user, role, id, perms, permission, permissionSet, permissionType

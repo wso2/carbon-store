@@ -1236,7 +1236,8 @@ var asset = {};
     };
     AssetManager.prototype.invokeDefaultLcAction = function(asset) {
         var success = false;
-        var lifecycleName = resolveLCName(arguments, asset, 1);
+//        var lifecycleName = resolveLCName(arguments, asset, 1);
+        var lifecycleName = this.rxtManager.getLifecycleName(this.type);
         if (!asset) {
             log.error('Failed to invoke default  lifecycle action as an asset object was not provided.');
             return success;
