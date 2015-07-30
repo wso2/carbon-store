@@ -55,7 +55,7 @@ var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
             res.msg = 'User successfully added';
             print(res);
         } catch (e) {
-            log.debug(e);
+            log.error(e);
             res.error = 'true';
             res.msg = e.message.split(':')[1];
             print(res);
