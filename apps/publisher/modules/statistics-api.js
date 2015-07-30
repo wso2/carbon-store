@@ -33,7 +33,7 @@ var executeBookmarkStatsQuery = function(loggedInUser, currentTenant) {
     /*if (loggedInUser == 'admin') {
         loggedInUser = 'wso2.system.user';
     }*/
-    var query = "SELECT RR.REG_NAME AS asset_id,COUNT(RR.REG_NAME) AS no_of_bookmarks " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RS.REG_CREATOR = '" + loggedInUser + "' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_NAME IS NOT NULL GROUP BY RR.REG_NAME";
+    var query = "SELECT RR.REG_NAME AS ASSET_ID,COUNT(RR.REG_NAME) AS NO_OF_BOOKMARKS " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RS.REG_CREATOR = '" + loggedInUser + "' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_NAME IS NOT NULL GROUP BY RR.REG_NAME";
     return db.query(query);
 };
 /**
@@ -43,8 +43,8 @@ var executeBookmarkStatsQuery = function(loggedInUser, currentTenant) {
  * @param  {Number} currentTenant An integer tenant Id (E.g. -1234)
  * @return {Array}               A query result set which represents the hot asset bookmarks for the provided time period
  */
-var executeHotAssetStatsQuery = function(startDate, endDate, currentTenant) {
-    var query = "SELECT RR.REG_NAME AS asset_id,COUNT(RR.REG_NAME) AS no_of_bookmarks " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RR.REG_LAST_UPDATED_TIME BETWEEN '" + startDate + "' AND '" + endDate + "' AND " + "RR.REG_NAME IS NOT NULL " + "GROUP BY RR.REG_NAME";
+var executeHotAssetStatsQuery = function(currentTenant) {
+    var query = "SELECT RR.REG_NAME AS ASSET_ID,COUNT(RR.REG_NAME) AS NO_OF_BOOKMARKS " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RR.REG_NAME IS NOT NULL " + "GROUP BY RR.REG_NAME";
     return db.query(query);
 }
 var filterResultsByAssetType = function(array, type, am) {
@@ -151,19 +151,19 @@ var getBookmarkAssetStats = function(options) {
 var getHotAssetStats = function(options) {
     var am = options.am;
     var type = options.type;
-    var startDate = options.startDate;
-    var endDate = options.endDate;
+    //var startDate = options.startDate;
+    //var endDate = options.endDate;
     var tenantId = options.tenantId;
     var hotAssetStats;
     var results;
-    log.info('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
+    /*log.info('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
     if(log.isDebugEnabled){
         log.debug('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
-    }
+    }*/
     if (!am) {
         throw 'Unable to obtain Hot asste stats without an asset manager';
     }
-    var hotAssetStats = executeHotAssetStatsQuery(startDate, endDate, tenantId);
+    var hotAssetStats = executeHotAssetStatsQuery(tenantId);
     //Stats must be enriched with asset details 
     var results = fillAssetsDetails(hotAssetStats, am, type);
     var output = {};
