@@ -518,11 +518,19 @@ var core = {};
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return lifecycle ');
             throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return lifecycle ';
         }
-        if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
-            return rxtDefinition.meta.lifecycle.name || '';
+        if(this.isDefaultLifecycleEnabled(type)) {
+            if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
+                return rxtDefinition.meta.lifecycle.name || '';
+            }
+            log.warn('Unable to locate a meta property in order retrieve default lifecycle name for ' + type);
+            return '';
+        }else{
+            if ((rxtDefinition.lifecycle[0]) && (rxtDefinition.lifecycle[0].lifecycle)) {
+                return rxtDefinition.lifecycle[0].lifecycle || '';
+            }
+            log.warn('Unable to locate a lifecycle property in order retrieve default lifecycle name for ' + type);
+            return '';
         }
-        log.warn('Unable to locate a meta property in order retrieve default lifecycle name for ' + type);
-        return '';
     };
     /**
      * Returns the action that is invoked when a lifecycle is first attached to an asset of a given RXT type.
