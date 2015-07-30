@@ -272,7 +272,7 @@ iframe {
 .itm-ast:hover {
 }
 
-.itm-ast:hover .ast-auth {
+.itm-ast:hover {
     color: #3f75ff;
 }
 a.ast-name:after {
@@ -301,13 +301,13 @@ a.ast-name {
 
 a.ast-name:hover {
     text-decoration: none;
-    color: #237bd5;
 }
 .ast-auth {
     font-weight: 300;
     font-size: 13px;
     color: #237bd5;
 }
+
 .footer {
     /*
     position: absolute;
@@ -620,6 +620,7 @@ a.login:focus {
     margin-right:6px;
 }
 .asset-rating-container {
+    margin-top:6px;
     margin-left: 10px;
 }
 
@@ -751,14 +752,27 @@ a.ast-type-item:hover {
     clear: both;
 }
 .ast-auth {
-    font-size: 1.2em;
+    font-size: 1em;
     font-weight: unset;
-    color: #237bd5;
+    color: #999;
     display: block;
     white-space: nowrap;
     word-break: keep-all;
+    display: block;
+    height: 20px;
+    position: relative;
+    overflow:hidden;
 }
-
+.ast-auth:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    height: 20px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
+}
 .title {
     border-bottom: 3px solid #237bd5;
     float: left;
@@ -1052,6 +1066,7 @@ a:hover, a:focus {
   padding: 0;
   top: 45px;
   right: 5px;
+  border:none;
 }
 .dropdown-menu-content a {
   color: #333;
@@ -1288,7 +1303,7 @@ h2.app-title {
     width:152px;
     border: 1px solid #efefef;
 }
-.itm-ast:hover h3, .itm-ast:hover .ast-auth {
+.itm-ast:hover h3, .itm-ast:hover {
     color:#3f75ff;
 }
 .more-list {
@@ -1300,8 +1315,8 @@ h2.app-title {
 }
 .more-list i{
     color:#666;
-    font-size: 24px;
-    margin-left: 15px;
+    font-size: 16px;
+    margin-left: 8px;
 }
 .more-list i:hover{
     opacity: .2;
@@ -1373,7 +1388,7 @@ span.advanced-search-icons{
     }
 
 }
-@media (max-width: 540px) {
+/*@media (max-width: 540px) {
     .ro-text {
         visibility: hidden;
         display: none
@@ -1432,6 +1447,7 @@ span.advanced-search-icons{
         padding:10px 1px;
     }
 }
+*/
 @media all and (max-width:320px){
     .search-area{
         width: 35%;
@@ -1465,4 +1481,8 @@ span.advanced-search-icons{
     text-indent: 20px;
     display: inline-block;
     position: absolute;
+}
+.no-gutter{
+    padding-left:0px;
+    padding-right:0px;
 }
