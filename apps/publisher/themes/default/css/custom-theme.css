@@ -18,6 +18,28 @@
 .version-list-dropdown{
     display: inline-block;
 }
+.version-list-dropdown .btn-default{
+    font-size:14px;
+    border:1px solid #f5f5f5;
+    background:none;
+}
+.version-list-dropdown.open .btn-default{
+    border:1px solid #ccc;
+}
+.version-list-dropdown .dropdown-menu{
+    font-size:14px;
+    background:#e6e6e6;
+    margin:0px;
+    top:33px;
+    min-width:138px;
+    border:1px solid #ccc;
+}
+.version-list-dropdown .dropdown-menu>li>a{
+   padding:3px 12px;
+}
+.dropdown-menu > li > a.active-version{
+    font-weight:normal;
+}
 .dropdown-menu-content {
     background-color: #232323;
     padding:10px 20px;
@@ -91,9 +113,9 @@ a.ctrl-filter-category:hover {
 .wr-filter-category .dropdown-menu {
 	border:0px solid #237bd5;
 	background:#237bd5;
-	top:57px;
+	top:54px;
 	left:5px;
-	width:230px;
+	width:180px;
 	padding-top:0;
 	padding-bottom:0;
 	color:#fff;	
@@ -111,8 +133,8 @@ a.ctrl-filter-category:hover {
 	background:#61a3e6;
 }
 .version-info-container{
-    margin-bottom: 15px;
 }
+
 .ctrl-filter-category .glyphicon {
 	font-size:13px;
 	font-weight:100;
@@ -220,12 +242,11 @@ a.ctrl-filter-category:hover {
 .advanced-search-icons i.fa-wrench{
     position: absolute;
 }
-@media all and (max-width: 1024px){
+
+@media all and (max-width: 992px) {
     #inp_searchAsset{
         width: 251px;
     }
-}
-@media all and (max-width: 992px) {
     .custom-form-label{
         text-align: right;
     }
@@ -272,7 +293,7 @@ a.ctrl-filter-category:hover {
         font-weight: bold;
     }
 }
-@media all and (max-width: 460px){
+@media all and (max-width: 480px){
     #assetSearchForm{
         margin-top:15px;
     }
@@ -287,6 +308,9 @@ a.ctrl-filter-category:hover {
     }
     a.ctrl-filter-category{
        width: 305px;
+    }
+    .wr-filter-category .dropdown-menu{
+        width:305px;
     }
 }
 

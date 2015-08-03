@@ -190,6 +190,9 @@ h1.asset-name {
 a{
     cursor: pointer;
 }
+a:hover, a:focus{
+    text-decoration:none;
+}
 h2.field-title {
     margin:0 0 20px 0;
     border-bottom:solid 1px #f0f0f0;
@@ -399,7 +402,7 @@ a.ast-type-item .icon {
 }
 
 .itm-ast:hover h3, .itm-ast:hover .ast-auth {
-	color:#3f75ff;
+	color:#555;
 }
 
 br.c-both {
@@ -451,7 +454,27 @@ h3.ast-name:after {
 .ast-auth {
 	font-weight:300;
 	font-size:13px;
-	color:#237bd5;
+	color:#666;
+}
+.ast-auth {
+    display: block;
+    white-space: nowrap;
+    word-break: keep-all;
+    display: inline-block;
+    height: 14px;
+    width:90px;
+    position: relative;
+    overflow:hidden;
+}
+.ast-auth:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    height: 20px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
 }
 
 .ast-published {
@@ -802,12 +825,12 @@ h2 span.fa-stack{
 }
 .tag-element{
     background: #cdcdcd;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 4px 8px;
     display: inline-block;
 }
 #tag-ui-container-view{
     padding-top:10px;
+    padding-bottom:10px;
 }
 .padding-bottom-xs{
     padding-bottom:5px;
