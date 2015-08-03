@@ -159,7 +159,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			connection.setAutoCommit(false);
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdaptorClass();
+				cls = SocialUtil.loadQueryAdapterClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 
@@ -395,7 +395,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 		try {
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdaptorClass();
+				cls = SocialUtil.loadQueryAdapterClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 
