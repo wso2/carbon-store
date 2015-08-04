@@ -37,7 +37,7 @@ var tenantLoad = function(ctx) {
 
             var staticPath = rxtManager.getStaticRxtStoragePath(type);
             staticPath = Utils.governanceRooted(staticPath);
-            var actions = [constants.REGISTRY_ADD_ACTION, constants.REGISTRY_GET_ACTION, constants.REGISTRY_DELETE_ACTION, constants.REGISTRY_AUTHORIZE_ACTION];
+            var actions = [constants.REGISTRY_ADD_ACTION];
             log.debug('authorized ' + DEFAULT_ROLE + ' for all actions in ' + staticPath);
             Utils.authorizeActionsForRole(tenantId, staticPath, DEFAULT_ROLE, actions);
         }
