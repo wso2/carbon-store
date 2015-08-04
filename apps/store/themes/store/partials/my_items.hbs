@@ -1,4 +1,5 @@
 <div id="myasset-container">
+    <h2 class="padding-top-lg">My bookmarks</h2>
     {{#if assets}}
     {{#itr assets}}
         <div class="ast-container">
@@ -11,21 +12,22 @@
         </div>
         {{#each value.assets}}
             {{#attributes}}
-                <div class="ctrl-wr-asset">
+                <div class="ctrl-wr-asset margin-top-lg">
                     <div class="itm-ast">
                         <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
                             <img class="img-responsive" src="{{#if ../thumbnail}}{{tenantedUrl ""}}/storage/{{../../type}}/{{../../id}}/{{../../thumbnail}}{{/if}}">
                         </a>
                         <div class="ast-content">
                             <div class="ast-title padding">
-                                <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
-                                <span class="ast-auth">{{overview_provider}}</span>
+                                <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}" title="{{overview_name}}">{{overview_name}}</a>
+                                <span class="ast-auth" title="{{overview_provider}}">{{overview_provider}}</span>
                             </div>
                             <div class="pull-left asset-rating-container">
                                 <span class="asset-rating">
                                     <div style="width:{{../ratingPx}}px"></div>
                                 </span>
                             </div>
+                            <div class="clearfix padding-bottom-sm"></div>
                         </div>
                     </div>
                 </div>
