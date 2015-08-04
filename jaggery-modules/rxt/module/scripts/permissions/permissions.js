@@ -21,12 +21,12 @@ var permissions = {};
     var log = new Log('rxt-permissions');
     var DEFAULT_ASSET = '_default';
     var PERMISSION_LOAD_HOOK = 'tenantLoad';
-    permissions.ANON_ROLE = 'es.store.anon.user';
+    permissions.ANON_ROLE = 'Internal/everyone';
     var getAnonRole = function(tenantId) {
         return permissions.ANON_ROLE;
     };
     var wso2AnonUsername = function() {
-        return 'wso2.anonymous.user';
+        return 'Internal/everyone';
     };
     var systemPermissionPath = function(path) {
         return '/_system/governance' + path;
