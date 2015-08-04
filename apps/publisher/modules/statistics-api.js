@@ -16,10 +16,18 @@
  *  under the License.
  *
  */
+//FIX for registry mount scenario - check WSO2_REGISTRY_DB existence
+var dataSourceName = "WSO2_CARBON_DB";
+var DataSourceManager = Packages.org.wso2.carbon.ndatasource.core.DataSourceManager;
+var carbonDataSource = DataSourceManager.getInstance().getDataSourceRepository().getDataSource("WSO2_REGISTRY_DB");
+
+if(carbonDataSource){
+    dataSourceName = "WSO2_REGISTRY_DB";
+}
 var server = require('store').server;
 var log = new Log('statistics-api');
 var db = server.privileged(function() {
-    var localdb = new Database('WSO2_CARBON_DB');
+    var localdb = new Database(dataSourceName);
     return localdb;
 });
 /**
