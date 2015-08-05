@@ -178,23 +178,23 @@ button:hover {
     display: block;
 }
 .com-rating-1star {
-    width: 16px;
+    width: 14px;
     display: block;
 }
 .com-rating-2star {
-    width: 32px;
+    width: 28px;
     display: block;
 }
 .com-rating-3star {
-    width: 48px;
+    width: 42px;
     display: block;
 }
 .com-rating-4star {
-    width: 64px;
+    width: 56px;
     display: block;
 }
 .com-rating-5star {
-    width: 80px;
+    width: 70px;
     display: block;
 }
 
