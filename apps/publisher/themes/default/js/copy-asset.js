@@ -23,7 +23,7 @@ $(document).ready(function() {
 					$('#new-version-loading').addClass('hide');
 				},
 				error : function() {
-					$('.alert-success').text('Error while cretaing the version!');
+					$('.alert-success').text('Error while creating the version!');
 					$('.alert-success').removeClass('hide');
 					$('#btn-create-version').removeClass('disabled');
 					$('#new-version-loading').addClass('hide');
