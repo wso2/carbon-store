@@ -19,7 +19,7 @@
 	
 var resources = function(page, meta) {
 	return {
-		js : ['navigation.js'],
+		js : ['navigation.js','popover.js'],
 		css : ['navigation.css']
 	};
 };
