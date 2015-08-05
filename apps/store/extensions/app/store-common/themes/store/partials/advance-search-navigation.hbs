@@ -15,30 +15,38 @@
   -->
 <!-- secondary header - app bar -->
 <div id="nav" class="row wr-app-bar">
-    <div class="col-sm-9 col-md-7 col-lg-9 wr-action-container">
+    <div class="wr-action-container">
         <div class="wr-asset-type-switcher">
-            <a id="popoverExampleTwo" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="#" data-original-title="" title="">
+            <a id="popoverExampleTwo" data-placement="bottom" class="ctrl-asset-type-switcher pull-left" href="javascript:void(0)" data-click-event="popover">
+            
                 <span class="btn-asset"></span>
             </a>
-
-            <div class="popover menu fade bottom in">
-                <div class="arrow"></div>
+            <div class="popover bottom right fade clearfix">
+                <div class="arrow left"></div>
                 <div class="popover-content">
-                    {{#with navigationBar}}
-                        {{#each types}}
-                            <a class="ast-type-item {{#if selected}} selected {{/if}}" href="{{tenantedUrl ""}}{{this.listingUrl}}">
-                                {{#if value.icon}}
-                                <div style="background-image:url({{url ""}}{{ui.icon}})"></div>
-                                {{else}}
-                                <i class="{{ui.icon}}"></i>
-                                {{/if}}
-                                {{singularLabel}}
-                            </a>
-                        {{/each}}
-                    {{/with}}
+                    <ul class="tiles clearfix">
+                        {{#with navigationBar}}
+                            {{#each types}}
+                                <li>
+                                    <a target="_self" href='{{tenantedUrl ""}}{{this.listingUrl}}'>
+                                        <i class="icon {{ui.icon}}"></i>
+                                        <span class="name">{{singularLabel}}</span>
+                                    </a>
+                                </li>
+                            {{/each}}
+                        {{/with}}
+                    </ul>
                 </div>
             </div>
         </div>
+    </div>
+    <div class="site-wide-menu">
+        <div class="inline-block margin-top-sm">
+            {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
+            <a href="{{url "/pages/my-items"}}" class="bookmark-link" title="{{t "My bookmarks "}}"><span class="bookmark-link-text">{{t "My bookmarks "}}</span><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i></a>
+            {{/hasAppPermission}}
+        </div>
+    </div>
 </div>
 <!-- secondary header - app bar -->
 
