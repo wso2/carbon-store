@@ -47,7 +47,7 @@
         "RENDERER": "/modules/router.caramel-renderer.js"
     },
     "authentication": {
-        "activeMethod": "sso",
+        "activeMethod": "basic",
         "methods": {
             "sso": {
                 "attributes": {
