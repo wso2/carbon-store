@@ -143,6 +143,10 @@ asset.server = function(ctx) {
                 url: 'copy',
                 path: 'copy.jag',
                 permission: 'ASSET_CREATE'
+            }, {
+                title: 'Delete ' + type,
+                url: 'delete',
+                path: 'delete.jag'
             }]
         }
     };
@@ -190,7 +194,7 @@ asset.configure = function() {
                 commentRequired: false,
                 defaultLifecycleEnabled: true,
                 defaultAction: 'Promote',
-                deletableStates: [],
+                deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
                 lifecycleEnabled: true
             },
@@ -237,6 +241,7 @@ asset.renderer = function(ctx) {
     };
     var buildDefaultLeftNav = function(page, util) {
         var id = page.assets.id;
+        var path = page.assets.path;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE, ctx.assetType, ctx.session)) {
@@ -251,6 +256,9 @@ asset.renderer = function(ctx) {
         }
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
             navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
+        }
+        if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
+            navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);
         }
         return navList.list();
     };

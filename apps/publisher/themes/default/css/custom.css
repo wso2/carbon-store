@@ -537,11 +537,15 @@ i.cu-btn-exp-col {
 .btn-copy {
     background:url('../img/icons/ico-copy.png') 0.8em 1em no-repeat;
 }
-
+.btn-delete {
+    background:url('../img/icons/ico-delete.png') 0.8em 1em no-repeat;
+}
+.not-active {
+    cursor: default;
+}
 .btn-collapsed {
     background:url('../img/icons/ico-expanded.png') no-repeat;
 }
-
 .collapsed .btn-collapsed {
      background:url('../img/icons/ico-collapsed.png') no-repeat;
 }
