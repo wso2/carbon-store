@@ -24,7 +24,7 @@
         "socialAppUrl": "../../../social/"
     },
     "authentication": {
-        "activeMethod": "basic",
+        "activeMethod": "sso",
         "methods": {
             "sso": {
                 "attributes": {
