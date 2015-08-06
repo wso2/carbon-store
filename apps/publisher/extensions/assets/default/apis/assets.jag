@@ -87,7 +87,8 @@ require('/modules/publisher.js').exec(function (ctx) {
         if (!done) {
             return responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on delete api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
         }
-        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, 'Asset Deleted Successfully');
+        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res,
+                {'message':'Asset Deleted Successfully'});
     };
     var getAssetState = function (options, req, res, session) {
         var state = lcApi.getState(options, req, res, session);

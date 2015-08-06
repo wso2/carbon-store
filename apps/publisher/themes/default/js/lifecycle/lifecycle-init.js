@@ -176,6 +176,17 @@ $(function() {
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
+    var renderDeleteActions = function(isDeletable) {
+        var container = config(constants.CONTAINER_DELETE_ACTION_AREA);
+        var impl = LifecycleAPI.lifecycle();
+        if (impl) {
+            if(impl.isDeletable){
+                $(id(container)).removeClass('not-active');
+                return;
+            }
+            $(id(container)).addClass('not-active');
+        }
+    };
     var unrenderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         $(id(container)).html('');
@@ -279,6 +290,7 @@ $(function() {
             }
             renderLCActions();
             renderChecklistItems();
+            renderDeleteActions();
         }
     });
     //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
@@ -299,6 +311,7 @@ $(function() {
         }
         renderLCActions();
         renderChecklistItems();
+        renderDeleteActions();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_START, function() {
         blockChecklist();
@@ -316,6 +329,7 @@ $(function() {
         }
         renderChecklistItems();
         renderLCActions();
+        renderDeleteActions();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED,function(){
         unrenderChecklistItems();
