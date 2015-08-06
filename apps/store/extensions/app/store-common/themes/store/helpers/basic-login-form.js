@@ -19,6 +19,7 @@
 
 var resources = function(){
 	return {
-		js:['libs/jquery.form.min.js','basic-login.js']
-	}
+		js:['libs/jquery.form.min.js','basic-login.js'],
+        css:['basic-login-header.css']
+    }
 };
