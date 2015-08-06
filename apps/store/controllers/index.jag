@@ -38,7 +38,7 @@ if (elements) {
     redirectUrl = redirectUrl + app.getLandingPage(tenantId);
 }
 //Check if the query string exists
-if (queryString !== '') {
+if (queryString) {
     redirectUrl = redirectUrl + '?' + queryString;
 }
 if(log.isDebugEnabled()) {
