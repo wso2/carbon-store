@@ -541,13 +541,11 @@ i.cu-btn-exp-col {
     background:url('../img/icons/ico-delete.png') 0.8em 1em no-repeat;
 }
 .not-active {
-    pointer-events: none;
     cursor: default;
 }
 .btn-collapsed {
     background:url('../img/icons/ico-expanded.png') no-repeat;
 }
-
 .collapsed .btn-collapsed {
      background:url('../img/icons/ico-collapsed.png') no-repeat;
 }
@@ -1156,7 +1154,7 @@ div.notifyjs-happyblue-base {
     font-size: 50px;
     color: #4290ef;
 }
-.loading-animation-big span {
+.loading-animation-big span{
     font-size: 14px;
     line-height: 50px;
     text-indent: 20px;

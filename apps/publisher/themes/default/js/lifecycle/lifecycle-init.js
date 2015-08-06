@@ -176,15 +176,18 @@ $(function() {
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
-    var renderDeleteActions = function(isDeletable) {
+    var renderDeleteActions = function () {
         var container = config(constants.CONTAINER_DELETE_ACTION_AREA);
         var impl = LifecycleAPI.lifecycle();
         if (impl) {
-            if(impl.isDeletable){
-                $(id(container)).removeClass('not-active');
+            if (impl.isDeletable) {
+                $(id(container)).removeClass('not-active').removeAttr("title").unbind('click');
                 return;
             }
-            $(id(container)).addClass('not-active');
+            $(id(container)).addClass('not-active').attr("title", "Asset is not in a delatable State!")
+                .click(function (e) {
+                    e.preventDefault()
+                });
         }
     };
     var unrenderLCActions = function() {
