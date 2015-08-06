@@ -52,57 +52,51 @@ if(RelayState){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <% include(themeModule.getThemedUrl('includes/header_file_imports.jag')); %>
-
 </head>
-
 <body>
-<div class="container col-lg-12 col-md-12 col-sm-12">
+<div class="container-fluid">
         <% include(themeModule.getThemedUrl('includes/header.jag')); %>
         <div class="row">
-            <div class="col-md-12">
-
                 <!-- content -->
-                <div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
-
-
+                <div class="col-xs-12 col-sm-10 col-md-8 col-lg-4 wr-login col-centered">
                     <form id="loginForm" action="/commonauth" method="POST">
                         <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">SIGN IN</h2>
-
-
+                        <div class="clearfix"></div>
                         <div class="boarder-all ">
-                            <div class="clear"></div>
-                            <span class="padding-double float-left font-large">Sign in to continue </span>
+                            <div class="padding-double font-large">Sign in to continue </div>
                             <!-- validation -->
-                            <div class="wr-input-control padding-double">
-                                <br>
-                                <div style="clear: both"></div>
-
+                            <div class="padding-double">
                                 <div class="error-msg" id="error-msg" <% if (!e) { %>style="display:none;"<% } %>>Username or password is invalid</div>
-                                <input id="username" name="username" type="text" class="input-block-level" placeholder="Username" tabindex="0">
-                                <br><br>
-                                <input id="password" name="password" type="password" class="input-block-level" placeholder="Password">
-                                <br><br>
-                                <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large" type="submit">Sign in</button>
 
-                                 <br><br><br>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <label>Username</label>
+                                    <input id="username" name="username" type="text" class="form-control" tabindex="0">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <label>Password</label>
+                                    <input id="password" name="password" type="password" class="form-control">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <br/><br/>
+                                    <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large" type="submit">Sign in</button>
+                                </div>
                                     <!--<input type="checkbox" value="remember-me" style="display: inline"> Remember me
                                     <br><br>-->
                                 <input type="hidden" name="sessionDataKey" value="<%=request.getParameter("sessionDataKey")%>">
                                 <input type="hidden" name="RelayState" value="<%=RelayState%>">
-                                <% if (isPasswordRecoveryEnabled) { %>
-                                    <a href="confirm-recovery">Forgot your password?</a>
-                                <%
-}%>
-                                <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <% if (isPasswordRecoveryEnabled) { %>
+                                        <a href="confirm-recovery">Forgot your password?</a>
+                                    <% }%>
+                                    <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
+                                </div>
+                                <div class="clearfix"></div>
                             </div>
                         </div>
                     </form>
-
-                    </div>
                 </div>
-            </div>
+        </div>
 </div>
 
  <% include(themeModule.getThemedUrl('includes/footer_file_imports.jag')); %>

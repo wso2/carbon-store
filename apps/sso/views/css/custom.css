@@ -263,14 +263,13 @@ input:-ms-input-placeholder{
     padding-left: inherit;
 }
 
+/*
 @media (max-width:500px){
 
     .wr-content {  padding: 0; }
 }
+*/
 
-@media (max-width:768px){
-
-}
 
 /* assets */
 .wr-btn {
@@ -280,7 +279,6 @@ input:-ms-input-placeholder{
     background:#5d81d2;
     padding:10px 10px;
     display:inline-block;
-    margin-right:20px;
     border: none;
 }
 .wr-btn:hover {
@@ -288,6 +286,7 @@ input:-ms-input-placeholder{
     color: #ffffff;
     background-color: #6b94f1;
 }
+/*
 @media (min-width: 360px){
     . col-xs-5 {padding-left: 10px  padding-right: 0  width: 43%;}
 
@@ -296,6 +295,7 @@ input:-ms-input-placeholder{
 @media (min-width: 500px){
     . col-xs-5 {padding-left: 10px; padding-right: 0; width: 43%;}
 }
+*/
 /* login page styles */
 
 .wr-login {
@@ -316,6 +316,26 @@ input:-ms-input-placeholder{
     padding: 6px 10px;
     z-index: 1;
     -webkit-appearance: none;
+}
+.form-control{
+    border: 1px #d2d2d2 solid;
+    width: 100%;
+    height: 50px;
+    padding: 6px 10px;
+    -webkit-border-radius: 1px;
+    -moz-border-radius: 1px;
+    border-radius: 1px;
+    -webkit-box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+    -moz-box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+    -webkit-appearance: none;
+}
+.form-control:focus{
+    border: 1px solid #999;
+    outline: 0;
+    -webkit-box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+    -moz-box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
+    box-shadow: 0px 0px 0px 0px rgba(0,0,0,1);
 }
 .wr-input-control select{
     width: 100%;
@@ -389,4 +409,8 @@ input[type="text"].error, input[type="password"].error{
     -webkit-box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
     -moz-box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
     box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
+}
+.no-gutter{
+    padding-left:0px;
+    padding-right:0px;
 }

@@ -56,40 +56,34 @@ var themeModule = require('/modules/theme.js');
     <% include(themeModule.getThemedUrl('includes/header_file_imports.jag')); %>
 </head>
 <body>
-<div class="container col-lg-12 col-md-12 col-sm-12">
+<div class="container-fluid">
         <% include(themeModule.getThemedUrl('includes/header.jag')); %>
         <div class="row">
-            <div class="col-md-12">
-
                 <!-- content -->
-                <div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
+                <div class="col-xs-12 col-sm-10 col-md-8 col-lg-5 col-centered wr-login">
                     <form id="registerForm">
                         <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
-
-                         <div class="boarder-all ">
-                            <div class="clear"></div>
-                            <span class="padding-double float-left font-large">Enter all text fields to complete registration </span>
+                        <div class="clearfix"></div>
+                        <div class="boarder-all ">
+                            <div class="padding-double font-large">Enter all text fields to complete registration </div>
                             <!-- validation -->
-                            <div class="wr-input-control padding-double">
-                                <br><br><br>
+                            <div class="padding-double">
                                 <div id="regFormError" class="alert alert-error" style="display:none"></div>
                                 <div id="regFormSuc" class="alert alert-success" style="display:none"></div>
 
-                                <label class="float-left light-grey taxt-label">Username</label>
-                                <input id="reg-username"
-                                        name="reg-username" type="text" class="padding-double required usrName usrNameLength">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                        <label>Username</label>
+                                        <input id="reg-username" name="reg-username" type="text" class="form-control required usrName usrNameLength">
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 form-group">
+                                        <label>Password</label>
+                                        <input id="reg-password" name="reg-password" type="password" class="form-control required passwordLength">
+                                    </div>
+                                    <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 form-group">
+                                        <label>Confirm password</label>
+                                        <input id="reg-password2" name="password2" type="password" class="form-control required" equalTo="#reg-password">
+                                    </div>
 
-                                <br><br>
-
-                                <label class="float-left light-grey taxt-label">Password</label>
-                                <input id="reg-password" name="reg-password" type="password" class="padding-double required passwordLength">
-
-                                <br><br>
-
-                                <label class="float-left light-grey taxt-label">Confirm password</label>
-                                <input id="reg-password2" name="password2" type="password" class="padding-double required" equalTo="#reg-password">
-
-                                <br><br>
                                 <%
                                     var claimsModule = require('account-management');
                                     var claims = claimsModule.getDefaultClaims();
@@ -114,39 +108,44 @@ var themeModule = require('/modules/theme.js');
                                         if (claims[claimIndex].isRequired && (!override || override.render !== false)) {
                                             var formElementName = 'reg-' + claims[claimIndex].displayTag.toLowerCase().replace(' ', '-');
                                             var validationClass = "";
+                                            var span = "";
                                             if(claims[claimIndex].displayTag == "Email"){
                                                 validationClass = "email";
+                                                span = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+                                            }else{
+                                                span = "col-xs-12 col-sm-12 col-md-6 col-lg-6"
                                             }
                                             %>
-                                                <label class="float-left light-grey text-label"><%=claims[claimIndex].displayTag%></label>
-                                                                                                                    <input type="text" name="<%=formElementName%>"
-                                                                                                                           data-claim-uri="<%=claims[claimIndex].claimUri%>"
-                                                                                                                           class="padding-double <%=validationClass%> required <%=claims[claimIndex].customClass
-                                            %>">
-                                                                                                                                   <br><br>
-                                                                                                                        <%
+                                        <div class="<%=span%> form-group">
+                                            <label><%=claims[claimIndex].displayTag%></label>
+                                            <input type="text" name="<%=formElementName%>" data-claim-uri="<%=claims[claimIndex].claimUri%>" class="form-control <%=validationClass%> required <%=claims[claimIndex].customClass%>">
+                                        </div>
+                                    <%
                                             renderedClaims[formElementName] = claims[claimIndex].claimUri;
                                         }
                                     }
                                     %>
+
                                     <input type="hidden" name="reg-claims" value='<%=renderedClaims%>'
                                        class="input-block-level required">
                                     <input id="reg-action" name="action" type="hidden" value="register">
                                     <input id="reg-relyingParty" name="relyingParty" type="hidden" value="<%=relyingParty%>">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <br/><br/>
                                     <button id="registrationSubmit" class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"
                                             type="button">Register
                                     </button>
-
-                                    <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
-                                            <span class="margin-top padding-top-double font-large"><br>Already have an account? </span>
-                                            <a href="<%= signInUrl %>" id="signInLink">Sign in</a>
-                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <span class="margin-top padding-top-double font-large">Already have an account? </span>
+                                    <a href="../store/login?ignoreReferer=true" id="signInLink" class="font-large">Sign in</a>
+                                </div>
+                                <div class="clearfix"></div>
                                 </div>
                             </div>
                         </form>
                     </div>
-                </div>
-            </div>
+    </div>
 </div>
 
  <% include(themeModule.getThemedUrl('includes/footer_file_imports.jag')); %>
