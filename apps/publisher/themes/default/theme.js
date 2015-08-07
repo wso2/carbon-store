@@ -226,7 +226,10 @@ var engine = caramel.engine('handlebars', (function() {
                 if(placeHolder){
                     meta += ' placeholder="'+ placeHolder +'"';
                 }
-
+                if(field.tooltip){
+                    meta += ' data-toggle="tooltip" data-placement="left" title="'+field.tooltip+'" ';
+                }
+                log.info(stringify(field) + " - " + name + " - " + stringify(options) );
                 return meta;
             };
             var renderFieldLabel = function(field) {
