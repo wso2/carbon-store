@@ -280,7 +280,9 @@ var register = function (username, password, claims) {
             }
         }
     }
-    um.addRole(role, [usr.username], perms);
+    if (!um.roleExists(role)) {
+        um.addRole(role, [usr.username], perms);
+    }
     if (opts.register) {
         opts.register(user, password, session);
     }
