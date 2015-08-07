@@ -61,9 +61,9 @@ if(RelayState){
                 <!-- content -->
                 <div class="col-xs-12 col-sm-10 col-md-8 col-lg-4 wr-login col-centered">
                     <form id="loginForm" action="/commonauth" method="POST">
-                        <h2 class="wr-title uppercase blue-bg padding-double white margin-none">SIGN IN</h2>
+                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">SIGN IN</h2>
                         <div class="clearfix"></div>
-                        <div class="boarder-all no-border-top">
+                        <div class="boarder-all ">
                             <div class="padding-double font-large">Sign in to continue </div>
                             <!-- validation -->
                             <div class="padding-double">
