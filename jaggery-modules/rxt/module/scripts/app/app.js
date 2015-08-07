@@ -724,7 +724,7 @@ var app = {};
     app.getPageEndpointPath = function(tenantId, url) {
         var endpoint = this.getPageEndpoint(tenantId, url);
         if (!endpoint) {
-            log.warn('Could not locate the endpoint ' + url);
+            log.warn('Could not locate the endpoint :' + url);
             return null;
         }
         return getAppExtensionBasePath() + '/' + endpoint.owner + '/pages/' + endpoint.path;
