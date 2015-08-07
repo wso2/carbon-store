@@ -16,10 +16,24 @@
  *  under the License.
  *
  */
-var resources = function (page, meta) {
-    return {
-       	js:['libs/jquery.form.min.js','publisher-utils.js','update_asset.js','date_picker/datepicker.js','select2.min.js','tags/tags-common.js','tags/tags-init-update-asset.js','notify.min.js','messages.js'],
-       	css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css','select2.min.css'],
-       	code: ['publisher.assets.hbs','publisher.lifecycle.meta.hbs']
-    };
+var render = function(theme, data, meta, require) {
+    theme('single-col-fluid', {
+        title: 'Copy',
+        header: [{
+            partial: 'header',
+            context: data
+        }],
+        ribbon: [{
+            partial: 'ribbon',
+            context: data
+        }],
+        leftnav: [{
+            partial:'left-nav',
+            context:data
+        }],
+        listassets: [{
+            partial: 'delete-asset',
+            context: data
+        }]
+    });
 };
