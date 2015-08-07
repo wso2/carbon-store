@@ -611,7 +611,9 @@ var app = {};
         }
         var pageHandlers = extensionResource.pageHandlers;
         if (!pageHandlers) {
-            log.warn('There are no pageHandlers defined for tenant ' + ctx.tenanId);
+            if (log.isDebugEnabled()) {
+                log.warn('There are no pageHandlers defined for tenant ' + ctx.tenanId);
+            }
             return true;
         }
         ctx.req = req;
@@ -722,7 +724,7 @@ var app = {};
     app.getPageEndpointPath = function(tenantId, url) {
         var endpoint = this.getPageEndpoint(tenantId, url);
         if (!endpoint) {
-            log.warn('Could not locate the endpoint ' + url);
+            log.warn('Could not locate the endpoint :' + url);
             return null;
         }
         return getAppExtensionBasePath() + '/' + endpoint.owner + '/pages/' + endpoint.path;

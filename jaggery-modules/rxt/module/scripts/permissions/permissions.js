@@ -193,12 +193,16 @@ var permissions = {};
         }
         //Check if the permission already exists
         if (!systemRegistry.exists(path)) {
-            log.info('[permissions] creating permission path: ' + path)
+            if(log.isDebugEnabled()){
+                log.debug('[permissions] creating permission path: ' + path);
+            }
             //Add the permission
             recursivelyCreatePath(path, systemRegistry);
             return true;
         }
-        log.debug('[permissions] permision path ' + path + ' not created as it already exists');
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] permision path ' + path + ' not created as it already exists');
+        }
         return false;
     };
     var addPermissionsToRole = function(permissionMap, role, tenantId) {
@@ -290,7 +294,9 @@ var permissions = {};
             loadRegistryPermissions(tenantId);
         });
         event.on('assetTypesHotDeploy',function(tenantId){
-            log.info('### PERMISSIONS HOT DEPLOYED ###');
+            if(log.isDebugEnabled()){
+                log.debug('Permissions hor deployed');
+            }
             loadPermissions(tenantId);
             loadRegistryPermissions(tenantId);
         });
@@ -534,13 +540,17 @@ var permissions = {};
         }
     };
     var loadPermissions = function(tenantId) {
-        log.info('[permissions] loading permissions for tenant ' + tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] loading permissions for tenant ' + tenantId);
+        }
         //Load the asset extension permissions.js
         loadDefaultAssetPermissions(tenantId);
         loadAssetPermissions(tenantId);
         //Load the app extension permissions.js
         loadAppPermissions(tenantId);
-        log.info('[permissions] finished loading permissions for tenant ' + tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] finished loading permissions for tenant ' + tenantId);
+        }
     };
     var mapToAssetPermission = function(key, type, tenantId, appName) {
         //Get the asset specific map
@@ -559,7 +569,9 @@ var permissions = {};
     var mapToAppPermission = function(key, tenantId, appName) {
         var permissions = assetPermissionMap(DEFAULT_ASSET, tenantId);
         var permission = permissions[key];
-        log.info('mapToAppPermission ' + permission)
+        if(log.isDebugEnabled()){
+            log.debug('AppPermission entry for the key '+ key + ' : ' + permission)
+        }
         if (!permission) {
             log.error('[permissions] unable to locate permissions for ' + key);
         }

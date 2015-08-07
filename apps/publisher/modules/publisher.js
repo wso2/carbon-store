@@ -389,13 +389,18 @@ var exec = function(fn, request, response, session) {
         return;
     }
     var app = require('rxt').app;
-    log.info('### Checking for asset types hot deployment ###');
-    if(app.isAssetTypesHotDeployed(tenant.tenantId)){
-        log.info('Hot deploying asset types');
-        app.hotDeployAssetTypes(tenant.tenantId);
-        log.info('Finished hot deployment of asset types');
+    if (log.isDebugEnabled()) {
+        log.debug('Checking for asset types hot deployment');
     }
-    log.info('### Finished checking for asset types hot deployment ###');
+    if(app.isAssetTypesHotDeployed(tenant.tenantId)){
+        app.hotDeployAssetTypes(tenant.tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('Finished hot deployment of asset types');
+        }
+    }
+    if(log.isDebugEnabled()){
+        log.debug('Finished checking for asset types hot deployment');
+    }
     es.server.sandbox({
         tenantId: tenant.tenantId,
         username: user.username
