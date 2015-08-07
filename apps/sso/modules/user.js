@@ -282,6 +282,8 @@ var register = function (username, password, claims) {
     }
     if (!um.roleExists(role)) {
         um.addRole(role, [usr.username], perms);
+    }else{
+        user.addRoles([role]);
     }
     if (opts.register) {
         opts.register(user, password, session);
