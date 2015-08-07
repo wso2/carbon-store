@@ -611,7 +611,9 @@ var app = {};
         }
         var pageHandlers = extensionResource.pageHandlers;
         if (!pageHandlers) {
-            log.warn('There are no pageHandlers defined for tenant ' + ctx.tenanId);
+            if (log.isDebugEnabled()) {
+                log.warn('There are no pageHandlers defined for tenant ' + ctx.tenanId);
+            }
             return true;
         }
         ctx.req = req;
