@@ -12,11 +12,15 @@
 </section>
 {{/if}}
 --->
-
 {{#each recentAssetsByType}}
     <div class="ast-container " id="ast-container">
         <div class="container-fluid ">
-            <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">Recent {{rxt.pluralLabel}}</a></div><!--title-->
+    <div class="title">
+        <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">
+            {{#unless ../assetMeta.q}}Recent{{/unless}}
+            {{rxt.pluralLabel}}
+        </a>
+    </div><!--title-->
             <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?" class="more">
                 <span class="fw-stack fw-lg  fw-inverse">
                     <i class="fw fw-circle fw-stack-1-5x grey"></i>
