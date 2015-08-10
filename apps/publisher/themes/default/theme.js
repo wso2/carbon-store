@@ -229,7 +229,6 @@ var engine = caramel.engine('handlebars', (function() {
                 if(field.tooltip){
                     meta += ' data-toggle="tooltip" data-placement="left" title="'+field.tooltip+'" ';
                 }
-                log.info(stringify(field) + " - " + name + " - " + stringify(options) );
                 return meta;
             };
             var renderFieldLabel = function(field) {
