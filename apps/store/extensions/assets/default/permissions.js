@@ -89,8 +89,7 @@ var tenantLoad = function(ctx) {
         }
     };
     if(log.isDebugEnabled()){
-        log.debug('Starting permission operations');
-        log.debug('registering default permissions');
+        log.debug('Starting permission operations and registering default permissions');
     }
     Permissions.ASSET_LIST = function(ctx) {
         if (!ctx.type) {

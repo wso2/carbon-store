@@ -238,7 +238,9 @@ var permissions = {};
                 return false;
             }
         }
-        log.warn('[permissions] role ' + role + ' was not created as it already exists');
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] role ' + role + ' was not created as it already exists');
+        }
         return true;
     };
     /**

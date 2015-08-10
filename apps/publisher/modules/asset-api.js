@@ -238,13 +238,16 @@ var result;
         try {
             //throw 'This is to stop asset creation!';
             log.info('Creating Asset : ' + stringify(asset));
+            if (log.isDebugEnabled()) {
+                log.debug('Creating Asset : ' + stringify(asset));
+            }
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ', e);
+            log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
             return null;
         }
         //Attempt to apply tags
