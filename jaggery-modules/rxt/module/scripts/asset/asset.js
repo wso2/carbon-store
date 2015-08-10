@@ -197,7 +197,9 @@ var asset = {};
         var asset;
         options.id = id;
         if (!this.rxtManager.isGroupingEnabled(this.type)) {
-            log.info('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            if (log.isDebugEnabled()) {
+                log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            }
             return;
         }
         asset = this.get(id);
@@ -208,12 +210,14 @@ var asset = {};
             this.setAsDefaultAsset(asset);
         }
         if (!id) {
-            log.info('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
+            log.error('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
             return;
         }
     };
     AssetManager.prototype.postCreate = function(asset,ctx){
-        log.info('### Performing post create operations ###');
+        if (log.isDebugEnabled()) {
+            log.debug('Performing post create operations for ' + stringify(asset));
+        }
         var username = ctx.username;
         var permissionsAPI = require('rxt').permissions;
         var userMod = require('store').user;
@@ -230,12 +234,16 @@ var asset = {};
         actions.push(constants.REGISTRY_ADD_ACTION);
         actions.push(constants.REGISTRY_DELETE_ACTION);
         actions.push(constants.REGISTRY_AUTHORIZE_ACTION);
-        log.info('Authorizing actions for role ');
+        if (log.isDebugEnabled()) {
+            log.debug('Authorizing actions for role '+ userRole);
+        }
         permissionsAPI.authorizeActionsForRole(tenantId, path, userRole, actions);
 
         //Deny actions for the everyone role
         permissionsAPI.denyActionsForEveryone(tenantId, path);
-        log.info('### Finished post create operations ###');
+        if (log.isDebugEnabled()) {
+            log.debug('Finished post create operations for ' + path);
+        }
         return true;
     };
     /**
@@ -549,13 +557,17 @@ var asset = {};
     var buildPaginationContext = function(paging){
         paging = paging || {};
         paging = generatePaginationContext(paging);
-        log.info('[pagination-context] settting context to : '+stringify(paging));
+        if (log.isDebugEnabled()) {
+            log.debug('[pagination-context] settting context to : '+stringify(paging));
+        }
         PaginationContext.init(paging.start,paging.count,paging.sortOrder,
             paging.sortBy,paging.paginationLimit);
     };
     var destroyPaginationContext = function(paginationContext) {
         PaginationContext.destroy();
-        log.info('[pagination-context] successfully destroyed context')
+        if (log.isDebugEnabled()) {
+            log.debug('[pagination-context] successfully destroyed context')
+        }
     };
     var buildQuery = function(query){
         var q = '';
@@ -578,11 +590,17 @@ var asset = {};
             mediaType = rxtManager.getMediaType(type);
         }
         try {
-            log.info('[advance search] building pagination');
+            if (log.isDebugEnabled()) {
+                log.debug('[advance search] building pagination');
+            }
             buildPaginationContext(paging);
-            log.info('[advance search] building query ');
+            if (log.isDebugEnabled()) {
+                log.debug('[advance search] building query ');
+            }
             q = buildQuery(query);
-            log.info('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);            
+            if (log.isDebugEnabled()) {
+                log.debug('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);
+            }
             if(q.length>0){
                 governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
                 assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
@@ -630,14 +648,18 @@ var asset = {};
             userRegistry = storeAPI.user.userRegistry(session);
             tenantId = user.tenantId;
         }  else {
-            log.info('Switching anonymous registry to perform advanced search as there is no logged in user');
+            if (log.isDebugEnabled()) {
+                log.debug('Switching anonymous registry to perform advanced search as there is no logged in user');
+            }
             userRegistry = storeAPI.server.anonRegistry(tenantId);
         }
         rxtManager = core.rxtManager(tenantId);
         registry = userRegistry.registry;
         assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
         //assets is a set that must be converted to a JSON array
-        log.info('[advance search] about to process result set');
+        if (log.isDebugEnabled()) {
+            log.debug('[advance search] about to process result set');
+        }
         assets = processAssets(null,assets,rxtManager,tenantId);
         addMetaDataToGenericAssets(assets,session,tenantId);
         return assets;

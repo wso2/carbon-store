@@ -1,5 +1,5 @@
 var tenantLoad = function(ctx) {
-    var log = new Log();
+    var log = new Log('default-permissions');
     var Utils = ctx.utils;
     var Permissions = ctx.permissions;
     var rxtManager = ctx.rxtManager;
@@ -104,8 +104,11 @@ var tenantLoad = function(ctx) {
         }
         Utils.registerPermissions(obj,tenantId);
     };
-    log.info('### Starting permission operations ###');
-    log.info('### registering default permissions ###');
+
+    if(log.isDebugEnabled()){
+        log.debug('Starting permission operations');
+        log.debug('registering default permissions');
+    }
     Permissions.APP_LOGIN = function(ctx){
         return ctx.utils.appFeaturePermissionString('login');
     };
@@ -128,12 +131,20 @@ var tenantLoad = function(ctx) {
         return ctx.utils.assetFeaturePermissionString('update', ctx.type);
     };
     Permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
-    log.info('### registering asset permissions not in the WSO2 permission tree ###');
+    if(log.isDebugEnabled()){
+        log.debug('Registering asset permissions not in the WSO2 permission tree');
+    }
     populateAssetPermissions(tenantId);
     populateAppPermissions(tenantId);
-    log.info('### adding permissions to role: ' + DEFAULT_ROLE + ' ###');
+    if(log.isDebugEnabled()){
+        log.debug('Adding permissions to the role : ' + DEFAULT_ROLE);
+    }
     assignAllPermissionsToDefaultRole();
-    log.info('### adding permissions to reviewer role ###');
+    if(log.isDebugEnabled()){
+        log.debug('Adding permissions to reviewer role');
+    }
     assignPermissionToReviewer();
-    log.info('### Permission operations have finished ###');
+    if(log.isDebugEnabled()){
+        log.debug('Permission operations have finished');
+    }
 };

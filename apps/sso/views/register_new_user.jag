@@ -62,9 +62,9 @@ var themeModule = require('/modules/theme.js');
                 <!-- content -->
                 <div class="col-xs-12 col-sm-10 col-md-8 col-lg-5 col-centered wr-login">
                     <form id="registerForm">
-                        <h2 class="wr-title uppercase blue-bg padding-double white margin-none">Create An Account</h2>
+                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
                         <div class="clearfix"></div>
-                        <div class="boarder-all no-border-top">
+                        <div class="boarder-all ">
                             <div class="padding-double font-large">Enter all text fields to complete registration </div>
                             <!-- validation -->
                             <div class="padding-double">

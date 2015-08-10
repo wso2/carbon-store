@@ -1486,3 +1486,8 @@ span.advanced-search-icons{
     padding-left:0px;
     padding-right:0px;
 }
+.search-title{
+    font-size: 25px;
+    font-weight: 200;
+    margin-bottom: 10px;
+}

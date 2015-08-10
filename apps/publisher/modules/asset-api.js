@@ -237,7 +237,7 @@ var result;
         } //generate asset object
         try {
             //throw 'This is to stop asset creation!';
-            log.info(asset);
+            log.info('Creating Asset : ' + stringify(asset));
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
