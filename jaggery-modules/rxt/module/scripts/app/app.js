@@ -173,26 +173,34 @@ var app = {};
         page.assets = assets;
         var pageName = page.meta ? page.meta.pageName : null;
         if (!pageName) {
-            log.warn('Unable to locate the page name of the current resource.As a result the app manager cannot determine the extension from which the renderer should be loaded');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate the page name of the current resource.As a result the app manager cannot determine the extension from which the renderer should be loaded');
+            }
             return page;
         }
         //Deteremine the extension to which this page belongs
         var pageDetails = app.getPageEndpoint(this.ctx.tenantId, pageName);
         if (!pageDetails) {
-            log.warn('Unable to locate the page details for the current resource.As a result the app manager cannot determine the extension from which the renderer should be loaded');
+            if (log.isDebugEnabled()) {
+                log.delete('Unable to locate the page details for the current resource.As a result the app manager cannot determine the extension from which the renderer should be loaded');
+            }
             return page;
         }
         //Locate the extension
         var renderer = getRenderer(this.appResources, pageDetails.owner);
         if (!renderer) {
-            log.warn('Unable to locate a renderer for the extension : ' + pageDetails.owner);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate a renderer for the extension : ' + pageDetails.owner);
+            }
             return page;
         }
         renderer = renderer(this.ctx);
         //Check if the renderer has any page decorators
         var decorators = renderer.pageDecorators;
         if (!decorators) {
-            log.warn('There are no page decorators for page: ' + page.pageName);
+            if (log.isDebugEnabled()) {
+                log.debug('There are no page decorators for page: ' + page.pageName);
+            }
             return page;
         }
         for (var key in decorators) {
@@ -231,7 +239,9 @@ var app = {};
         var files = rootDir.listFiles();
         var appExtensionName;
         if (files.length == 0) {
-            log.warn('Unable to locate the app.js for directory: ' + rootDir.getName());
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate the app.js for directory: ' + rootDir.getName());
+            }
             return;
         }
         var appResources = {};
@@ -288,13 +298,17 @@ var app = {};
             throw 'The app extension ' + extName + ' does not exist.Aborting loading of extensions';
         }
         if (map[extName].loaded) {
-            log.warn('The extension ' + extName + 'has already been loaded');
+            if (log.isDebugEnabled()) {
+                log.debug('The extension ' + extName + 'has already been loaded');
+            }
             return;
         }
         //Load all of the endpoints
         var serverCb = map[extName].server ? map[extName].server : null;
         if (!serverCb) {
-            log.warn('The app extension ' + extName + ' does not have a server callback');
+            if (log.isDebugEnabled()) {
+                log.debug('The app extension ' + extName + ' does not have a server callback');
+            }
             return;
         }
         var serverCbResult = serverCb();
@@ -340,7 +354,9 @@ var app = {};
                 //Determine the load order
                 stack = [];
                 stack = recursiveProcess(key, appExtensions, stack);
-                log.info('Loading dependencies: ' + stack);
+                if(log.isDebugEnabled()){
+                    log.debug('Loading dependencies: ' + stack);
+                }
                 for (var index in stack) {
                     processExtension(stack[index], appExtensions, app, tenantId);
                 }
@@ -353,7 +369,9 @@ var app = {};
     };
     var recursiveProcess = function(extName, map, stack) {
         if (!map[extName]) {
-            log.warn('Extension: ' + extName + ' does not exist');
+            if(log.isDebugEnabled()){
+                log.debug('Extension: ' + extName + ' does not exist');
+            }
             return stack;
         }
         var dependencies = map[extName].dependencies;
@@ -386,7 +404,7 @@ var app = {};
         try {
             ptr = eval(scriptModule);
         } catch (e) {
-            log.warn('Unable to evaluate script ' + path + ' as it has syntax errors');
+            log.error('Unable to evaluate script ' + path + ' as it has syntax errors');
         }
         return ptr;
     };
@@ -394,7 +412,7 @@ var app = {};
         try {
             modulePtr.call(this, app, appLog);
         } catch (e) {
-            log.warn('Unable to execute the script content at ' + path + ' due to: ' + e);
+            log.error('Unable to execute the script content at ' + path + ' due to: ' + e);
             app = null;
         }
         return app;
@@ -402,7 +420,9 @@ var app = {};
     var evalAppScript = function(appExtensionName, appExtensionFilePath, extensionMap) {
         var appExtensionFile = new File(appExtensionFilePath);
         if (!appExtensionFile.isExists()) {
-            log.warn('The app extension file: ' + appExtensionFilePath + ' does not exist.The extension will not be loaded');
+            if (log.isDebugEnabled()) {
+                log.debug('The app extension file: ' + appExtensionFilePath + ' does not exist.The extension will not be loaded');
+            }
             return;
         }
         var app = {};
@@ -416,13 +436,17 @@ var app = {};
         app.apiHandlers = null;
         var content = getScriptContent(appExtensionFile, appExtensionFilePath);
         if (!content) {
-            log.warn('The app extension file: ' + appExtensionFilePath + ' does not contain any content.The extension will not be loaded.');
+            if (log.isDebugEnabled()) {
+                log.debug('The app extension file: ' + appExtensionFilePath + ' does not contain any content.The extension will not be loaded.');
+            }
             return;
         }
         var module = 'function(app,log){' + content + '}';
         var modulePtr = evalScriptContent(module, appExtensionFilePath);
         if (!modulePtr) {
-            log.warn('The app extension file: ' + appExtensionFilePath + ' has syntax errors.The extension ' + appExtensionName + ' will not be loaded.');
+            if (log.isDebugEnabled()) {
+                log.debug('The app extension file: ' + appExtensionFilePath + ' has syntax errors.The extension ' + appExtensionName + ' will not be loaded.');
+            }
             return;
         }
         var appLog = new Log(appExtensionName);
@@ -452,12 +476,16 @@ var app = {};
     };
     var getRenderer = function(appResources, extensionName) {
         if (!appResources[extensionName]) {
-            log.warn('Unable to load extension details for ' + extensionName + '.A renderer could not be created');
+            if(log.isDebugEnabled()) {
+                log.debug('Unable to load extension details for ' + extensionName + '.A renderer could not be created');
+            }
             return null;
         }
         var renderer = appResources[extensionName].renderer;
         if (!renderer) {
-            log.warn('A renderer has not been defined in the app.js file.');
+            if(log.isDebugEnabled()){
+                log.debug('A renderer has not been defined in the app.js file.');
+            }
             return null;
         }
         return renderer;
@@ -577,7 +605,9 @@ var app = {};
         var userMod = require('store').user; //Obtain the configurations for the tenant
         var configs = userMod.configs(tenantId);
         if (!configs) {
-            log.warn('Unable to locate landing page of tenant: ' + tenantId);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate landing page of tenant: ' + tenantId);
+            }
             return landingPage;
         }
         if ((configs.application) && (configs.application.landingPage)) {
@@ -601,18 +631,22 @@ var app = {};
         //Determine the extension from the pageName
         var endpoint = app.getPageEndpoint(ctx.tenantId, pageName);
         if (!endpoint) {
-            log.warn('Unable to obtain endpoint information for page: ' + pageName);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to obtain endpoint information for page: ' + pageName);
+            }
             return true;
         }
         var extensionResource = appResources[endpoint.owner];
         if (!extensionResource) {
-            log.warn('Unable to retrieve extension resources for ' + endpoint.owner);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to retrieve extension resources for ' + endpoint.owner);
+            }
             return true;
         }
         var pageHandlers = extensionResource.pageHandlers;
         if (!pageHandlers) {
             if (log.isDebugEnabled()) {
-                log.warn('There are no pageHandlers defined for tenant ' + ctx.tenanId);
+                log.debug('There are no pageHandlers defined for tenant ' + ctx.tenanId);
             }
             return true;
         }
@@ -622,7 +656,9 @@ var app = {};
         ctx.appContext = app.getContext();
         pageHandlers = pageHandlers(ctx);
         if (!pageHandlers[handler]) {
-            log.warn('Unable to locate page handler: ' + handler);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate page handler: ' + handler);
+            }
             return true;
         }
         return pageHandlers[handler]();
@@ -643,17 +679,23 @@ var app = {};
         //Determine the extension from the pageName
         var endpoint = app.getApiEndpoint(ctx.tenantId, pageName);
         if (!endpoint) {
-            log.warn('Unable to obtain endpoint information for api: ' + pageName);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to obtain endpoint information for api: ' + pageName);
+            }
             return true;
         }
         var extensionResource = appResources[endpoint.owner];
         if (!extensionResource) {
-            log.warn('Unable to retrieve extension resources for ' + endpoint.owner);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to retrieve extension resources for ' + endpoint.owner);
+            }
             return true;
         }
         var apiHandlers = extensionResource.apiHandlers;
         if (!apiHandlers) {
-            log.warn('There are no apiHandlers defined for tenant ' + ctx.tenantId);
+            if (log.isDebugEnabled()) {
+                log.debug('There are no apiHandlers defined for tenant ' + ctx.tenantId);
+            }
             return true;
         }
         ctx.req = req;
@@ -663,7 +705,9 @@ var app = {};
         ctx.session = session;
         apiHandlers = apiHandlers(ctx);
         if (!apiHandlers[handler]) {
-            log.warn('Unable to locate page handler: ' + handler);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate page handler: ' + handler);
+            }
             return true;
         }
         return apiHandlers[handler]();
@@ -724,7 +768,9 @@ var app = {};
     app.getPageEndpointPath = function(tenantId, url) {
         var endpoint = this.getPageEndpoint(tenantId, url);
         if (!endpoint) {
-            log.warn('Could not locate the endpoint :' + url);
+            if(log.isDebugEnabled()){
+                log.debug('Could not locate the endpoint :' + url);
+            }
             return null;
         }
         return getAppExtensionBasePath() + '/' + endpoint.owner + '/pages/' + endpoint.path;
@@ -781,7 +827,9 @@ var app = {};
     app.getApiEndpointPath = function(tenantId, url) {
         var endpoint = this.getApiEndpoint(tenantId, url);
         if (!endpoint) {
-            log.warn('Could not locate the endpoint ' + url);
+            if (log.isDebugEnabled()) {
+                log.debug('Could not locate the endpoint ' + url);
+            }
             return null;
         }
         return getAppExtensionBasePath() + '/' + endpoint.owner + '/apis/' + endpoint.path;
@@ -830,10 +878,14 @@ var app = {};
         var event = require('event');
         var assetsUpdated = core.isAssetTypesUpdated(tenantId);
         if(!assetsUpdated){
-            log.info('#### CANCELING asset deployment ####');
+            if(log.isDebugEnabled()){
+                log.debug('Canceling asset deployment.');
+            }
             return;
         }
-        log.info('#### STARTED asset deployment ####');
+        if(log.isDebugEnabled()){
+            log.debug('Started asset deployment.');
+        }
         event.emit('assetTypesHotDeploy',tenantId);
         //Update the deployment time
         core.recordAssetTypeDeploymentDetails(tenantId);

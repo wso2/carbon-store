@@ -106,8 +106,7 @@ var tenantLoad = function(ctx) {
     };
 
     if(log.isDebugEnabled()){
-        log.debug('Starting permission operations');
-        log.debug('registering default permissions');
+        log.debug('Starting permission operations and registering default permissions');
     }
     Permissions.APP_LOGIN = function(ctx){
         return ctx.utils.appFeaturePermissionString('login');

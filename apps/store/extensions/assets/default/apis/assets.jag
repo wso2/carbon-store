@@ -97,10 +97,14 @@ require('/modules/store.js').exec(function(ctx) {
             if (uriMatcher.match(LIST_ASSETS_URL)) {
                 var assets = [];
                 if(options.type) {
-                    log.info('*** TYPE SPECIFIC ADVANCED SEARCH ***');
+                    if(log.isDebugEnabled()){
+                       log.debug('Type specific advanced search');
+                    }
                     assets = assetApi.advanceSearch(options, req, res, session);
                 } else {
-                    log.info('*** GENERIC ADVANCED SEARCH ***');
+                    if(log.isDebugEnabled()){
+                        log.debug('Generic advanced search');
+                    }
                     assets = assetApi.genericAdvanceSearch(options,req,res,session);
                 }
                 
