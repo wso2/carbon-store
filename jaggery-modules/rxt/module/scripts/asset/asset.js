@@ -333,10 +333,14 @@ var asset = {};
             }
             return locatedAsset;
         }
-        log.warn('Switching to registry search to synch the provided asset as an id was not found in the provided asset: ' + stringify(asset));
+        if (log.isDebugEnabled()) {
+            log.debug('Switching to registry search to synch the provided asset as an id was not found in the provided asset: ' + stringify(asset));
+        }
         //Construct a query which mimics the attributes in the asset
         if (!asset.attributes) {
-            log.warn('Unable to locate the asset in the registry as the provided asset does not have attributes.');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate the asset in the registry as the provided asset does not have attributes.');
+            }
             return locatedAsset;
         }
         dropEmptyFields(asset);
@@ -352,7 +356,9 @@ var asset = {};
             return true;
         });
         if (result.length > 1) {
-            log.warn('Too many assets matched the query.Unable to determine which asset to pick in order to synch: ' + stringify(asset));
+            if (log.isDebugEnabled()) {
+                log.debug('Too many assets matched the query.Unable to determine which asset to pick in order to synch: ' + stringify(asset));
+            }
             return locatedAsset;
         }
         //Update the provided asset
@@ -852,7 +858,9 @@ var asset = {};
         var items = [];
         var nameField = this.rxtManager.getNameAttribute(this.type);
         if (!nameField) {
-            log.warn('There is no name field defined for type: ' + this.type + '.Unable to retrieve popular assets.');
+            if (log.isDebugEnabled()) {
+                log.debug('There is no name field defined for type: ' + this.type + '.Unable to retrieve popular assets.');
+            }
             return items;
         }
         var paging = constants.DEFAULT_POPULAR_ASSET_PAGIN;
@@ -1097,7 +1105,9 @@ var asset = {};
         var path = this.getSubscriptionSpace(session);
         var success = false;
         if (!path) {
-            log.warn('Unable to subscribe to ' + id + ' as the user space path was not located.');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to subscribe to ' + id + ' as the user space path was not located.');
+            }
             return success;
         }
         path += '/' + id;
@@ -1121,7 +1131,9 @@ var asset = {};
         var path = this.getSubscriptionSpace(session);
         var success = false;
         if (!path) {
-            log.warn('Unable to unsubscribe from ' + id + ' as the user space path was not located.');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to unsubscribe from ' + id + ' as the user space path was not located.');
+            }
             return success;
         }
         path += '/' + id;
@@ -1199,7 +1211,7 @@ var asset = {};
                 }
                 items.push(iteamOut);
             } catch (e) {
-                log.warn('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                log.error('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
             }
         });
         return items;
@@ -1266,7 +1278,9 @@ var asset = {};
         }
         var defaultAction = this.rxtManager.getDefaultLcAction(this.type);
         if (defaultAction == '') {
-            log.warn('Failed to invoke default action of lifecycle as one was not provided');
+            if (log.isDebugEnabled()) {
+                log.debug('Failed to invoke default action of lifecycle as one was not provided');
+            }
             return success;
         }
         success = this.invokeLcAction(asset, defaultAction, lifecycleName);
@@ -1309,12 +1323,16 @@ var asset = {};
         var success = false;
         var lifecycleName = resolveLCName(arguments, asset, 3);
         if (!asset) {
-            log.warn('Unable to locate asset details in order to invoke check item state change');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate asset details in order to invoke check item state change');
+            }
             return success;
         }
         //Check if a check item state has been provided
         if (checkItemState == null) {
-            log.warn('The check item at index ' + checkItemIndex + ' cannot be changed as the check item state is not provided.');
+            if (log.isDebugEnabled()) {
+                log.debug('The check item at index ' + checkItemIndex + ' cannot be changed as the check item state is not provided.');
+            }
             return success;
         }
         //Obtain the number of check items for this state
@@ -1408,7 +1426,9 @@ var asset = {};
                 if (synched) {
                     this.invokeDefaultLcAction(existingAttributes);
                 } else {
-                    log.warn('Failed to invoke default action as the asset could not be synched.')
+                    if (log.isDebugEnabled()) {
+                        log.debug('Failed to invoke default action as the asset could not be synched.')
+                    }
                 }
             }
         }
@@ -1423,7 +1443,9 @@ var asset = {};
         if (asset.attributes) {
             var name = asset.attributes[nameAttribute];
             if (!name) {
-                log.warn('Unable to locate nameAttribute: ' + nameAttribute + ' in asset: ' + stringify(asset));
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to locate nameAttribute: ' + nameAttribute + ' in asset: ' + stringify(asset));
+                }
                 return '';
             }
             return asset.attributes[nameAttribute];
@@ -1435,7 +1457,9 @@ var asset = {};
         if (asset.attributes) {
             var version = asset.attributes[versionAttribute];
             if (!version) {
-                log.warn('Unable to locate versionAttribute: ' + versionAttribute + ' in asset ' + stringify(asset));
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to locate versionAttribute: ' + versionAttribute + ' in asset ' + stringify(asset));
+                }
                 return '';
             }
             return asset.attributes[versionAttribute];
@@ -1475,7 +1499,9 @@ var asset = {};
         if (asset.attributes) {
             var timeStamp = asset.attributes[timestampAttribute];
             if (!timeStamp) {
-                log.warn('Unable to locate bannerAttribute ' + timestampAttribute + ' in asset ' + asset.id);
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to locate bannerAttribute ' + timestampAttribute + ' in asset ' + asset.id);
+                }
                 return '';
             }
             return asset.attributes[timestampAttribute];
@@ -1597,7 +1623,9 @@ var asset = {};
     };
     var addAssetMetaData = function(asset, am) {
         if ((!asset) || (!asset.attributes)) {
-            log.warn('Could not populate asset details of  type: ' + am.type);
+            if (log.isDebugEnabled()) {
+                log.debug('Could not populate asset details of  type: ' + am.type);
+            }
             return;
         }
         asset.name = am.getName(asset);
@@ -1975,7 +2003,9 @@ var asset = {};
             }
             if (!serverCb.endpoints) {
                 serverCb.endpoints = {};
-                log.warn('Creating endpoints object for type: ' + type);
+                if (log.isDebugEnabled()) {
+                    log.debug('Creating endpoints object for type: ' + type);
+                }
             }
             defaultCb.endpoints.apis = defaultApiEndpoints;
             serverCb.endpoints.apis = defaultApiEndpoints;
@@ -2014,7 +2044,9 @@ var asset = {};
             }
             if (!serverCb.endpoints) {
                 serverCb.endpoints = {};
-                log.warn('Creating endpoints object for type: ' + type);
+                if (log.isDebugEnabled()) {
+                    log.debug('Creating endpoints object for type: ' + type);
+                }
             }
             defaultCb.endpoints.apis = defaultApiEndpoints;
             serverCb.endpoints.apis = defaultApiEndpoints;
