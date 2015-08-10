@@ -237,7 +237,6 @@ var result;
         } //generate asset object
         try {
             //throw 'This is to stop asset creation!';
-            log.info('Creating Asset : ' + stringify(asset));
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
