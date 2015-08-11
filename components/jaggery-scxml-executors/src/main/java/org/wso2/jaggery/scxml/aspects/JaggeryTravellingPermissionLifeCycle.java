@@ -146,7 +146,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
         aspectName = currentAspectName;
         currentAspectName = currentAspectName.replaceAll("\\s", "");
         stateProperty = LifecycleConstants.REGISTRY_LIFECYCLE + currentAspectName + ".state";
-	lifecycleProperty = lifecycleProperty + currentAspectName ;
+	lifecycleProperty = lifecycleProperty + "." + currentAspectName ;
 
         Iterator configChildElements = config.getChildElements();
         while (configChildElements.hasNext()) {
