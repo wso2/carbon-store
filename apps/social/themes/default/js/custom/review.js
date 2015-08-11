@@ -121,49 +121,71 @@ $btn.click(function (e) {
 
 $stream.on('click', '.icon-thumbs-down', function (e) {
     e.preventDefault();
-    var $likeBtn = $(e.target);
-    var $review = $likeBtn.parents('.com-review');
+    var $tDownBtn = $(e.target);
+    var $review = $tDownBtn.parents('.com-review');
     var id = $review.attr('data-target-id');
-    var $likeCount = $review.find('.com-dislike-count');
+    var $tDownCount = $review.find('.com-dislike-count');
 
     var activity = { target: {id: id}, object : {} };
 
-    if ($likeBtn.hasClass('selected')) {
-        activity.verb = 'undislike';
-        publish(activity, function () {
+    var $opposite = $review.find('.icon-thumbs-up');
+    if($opposite.hasClass('selected')){
+        var ulikeActivity = { target: {id: id}, object : {} };
+        var $likeCount = $review.find('.com-like-count');
+        ulikeActivity.verb = 'unlike';
+        publish(ulikeActivity, function () {
             $likeCount.text((Number($likeCount.text()) - 1) || '');
         });
-        $likeBtn.removeClass('selected');
+        $opposite.removeClass('selected');
+    }
+
+    if ($tDownBtn.hasClass('selected')) {
+        activity.verb = 'undislike';
+        publish(activity, function () {
+            $tDownCount.text((Number($tDownCount.text()) - 1) || '');
+        });
+        $tDownBtn.removeClass('selected');
     } else {
         activity.verb = 'dislike';
         publish(activity, function () {
-            $likeCount.text(Number($likeCount.text()) + 1);
+            $tDownCount.text(Number($tDownCount.text()) + 1);
         });
-        $likeBtn.addClass('selected');
+        $tDownBtn.addClass('selected');
     }
 });
 
 $stream.on('click', '.icon-thumbs-up', function (e) {
     e.preventDefault();
-    var $likeBtn = $(e.target);
-    var $review = $likeBtn.parents('.com-review');
+    var $tUpBtn = $(e.target);
+    var $review = $tUpBtn.parents('.com-review');
     var id = $review.attr('data-target-id');
     var $likeCount = $review.find('.com-like-count');
 
-        var activity = { target: {id: id}, object :{}};
+    var activity = { target: {id: id}, object :{}};
 
-    if ($likeBtn.hasClass('selected')) {
+    var $opposite = $review.find('.icon-thumbs-down');
+    if($opposite.hasClass('selected')){
+        var uDislikeActivity = { target: {id: id}, object : {} };
+        var $uDislikeCount = $review.find('.com-dislike-count');
+        uDislikeActivity.verb = 'undislike';
+        publish(uDislikeActivity, function () {
+            $uDislikeCount.text((Number($uDislikeCount.text()) - 1) || '');
+        });
+        $opposite.removeClass('selected');
+    }
+
+    if ($tUpBtn.hasClass('selected')) {
         activity.verb = 'unlike';
         publish(activity, function () {
             $likeCount.text((Number($likeCount.text()) - 1) || '');
         });
-        $likeBtn.removeClass('selected');
+        $tUpBtn.removeClass('selected');
     } else {
         activity.verb = 'like';
         publish(activity, function () {
             $likeCount.text(Number($likeCount.text()) + 1);
         });
-        $likeBtn.addClass('selected');
+        $tUpBtn.addClass('selected');
     }
 
 });

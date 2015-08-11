@@ -91,10 +91,8 @@ require('/modules/publisher.js').exec(function(ctx) {
         } else {
             //Get the image details
             var contentType = fetchedFile.resource.mediaType;
-            var contentLength = fetchedFile.contentLength;
             //Create the headers
             response.addHeader(HEADER_CONTENT_TYPE, contentType);
-            response.addHeader(HEADER_CONTENT_LENGTH, contentLength + '');
             try {
                 //Send the file stream
                 print(fetchedFile.content);

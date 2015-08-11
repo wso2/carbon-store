@@ -221,22 +221,27 @@ var assignRolesOnRegister = function (username,relyingParty) {
     var um;
     var usr;
     var user;
+    var rolesToAdd;
     var server = require('/modules/server.js');
     var carbon = require('carbon');
     usr = carbon.server.tenantUser(username);
     um = server.userManager(usr.tenantId);
     user = um.getUser(usr.username);
     var authorizedRoles = require('/config/sso.json');
-    log.info("%%%%% checking relying party %%%%%%"+relyingParty);
     if(relyingParty == 'publisher'){
-        user.addRoles(authorizedRoles.registerPermissions.authorizedRolePublisher);
+        rolesToAdd = authorizedRoles.registerPermissions.authorizedRolePublisher;
     }else{
-        user.addRoles(authorizedRoles.registerPermissions.authorizedRoleStore);
+        rolesToAdd = authorizedRoles.registerPermissions.authorizedRoleStore;
     }
 
+    for (var i = 0; i < rolesToAdd.length; i++) {
+        if (um.roleExists(rolesToAdd[i])) {
+            user.addRoles([rolesToAdd[i]]);
+        }
+    }
 };
 var register = function (username, password, claims) {
-    var user, role, id, perms, r, p,
+    var user, role, id, perms, permission, permissionSet, permissionType
         server = require('/modules/server.js'),
         carbon = require('carbon'),
         event = require('event'),
@@ -265,14 +270,21 @@ var register = function (username, password, claims) {
         'http://www.wso2.org/projects/registry/actions/delete',
         'authorize'
     ];
-    p = opts.permissions.login;
-    for (r in p) {
-        if (p.hasOwnProperty(r)) {
-            perms[r] = p[r];
+    for (permissionType in opts.permissions) {
+        if (opts.permissions.hasOwnProperty(permissionType)) {
+            permissionSet = opts.permissions[permissionType];
+            for (permission in permissionSet) {
+                if (permissionSet.hasOwnProperty(permission)) {
+                    perms[permission] = permissionSet[permission];
+                }
+            }
         }
     }
-    um.addRole(role, [], perms);
-    user.addRoles([role]);
+    if (!um.roleExists(role)) {
+        um.addRole(role, [usr.username], perms);
+    }else{
+        user.addRoles([role]);
+    }
     if (opts.register) {
         opts.register(user, password, session);
     }

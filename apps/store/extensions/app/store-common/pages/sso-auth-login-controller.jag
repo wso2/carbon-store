@@ -23,7 +23,8 @@
             sessionId = session.getId(),
             requestedPage = request.getParameter("requestedPage"),
             attr = configs.authentication.methods.sso.attributes,
-            referer = request.getHeader("referer");
+            referer = request.getHeader("referer"),
+            ignoreReferer = request.getParameter("ignoreReferer");
 
     if (referer)
     {
@@ -31,7 +32,9 @@
         var host = referer.split('/')[2];
         referer = referer.split(host)[1];
     }
-
+    if(ignoreReferer){
+        referer = null;
+    }
     var relayState = (referer ? referer : '/store');
     //TODO: need to parameterize default value in order to support app renaming
 
@@ -41,6 +44,7 @@
             if(log.isDebugEnabled()){
                 log.debug('Login URL: '+postUrl);
             }
+    session.remove("Loged");
     if (!session.get("Loged")) {
         %>
 

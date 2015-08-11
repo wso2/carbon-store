@@ -16,10 +16,18 @@
  *  under the License.
  *
  */
+//FIX for registry mount scenario - check WSO2_REGISTRY_DB existence
+var dataSourceName = "WSO2_CARBON_DB";
+var DataSourceManager = Packages.org.wso2.carbon.ndatasource.core.DataSourceManager;
+var carbonDataSource = DataSourceManager.getInstance().getDataSourceRepository().getDataSource("WSO2_REGISTRY_DB");
+
+if(carbonDataSource){
+    dataSourceName = "WSO2_REGISTRY_DB";
+}
 var server = require('store').server;
 var log = new Log('statistics-api');
 var db = server.privileged(function() {
-    var localdb = new Database('WSO2_CARBON_DB');
+    var localdb = new Database(dataSourceName);
     return localdb;
 });
 /**
@@ -33,7 +41,7 @@ var executeBookmarkStatsQuery = function(loggedInUser, currentTenant) {
     /*if (loggedInUser == 'admin') {
         loggedInUser = 'wso2.system.user';
     }*/
-    var query = "SELECT RR.REG_NAME AS asset_id, RS.REG_MEDIA_TYPE AS asset_type,COUNT(RR.REG_NAME) AS no_of_bookmarks " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RS.REG_CREATOR = '" + loggedInUser + "' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_NAME IS NOT NULL GROUP BY RR.REG_NAME";
+    var query = "SELECT RR.REG_NAME AS ASSET_ID,COUNT(RR.REG_NAME) AS NO_OF_BOOKMARKS " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RS.REG_CREATOR = '" + loggedInUser + "' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_NAME IS NOT NULL GROUP BY RR.REG_NAME";
     return db.query(query);
 };
 /**
@@ -43,14 +51,29 @@ var executeBookmarkStatsQuery = function(loggedInUser, currentTenant) {
  * @param  {Number} currentTenant An integer tenant Id (E.g. -1234)
  * @return {Array}               A query result set which represents the hot asset bookmarks for the provided time period
  */
-var executeHotAssetStatsQuery = function(startDate, endDate, currentTenant) {
-    var query = "SELECT RR.REG_NAME AS asset_id, RS.REG_MEDIA_TYPE AS asset_type,COUNT(RR.REG_NAME) AS no_of_bookmarks " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RR.REG_LAST_UPDATED_TIME BETWEEN '" + startDate + "' AND '" + endDate + "' AND " + "RR.REG_NAME IS NOT NULL " + "GROUP BY RR.REG_NAME";
+var executeHotAssetStatsQuery = function(currentTenant) {
+    var query = "SELECT RR.REG_NAME AS ASSET_ID,COUNT(RR.REG_NAME) AS NO_OF_BOOKMARKS " + "FROM REG_RESOURCE RS " + "JOIN REG_RESOURCE RR ON RS.REG_UUID=RR.REG_NAME " + "JOIN REG_PATH RP ON  RR.REG_PATH_ID = RP.REG_PATH_ID " + "WHERE RP.REG_PATH_VALUE like '/_system/governance/users/%' AND " + "RR.REG_TENANT_ID = '" + currentTenant + "' AND " + "RR.REG_NAME IS NOT NULL " + "GROUP BY RR.REG_NAME";
     return db.query(query);
 }
-var filterResultsByAssetType = function(array, type) {
-    return array.filter(function(el) {
+var filterResultsByAssetType = function(array, type, am) {
+/*    return array.filter(function(el) {
         return el.ASSET_TYPE == 'application\/vnd.wso2-' + type + '+xml';
-    });
+    });*/
+    var filteredArry = [];
+    for (var index = 0; index < array.length; index++) {
+        var aid = array[index].ASSET_ID;
+        try{
+            var asset = am.get(aid);
+            if(asset.type == type){
+                filteredArry.push(array[index]);
+            }
+        }catch(e){
+            if (log.isDebugEnabled) {
+                log.debug('Unable to obtain stat details for ' + aid, e);
+            }
+        }
+    }
+    return filteredArry;
 }
 var normalizeDate = function(dateValue){
     var date = new Date(dateValue);
@@ -105,7 +128,7 @@ var fillAssetDetails = function(assetStatInfo, stats, ticks, am, index) {
 var fillAssetsDetails = function(results, am, type) {
     //The stat details contain information on all asset types so this
     //result set must be filtered by type
-    var stats = filterResultsByAssetType(results, type);
+    var stats = filterResultsByAssetType(results, type, am);
     var ticks = [];
     var statData = [];
     var output = {};
@@ -136,19 +159,19 @@ var getBookmarkAssetStats = function(options) {
 var getHotAssetStats = function(options) {
     var am = options.am;
     var type = options.type;
-    var startDate = options.startDate;
-    var endDate = options.endDate;
+    //var startDate = options.startDate;
+    //var endDate = options.endDate;
     var tenantId = options.tenantId;
     var hotAssetStats;
     var results;
-    log.info('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
+    /*log.info('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
     if(log.isDebugEnabled){
         log.debug('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
-    }
+    }*/
     if (!am) {
         throw 'Unable to obtain Hot asste stats without an asset manager';
     }
-    var hotAssetStats = executeHotAssetStatsQuery(startDate, endDate, tenantId);
+    var hotAssetStats = executeHotAssetStatsQuery(tenantId);
     //Stats must be enriched with asset details 
     var results = fillAssetsDetails(hotAssetStats, am, type);
     var output = {};

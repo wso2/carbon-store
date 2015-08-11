@@ -1,29 +1,66 @@
-<%
-
-require('/modules/publisher.js').exec(function(ctx){
+<% require('/modules/publisher.js').exec(function(ctx) {
+    // var log = new Log();
+    // var userMod = require('store').user;
+    // var userRegistry = userMod.userRegistry(ctx.session);
+    // var govUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    // var registry = userRegistry.registry;
+    // var govRegistry = govUtils.getGovernanceUserRegistry(registry, registry.getUserName());
+    // var results = govUtils.findGovernanceArtifacts("version=1.0.0&mediaType=application/vnd.wso2-gadget+xml", govRegistry, "application/vnd.wso2-gadget+xml");
+    // print(results.size());
+    // /*for(var key in results){
+    //     log.info(key);
+    // }*/
+    // var iter = results.iterator();
+    // var current;
+    // while(iter.hasNext()){
+    //     current = iter.next();
+    // }
+    // for(var key in current){
+    //     log.info(key);
+    // }
     var log = new Log();
-    var userMod = require('store').user;
-    var userRegistry = userMod.userRegistry(ctx.session);
-    var govUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
-    var registry = userRegistry.registry;
-    var govRegistry = govUtils.getGovernanceUserRegistry(registry, registry.getUserName());
-    var results = govUtils.findGovernanceArtifacts("version=1.0.0&mediaType=application/vnd.wso2-gadget+xml", govRegistry, "application/vnd.wso2-gadget+xml");
-    print(results.size());
-
-    /*for(var key in results){
-        log.info(key);
-    }*/
-
-    var iter = results.iterator();
-    var current;
-    while(iter.hasNext()){
-        current = iter.next();
+    var server = require('store').server;
+    var core = require('rxt').core;
+    var sysRegistry = server.systemRegistry(-1234);
+    //var typeCollection = sysRegistry.get('/_system/config/repository/components/org.wso2.carbon.governance/configuration');
+    var path = '/_system/governance/repository/components/org.wso2.carbon.governance/types';
+    var typeCollection = sysRegistry.get(path);
+    var childCollections = typeCollection.content;
+    var typeResource;
+    var resource;
+    var typeName = function(path) {
+        path = String(path);
+        var arr = path.split('/');
+        var file = arr[arr.length - 1] || '';
+        //log.info('file: '+file);
+        return file.split('.')[0];
+    };
+    for (var index in childCollections) {
+        typeResource = childCollections[index];
+        resource = sysRegistry.get(typeResource);
+        // log.info('path: '+typeResource);
+        // log.info('type: '+typeName(typeResource));
+        // log.info('last updated time: '+stringify(resource.updated));
     }
-    for(var key in current){
-        log.info(key);
+    log.info('Asset type map');
+    log.info(core.assetTypeDeploymentTimeMap(-1234));
+    log.info('Is asset type updated: ');
+    log.info(core.isAssetTypesUpdated(-1234));
+    var configs = core.configs(-1234);
+    log.info('Time Map ');
+    log.info(configs.assetTimeMap);
+    var configs = core.configs(-1234);
+    var timeMap = configs.assetTimeMap;
+    var currentTimeMap = core.assetTypeDeploymentTimeMap(-1234);
+    var updated = false;
+    for (var key in timeMap) {
+        log.info(timeMap[key].time + ' == ' + currentTimeMap[key].time);
+        if (timeMap[key].time !== currentTimeMap[key].time) {
+            updated = true;
+        }
     }
-},request,response,session);
-
+    print("Hello world!");
+}, request, response, session);
 // var rxtAPI = require('rxt');
 // var q = {};
 // q.version = '1.0.0';
@@ -76,42 +113,32 @@ for(var index = 0; index < types.length; index++){
     type = types[index];
     log.info('Static path is '+rxtManager.getStaticRxtStoragePath(type));
 }*/
-
 //log.info(rxtManager.rxtMap.gadget.storagePath);
-
 //Assign permissions to the testcollection to all roles
 // var obj = {};
 // obj[testPath] = actions;
-
 // um.authorizeRole(user1Role,obj);
 // um.authorizeRole(user2Role,obj);
-
 //Assign permissions to user1Role to collection testcollection/asset1
 //var obj = {};
 //obj[testPath] = actions;
 //um.authorizeRole(user1Role,obj);
-
 //Authorize the everyone role to all actions
 // var obj = {};
 // obj[testPath] = actions;
 // um.authorizeRole(everyone,obj);
-
 //Unauthorize the everyone role
 //var obj = {};
 //obj[testPath] = actions;
 //um.denyRole(everyone,obj);
-
-
 // log.info(um.roleExists('Internal/publisher'));
 // log.info(um.roleExists('iii'));
-
 // var testRole = 'es.store.anon.user';
 // if(!um.roleExists(testRole)){
 //     log.info('Creating test role '+testRole);
 //     um.addRole(testRole,[],[]);
 // }
 // log.info(um.roleExists(testRole));
-
 // var authorizer = um.authorizer;
 // var server = require('store').server;
 // var user = um.getUser('user1'); //server.current(session);
@@ -136,42 +163,30 @@ for(var index = 0; index < types.length; index++){
 //     log.info('user authorized: ' + isUserAuthorized);
 //     log.info('#############');
 // }
-
 // var appResources = rxtAPI.app.getAppResources(-1234);
 // log.info('##############');
 // log.info(appResources);
 // log.info('##############');
-
 //rxtAPI.permissions.force(-1234);
 // var permissions = rxtAPI.permissions;
-
 // log.info('### Asset Check ###');
-
 // log.info('*** user3 ***');
 // log.info('Is authorized to view create page of SITES? '+permissions.hasAssetPermission('ASSET_CREATE','site',-1234,'user4'));
 // log.info('Is authorized to view list page of SITES? '+permissions.hasAssetPermission('ASSET_LIST','site',-1234,'user4'));
 // log.info('Is authorized to view lifecycle page of SITES? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','site',-1234,'user4'));
-
 // log.info('Is authorized to view create page of GADGETS? '+permissions.hasAssetPermission('ASSET_CREATE','gadget',-1234,'user4'));
 // log.info('Is authorized to view list page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIST','gadget',-1234,'user4'));
 // log.info('Is authorized to view lifecycle page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','gadget',-1234,'user4'));
-
-
 //log.info('*** admin ***');
 // log.info('Is authorized to view create page of SITES? '+permissions.hasAssetPermission('ASSET_CREATE','site',session));
 // log.info('Is authorized to view list page of SITES? '+permissions.hasAssetPermission('ASSET_LIST','site',session));
 // log.info('Is authorized to view lifecycle page of SITES? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','site',session));
-
 // log.info('Is authorized to view create page of GADGETS? '+permissions.hasAssetPermission('ASSET_CREATE','gadget',session));
 // log.info('Is authorized to view list page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIST','gadget',session));
 // log.info('Is authorized to view lifecycle page of GADGETS? '+permissions.hasAssetPermission('ASSET_LIFECYCLE','gadget',session));
-
-
-
 //log.info('### App Check ###');
 //isAuthorized = permissions.hasAppPermission('ASSET_COMMENTS',session);
 //log.info('Is authorized '+isAuthorized);
-
 // var log = new Log();
 // var authorizer = um.authorizer;
 // log.info('Printing authorizer methods ');

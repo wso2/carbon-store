@@ -7,6 +7,9 @@ $(document).ready(function() {
 			var assetId = $('#asset-id').val();
 			var assetType = $('#asset-type').val();
 			var path = caramel.url('/apis/asset/' + assetId + '/create-version?type=' + assetType);
+			var assetPath = caramel.url('/assets/' + assetType + '/details/');
+			$('#btn-create-version').addClass('disabled');
+			$('#new-version-loading').removeClass('hide');
 
 			$.ajax({
 				url : path,
@@ -14,12 +17,16 @@ $(document).ready(function() {
 				data : JSON.stringify({"attributes":{"overview_version": newVersion }}),
 				type : 'POST',
 				success : function(response) {
-					$('.alert-success').text('Asset version created successfully!');
+					$('.alert-success').html('Asset version created successfully! <a href="'+assetPath+response.data+'"> View </a>');
 					$('.alert-success').removeClass('hide');
+					$('#btn-create-version').removeClass('disabled');
+					$('#new-version-loading').addClass('hide');
 				},
 				error : function() {
-					$('.alert-success').text('Error while cretaing the version!');
+					$('.alert-success').text('Error while creating the version!');
 					$('.alert-success').removeClass('hide');
+					$('#btn-create-version').removeClass('disabled');
+					$('#new-version-loading').addClass('hide');
 				}
 			});
 			//$("#newVersionModal").modal('hide');

@@ -330,7 +330,9 @@ var resources = {};
         var mediatorImpl;
         var ignore = false;
         var found = false; //Assume that no default extensions will be found
-        log.info('loading default asset app extensions');
+        if (log.isDebugEnabled()) {
+            log.debug('loading default asset app extensions');
+        }
         if (!dir.isDirectory()) {
             log.error('Unable to read the app extension directory');
             return;
@@ -339,7 +341,9 @@ var resources = {};
         extensionDir;
         for (var index = 0; index < extensionDirs.length; index++) {
             extensionDir = extensionDirs[index];
-            log.info('checking extension: ' + extensionDir.getName());
+            if (log.isDebugEnabled()) {
+                log.debug('Checking extension: ' + extensionDir.getName());
+            }
             //Check if there is an asset script
             if (hasAppScript(extensionDir)) {
                 //Get the extension details
@@ -351,7 +355,9 @@ var resources = {};
                 }
                 //Check if "default" is one of the dependencies
                 if (((dependencies.indexOf(constants.DEFAULT_APP_EXTENSION) > -1) && (!ignore)) && (!found)) {
-                    log.info('found an app extension which overrides the default asset extension: ' + extensionDir.getName());
+                    if (log.isDebugEnabled()) {
+                        log.debug('found an app extension which overrides the default asset extension: ' + extensionDir.getName());
+                    }
                     found = true;
                     //Build a mediator
                     mediatorImpl = new DefaultAppExtensionMediatorImpl(extensionDir.getPath(),extensionDir.getName());
@@ -360,7 +366,9 @@ var resources = {};
                 }
             }
         }
-        log.info('finished loading default asset app extensions');
+        if (log.isDebugEnabled()) {
+            log.debug('finished loading default asset app extensions');
+        }
     };
     var init = function(tenantId) {
         var server = require('store').server;
@@ -385,6 +393,13 @@ var resources = {};
     resources.init = function() {
         var event = require('event');
         event.on('tenantLoad', function(tenantId) {
+            init(tenantId);
+        });
+        event.on('assetTypesHotDeploy',function(tenantId){
+            if (log.isDebugEnabled()) {
+                log.debug('Resources Hot Deployed');
+                log.debug('Tenant ID: '+tenantId);
+            }
             init(tenantId);
         });
     };

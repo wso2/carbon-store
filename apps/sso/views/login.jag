@@ -22,15 +22,27 @@ var e = request.getParameter('authFailure');
 
 var log = new Log();
 var relyingParty = request.getParameter('relyingParty');
+var RelayState = request.getParameter('RelayState');
 //TODO: this should be fixed properly
 if (relyingParty instanceof Array) {
     relyingParty = relyingParty.pop();
+}
+var canRegister = false;
+if (relyingParty == 'publisher') {
+    canRegister = (configs.registerPermissions.authorizedRolePublisher.length > 0);
+} else {
+    canRegister = (configs.registerPermissions.authorizedRoleStore.length > 0);
 }
 
 var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();
 var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
 var themeModule = require('/modules/theme.js');
+if(RelayState){
+    if(RelayState.indexOf("register_new_user") != -1 ){
+        RelayState = "/store/pages/top-assets";
+    }
+}
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -40,197 +52,66 @@ var themeModule = require('/modules/theme.js');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <% include(themeModule.getThemedUrl('includes/header_file_imports.jag')); %>
-
 </head>
-
 <body>
-<div class="container col-lg-12 col-md-12 col-sm-12">
+<div class="container-fluid">
         <% include(themeModule.getThemedUrl('includes/header.jag')); %>
         <div class="row">
-            <div class="col-md-12">
-
                 <!-- content -->
-                <div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
-
-
+                <div class="col-xs-12 col-sm-10 col-md-8 col-lg-4 wr-login col-centered">
                     <form id="loginForm" action="/commonauth" method="POST">
                         <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">SIGN IN</h2>
-
-
+                        <div class="clearfix"></div>
                         <div class="boarder-all ">
-                            <div class="clear"></div>
-                            <span class="padding-double float-left font-large">Sign in to continue </span>
+                            <div class="padding-double font-large">Sign in to continue </div>
                             <!-- validation -->
-                            <div class="wr-input-control padding-double">
-                                <br><br><br>
+                            <div class="padding-double">
+                                <div class="error-msg" id="error-msg" <% if (!e) { %>style="display:none;"<% } %>>Username or password is invalid</div>
 
-                                <% if (e) { %>
-                                <div class="alert alert-error">Username or password is invalid</div>
-                                <%
-} %>
-                                <input id="username" name="username" type="text" class="input-block-level" placeholder="Username">
-                                <br><br>
-                                <input id="password" name="password" type="password" class="input-block-level" placeholder="Password">
-                                <br><br>
-                                <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large" type="submit">Sign in</button>
-
-                                 <br><br><br>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <label>Username</label>
+                                    <input id="username" name="username" type="text" class="form-control" tabindex="0">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <label>Password</label>
+                                    <input id="password" name="password" type="password" class="form-control">
+                                </div>
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <br/><br/>
+                                    <button class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large" type="submit">Sign in</button>
+                                </div>
                                     <!--<input type="checkbox" value="remember-me" style="display: inline"> Remember me
                                     <br><br>-->
                                 <input type="hidden" name="sessionDataKey" value="<%=request.getParameter("sessionDataKey")%>">
-                                <% if (isPasswordRecoveryEnabled) { %>
-                                    <a href="recovery-option">Forgot your password?</a>
-                                <%
-}%>
-                                <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
+                                <input type="hidden" name="RelayState" value="<%=RelayState%>">
+                                <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                    <% if (isPasswordRecoveryEnabled) { %>
+                                        <a href="confirm-recovery">Forgot your password?</a>
+                                    <% }%>
+                                    <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
+                                </div>
+                                <div class="clearfix"></div>
                             </div>
                         </div>
                     </form>
-
-                    <form id="registerForm" style="display: none">
-                        <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
-
-                         <div class="boarder-all ">
-                            <div class="clear"></div>
-                            <span class="padding-double float-left font-large">Enter all text fields to complete registration </span>
-                            <!-- validation -->
-                            <div class="wr-input-control padding-double">
-                                <br><br><br>
-                                <div id="regFormError" class="alert alert-error" style="display:none"></div>
-                                <div id="regFormSuc" class="alert alert-success" style="display:none"></div>
-
-                                <label class="float-left light-grey taxt-label">Username</label>
-                                <input id="reg-username"
-                                        name="reg-username" type="text" class="padding-double required usrName usrNameLength">
-
-                                <br><br>
-
-                                <label class="float-left light-grey taxt-label">Password</label>
-                                <input id="reg-password" name="reg-password" type="password" class="padding-double required">
-
-                                <br><br>
-
-                                <label class="float-left light-grey taxt-label">Confirm password</label>
-                                <input id="reg-password2" name="password2" type="password" class="padding-double required" equalTo="#reg-password">
-
-                                <br><br>
-                                <%
-var claimsModule = require('account-management');
-var claims = claimsModule.getDefaultClaims();
-var renderedClaims = {};
-
-var claimUriOverrides = {
-    USERNAME: {
-        render: false // because this is already rendered by default
-    },
-    PASSWORD: {
-        render: false // because this is already rendered by default
-    },
-    EMAILADDRESS: {
-        render: true,
-        customClass: 'email'
-    }
-}
-
-for (var claimIndex = 0; claimIndex < claims.length; claimIndex++) {
-    var override = claimUriOverrides[claims[claimIndex].claimUri.toUpperCase()];
-    // render claim if it's required and not overriden to --> render:false
-    if (claims[claimIndex].isRequired && (!override || override.render !== false)) {
-        var formElementName = 'reg-' + claims[claimIndex].displayTag
-                        .toLowerCase().replace(' ', '-');
-        %>
-            <label class="float-left light-grey taxt-label"><%=claims[claimIndex].displayTag%></label>
-                                                                                <input type="text" name="<%=formElementName%>"
-                                                                                       data-claim-uri="<%=claims[claimIndex].claimUri%>"
-                                                                                       class="padding-double required <%=claims[claimIndex].customClass
-        %>">
-                                                                                               <br><br>
-                                                                                    <%
-        renderedClaims[formElementName] = claims[claimIndex].claimUri;
-    }
-}
-%>
-    <label class="float-left light-grey taxt-label">Security Question</label>
-    <select id='secret-question' name='secret-question'>
-<%
-for (var challengeIndex = 0; challengeIndex < challengeSet.length; challengeIndex++) {
-    %>
-            <option value="<%=challengeSet[challengeIndex].getQuestion()
-    %>">
-                                                                                            <%=challengeSet[challengeIndex].getQuestion()
-    %>
-                                                                                        </option>
-                                                                                <%
-}
-%>
-</select>
-<br><br>
-<label class="float-left light-grey taxt-label">Answer</label>
-<input type='text' id='secret-answer' name="secret-answer"
-       class="padding-double required">
-<br><br>
-<input type="hidden" name="reg-claims" value='<%=renderedClaims%>'
-                                       class="input-block-level required">
-                                    <input id="reg-action" name="action" type="hidden" value="register">
-                                    <input id="reg-relyingParty" name="relyingParty" type="hidden" value="<%=relyingParty%>">
-                                    <button id="registrationSubmit" class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"
-                                            type="button">Register
-                                    </button>
-
-                                    <div class="wr-input-control padding-bottom-double padding-left-double padding-right-double">
-                                            <span class="margin-top padding-top-double font-large"><br>Already have an account? </span>
-                                            <a href="#" id="signInLink">Sign in</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
                 </div>
-            </div>
+        </div>
 </div>
 
  <% include(themeModule.getThemedUrl('includes/footer_file_imports.jag')); %>
 <script type="text/javascript">
     $(function () {
-        var ENTER_KEY = 13;
-        function register() {
-            if (!$('#registerForm').valid()) {
-                return;
-            }
-
-            var formData = $("#registerForm").serialize();
-
-            $.post('/sso/register', formData, function (data) {
-                var regFormError = $('#regFormError');
-                var regFromSuccess = $('#regFormSuc');
-                if (JSON.parse(data).error == 'false') {
-                    regFormError.hide();
-                    regFromSuccess.show();
-                    regFromSuccess.text(JSON.parse(data).msg);
-
-                    //submitting the login form
-                    $('#username').val($('#reg-username').val());
-                    $('#password').val($('#reg-password').val());
-                    $('#loginForm').submit();
-
-                } else {
-                    regFromSuccess.hide();
-                    regFormError.show();
-                    regFormError.text(JSON.parse(data).msg);
-                }
-            });
-        }
-
-        $("#registrationSubmit").bind('click', register);
-
-        $('#registerForm input').bind('keypress', function (e) {
-            if (e.which == ENTER_KEY) {
-                register();
+        $('#loginForm').submit(function(){
+            var username = $('#username').val();
+            var password = $('#password').val();
+            if(username == "" || password == ""){
+                $('#error-msg').html("Username or Password can't be empty.").show();
+                return false;
             }
         });
-
+        var ENTER_KEY = 13;
+        $('#username').focus();
         jQuery.validator.addMethod("usrName", function (value, element) {
             return this.optional(element) || /^[a-zA-Z0-9\-]*$/.test(value);
         }, "Only alphanumeric characters and '-' allowed");
@@ -238,15 +119,6 @@ for (var challengeIndex = 0; challengeIndex < challengeSet.length; challengeInde
             return value.length >= 3 && value.length <= 30;
         }, "username must contain minimum 3 characters and maximum 30 characters");
 
-         $('#signInLink').click(function(){
-            $('#registerForm').fadeOut();
-            $('#loginForm').fadeIn();
-        });
-
-        $('#registerLink').click(function(){
-            $('#registerForm').fadeIn();
-            $('#loginForm').fadeOut();
-        });
     });
 </script>
 </body>

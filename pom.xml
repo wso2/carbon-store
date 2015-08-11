@@ -44,8 +44,8 @@
         <module>components/asset-client</module>
         <module>components/store-util</module>
         <module>components/bam-client</module>
-        <module>features/org.wso2.es.feature</module>
-        <module>features/org.wso2.store.feature</module>
+        <module>features/org.wso2.carbon.es.feature</module>
+        <module>features/org.wso2.carbon.store.feature</module>
         <module>features/social</module>
         <module>features/extensions</module>
     </modules>
@@ -620,16 +620,16 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--<carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>-->
-        <carbon.kernel.version>4.4.0</carbon.kernel.version>
+        <carbon.kernel.version>4.4.1</carbon.kernel.version>
         <carbon.social.version> 2.3.1-SNAPSHOT</carbon.social.version>
 
         <carbon.store.version>2.3.1-SNAPSHOT</carbon.store.version>
         <!--repo versions-->
-        <carbon.commons.version>4.4.3</carbon.commons.version>
+        <carbon.commons.version>4.4.4</carbon.commons.version>
         <carbon.registry.version>4.4.3</carbon.registry.version>
         <carbon.governance.version>4.5.1</carbon.governance.version>
         <carbon.deployment.version>4.4.0</carbon.deployment.version>
-        <carbon.identity.version>4.5.0</carbon.identity.version>
+        <carbon.identity.version>4.5.3</carbon.identity.version>
         <carbon.multitenancy.version>4.4.1</carbon.multitenancy.version>
 
         <!--<test.framework.version>4.3.1</test.framework.version>-->
@@ -666,7 +666,7 @@
         <el.api.version>2.2</el.api.version>
         <h2.wso2.version>1.2.140.wso2v3</h2.wso2.version>
 
-        <jaggery.feature.version>0.10.1</jaggery.feature.version>
+        <jaggery.feature.version>0.10.2</jaggery.feature.version>
         <caramel.feature.version>1.0.1</caramel.feature.version>
         <handlebars.feature.version>1.0.0</handlebars.feature.version>
         <markdown.feature.version>1.0.0</markdown.feature.version>

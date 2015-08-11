@@ -21,6 +21,10 @@
     var user = session.get("LOGGED_IN_USER");
     var caramel = require('caramel');
     var relayState = request.getHeader('referer') ? request.getHeader('referer') : caramel.configs().context;
+    var ignoreReferer = request.getParameter("ignoreReferer");
+    var rxt = require("rxt");
+    var context = rxt.app.getContext();
+    relayState = (!ignoreReferer) ? relayState : context + '/login?ignoreReferer=true';
     if(user === null) {
         response.sendRedirect(relayState);
     } else {
@@ -34,7 +38,7 @@
                 postUrl = attr.identityProviderURL;
         var log = new Log();
         log.debug("store session index : " + sso_sessions[session.getId()]);
-
+        session.invalidate();
         %>
         <div>
            <p>You are now redirected to Identity Server. If the

@@ -32,11 +32,12 @@ store.infiniteScroll.addItemsToPage = function(){
     var screen_width = $(window).width();
     var screen_height = $(window).height();
 
-    var thumb_width = 170;
-    var thumb_height = 315;
 
-    var gutter_width = 40;
     var header_height = 163;
+    var thumb_width = 170;
+    var thumb_height = 280;
+    var gutter_width = 20;
+
     screen_width = screen_width - gutter_width; // reduce the padding from the screen size
     screen_height = screen_height - header_height;
 
@@ -44,7 +45,7 @@ store.infiniteScroll.addItemsToPage = function(){
     //var rows_per_page = (screen_height-screen_height%thumb_height)/thumb_height;
     var scroll_pos = $(document).scrollTop();
     var row_current =  (screen_height+scroll_pos-(screen_height+scroll_pos)%thumb_height)/thumb_height;
-    row_current +=2 ; // We increase the row current by 2 since we need to provide one additional row to scroll down without loading it from backend
+    row_current +=3 ; // We increase the row current by 2 since we need to provide one additional row to scroll down without loading it from backend
 
 
     var from = 0;
@@ -69,8 +70,13 @@ store.infiniteScroll.getItems = function(from,to){
     dynamicData["to"] = to;
     var path = window.location.href; //current page path
     // Returns the jQuery ajax method
-    var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
-    // if(url.indexOf('tag')== -1){
+    var url = caramel.tenantedUrl(store.asset.paging.url+"&paginationLimit=" + to + "&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
+
+    caramel.render('loading','Loading assets from ' + from + ' to ' + to + '.', function( info , content ){
+        $('.loading-animation-big').remove();
+        $('body').append($(content));
+    });
+
         caramel.data({
              title : null,
              body : ['assets']
@@ -79,13 +85,14 @@ store.infiniteScroll.getItems = function(from,to){
              success : function(data, status, xhr) {
                  caramel.partials(data._.partials, function() {
                      caramel.render('assets-thumbnails', data.body.assets.context, function (info, content) {
-                         $('.assets-container section').append(content);
+                         $('.assets-container section').append($(content));
+                         $('.loading-animation-big').remove();
                      });
                  });
              },
              error : function(xhr, status, error) {
+                 $('.loading-animation-big').remove();
                  doPagination = false;
-                 console.info(status);
              }
          });
     //}
@@ -125,7 +132,7 @@ $(function() {
     /*
     * Bookmark event handler
     * */
-    $('.js_bookmark').click(function () {
+    $('#assets-container').on('click', '.js_bookmark', function () {
         var elem = $(this);
         asset.process(elem.data('type'), elem.data('aid'), location.href);
     });

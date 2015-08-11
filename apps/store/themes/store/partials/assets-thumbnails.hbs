@@ -7,8 +7,9 @@
                 </a>
                 <div class="ast-content">
                     <div class="ast-title padding">
-                        <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">{{overview_name}}</a>
-                        <span class="ast-auth">{{overview_provider}}</span>
+                        <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}" title="{{overview_name}}">{{overview_name}}</a>
+                        <span class="ast-auth" title="{{overview_provider}}">{{overview_provider}}</span>
+                        <span class="ast-ver">{{t "V"}}{{overview_version}}</span>
                     </div>
                     <div class="pull-left asset-rating-container">
                         <span class="asset-rating">
@@ -17,26 +18,22 @@
                     </div>
                     <div class="pull-right">
                         <div class="dropdown dropdown-asset-custom">
-                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:void(0)"><i class="fa fa-ellipsis-v"></i>
+                            <a aria-expanded="false" role="button" data-toggle="dropdown" class="dropdown-toggle more-list" href="javascript:void(0)"><i class="fw fw-dots fw-rotate-90"></i>
                             </a>
                             <ul role="menu" class="dropdown-menu">
-                                {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
+                                {{#if ../bookmarkable}}
                                 <li>
-                                    {{#mergeContext ssoParam=../../sso userParam=../../user thisAsset=../this}}
+                                    {{#mergeContext ssoParam=../../sso userParam=../../user thisAsset=../../this}}
                                     {{>assets-utilization .}}
                                     {{/mergeContext}}
                                 </li>
-                                {{else}}
-                                <li>
-                                    <a class="btn btn-primary js_bookmark"
-                                       href='{{url ""}}{{getLoginUrl .}}'> {{>process-asset-text }}</a>
-                                </li>
-                                {{/hasAssetPermission}}
+                                {{/if}}
                                 <!--<li><a href="#">Download</a></li>-->
                                 <li><a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">More Details</a></li>
                             </ul>
                         </div>
                     </div>
+                    <div class="clearfix"></div>
                 </div>
             </div>
         </div>

@@ -39,7 +39,7 @@ var api = {};
             success = am.rate(asst.path, options.value);
             //TODO get a api from registry to get ratings by id
         } catch (e) {
-            log.error('Could not rate the asset type: ' + options.type + ' id: ' + options.id + ' with rating: ' + options.value + '.Exception: ' + e);
+            log.error('Could not rate the asset type: ' + options.type + ' id: ' + options.id + ' with rating: ' + options.value + '.Exception: ', e);
         }
         return success;
     };
@@ -74,7 +74,7 @@ var api = {};
         }
     };
     var calculateRatingPixel = function(avgRating) {
-        var STAR_WIDTH = 84;
+        var STAR_WIDTH = 70;
         var MAX_RATING = 5;
         var ratingPx = (avgRating / MAX_RATING) * STAR_WIDTH;
         return ratingPx;

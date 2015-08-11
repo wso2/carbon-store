@@ -190,6 +190,9 @@ h1.asset-name {
 a{
     cursor: pointer;
 }
+a:hover, a:focus{
+    text-decoration:none;
+}
 h2.field-title {
     margin:0 0 20px 0;
     border-bottom:solid 1px #f0f0f0;
@@ -200,6 +203,7 @@ h2.field-title a.collapsing-h2 {
     font-size: 22px;
     font-weight: 200;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    cursor:pointer;
 }
 
 a.collapsing-h2{
@@ -377,7 +381,7 @@ a.ast-type-item .icon {
 }
 
 .ctrl-wr-asset {
-	width:140px;
+	width:150px;
 	height:300px;
 	float:left;
 	margin-right:22px;
@@ -398,7 +402,7 @@ a.ast-type-item .icon {
 }
 
 .itm-ast:hover h3, .itm-ast:hover .ast-auth {
-	color:#3f75ff;
+	color:#555;
 }
 
 br.c-both {
@@ -407,8 +411,8 @@ br.c-both {
 
 .ast-img img {
 	float:left;
-	width:140px;
-	height:140px;
+	width:150px;
+	height:150px;
 }
 
 .ast-desc {
@@ -450,7 +454,27 @@ h3.ast-name:after {
 .ast-auth {
 	font-weight:300;
 	font-size:13px;
-	color:#237bd5;
+	color:#666;
+}
+.ast-auth {
+    display: block;
+    white-space: nowrap;
+    word-break: keep-all;
+    display: inline-block;
+    height: 14px;
+    width:90px;
+    position: relative;
+    overflow:hidden;
+}
+.ast-auth:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    height: 20px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
 }
 
 .ast-published {
@@ -513,10 +537,19 @@ i.cu-btn-exp-col {
 .btn-copy {
     background:url('../img/icons/ico-copy.png') 0.8em 1em no-repeat;
 }
-
-.btn-collapsed {
-    background:url('../img/icons/ico-collapsed.png') no-repeat;      
+.btn-delete {
+    background:url('../img/icons/ico-delete.png') 0.8em 1em no-repeat;
 }
+.not-active {
+    cursor: default;
+}
+.btn-collapsed {
+    background:url('../img/icons/ico-expanded.png') no-repeat;
+}
+.collapsed .btn-collapsed {
+     background:url('../img/icons/ico-collapsed.png') no-repeat;
+}
+
 .sort-asset-info{
     color: #a5a5a5;
     font-size: 11px;
@@ -593,7 +626,7 @@ a.btn-inline-form:hover {
 }
 #ul-sort-assets li a:hover {
     color: #fff;
-    background: #444;
+    background: #666;
 }
 #ul-sort-assets li {
     color: #333;}
@@ -610,10 +643,11 @@ a.btn-inline-form:hover {
     list-style: outside none none;
     text-align: left;
     padding:0;
+    margin-right:0px;
 }
 #ul-sort-assets li.active a{
-    background: #5f5f5f;
-    color:#000;
+    background: #ccc;
+    color:#333;
 }
 .btn-add-new {
 	background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
@@ -639,7 +673,17 @@ a.cu-ico-button-stats {
 
 /* filter */
 .wr-filters {
-	padding:18px 30px 15px 15px;
+	/*padding:18px 30px 15px 15px;*/
+	padding-top:15px;
+}
+
+.wr-filters .dropdown-menu .filter-item{
+    color:#333;
+    background:#e2e2e2;
+}
+.wr-filters .dropdown-menu .filter-item span,
+.wr-filters .dropdown-menu .filter-item i{
+    line-height:2;
 }
 
 .wr-secondary-bar {
@@ -689,21 +733,25 @@ a.cu-ico-button-stats {
     margin-left:4px;
 }
 .wr-search input {
-    background:#bbb;
+    background:#444;
     width:380px;    
-    border:1px solid #bbb;
+    border:1px solid #444;
     color:#fff;
     font-size:18px;
     font-weight: 100;
     padding:7px 15px;
+
+}
+.wr-search input:focus{
+    outline: 0;
 }
 
 .btn-search {
     display:inline-block;
-    font-size:20px;
+    font-size:19px;
     font-weight:500;
     color:#333;
-    background:#bbb;
+    background:#444;
     position:relative;
     padding:5px 10px;
     right:40px;
@@ -785,12 +833,12 @@ h2 span.fa-stack{
 }
 .tag-element{
     background: #cdcdcd;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 4px 8px;
     display: inline-block;
 }
 #tag-ui-container-view{
     padding-top:10px;
+    padding-bottom:10px;
 }
 .padding-bottom-xs{
     padding-bottom:5px;
@@ -937,6 +985,7 @@ h2 span.fa-stack{
 
 #navbar {
     float:left;
+    padding-left:0px;
 }
 
 .wr-main-content {
@@ -1089,4 +1138,30 @@ div.notifyjs-happyblue-base {
 }
 .navbar-header{
    float: right;
+}
+.loading-animation{
+    padding:15px 0 0 0;
+    font-size: 15px;
+}
+.loading-animation-big{
+    background: #fefefe;
+    padding:10px;
+    text-align: center;
+    vertical-align: middle;
+    border-bottom: 1px solid #efefef;
+    border-top: 1px solid #efefef;
+    position: absolute;
+    width: 100%;
+    left: 0;
+}
+.loading-animation-big i{
+    font-size: 50px;
+    color: #4290ef;
+}
+.loading-animation-big span{
+    font-size: 14px;
+    line-height: 50px;
+    text-indent: 20px;
+    display: inline-block;
+    position: absolute;
 }

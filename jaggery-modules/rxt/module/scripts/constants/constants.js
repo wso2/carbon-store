@@ -31,11 +31,13 @@ var constants = {};
     constants.RECENT_ASSET_COUNT = 5; //The default number of recent assets to be retrieved
     constants.POPULAR_ASSET_COUNT = 1;
     constants.DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime';
+    constants.ASSET_PROVIDER = 'overview_provider';
     constants.SUBSCRIPTIONS_PATH = '/subscriptions';
     constants.ASSET_EXTENSION_ROOT='/extensions/assets';
     constants.DEFAULT_ASSET_EXTENSION='default';
     constants.APP_CONTEXT = 'rxt.app.context';
     constants.TAGS_QUERY_PATH = '/_system/config/repository/components/org.wso2.carbon.registry/queries/allTags';
+    constants.ASSET_TYPES_PATH ='/_system/governance/repository/components/org.wso2.carbon.governance/types';
     constants.TAGS_SERVICE = 'org.wso2.carbon.registry.indexing.service.TermsSearchService';
     constants.DEFAULT_APP_EXTENSION = 'default';
     constants.AUTH_METHOD_BASIC = 'basic';
@@ -44,7 +46,7 @@ var constants = {};
     /***
      * ES Feature Constants
      */
-
+    constants.ASSET_TYPES_HOTDEPLOYMENT = "assetTypesHotDelploy";
     constants.SOCIAL_FEATURE='social';
     constants.SOCIAL_FEATURE_SCRIPT_KEY='socialScriptSource';
     constants.SOCIAL_FEATURE_SCRIPT_TYPE_KEY='socialScriptType';

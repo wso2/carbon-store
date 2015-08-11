@@ -237,14 +237,16 @@ var result;
         } //generate asset object
         try {
             //throw 'This is to stop asset creation!';
-            log.info(asset);
+            if (log.isDebugEnabled()) {
+                log.debug('Creating Asset : ' + stringify(asset));
+            }
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ' + e);
+            log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
             return null;
         }
         //Attempt to apply tags
@@ -256,10 +258,10 @@ var result;
         if (!isLCEnabled) {
             return asset;
         }
-        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
-        if (!isDefaultLCEnabled) {
-            return asset;
-        }
+//        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
+//        if (!isDefaultLCEnabled) {
+//            return asset;
+//        }
         //Continue attaching the lifecycle
         var isLcAttached = am.attachLifecycle(asset);
         //Check if the lifecycle was attached
@@ -664,7 +666,7 @@ var result;
             am.remove(options.id); //call asset manager to remove asset
             return true;
         } catch (e) {
-            log.error('Asset with id: ' + asset.id + ' was not deleted due to ' + e);
+            log.error('Asset with id: ' + asset.id + ' was not deleted due to ', e);
             return false;
         }
     };

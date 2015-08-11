@@ -34,6 +34,7 @@ var api = {};
     var lifecycleAPI = require('/modules/lifecycle/lifecycle-api.js').api;
     var utils = require('utils');
     var rxtModule = require('rxt');
+    var es = require("store").server;
     var tagsAPI = require('/modules/tags-api.js').api;
     var assetAPI = require('/modules/asset-api.js').api;        
     var utility = require('/modules/utility.js').rxt_utility();
@@ -211,7 +212,15 @@ var api = {};
         try {
             data = parse(req.getContent());
             asset = am.createVersion(options, data.attributes);
-            return successMsg(msg(200, 'New version created successfully'));
+            if(asset){
+                 tenantId = es.current(session).tenantId;
+                var registry = es.systemRegistry(tenantId);
+
+                if(registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + options.id)){
+                    registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + options.id,'/_system/governance/store/asset_resources/'+ options.type + '/' + asset);
+                }
+            }
+            return successMsg(msg(200, 'New version created successfully.', asset));
         } catch (e) {
             log.error('Asset of type: ' + options.type + ' was not created due to ' ,e);
             return null;

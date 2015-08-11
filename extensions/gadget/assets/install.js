@@ -29,7 +29,7 @@ var installer = function () {
         var xmlContent = xmlConfig.getContents();
         var removedContent = xmlContent.replace(/^\s*<\?.*\?>\s*/, "");
         var xml = new XML(removedContent);
-        var path = context.httpContext + '/' + context.bundle.getName() + '/';
+        var path = context.httpContext + context.bundle.getName() + '/';
 
         //Create the deployment object
         var artifact = {};

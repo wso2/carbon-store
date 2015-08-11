@@ -1,5 +1,5 @@
 var tenantLoad = function(ctx) {
-    var log = new Log();
+    var log = new Log('default-permissions');
     var Utils = ctx.utils;
     var Permissions = ctx.permissions;
     var rxtManager = ctx.rxtManager;
@@ -17,7 +17,10 @@ var tenantLoad = function(ctx) {
     };
     var loginPermission = function() {
         return '/permission/admin/login';
-    }
+    };
+    var publisherLoginPermission = function(){
+        return Utils.appFeaturePermissionString('login');
+    };
     var assignAllPermissionsToDefaultRole = function() {
         var types = rxtManager.listRxtTypes();
         var type;
@@ -26,10 +29,17 @@ var tenantLoad = function(ctx) {
         for (var index = 0; index < types.length; index++) {
             type = types[index];
             permissions = {};
+            permissions.APP_LOGIN = publisherLoginPermission();
             permissions.ASSET_CREATE = createPermission(type);
             permissions.ASSET_LIST = listPermission(type);
             permissions.ASSET_UPDATE = updatePermission(type);
             Utils.addPermissionsToRole(permissions, DEFAULT_ROLE, tenantId);
+
+            var staticPath = rxtManager.getStaticRxtStoragePath(type);
+            staticPath = Utils.governanceRooted(staticPath);
+            var actions = [constants.REGISTRY_ADD_ACTION];
+            log.debug('authorized ' + DEFAULT_ROLE + ' for all actions in ' + staticPath);
+            Utils.authorizeActionsForRole(tenantId, staticPath, DEFAULT_ROLE, actions);
         }
         //Non asset type specific permissions
         permissions = {};
@@ -48,7 +58,7 @@ var tenantLoad = function(ctx) {
             Utils.addPermissionsToRole(permissions,REVIEWER_ROLE,tenantId);
         }
         permissions = {};
-        permissions.LOGIN = loginPermission();
+        permissions.LOGIN = publisherLoginPermission ();
 	permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
         Utils.addPermissionsToRole(permissions,REVIEWER_ROLE,tenantId);
     };
@@ -77,8 +87,30 @@ var tenantLoad = function(ctx) {
             Utils.registerPermissions(obj, tenantId);
         }
     };
-    log.info('### Starting permission operations ###');
-    log.info('### registering default permissions ###');
+    var populateAppPermissions = function(tenantId) {
+        var permissions = Permissions;
+        var permission;
+        var key;
+        var features = ['login'];
+        var feature;
+        var obj = {};
+        for(var index = 0; index < features.length; index++){
+            feature = features[index];
+            key = Utils.appFeaturePermissionKey(feature);
+            permission = Utils.appFeaturePermissionString(feature);
+            permissions[key] = permission;
+            obj[key] = permission;
+            //log.info('New app permission: '+key+' : '+permission);
+        }
+        Utils.registerPermissions(obj,tenantId);
+    };
+
+    if(log.isDebugEnabled()){
+        log.debug('Starting permission operations and registering default permissions');
+    }
+    Permissions.APP_LOGIN = function(ctx){
+        return ctx.utils.appFeaturePermissionString('login');
+    };
     Permissions.ASSET_CREATE = function(ctx) {
         if (!ctx.type) {
             throw 'Unable to resolve type to determine the ASSET_CREATE permission';
@@ -98,11 +130,20 @@ var tenantLoad = function(ctx) {
         return ctx.utils.assetFeaturePermissionString('update', ctx.type);
     };
     Permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
-    log.info('### registering asset permissions not in the WSO2 permission tree ###');
+    if(log.isDebugEnabled()){
+        log.debug('Registering asset permissions not in the WSO2 permission tree');
+    }
     populateAssetPermissions(tenantId);
-    log.info('### adding permissions to role: ' + DEFAULT_ROLE + ' ###');
+    populateAppPermissions(tenantId);
+    if(log.isDebugEnabled()){
+        log.debug('Adding permissions to the role : ' + DEFAULT_ROLE);
+    }
     assignAllPermissionsToDefaultRole();
-    log.info('### adding permissions to reviewer role ###');
+    if(log.isDebugEnabled()){
+        log.debug('Adding permissions to reviewer role');
+    }
     assignPermissionToReviewer();
-    log.info('### Permission operations have finished ###');
+    if(log.isDebugEnabled()){
+        log.debug('Permission operations have finished');
+    }
 };

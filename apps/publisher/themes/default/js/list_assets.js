@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 /**
- * Description: Pagination
- *              Function 'scroll' bind to the UI event scroll.
- *              Requests next set of assets by calling API endpoint /publisher/apis/assets?type=<type>&sort=<sort-by-attribute>&start=<number-of-already-rendered-assets>&count=<number-of-assets-per-page>
- *              Renders retrieved set of assets by calling caramel client
- *              if no-no-more assets to be retrieved, unbind 'scroll'
- */
-var currentPage, infiniteScroll;
-currentPage = 1;
-infiniteScroll = true;
-/**
  * To render the next set of assets by appending to the available container
  * @param {string} partial  : to which partial should be added
  * @param {JSON}   data     : data for the partial
@@ -57,41 +47,6 @@ function convertTimeToUTC(assets) {
         }
     }
     return assets;
-}
-/**
- * Return next set of assets for the next page by calling assets API endpoint
- * @param {String} param  : string of parameters for the api call
- */
-function getNextPage(param) {
-    var assetType = store.publisher.type; //load type from store global object
-    var url = '/publisher/apis/assets?type=' + assetType + param; // build url for the endpoint call
-    // call endpoint
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(response) { //on success
-            var assets = convertTimeToUTC(response.data);
-            if (assets) {
-                renderView('list_assets_table_body', assets, '#list_assets_table_body', null);
-                if (assets.length < store.publisher.itemsPerPage) { // if no more assets for the next page
-                    infiniteScroll = false;
-                    $('.loading-inf-scroll').hide();
-                } else {
-                    infiniteScroll = true;
-                    if ($(window).height() >= $(document).height()) {
-                        scroll();
-                    }
-                }
-            } else { //if no assets retrieved for this page
-                infiniteScroll = false;
-            }
-        },
-        error: function(response) { //on error
-            $('.loading-inf-scroll').hide();
-            $(window).unbind('scroll', scroll);
-            infiniteScroll = false;
-        }
-    });
 }
 /**
  * Build sorting parameters based on page path
@@ -252,6 +207,10 @@ var initCategorySelection = function() {
         });
     });
 };
+var clearWaiting = function(){
+    var cookieName = 'new-asset-'+store.publisher.type;
+    $.removeCookie(cookieName);
+};
 var  initAssetCreationChecker = function(){
     var cookieName = 'new-asset-'+store.publisher.type;
     var newAsset = $.cookie(cookieName);
@@ -270,14 +229,14 @@ var  initAssetCreationChecker = function(){
         url:urlApi,
         type:'GET',
         success:function(data){
-            if(data.data.length == 0 ){
+            if(data.list.length == 0 ){
                 if($('#assetLoader').length < 1) {
-                    messages.alertInfoLoader('Asset added successfully .. Please wait while the indexing is complete.. <i class="fa fa-spinner fa-pulse" id="assetLoader"></i>');
+                    messages.alertInfoLoader('Asset added successfully. Please wait. <i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <i class="fa fa-close" onclick="clearWaiting()"></i>');
                 }
                 setTimeout(initAssetCreationChecker,3000);
             }else{
                 $('#assetLoader').parent().parent().remove();
-                messages.alertInfoLoader('Indexing is complete .. <a href="'+url+'">'+ newAssetName + '</a>');
+                messages.alertInfoLoader('Now you can access the asset. <a href="'+url+'">'+ newAssetName + '</a>');
                 $.removeCookie(cookieName);
             }
         },
@@ -286,11 +245,9 @@ var  initAssetCreationChecker = function(){
         }
    });
 };
-
 // bind to window function
 //$(window).bind('scroll', scroll);
 $(window).load(function() {
-    //scroll();
     initSearch();
     initCategorySelection();
     initAssetCreationChecker();

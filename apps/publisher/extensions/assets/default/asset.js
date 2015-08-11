@@ -44,9 +44,16 @@ asset.manager = function(ctx) {
                     endpoint = storeConstants.ADMIN_ROLE_ENDPOINT;
                 }
             }
+
+            var provider = ctx.username;
+
+            if(options.attributes.overview_provider){
+                provider = options.attributes.overview_provider;
+            }
+            provider = provider.replace(':', '@');
             //Subscribe the asset author for LC update event and asset update event
-            notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
-            notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
+            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
+            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
         },
         update: function(options) {
             this._super.update.call(this, options);
@@ -136,6 +143,10 @@ asset.server = function(ctx) {
                 url: 'copy',
                 path: 'copy.jag',
                 permission: 'ASSET_CREATE'
+            }, {
+                title: 'Delete ' + type,
+                url: 'delete',
+                path: 'delete.jag'
             }]
         }
     };
@@ -146,14 +157,14 @@ asset.configure = function() {
             overview: {
                 fields: {
                     provider: {
-                        readonly: true
+                        auto: true
                     },
                     name: {
                         name: {
                             name: 'name',
                             label: 'Name'
                         },
-                        updatable: false,
+                        readonly: true,
                         validation: function() {}
                     },
                     version: {
@@ -183,7 +194,7 @@ asset.configure = function() {
                 commentRequired: false,
                 defaultLifecycleEnabled: true,
                 defaultAction: 'Promote',
-                deletableStates: [],
+                deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
                 lifecycleEnabled: true
             },
@@ -204,14 +215,6 @@ asset.configure = function() {
             },
             permissions: {
                 configureRegistryPermissions: function(ctx) {
-                    var type = ctx.type;
-                    var tenantId = ctx.tenantId;
-                    var rxtManager = ctx.rxtManager;
-                    var staticPath = rxtManager.getStaticRxtStoragePath(type);
-                    var Utils = ctx.utils;
-                    staticPath = Utils.governanceRooted(staticPath);
-                    log.debug('[configure-registry-permissions] assigning permissions to static path ' + staticPath);
-                    Utils.authorizeActionsForEveryone(tenantId, staticPath);
                 }
             }
         }
@@ -238,6 +241,7 @@ asset.renderer = function(ctx) {
     };
     var buildDefaultLeftNav = function(page, util) {
         var id = page.assets.id;
+        var path = page.assets.path;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE, ctx.assetType, ctx.session)) {
@@ -251,7 +255,10 @@ asset.renderer = function(ctx) {
             }
         }
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
-            navList.push('Copy', 'btn-copy', util.buildUrl('copy') + '/' + id);
+            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
+        }
+        if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
+            navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);
         }
         return navList.list();
     };
