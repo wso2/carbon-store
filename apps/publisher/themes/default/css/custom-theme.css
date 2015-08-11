@@ -278,7 +278,7 @@ a.ctrl-filter-category:hover {
         width: 251px;
     }
     .custom-form-label{
-        text-align: right;
+        text-align: left;
     }
     .advanced-search-icons{
         color:#999;
