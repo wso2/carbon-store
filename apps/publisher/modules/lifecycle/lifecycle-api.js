@@ -447,8 +447,8 @@ var error = '';
     };
     var addComment = function (options, req, res, session) {
         if (!options.comment) {
-            if(log.isDebugEnabled){
-                log.warn('A lifecycle comment has not been provided for ' + options.id);
+            if(log.isDebugEnabled()){
+                log.debug('A lifecycle comment has not been provided for ' + options.id);
             }
             return;
         }
