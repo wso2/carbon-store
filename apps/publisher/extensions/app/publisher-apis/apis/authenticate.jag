@@ -69,7 +69,8 @@ switch (METHOD) {
         credentials.password = request.getParameter('password');
         //Check if a username and password is provided
         if ((!credentials.username) || (!credentials.password)) {
-            response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.BAD_REQUEST, 'Username and Password must be provided');
+            response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.BAD_REQUEST, 'error on authentication api', response, 'Username and Password must be provided', 'this is more information about not provided username or password', []);
+
 
         } else {
             var isAuthenticated = user.login(credentials.username, credentials.password, session);//authenticate the user
@@ -80,8 +81,13 @@ switch (METHOD) {
                 //Add to the session map as it is required by the session listener
                 addToSessionMap(application, session);
                 response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, {'sessionId': session.getId()});
-            } else {
-                response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.UNAUTHORIZED, 'username/password is incorrect');
+            }else if(isAuthenticated == null){
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on authentication api', response, 'The domain name of tenant  is not exists', 'this is more information about non existing tenant', []);
+
+            }
+            else {
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED, 'error on authentication api', response, 'username/password is incorrect', 'this is more information about incorrect username or password', []);
+
             }
         }
         break;
