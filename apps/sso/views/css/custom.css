@@ -242,6 +242,9 @@ button.grey-bg:hover{background-color: #3A9ECF;}
     _____________________________________________________________________________  */
 
 .boarder-bottom-blue{border-bottom: 2px solid #006596;}
+.no-border-top{
+    border-top:none;
+}
 input::-moz-placeholder, textarea::-moz-placeholder  {
     padding: 10px 5px 12px 8px;
     color: #aba8a8;
