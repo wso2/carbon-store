@@ -30,6 +30,8 @@ $(document).ready(function() {
                     .attr("title","Asset is not in a delatable State!")
                     .click(function(e){e.preventDefault()});
             }
+        }if((!store.publisher.lifecycle.activeLifecycle)|| (store.publisher.lifecycle.activeLifecycle.length =='')){
+            $('#Delete').removeClass('not-active').removeAttr("title").unbind('click');
         }
     }else{
         $('#Delete').addClass('not-active')
