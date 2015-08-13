@@ -507,9 +507,7 @@ var error = '';
         return lifecycleComments;
     };
     var isLCActionsPermitted = function (asset, options, req, res, session) {
-        var user = storeModule.server.current(session);
-        var userManager = storeModule.server.userManager(user.tenantId);
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
-        return permissions.isLCActionsPermitted(user.username, asset.path, userManager);
+        return permissions.isLCActionsPermitted( asset.path, session);
     };
 }(api));
