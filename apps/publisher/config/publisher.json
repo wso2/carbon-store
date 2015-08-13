@@ -55,6 +55,7 @@
                     "identityProviderURL": "%https.carbon.local.ip%/samlsso",
                     "responseSigningEnabled": "true",
                     "acs": "%https.host%/publisher/acs",
+                    "identityAlias": "wso2carbon",
                     "useTenantKey": false
                 }
             },

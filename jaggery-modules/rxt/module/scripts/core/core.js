@@ -535,7 +535,7 @@ var core = {};
             }
             return '';
         }else{
-            if ((rxtDefinition.lifecycle[0]) && (rxtDefinition.lifecycle[0].lifecycle)) {
+            if (rxtDefinition.lifecycle && (rxtDefinition.lifecycle[0]) && (rxtDefinition.lifecycle[0].lifecycle)) {
                 return rxtDefinition.lifecycle[0].lifecycle || '';
             }
             if (log.isDebugEnabled()) {

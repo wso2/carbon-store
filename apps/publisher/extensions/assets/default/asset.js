@@ -244,8 +244,9 @@ asset.renderer = function(ctx) {
         var path = page.assets.path;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE, ctx.assetType, ctx.session)) {
+        if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         //Only render the view if the asset has a 
@@ -253,9 +254,6 @@ asset.renderer = function(ctx) {
             if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE, ctx.assetType, ctx.session)) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
-        }
-        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
-            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
         if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
             navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);

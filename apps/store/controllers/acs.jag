@@ -29,9 +29,9 @@
             sso = require('sso'),
             samlRespObj;
     var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
-    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Password");
-    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Location");
-    var identityAlias = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.KeyAlias");
+    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Password");
+    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Location");
+    var identityAlias = attr.identityAlias;
     var     keyStoreProps = {
                 KEY_STORE_NAME: keyStoreName,
                 KEY_STORE_PASSWORD: keyStorePassword,
