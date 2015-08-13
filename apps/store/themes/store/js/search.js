@@ -109,7 +109,7 @@ var parseUsedDefinedQuery = function(input) {
 
         $inputs = $(containerId + ' :input');
         $inputs.each(function () {
-            if ((this.name != undefined) && (this.name != '') && (this.value) && (this.value != '')) {
+            if ((this.name != undefined) && (this.name != '') && (this.value) && (this.value != '') && ($(this).val() != "ignore-value")) {
                 output += '"' + this.name + '": ' + '"' + $(this).val() + '",';
             }
             //q[this.name]=$(this).val();
@@ -155,7 +155,7 @@ var parseUsedDefinedQuery = function(input) {
     $('#advanced-search').ontoggle = function ($, divobj, state) {
         var icon = $('#search-dropdown-arrow').find('i'), cls = icon.attr('class');
         icon.removeClass().addClass(cls == 'icon-sort-down' ? 'icon-sort-up' : 'icon-sort-down');
-    }
+    };
 
     $('#search').keypress(function (e) {
         if (e.keyCode === 13) {
@@ -192,13 +192,11 @@ var parseUsedDefinedQuery = function(input) {
 
 
     var makeQuery = function () {
-        $('#advanced-search').children('div.search-data-field').each(function () {
+        $('#advanced-search').find('div.search-data-field').each(function () {
             var $this = $(this);
             var data = getValue($this);
             if (data.value.length > 0) {
-                if (data.value.length > 0) {
                     $('#search').val($('#search').val() + ',"' + data.name + '":"' + data.value + '"');
-                }
             } else {
                 if (data.value.length > 0) {
                     $('#search').val(data.name + ':"' + data.value + '"');
@@ -229,6 +227,9 @@ var parseUsedDefinedQuery = function(input) {
         if (field) {
             data.name = field.attr('name');
             data.value = field.val();
+            if(data.value == "ignore-value"){
+                data.value = "";
+            }
         }
         return data;
     };
@@ -261,6 +262,9 @@ var parseUsedDefinedQuery = function(input) {
             $('#search-button2').trigger('click');
         }
     });
+    $('#advanced-search').find('select').each(function(){
+        $(this).val('ignore-value');
+    })
 
 
 });
