@@ -17,48 +17,105 @@
  *
  */
 $(function(){
-	var obtainFormMeta=function(formId){
+    $('#btn-create-asset').removeAttr('disabled');
+    var obtainFormMeta=function(formId){
 		return $(formId).data();
 	};
+    var populateTags = function(arr){
+        var entry;
+        for(var index = 0 ; index < arr.length; index++){
+            entry = arr [index];
+            if(entry.name === '_tags'){
+                entry.value = tagsAPI.selectedTags();
+            }
+        }
+    };
     $('#form-asset-create').ajaxForm({
-        beforeSubmit:function(){
-            PublisherUtils.blockButtons({
-                container:'saveButtons',
-                msg:'Creating the '+PublisherUtils.resolveCurrentPageAssetType()+ ' instance'
+        beforeSubmit:function(arr){
+            var createButton = $('#btn-create-asset');
+            createButton.attr('disabled','disabled');
+            createButton.next().attr('disabled','disabled');
+            caramel.render('loading','Creating asset. Please wait..', function( info , content ){
+                createButton.parent().append($(content));
             });
+            populateTags(arr);
         },
-        success:function(){
+        success:function(data){
             var options=obtainFormMeta('#form-asset-create');
-            window.location=options.redirectUrl;
+            $('#btn-create-asset').removeAttr('disabled');
+            $.cookie("new-asset-"+data.type , data.id + ":" + data.type + ":" + data.name );
+            window.location = options.redirectUrl;
         },
         error:function(){
-            alert('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
-            PublisherUtils.unblockButtons({
-                container:'saveButtons'
+            messages.alertError('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
+            $('#btn-create-asset').removeAttr('disabled');
+
+        }
+    });
+    var initDatePicker =  function(){
+        if($(this).attr('data-render-options') == "date-time"){
+            var dateField = this;
+            $(this).DatePicker({
+                mode: 'single',
+                position: 'right',
+                onBeforeShow: function(el){
+                    if($(dateField).val().replace(/^\s+|\s+$/g,"")){
+                        $(dateField).DatePickerSetDate($(dateField).val(), true);
+                    }
+
+                },
+                onChange: function(date, el) {
+                    $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
+                    if($('#closeOnSelect input').attr('checked')) {
+                        $(el).DatePickerHide();
+                    }
+                }
             });
+        }
+    };
+
+    $('#form-asset-create input[type="text"]').each(initDatePicker);
+
+
+    var removeUnboundRow = function(link){
+        var table = link.closest('table');
+        if($('tr',table).length == 2){
+            table.hide();
+        }
+        link.closest('tr').remove();
+    };
+
+    $('.js-add-unbounded-row').click(function(){
+        var tableName = $(this).attr('data-name');
+        var table = $('#table_'+tableName);
+        var referenceRow = $('#table_reference_'+tableName);
+        var newRow = referenceRow.clone().removeAttr('id');
+        $('input[type="text"]', newRow).val('');
+        table.show().append(newRow);
+
+        $('input[type="text"]',newRow).each(initDatePicker);
+
+    });
+    $('.js-unbounded-table').on('click','a',function(event){
+        removeUnboundRow($(event.target));
+    });
+
+    $('.js-unbounded-table').on('click','input[type="checkbox"]',function(event){
+        var checkbox = event.target;
+        var hiddenField = $(checkbox).next();
+        if($(checkbox).is(":checked")){
+            $(hiddenField).val('on');
+        }else{
+            $(hiddenField).val('off');
         }
     });
 
-    $('#form-asset-create input[type="text"]').each(
-        function(){
-            if($(this).attr('data-render-options') == "date-time"){
-                var dateField = this;
-                $(this).DatePicker({
-                    mode: 'single',
-                    position: 'right',
-                    onBeforeShow: function(el){
-                        if($(dateField).val())
-                            $(dateField).DatePickerSetDate($(dateField).val(), true);
-                    },
-                    onChange: function(date, el) {
-                        $(el).val((date.getMonth()+1)+'/'+date.getDate()+'/'+date.getFullYear());
-                        if($('#closeOnSelect input').attr('checked')) {
-                            $(el).DatePickerHide();
-                        }
-                    }
-                });
-            }
-        }
-    );
+    $('.tmp_refernceTableForUnbounded').each(function(){
+        $(this).detach().attr('class','refernceTableForUnbounded').appendTo('body');
+    });
+
+    $('.tmp_refernceTableForOptionText').each(function(){
+        $(this).detach().attr('class','refernceTableForUnbounded').appendTo('body');
+    });
 
 });

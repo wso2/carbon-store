@@ -22,9 +22,9 @@ var log = new Log('assets_router');
 var matcher = new URIMatcher(request.getRequestURI());
 var rxt = require('rxt');
 var constants = rxt.constants;
-var apiEndpoint = constants.ASSET_API_URL_PATTERN;// '/{context}/asts/{type}/api/{+suffix}';
-var pageEndpoint = constants.ASSET_PAGE_URL_PATTERN;// '/{context}/asts/{type}/{+suffix}';
-var tenantedPageEndpoint = constants.ASSET_TENANT_PAGE_URL_PATTERN;//'/{context}/t/{domain}/asts/{type}/{+suffix}';
+var apiEndpoint = constants.ASSET_API_URL_PATTERN;// '/{context}/assets/{type}/api/{+suffix}';
+var pageEndpoint = constants.ASSET_PAGE_URL_PATTERN;// '/{context}/assets/{type}/{+suffix}';
+var tenantedPageEndpoint = constants.ASSET_TENANT_PAGE_URL_PATTERN;//'/{context}/t/{domain}/assets/{type}/{+suffix}';
 
 var asset = rxt.asset;
 var getPage = function (uri) {
@@ -39,6 +39,10 @@ var mapper = function (path) {
 
 var handleApiEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
+    if(!validateType(type)){
+        response.sendError(404, 'Unabled to locate a active endpoint for the type: ' + type);
+        return;
+    }
     var page = getPage(uriParams.suffix);
 
     var endPoints = asset.getAssetApiEndpoints(session, type);
@@ -47,6 +51,17 @@ var handleApiEndpoint = function (request, session, uriParams) {
         if (endPoints[index].url == page) {
             endpoint = asset.getAssetApiEndpoint(type, endPoints[index].path);
         }
+    }
+    var user = require('store').server.current(session);
+    var username = user? user.username:null;
+    var carbon = require('carbon');
+    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
+    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+    var isAuthorized = rxt.permissions.hasAssetAPIPermission(type,page,tenantId,username);
+    if(!isAuthorized){
+        log.error('user '+username+' does not have permission to access the api '+page);
+        response.sendError(401,'You do not have access to this api');
+        return;
     }
     if (endpoint) {
         request.getMappedPath = mapper(endpoint);
@@ -59,6 +74,10 @@ var handleApiEndpoint = function (request, session, uriParams) {
 
 var handlePageEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
+    if(!validateType(type)){
+        response.sendError(404, 'Unabled to locate a active endpoint for the type: ' + type);
+        return;
+    }
     var page = getPage(uriParams.suffix);
     var server = require('store').server;
     var user = server.current(session);
@@ -72,6 +91,16 @@ var handlePageEndpoint = function (request, session, uriParams) {
             found = true;
             endpoint = asset.getAssetPageEndpoint(type, endpointDetails.path);
         }
+    }
+    var username = user? user.username:null;
+    var carbon = require('carbon');
+    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
+    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+    var isAuthorized = rxt.permissions.hasAssetPagePermission(type,page,tenantId,username);
+    if(!isAuthorized){
+        log.error('user '+username+' does not have permission to access the page '+page);
+        response.sendError(401,'You do not have access to this page');
+        return;
     }
     if (endpoint) {
         if((endpointDetails.secured)&&(!user)){
@@ -90,6 +119,20 @@ var handlePageEndpoint = function (request, session, uriParams) {
 //Check if the user is logged
 var server = require('store').server;
 var user = server.current(session);
+
+//Check if asset type is enabled
+var validateType = function (type){
+    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
+    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+    var availableTypes = rxt.app.getActivatedAssets(tenantId);
+
+            for (var index in availableTypes) {
+                if(availableTypes[index] === type){
+                    return true;
+                }
+            }
+    return false;
+};
 
 //Check if options have been provided
 if (matcher.match(apiEndpoint)) {

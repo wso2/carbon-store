@@ -1,18 +1,22 @@
-<div class='row'>
-    <div  class='col-md-7'>
+
+    <div class="col-xs-12 col-sm-5 col-md-5 col-lg-5">
         <div id='lifecycle-rendering-area' class='lifecycle-rendering-area col-md-6'>
-            <svg width=500 height=600></svg>
+            <svg></svg>
         </div>
-        <div id ='lifecycle-checklist-container' class='col-md-5' style='position:relative'>
+    </div>
+    <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
+        <div id='lifecycle-checklist-container'>
             <div id='lifecycle-checklist'>
             </div>
             <div id='lifecycle-checklist-overlay'></div>
         </div>
-        <div id='lifecycle-actions-container' class='col-md-5 float-left' style='position:relative'>
+        <div id='lifecycle-actions-container' class="form-horizontal">
             <div id='lifecycle-comments'>
                 <div class='form-group'>
-                    <h3>Comment</h3>
-                    <textarea id='lifecycle-comment' class='form-control' placeholder='{{t "This comment will be recored with the state transition"}}'></textarea>
+                    <label class="custom-form-label col-xs-12 col-sm-12 col-md-2 col-lg-2">Comment</label>
+                    <div class="custom-form-right col-xs-12 col-sm-12 col-md-10 col-lg-10">
+                        <textarea id='lifecycle-comment' class='form-control' placeholder='{{t "This comment will be recored with the state transition"}}'></textarea>
+                    </div>
                 </div>
             </div>
             <div id='lifecycle-transition-inputs-ui'>
@@ -20,16 +24,14 @@
             </div>
             <div id='lifecycle-notifications'>
             </div>
-            <div id='lifecycle-actions'></div>
+            <div id='lifecycle-actions' class="col-xs-12 col-sm-8 col-md-8 col-lg-8 col-sm-offset-2 col-md-offset-2 col-lg-offset-2"></div>
             <div id='lifecycle-actions-overlay'></div>
+            <div class="clearfix"></div>
         </div>
-    </div>
-    <div class='col-md-5'>
-        <div id='lifecycle-history-container' class='col-md-10 '>
-            <h3>History</h3>
+        <div id='lifecycle-history-container'>
+            <h5>History</h5>
             <div id='lifecycle-history'>
-                <img src='{{url ""}}/themes/default/img/preloader-40x40.gif' /> Loading history details ...
+                <img src='{{url ""}}/themes/default/img/preloader-40x40.gif'/> Loading history details ...
             </div>
         </div>
     </div>
-</div>

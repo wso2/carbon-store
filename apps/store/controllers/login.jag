@@ -17,53 +17,55 @@
  *  under the License.
  *
  */
-(function(){
-    var dataConfi = require('/config/store.js').config(),
-            sso = require("sso"),
-            process = require("process"),
-            sessionId = session.getId(),
-            requestURI,
-            requestedPage = request.getParameter("requestedPage"),
-            referer = request.getHeader("referer");
-
-    if (referer)
-    {
-        //var host = request.getHeader("Host");
-        var host = referer.split('/')[2];
-        referer = referer.split(host)[1];
+(function(session, request, response) {
+    var log = new Log();
+    var server = require('store').server;
+    var carbon = require('carbon');
+    var user = server.current(session);
+    var rxtAPI = require('rxt');
+    var constants = rxtAPI.constants;
+    var authMethod;
+    var redirectURL;
+    var configs = require('/config/store.js').config();
+    var context = rxtAPI.app.getContext();
+    var queryString = request.getQueryString();
+    if (user) {
+        log.info('User is already logged in');
+        response.sendRedirect(context);
+        return;
     }
-
-    var relayState = (referer ? referer : '/store');
-    //TODO: need to parameterize default value in order to support app renaming
-
-            var app=require('rxt').app;
-            var opts=app.getAuthenticationDetails(-1234);
-            var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(opts.issuer);
-            var log = new Log();
-            var postUrl =opts.identityProviderURL;
-            if(log.isDebugEnabled()){
-                log.debug('Login URL: '+postUrl);
-            }
-    if (!session.get("Loged")) {
-        %>
-
-                <div>
-
-                            <p>You are now being redirected to Identity Server. If the
-                            redirection fails, please click on the button below.</p>
-                            <form method="post" action="<%=postUrl%>">
-                            <p>
-                               <input type="hidden" name="SAMLRequest" value="<%= encodedSAMLAuthRequest %>"/>
-                               <input type="hidden" name="RelayState" value="<%= relayState %>"/>
-                               <input type="hidden" name="SSOAuthSessionID" value="<%= sessionId %>"/>
-                               <button type="submit">Redirect manually</button>
-                           </p>
-                       </form>
-                   </div>
-                   <script type = "text/javascript" >
-                          document.forms[0].submit();
-                   </script>
-        <%
+    var resolveAuthMethod = function() {
+        return configs.authentication.activeMethod;
+    };
+    var getRedirectURL = function(authMethod, context) {
+        var url;
+        var endpoint = '/pages/basic-auth-login';
+        switch (authMethod) {
+            case constants.AUTH_METHOD_BASIC:
+                endpoint = '/pages/basic-auth-login';
+                break;
+            case constants.AUTH_METHOD_SSO:
+                endpoint = '/pages/sso-login';
+                break;
+            case constants.AUTH_METHOD_OTHER:
+                endpoint = '/pages/other-login';
+                break;
+            default:
+                break;
+        }
+        url = context + endpoint;
+        return url;
+    };
+    authMethod = resolveAuthMethod();
+    if (!authMethod) {
+        log.error('A login method has not been configured. Please make sure the activeMethod property has been set in the authentication section '
+        +'of the store.json' + '.You can find this file in the /publisher/configs/publisher.json file.');
+        response.sendError(500);
+        return;
     }
-}());
-%>
+    redirectURL = getRedirectURL(authMethod, context);
+    if(queryString){
+        redirectURL = redirectURL + "?" +  queryString;
+    }
+    response.sendRedirect(redirectURL);
+}(session, request, response)); %>

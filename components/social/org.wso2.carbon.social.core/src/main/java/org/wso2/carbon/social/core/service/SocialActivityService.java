@@ -177,7 +177,7 @@ public abstract class SocialActivityService {
 	 * @param userId
 	 * @return
 	 */
-	public boolean removeActivity(String activityId, String userId) throws SocialActivityException {
+	public boolean removeActivity(int activityId, String userId) throws SocialActivityException {
 		return getActivityPublisher().remove(activityId, userId);
 	}
 
@@ -190,7 +190,7 @@ public abstract class SocialActivityService {
 	 * @param like
 	 * @return
 	 */
-	public boolean isUserliked(String userId, String targetId, int like) throws SocialActivityException {
+	public boolean isUserliked(String userId, int targetId, int like) throws SocialActivityException {
 		return getActivityBrowser().isUserlikedActivity(userId, targetId, like);
 	}
 	

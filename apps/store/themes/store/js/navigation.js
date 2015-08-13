@@ -48,7 +48,7 @@ $(function() {
 		}, "json");
 	};
 
-	$('#btn-signout').live('click', function() {
+	$('#btn-signout').on('click', function() {
 		caramel.post("/apis/user/logout", function(data) {
 			location.reload();
 		}, "json");
@@ -102,5 +102,7 @@ $(function() {
 	$('.dropdown-toggle').click(function(){
 		window.location = $(this).attr('href');
 	});
+
+    $("[data-toggle=popover]").popover();
 
 });

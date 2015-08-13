@@ -1,4 +1,4 @@
-var renderAssets, mouseStop, renderAssetsScroll;
+var renderAssets, renderAssetsScroll;
 
 (function () {
     renderAssets = function (data) {
@@ -11,7 +11,7 @@ var renderAssets, mouseStop, renderAssetsScroll;
             theme.loaded(el, sort);
             el.append(assets);
             caramel.js($('body'), data.body['assets'].resources.js, 'assets', function () {
-                mouseStop();
+                //mouseStop();
             });
             caramel.js($('body'), data.body['sort-assets'].resources.js, 'sort-assets', function () {
                 updateSortUI();
@@ -27,7 +27,7 @@ var renderAssets, mouseStop, renderAssetsScroll;
         	temp += '{{#each .}}';
 			temp += '<div class="span3 asset" data-id="{{id}}" data-path="{{path}}" data-type="{{type}}">';
 			temp += '	{{#attributes}}';
-			temp += '	<a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}">';
+			temp += '	<a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">';
 			temp += '	<div class="asset-icon">';	
 			temp += '		{{#if ../indashboard}}';	
 			temp += '				<i class="icon-bookmark store-bookmark-icon"></i>';	
@@ -36,7 +36,7 @@ var renderAssets, mouseStop, renderAssetsScroll;
 			temp += '	</div> </a>';
 			temp += '	<div class="asset-details">';
 			temp += '		<div class="asset-name">';
-			temp += '			<a href="{{tenantedUrl "/asts"}}/{{../type}}/details/{{../id}}"> <h4>{{overview_name}}</h4> </a>';
+			temp += '			<a href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}"> <h4>{{overview_name}}</h4> </a>';
 			temp += '		</div>';
 			temp += '		<div class="asset-rating">';
 			temp += '			<div class="asset-rating-{{../avgRating}}star">';
@@ -81,29 +81,9 @@ var renderAssets, mouseStop, renderAssetsScroll;
       $('#assets-container').append(render);
       
        caramel.js($('body'), data.body['assets'].resources.js, 'assets', function () {
-                mouseStop();
+                //mouseStop();
             });
     	
     };
 
-    mouseStop = function () {
-    	var windowWidth = $(window).width();
-    	var offsetTop = windowWidth < 980 ? 167 : 200;
-        var id;
-        $('.asset').mousestop(function () {
-            var that = $(this);
-            id = setTimeout(function () {
-		that.find('.store-bookmark-icon').animate({
-		    top : -200
-		}, 200);
-                that.find('.asset-details').animate({
-                    top: 0
-                }, 200);
-            }, 300);
-        }).mouseleave(function () {
-                clearTimeout(id);
-		$(this).find('.store-bookmark-icon').animate({top: -4}, 200);
-                $(this).find('.asset-details').animate({top: offsetTop}, 200);
-            });
-    };
 }());

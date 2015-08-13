@@ -64,7 +64,8 @@ button:hover {
 }
 .com-container {
     display: table;
-    width: 100%;
+    margin: 15px 16px;
+    width: 98%;
 }
 
 .com-add {
@@ -161,11 +162,11 @@ button:hover {
 .com-rating {
     background: url("../img/store-stars.png") no-repeat scroll left top transparent;
     display: inline-block;
-    height: 20px;
+    height: 14px;
+    width: 70px;
     margin-left: 9px;
     margin-top: -2px;
     overflow: hidden;
-    width: 84px;
 }
 .com-rating > div {
     background: url('../img/store-stars.png') no-repeat bottom left;
@@ -177,23 +178,23 @@ button:hover {
     display: block;
 }
 .com-rating-1star {
-    width: 16px;
+    width: 14px;
     display: block;
 }
 .com-rating-2star {
-    width: 32px;
+    width: 28px;
     display: block;
 }
 .com-rating-3star {
-    width: 48px;
+    width: 42px;
     display: block;
 }
 .com-rating-4star {
-    width: 64px;
+    width: 56px;
     display: block;
 }
 .com-rating-5star {
-    width: 80px;
+    width: 70px;
     display: block;
 }
 
@@ -294,3 +295,5 @@ button:hover {
 .com-sort-hidden{
     display:none;
 }
+#btn-post{background-color: #3a9ecf; padding: 15px;
+    color: #fff;}

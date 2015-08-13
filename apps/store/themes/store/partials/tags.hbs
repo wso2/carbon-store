@@ -15,22 +15,8 @@
   -->
 
 {{#if tags}}
-<div class="row">
-    <div class="span3">
-          <h4><i class="icon-star"></i>{{t "Tags"}}</h4>
-
-        <div class="store-tags">
-            <ul>{{#each tags}}
-               
-                    <li>
-                        <a
-                                href='{{url ""}}/asts/{{../rxt.shortName}}/list?tag={{name}}'>{{name}}</a>
-                    </li>
-
-                {{/each}}
-            </ul>
-        </div>
-
-    </div>
-</div>
+    <h4><i class="fa fw-tag"></i> {{t "Tags"}}</h4>
+    {{#itr tags}}
+        <a class="tags" href='{{url ""}}/assets/{{../rxt.shortName}}/list?q="tags":"{{value}}"'>{{value}}</a>
+    {{/itr}}
 {{/if}}

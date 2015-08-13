@@ -23,7 +23,10 @@ require('/modules/publisher.js').exec(function(ctx) {
     var reqUtil = require('utils').request;
     var asset = require('rxt').asset;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
-    var options = uriMatcher.match('/{context}/asts/{type}/{pageName}');
+    //fixing STORE-818
+    ctx.response.addHeader('Pragma' ,'no-cache');
+    ctx.response.addHeader('Expires' ,'-1');
+    var options = uriMatcher.match('/{context}/assets/{type}/{pageName}');
     //var q = ctx.request.getParameter('query');
     //var sortBy = ctx.request.getParameter('sortby');
     //var sort = ctx.request.getParameter('sort');
@@ -33,7 +36,8 @@ require('/modules/publisher.js').exec(function(ctx) {
     var am = asset.createUserAssetManager(ctx.session, type);
     var page = ui.buildPage(ctx.session, ctx.request);
     var assets;
-    assets  = assetApi.search(options,ctx.request,ctx.response,ctx.session)||[];
+    //Do an advanced search
+    assets  = assetApi.advanceSearch(options,ctx.request,ctx.response,ctx.session)||[];
     var output = am.render(assets, page).list();
     caramel.render(output);
 }, request, response, session); %>

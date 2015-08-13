@@ -13,45 +13,42 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
+<!-- header -->
+<header>
+    <div class="row wr-global-header">
+        <div class="col-xs-8 col-sm-8 app-logo">
+            <a href="{{tenantedUrl ""}}{{meta.landingPage}}">
+                <img src="{{url "/themes/store/img/logo.png"}}" />
+                <h2 class="app-title hidden-xs-320">Enterprise Store</h2>
+                <h2 class="app-title visible-xs-320">ES</h2>
+            </a>
+        </div>
 
-<div id="container-header" class="container">
-	<div class="row">
-		<div class="span12">
-			<div class="navbar">
-				<div class="navbar-inner">
-					<div class="container">
+        <div class="col-xs-4 col-sm-4 wr-auth-container">
+            <div class="wr-auth pull-right">
+            {{#if cuser.username}}
+                <a href="#" data-toggle="dropdown" class="">
+                    <div class="auth-img">
+                        <span id="logedInUser" class="hidden-xs-320">{{cuser.username}}&nbsp;&nbsp;</span><i class="fw fw-user"></i>
+                    </div>
+                </a>
+                <div class="dropdown-menu">
+                    <div class="cu-arrow"></div>
+                    <div class="dropdown-menu-content">
+                        {{signout .}}
+                    </div>
+                </div>
+            {{else}}
+                {{authentication .}}
+            {{/if}}
+            </div>
+        </div>
 
-						<a class="brand" href="{{tenantedUrl ""}}{{meta.landingPage}}"></a>
-						<ul class="nav menu pull-right">
+    </div>
+</header>
+<!-- /header -->
 
-							{{#if cuser.username}}
-							<li class="nav-separator">
-								<a href="{{tenantedUrl "/pages/my-items"}}"><i
-								class="icon-bookmark store-topnav-bookmark"></i> {{t "My Items"}}</a>
-							</li>
-							<li>
 
-								<a class="dropdown-toggle" data-toggle="dropdown" href="#"><i
-								class="icon-user"></i> {{cuser.username}} <b class="caret"></b></a>
-								<ul class="dropdown-menu dropdown-account" role="menu" aria-labelledby="dLabel">
-									<li>
-									{{signout .}}
-									</li>
-								</ul>
-
-							</li>
-							{{else}}
-							{{authentication .}}
-							{{/if}}
-
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 {{>login login}}
 
 {{>register}}
-

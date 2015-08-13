@@ -14,16 +14,6 @@
  * limitations under the License.
  */
 /**
- * Description: Pagination
- *              Function 'scroll' bind to the UI event scroll.
- *              Requests next set of assets by calling API endpoint /publisher/apis/assets?type=<type>&sort=<sort-by-attribute>&start=<number-of-already-rendered-assets>&count=<number-of-assets-per-page>
- *              Renders retrieved set of assets by calling caramel client
- *              if no-no-more assets to be retrieved, unbind 'scroll'
- */
-var currentPage, infiniteScroll;
-currentPage = 1;
-infiniteScroll = true;
-/**
  * To render the next set of assets by appending to the available container
  * @param {string} partial  : to which partial should be added
  * @param {JSON}   data     : data for the partial
@@ -59,87 +49,42 @@ function convertTimeToUTC(assets) {
     return assets;
 }
 /**
- * Return next set of assets for the next page by calling assets API endpoint
- * @param {String} param  : string of parameters for the api call
- */
-function getNextPage(param) {
-    var assetType = store.publisher.type; //load type from store global object
-    var url = '/publisher/apis/assets?type=' + assetType + param; // build url for the endpoint call
-    // call endpoint
-    $.ajax({
-        url: url,
-        type: 'GET',
-        success: function(response) { //on success
-            var assets = convertTimeToUTC(response.data);
-            if (assets) {
-                renderView('list_assets_table_body', assets, '#list_assets_table_body', null);
-                if (assets.length < store.publisher.itemsPerPage) { // if no more assets for the next page
-                    infiniteScroll = false;
-                    $('.loading-inf-scroll').hide();
-                } else {
-                    infiniteScroll = true;
-                    if ($(window).height() >= $(document).height()) {
-                        scroll();
-                    }
-                }
-            } else { //if no assets retrieved for this page
-                infiniteScroll = false;
-            }
-        },
-        error: function(response) { //on error
-            $('.loading-inf-scroll').hide();
-            $(window).unbind('scroll', scroll);
-            infiniteScroll = false;
-        }
-    });
-}
-/**
  * Build sorting parameters based on page path
  * @param {string} path  : string
  */
 var setSortingParams = function(path) {
-    var obj = path.split('?');
     var sorting = '';
-    if (obj[1]) {
-        var temp = obj[1].split('&');
-        var sortby = temp[0].split('=')[1];
-        var sort = temp[1].split('=')[1];
-    } else {
-        sort = 'DESC';
-        sortby = 'overview_createdtime';
-    }
-    if (sort == 'DESC') {
-        sorting = '&&sort=-' + sortby;
-    } else {
-        sorting = '&&sort=+' + sortby;
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("sort=") != -1){
+                sorting = '&&' + paramsPart;
+            }
+        }
+    }else{
+        sorting = '&&sort=+overview_createdtime';
     }
     return sorting;
 };
 /**
- * scroll method bind to be scroll window function
- *
+ * Build query parameters based on page path
+ * @param {string} path  : string
  */
-var scroll = function() {
-    var startInitItems = store.publisher.itemsPerPage; // items-per-page by global store object
-    if (infiniteScroll && startInitItems > 1) { //if scroll enabled
-        if ($(window).scrollTop() + $(window).height() >= $(document).height()) {
-            var start = startInitItems * (currentPage++);
-            var path = window.location.href; //current page path
-            var param = '&&start=' + start + '&&count=' + startInitItems + setSortingParams(path);
-            getNextPage(param); // get next set of assets
-            $('.loading-inf-scroll').hide();
-            $(window).unbind('scroll', scroll);
-            infiniteScroll = false;
-            setTimeout(function() {
-                if (infiniteScroll) {
-                    $(window).bind('scroll', scroll);
-                    $('.loading-inf-scroll').show();
-                }
-            }, 500);
+var setQueryParams = function(path) {
+    var query = '';
+    var obj = path.split('?');
+    if(obj[1]){
+        var params = obj[1].split("&");
+        for(var j=0; j<params.length;j++){
+            var paramsPart = params[j];
+            if(paramsPart.indexOf("q=") != -1){
+                query = '&&' + paramsPart;
+            }
         }
-    } else { // if infinite scroll is not enabled
-        $('.loading-inf-scroll').hide();
     }
+    return query;
 };
 var propCount = function(obj) {
     var count = 0;
@@ -150,17 +95,88 @@ var propCount = function(obj) {
     }
     return count;
 };
+var parseArrToJSON = function(items){
+    var item;
+    var components;
+    var obj = {};
+    var key;
+    var value;
+    for(var index = 0; index < items.length; index++){
+        item = items[index];
+        components = item.split(':');
+        if(components.length == 2) {
+            key = components[0];
+            value = components[1];
+            obj[key]=value;
+        }
+    }
+    return obj;
+};
+var isTokenizedTerm = function(term){
+    return term.indexOf(':')>-1;
+};
+var isEmpty = function(input) {
+    return (input.length === 0); 
+};
+/**
+ * Takes the users input and builds a query.This method
+ * first checks if the user is attempting to search by name , if not
+ * it will look for a : delimited complex query
+ *    E.g. name:wso2 tags:bubble
+ * @param  {[type]} input [description]
+ * @return {[type]}       [description]
+ */
+var parseUsedDefinedQuery = function(input) {
+    var terms;
+    var q = {};
+    var current;
+    var term;
+    var arr =[];
+    var previous;
+    //Use case #1 : The user has only entered a name
+    if((!isTokenizedTerm(input)) &&(!isEmpty(input))){
+        q.name = input;
+        return q;
+    }
+    //Remove trailing whitespaces if any
+    input = input.trim();
+    //Use case #2: The user has entered a complex query
+    //and one or more properties in the query could values
+    //with spaces
+    //E.g. name:This is a test tags:wso2
+    terms = input.split(' ');
+
+    for(var index = 0; index < terms.length; index++){
+        term = terms[index];
+        term = term.trim(); //Remove any whitespaces
+        //If this term is not empty and does not have a : then it should be appended to the
+        //previous term
+        if((!isEmpty(term))&&(!isTokenizedTerm(term))){
+            previous = arr.length -1;
+            if(previous>=0) {
+                arr[previous]= arr[previous]+' '+term;
+            }
+        } else {
+            arr.push(term);
+        }
+    }
+    return parseArrToJSON(arr);
+};
 var createQuery = function(options) {
     options = options || {};
-    var searchUrl = caramel.url('/asts/' + store.publisher.type + '/list');
+    var searchUrl = caramel.url('/assets/' + store.publisher.type + '/list');
     var q = {};
-    var name = $('#inp_searchAsset').val();
+    var input = $('#inp_searchAsset').val();
     var category = options.category || undefined;
     var searchQueryString = '?';
-    if (name) {
-        q.name = name;
-    }
+    q = parseUsedDefinedQuery(input);
+    // if (name) {
+    //     q.name = name;
+    // }
     if (category) {
+        if(category == "All Categories"){
+            category = "";
+        }
         q.category = category;
     }
     if (propCount(q) >= 1) {
@@ -191,10 +207,48 @@ var initCategorySelection = function() {
         });
     });
 };
+var clearWaiting = function(){
+    var cookieName = 'new-asset-'+store.publisher.type;
+    $.removeCookie(cookieName);
+};
+var  initAssetCreationChecker = function(){
+    var cookieName = 'new-asset-'+store.publisher.type;
+    var newAsset = $.cookie(cookieName);
+    if(!newAsset){
+        return;
+    }
+    var newAssetId =  newAsset.split(":")[0].trim();
+    var newAssetType = newAsset.split(":")[1].trim();
+    var newAssetName = newAsset.split(":")[2].trim();
+
+    var urlApi = caramel.url('/apis/assets'+'?type='+newAssetType + '&q="name":"'+newAssetName+'"');
+    var url = caramel.url('/assets/'+newAssetType + '/details/' + newAssetId);
+
+
+    $.ajax({
+        url:urlApi,
+        type:'GET',
+        success:function(data){
+            if(data.list.length == 0 ){
+                if($('#assetLoader').length < 1) {
+                    messages.alertInfoLoader('Asset added successfully. Please wait. <i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <i class="fa fa-close" onclick="clearWaiting()"></i>');
+                }
+                setTimeout(initAssetCreationChecker,3000);
+            }else{
+                $('#assetLoader').parent().parent().remove();
+                messages.alertInfoLoader('Now you can access the asset. <a href="'+url+'">'+ newAssetName + '</a>');
+                $.removeCookie(cookieName);
+            }
+        },
+        error:function(){
+            $.removeCookie(cookieName);
+        }
+   });
+};
 // bind to window function
-$(window).bind('scroll', scroll);
+//$(window).bind('scroll', scroll);
 $(window).load(function() {
-    //scroll();
     initSearch();
     initCategorySelection();
+    initAssetCreationChecker();
 });

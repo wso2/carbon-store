@@ -15,7 +15,7 @@
  */
 var api = {};
 var error = '';
-(function(api) {
+(function (api) {
     var log = new Log('lifecycle_api');
     var rxtModule = require('rxt');
     var storeModule = require('store');
@@ -29,7 +29,7 @@ var error = '';
      * @param options  Object contains asset-id
      * @param am       The asset-manager instance
      */
-    var getAsset = function(options, am) {
+    var getAsset = function (options, am) {
         try {
             asset = am.get(options.id);
         } catch (e) {
@@ -47,7 +47,7 @@ var error = '';
      * Validate asset type
      * @param  options Object contains asset type
      */
-    var validateOptions = function(options) {
+    var validateOptions = function (options) {
         if (!options.type) {
             var error = 'Unable to obtain state information without knowing the type of asset of id: ' + options.id;
             log.error(error);
@@ -59,7 +59,7 @@ var error = '';
      * @param  asset   The asset object
      * @param  options Object contains asset-id
      */
-    var validateAsset = function(asset, options) {
+    var validateAsset = function (asset, options) {
         var error = null;
         if (!asset) {
             error = 'Unable to locate asset information of ' + options.id;
@@ -80,7 +80,7 @@ var error = '';
      * @param  {Object} asset    An asset instance
      * @return {String}         The name of the lifecycle
      */
-    var resolveLifecycle = function(options, asset) {
+    var resolveLifecycle = function (options, asset) {
         if (options.lifecycle) {
             return options.lifecycle;
         }
@@ -94,7 +94,7 @@ var error = '';
      * @param  session  SessionId
      * @return Boolean whether state changed/not
      */
-    api.changeState = function(options, req, res, session) {
+    api.changeState = function (options, req, res, session) {
         var success = false;
         validateOptions(options);
         if (!options.nextState) {
@@ -123,6 +123,7 @@ var error = '';
         try {
             success = am.invokeLcAction(asset, action, lcName);
             if (success) {
+                options.path = asset.path;
                 //Check if the user provided a comment and add it
                 addComment(options, req, res, session);
             }
@@ -143,7 +144,7 @@ var error = '';
      * @param   session  SessionId
      * @return {string}
      */
-    api.invokeStateTransition = function(options, req, res, session) {
+    api.invokeStateTransition = function (options, req, res, session) {
         var stateReq = req.getAllParameters('UTF-8');
         var successChecking = false;
         var successStateChange = false;
@@ -183,7 +184,7 @@ var error = '';
         }
         return msg;
     };
-    var isDeletable = function(assetState, deletableStates) {
+    var isDeletable = function (assetState, deletableStates) {
         var astState = assetState ? assetState.toLowerCase() : assetState;
         for (var index in deletableStates) {
             if (deletableStates[index].toLowerCase() == astState) {
@@ -199,7 +200,7 @@ var error = '';
      * @param am asset-manager
      * @return A list of check-items and checked:true/false
      */
-    var setCheckItemState = function(checkItems, asset, am, lcName) {
+    var setCheckItemState = function (checkItems, asset, am, lcName) {
         //Obtain the check item states for the asset
         try {
             var assetCheckItems = am.getLifecycleCheckItems(asset, lcName);
@@ -226,7 +227,7 @@ var error = '';
      * @param  state               The state information of the current asset
      * @param  am                  The asset Manager instance
      */
-    var updateCheckItemState = function(checkItemIndex, checkItemState, asset, state, am, lcName) {
+    var updateCheckItemState = function (checkItemIndex, checkItemState, asset, state, am, lcName) {
         //Check if the index provided is valid
         var msg;
         if ((checkItemIndex < 0) || (checkItemIndex > state.checkItems.length - 1)) {
@@ -259,7 +260,7 @@ var error = '';
      * @param  state   the current state of the asset
      * @return Boolean       Whether the request is successful or not
      */
-    var updateCheckItemStates = function(options, asset, am, state) {
+    var updateCheckItemStates = function (options, asset, am, state) {
         var success = false;
         var msg = '';
         var lcName = resolveLifecycle(options, asset);
@@ -293,7 +294,7 @@ var error = '';
      * @param  session   sessionID
      * @return A JSON object defining the structure of the lifecycle
      */
-    api.getState = function(options, req, res, session) {
+    api.getState = function (options, req, res, session) {
         var state;
         validateOptions(options);
         var assetApi = rxtModule.asset;
@@ -328,7 +329,7 @@ var error = '';
         }
         //Update the state of the check items
         state.checkItems = setCheckItemState(state.checkItems, asset, am, lcName);
-        state.isLCActionsPermitted = isLCActionsPermitted(asset,options,req,res,session);
+        state.isLCActionsPermitted = isLCActionsPermitted(asset, options, req, res, session);
         return state;
     };
     /**
@@ -339,7 +340,7 @@ var error = '';
      * @param  session   sessionID
      * @return A JSON object defining the structure of the
      */
-    api.getLifecycle = function(options, req, res, session) {
+    api.getLifecycle = function (options, req, res, session) {
         var lcApi = lifecycleModule.api; //load lifecycle module
         var server = storeModule.server; //load server instance
         var lifecycle = null;
@@ -362,7 +363,7 @@ var error = '';
      * @param  session sessionID
      * @return An array of strings with the names of the lifecycles
      */
-    api.getLifecycles = function(options, req, res, session) {
+    api.getLifecycles = function (options, req, res, session) {
         var lcApi = lifecycleModule.api;
         var server = storeModule.server;
         //var lifecycle = null;
@@ -378,7 +379,7 @@ var error = '';
      * @param  session   sessionID
      * @return A boolean value indicating the success of the operation
      */
-    api.checkItems = function(options, req, res, session) {
+    api.checkItems = function (options, req, res, session) {
         var isSuccess = false;
         validateOptions(options);
         var assetApi = rxtModule.asset;
@@ -389,35 +390,39 @@ var error = '';
         isSuccess = updateCheckItemStates(options, asset, am, state);
         return isSuccess;
     };
-    api.getHistory = function(options, req, res, session) {
+    api.getHistory = function (options, req, res, session) {
         validateOptions(options);
         var assetApi = rxtModule.asset;
         var tenantId = storeModule.server.current(session).tenantId;
         var am = assetApi.createUserAssetManager(session, options.type);
         var history = am.getLifecycleHistory(options.id);
+        var asset = am.get(options.id);
+        options.path = asset.path;
         history = parseHistory(history);
         //Add the lifecycle comments
-        var comments = getLCComments(options.id,tenantId);
+        var comments = getLCComments(options.path, tenantId);
         var historyComments = history.item ? history.item : [];
-        historyComments.forEach(function(entry){
+        historyComments.forEach(function (entry) {
+
+
             //Reverse the order since latest comments come first
-            var index =(historyComments.length - 1) - entry.order;
+            var index = (historyComments.length - 1) - entry.order;
             historyComments[index].comment = comments[entry.order];
         });
         return history;
     };
-    api.listAllAttachedLifecycles = function(options, req, res, session) {
+    api.listAllAttachedLifecycles = function (options, req, res, session) {
         validateOptions(options);
         var assetApi = rxtModule.asset;
         var am = assetApi.createUserAssetManager(session, options.type);
         return am.listAllAttachedLifecycles(options.id);
     };
-    api.traversableStates = function(options,req,res,session){
-        var am = getAssetManager(options,session);
+    api.traversableStates = function (options, req, res, session) {
+        var am = getAssetManager(options, session);
         var tenantId = storeModule.server.current(session).tenantId;
-        var asset = getAsset(options,am);
+        var asset = getAsset(options, am);
         //Check if the user can perform lifecycle operations
-        if(!isLCActionsPermitted(asset, options, req, res, session)){
+        if (!isLCActionsPermitted(asset, options, req, res, session)) {
             return [];
         }
         var lcApi = lifecycleModule.api;
@@ -425,9 +430,9 @@ var error = '';
         var nextStates = lcApi.getLifecycle(lcName, tenantId);
         return nextStates;
     };
-    var parseHistory = function(history) {
+    var parseHistory = function (history) {
         history = history || {};
-        if(!history.content){
+        if (!history.content) {
             log.warn('Attempt to parse a history resource which does not have content');
             return {};
         }
@@ -435,16 +440,16 @@ var error = '';
         var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent) || {};
         return historyContent;
     };
-    var getAssetManager = function(options,session){
+    var getAssetManager = function (options, session) {
         var assetApi = rxtModule.asset;
         var am = assetApi.createUserAssetManager(session, options.type);
         return am;
     };
-    var addComment = function(options, req, res, session) {
-        if(!options.comment){
-            //if(log.isDebugEnabled){
-                log.warn('A lifecycle comment has not been provided for '+options.id);
-            //}
+    var addComment = function (options, req, res, session) {
+        if (!options.comment) {
+            if(log.isDebugEnabled()){
+                log.debug('A lifecycle comment has not been provided for ' + options.id);
+            }
             return;
         }
         var tenantId = storeModule.server.current(session).tenantId;
@@ -461,7 +466,7 @@ var error = '';
             return addedComment;
         }
         try {
-            addLCComment(options.id, tenantId, order, options.comment);
+            addLCComment(options.path, tenantId, order, options.comment);
             addedComment = true;
         } catch (e) {
             log.error('Could not added comment', e);
@@ -476,35 +481,33 @@ var error = '';
      *                          the last lifecycle transition
      * @param {[type]} comment  The comment to be added
      */
-    var addLCComment = function(aid, tenantId, order, comment) {
+    var addLCComment = function (path, tenantId, order, comment) {
         var registry = storeModule.server.systemRegistry(tenantId);
         var entry = {};
         entry.type = LC_COMMENT_TYPE;
         entry.order = order;
         entry.comment = comment;
         //TODO: Need to handle sanitation of user entered comments
-        registry.comment(aid, stringify(entry));
+        registry.comment(path, stringify(entry));
     };
-    var getLCComments = function(aid, tenantId) {
+    var getLCComments = function (path, tenantId) {
         var registry = storeModule.server.systemRegistry(tenantId);
-        var comments = registry.comments(aid);
+        var comments = registry.comments(path);
         var lifecycleComments = {};
-        comments.forEach(function(entry) {
-             var commentJSON = {};
-              if(entry.content){
-                 commentJSON = JSON.parse(entry.content)||{};
-              }
-             // //var content = entry.content ? parse(entry.content) : {};
-              if ((commentJSON.comment) && (commentJSON.type === LC_COMMENT_TYPE)) {
-                  lifecycleComments[commentJSON.order] = commentJSON.comment;
-              }
+        comments.forEach(function (entry) {
+            var commentJSON = {};
+            if (entry.content) {
+                commentJSON = JSON.parse(entry.content) || {};
+            }
+            // //var content = entry.content ? parse(entry.content) : {};
+            if ((commentJSON.comment) && (commentJSON.type === LC_COMMENT_TYPE)) {
+                lifecycleComments[commentJSON.order] = commentJSON.comment;
+            }
         });
         return lifecycleComments;
     };
-    var isLCActionsPermitted = function(asset,options,req,res,session){
-        var user = storeModule.server.current(session);
-        var userManager = storeModule.server.userManager(user.tenantId);
+    var isLCActionsPermitted = function (asset, options, req, res, session) {
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
-        return permissions.isLCActionsPermitted(user.username,asset.path,userManager);
+        return permissions.isLCActionsPermitted( asset.path, session);
     };
 }(api));

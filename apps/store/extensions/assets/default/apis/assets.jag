@@ -95,7 +95,19 @@ require('/modules/store.js').exec(function(ctx) {
             options.domain = req.getParameter('domain');
 
             if (uriMatcher.match(LIST_ASSETS_URL)) {
-                var assets = assetApi.search(options, req, res, session);
+                var assets = [];
+                if(options.type) {
+                    if(log.isDebugEnabled()){
+                       log.debug('Type specific advanced search');
+                    }
+                    assets = assetApi.advanceSearch(options, req, res, session);
+                } else {
+                    if(log.isDebugEnabled()){
+                        log.debug('Generic advanced search');
+                    }
+                    assets = assetApi.genericAdvanceSearch(options,req,res,session);
+                }
+                
                 response = responseProcessor.buildSuccessResponse(response, 200, assets);
             } else if (uriMatcher.match(GET_ASSET_URL)) {
                 options.id = uriMatcher.elements().id;

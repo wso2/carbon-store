@@ -1,7 +1,12 @@
+<ul class="auth-links">
 <li>
-    <a href="#" data-toggle="modal" data-target="#modal-login">{{t "Sign in"}}</a>
+    <a href="{{url "/login"}}">
+    <i class="fw fw-key fw-1-5x"></i>
+    <span class="ro-text padding-left">{{t " Sign in"}}</span>
+    </a>
 </li>
 <li>
-    <a id="btn-register" class="btn btn-primary" data-toggle="modal"
-    data-target="#modal-register">{{t "Register"}}</a>
-</li>
+    <a href="{{url "/login"}}" id="btn-register" >
+    <i class="fw fw-register fw-1-5x"></i>
+    <span class="ro-text  padding-left">{{t " Register"}}</span></a>
+</li></ul>

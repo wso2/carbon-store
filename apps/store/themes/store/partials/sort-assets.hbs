@@ -1,68 +1,24 @@
-<div class="row-sort-assets">
-	<div class="row-fluid">
-		<div class="span8">
-			{{#if assetMeta.categories}}
-			<div id="breadcrumb">
-				<div class="breadcrumb-l1">
-					<div class="breadcrumb-head">
-						{{#if selectedCategory}}
-						<span>{{selectedCategory}}</span>
-						{{else}}
-						<span>All Categories</span>
-						{{/if}}
-						<i class="icon-caret-down"></i>
-					</div>
-					<ul class="breadcrumb-body">
-						<li>
-							<a href="{{tenantedUrl "/asts"}}/{{rxt.shortName}}/list">All
-                            Categories</a>
-						</li>
-						{{#each assetMeta.categories}}
-						<li>
-							<a
-                                    href='{{tenantedUrl "/asts"}}/{{../rxt.shortName}}/list?q="overview_category":"{{this}}"'>{{this}}</a>
-						</li>
-						{{/each}}
-					</ul>
-				</div>
-				<!--
-				<div class="breadcrumb-l2">
-				<div class="breadcrumb-head">
-				<span>Sub Category Name</span><i class="icon-caret-down"></i>
-				</div>
-				<ul class="breadcrumb-body">
-				<li>
-				<a href="#">Category 1</a>
-				</li>
-				<li>
-				<a href="#">Category 1</a>
-				</li>
-				<li>
-				<a href="#">Category 1</a>
-				</li>
-				<li>
-				<a href="#">Category 1</a>
-				</li>
-				</ul>
-				</div>-->
+<div class="ast-container " id="ast-container">
+    <div class="container-fluid ">
+        <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">{{rxt.pluralLabel}}</a></div><!--title-->
+        <div class="pull-right sort-asset-container">
 
-			</div>
-			{{/if}}
-		</div>
-		<div class="span4">
-			<ul id="ul-sort-assets" data-type="gadget" class="pull-right">
-				<li>
-					<a href="{{tenantedUrl ""}}/asts/{{rxt.shortName}}/list?sort=popular"
-                    data-toggle="tooltip" data-sort="popular" title="{{t "Sort by Popularity"}}"><i class="icon-star"></i></a>
-				</li>
-				<li>
-					<a href="{{tenantedUrl ""}}/asts/{{rxt.shortName}}/list?sortBy=overview_name&sort=ASC" data-toggle="tooltip" data-sort="az" title="{{t "Sort by Alphabetical Order"}}"><i class="icon-sort-alphabetical"></i></a>
-				</li>
-				<li>
-					<a href="{{tenantedUrl ""}}/asts/{{rxt.shortName}}/list?sortBy=overview_createdtime&sort=DESC" data-toggle="tooltip" data-sort="recent" title="{{t "Sort by Created Date"}}"><i class="icon-calendar"></i></a>
-				</li>
-			</ul>
-		</div>
-
-	</div>
+            <a aria-expanded="false" data-toggle="dropdown" id="sortDropdown" type="button" class="dropdown-toggle" href="#">
+                <span class="sort-asset-info">( {{sorting.sortHelp}} <i class="fa {{sorting.sortHelpIcon}}"></i> )</span>
+                <img src="/publisher/themes/default/img/icons/ico-sort.png">
+            </a>
+            <ul aria-labelledby="dropdownMenu1" role="menu" class="dropdown-menu" id="ul-sort-assets" data-type="gadget">
+                <li role="presentation" class="{{#if sorting.popularActive}}active{{/if}}">
+                    <a href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sort=popular' class="filter-item"><span class="pull-left">Popular</span> </a>
+                </li>
+                <li role="presentation" class="{{#if sorting.nameActive}}active{{/if}}">
+                    <a href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sortBy=overview_name&sort={{sorting.nameNextSort}}' title='{{t "Sort by Alphabetical Order"}}'><span class="pull-left">Name</span> <i class="fa {{sorting.nameIcon}} pull-right"></i></a>
+                </li>
+                <li role="presentation" class="{{#if sorting.dateTimeActive}}active{{/if}}">
+                    <a href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sortBy=overview_createdtime&sort={{sorting.dateTimeNextSort}}' data-toggle="tooltip" data-sort="overview_createdtime" title='{{t "Sort by Created Date"}}'><span class="pull-left">Date/Time Created</span> <i class="fa {{sorting.dateTimeIcon}} pull-right"></i></a>
+                </li>
+            </ul>
+        </div>
+    <hr>
+</div>
 </div>

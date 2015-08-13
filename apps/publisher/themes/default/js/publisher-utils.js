@@ -24,24 +24,7 @@ var PublisherUtils = {};
     var OVERLAY_CONTAINER_HTML = '<div id="' + OVERLAY_CONTAINER_ID + '"></div>';
     var getID;
 
-    getID = PublisherUtils.getID = function(container) {
-        return '#' + container;
-    };
-    PublisherUtils.blockButtons = function(options) {
-        options = options || {};
-        var container = options.container || '';
-        var msg = options.msg || 'Performing requested action';
-        if (!container) {
-            return;
-        }
-        createOverlay(container);
-        blockUI(OVERLAY_CONTAINER_ID, msg);
-    };
-    PublisherUtils.unblockButtons = function(options) {
-        options = options || {};
-        var container = options.container || 'Finished performing requested action';
-        unblockUI(OVERLAY_CONTAINER_ID);
-    };
+
     PublisherUtils.resolveCurrentPageAssetType = function(){
         if((!store)&&(!store.publisher)){
             return 'asset';
@@ -53,37 +36,5 @@ var PublisherUtils = {};
     };
     var spinnerURL = function() {
         return caramel.url('/themes/default/img/preloader-40x40.gif');
-    };
-    var createLoadingIcon = function() {
-        return '<img src="' + spinnerURL() + '" />';
-    };
-    var blockUI = function(container, msg) {
-        var container = $(getID(container));
-        container.html('<img src="' + spinnerURL() + '" />' + msg);
-        container.css('position', 'relative');
-        container.css('z-index', 2);
-        container.css('display', 'block');
-        container.css('background-color', 'white');
-        container.css('top', 0);
-        container.css('bottom', 0);
-        container.css('left', 0);
-        container.css('right', 0);
-    };
-    var unblockUI = function(container, msg) {
-        var container = $(getID(container));
-        container.html('');
-        container.attr('style', '');
-    };
-    var createOverlay = function(parentContainerId) {
-        var container = $(getID(OVERLAY_CONTAINER_ID))[0];
-        if (container) {
-            return;
-        }
-        //Create a container 
-        var parentContainer = $(getID(parentContainerId));
-        if (!parentContainer[0]) {
-            return;
-        }
-        parentContainer.append(OVERLAY_CONTAINER_HTML);
     };
 }());

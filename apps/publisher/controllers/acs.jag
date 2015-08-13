@@ -20,18 +20,42 @@
 (function () {
     var log = new Log(),
             configs = require('/config/publisher.js').config(),
+            app = require('rxt').app,
+            context = app.getContext(),
             samlResponse = request.getParameter('SAMLResponse'),
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
             relayState = request.getParameter('RelayState'),
             sso = require('sso'),
             samlRespObj,
-            keyStoreProps = {
-                KEY_STORE_NAME: process.getProperty('carbon.home') + configs.ssoConfiguration.keyStoreName,
-                KEY_STORE_PASSWORD: configs.ssoConfiguration.keyStorePassword,
-                IDP_ALIAS: configs.ssoConfiguration.identityAlias
-            },
-            sso_sessions = application.get('sso_sessions');
+            attr = configs.authentication.methods.sso.attributes;
+    var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Password");
+    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Location");
+    var identityAlias = attr.identityAlias;
+    var keyStoreProps = {
+                KEY_STORE_NAME: keyStoreName,
+                KEY_STORE_PASSWORD: keyStorePassword,
+                IDP_ALIAS: identityAlias,
+                USE_ST_KEY: !attr.useTenantKey
+            };
+    var sso_sessions = application.get('sso_sessions');
+
+    var loadTenant = function(username) {
+        var carbon = require('carbon');
+        var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+        var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
+        var TenantAxisUtils = Packages.org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+
+        var service;
+        var ctx;
+        var domain = MultitenantUtils.getTenantDomain(username);
+        if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
+            service = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+            ctx = service.getServerConfigContext();
+            TenantAxisUtils.setTenantAccessed(domain, ctx);
+        }
+    };
 
     if (!sso_sessions) {
         application.put('sso_sessions', {});
@@ -43,12 +67,13 @@
         if (!sso.client.isLogoutResponse(samlRespObj)) {
 
             // validating the signature
-            if (configs.ssoConfiguration.responseSigningEnabled) {
+            if (attr.responseSigningEnabled) {
 
                 if (sso.client.validateSignature(samlRespObj, keyStoreProps)) {
                     var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
                     if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
+                        loadTenant(sessionObj.loggedInUser);
                         session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
                         session.put("Loged", "true");
 
@@ -66,12 +91,23 @@
 
                         var user = require('store').user;
 
-                        if (user.loginWithSAML(sessionObj.loggedInUser)) {
-                            log.debug('user is set :::' + sessionObj.loggedInUser);
-                            response.sendRedirect('/publisher');
+                        var username = sessionObj.loggedInUser;
+                        user.loadTenant(username)
+
+                        var permissionAPI = require('rxt').permissions;
+                        var carbon = require('carbon');
+                        var usr = carbon.server.tenantUser(username);
+                        var modifiedUsername = user.removeTenantDomainFromUsername(username);
+                        var hasPublisherLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
+                                modifiedUsername);
+
+                        if (hasPublisherLoginPermission) {
+                            user.emitLogin(username)
+                            log.debug('user is set :::' + username);
+                            response.sendRedirect(context);
                         }
                         else{
-                            session.invalidate();
+                            //session.invalidate();
                             log.warn('User '+sessionObj.loggedInUser+' does not have permission to access the publisher application.Make sure the user has the publisher role.');
                             response.sendError(401,'You do not have permission to login to this application.Please contact your administrator and request permission.');
                         }
@@ -82,7 +118,7 @@
 
         } else {
             session.invalidate();
-            response.sendRedirect('/publisher');
+            response.sendRedirect(context);
         }
     }
 

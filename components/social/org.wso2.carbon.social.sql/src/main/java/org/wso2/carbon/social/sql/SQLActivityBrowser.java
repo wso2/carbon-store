@@ -196,7 +196,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			connection = DSConnection.getConnection();
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdaptorClass();
+				cls = SocialUtil.loadQueryAdapterClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 
@@ -408,7 +408,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	 * @return boolean
 	 * @throws SocialActivityException 
 	 */
-	public boolean isUserlikedActivity(String userId, String targetId, int like)
+	public boolean isUserlikedActivity(String userId, int targetId, int like)
 			throws SocialActivityException {
 		Connection connection = null;
 		String errorMsg = "Error while checking user like activity. ";
@@ -422,7 +422,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			connection = DSConnection.getConnection();
 			statement = connection.prepareStatement(SELECT_LIKE_STATUS);
 			statement.setString(1, userId);
-			statement.setString(2, targetId);
+			statement.setInt(2, targetId);
 			statement.setInt(3, like);
 			resultSet = statement.executeQuery();
 
@@ -529,7 +529,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			connection = DSConnection.getConnection();
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdaptorClass();
+				cls = SocialUtil.loadQueryAdapterClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 

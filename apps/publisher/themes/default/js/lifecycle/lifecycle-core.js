@@ -80,6 +80,7 @@ var LifecycleUtils = {};
     constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
     constants.MSG_ERROR_CHECKLIST_UPDATE = 'msgChecklistUpdateError';
+    constants.CONTAINER_DELETE_ACTION_AREA = 'deleteActionArea';
     var id = function(name) {
         return '#' + name;
     };
@@ -410,7 +411,7 @@ var LifecycleUtils = {};
         render(inner, g);
         // Center the graph
         var initialScale = 1.2;
-        zoom.translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
+        zoom.translate([($(svgContainer).width() - g.graph().width * initialScale) / 2, 20]).scale(initialScale).event(svg);
         svg.attr('height', g.graph().height * initialScale + 40);
     };
     LifecycleImpl.prototype.fillGraphData = function() {
@@ -577,6 +578,7 @@ var LifecycleUtils = {};
                 }
                 LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
                 LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
+                that.fetchState();
             },
             error: function() {
                 LifecycleAPI.event(constants.EVENT_ACTION_FAILED);
@@ -619,6 +621,7 @@ var LifecycleUtils = {};
                 }
                 that.currentState = data.id.toLowerCase();
                 that.isLCActionsPermitted = data.isLCActionsPermitted;
+                that.isDeletable = data.isDeletable;
                 for (var index = 0; index < data.checkItems.length; index++) {
                     data.checkItems[index].index = index;
                 }

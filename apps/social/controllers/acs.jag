@@ -19,20 +19,44 @@
  */
 (function () {
     var log = new Log(),
+            caramel = require('caramel'),
             configs = require('/configs/social.js').config(),
             process = require('process'),
             samlResponse = request.getParameter('SAMLResponse'),
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
-            relayState = request.getParameter('RelayState'),
+            // see https://wso2.org/jira/browse/IDENTITY-3454
+            relayState = decodeURIComponent(request.getParameter('RelayState')),
             sso = require('sso'),
             samlRespObj,
-            keyStoreProps = {
-                KEY_STORE_NAME: process.getProperty('carbon.home') + configs.ssoConfiguration.keyStoreName,
-                KEY_STORE_PASSWORD: configs.ssoConfiguration.keyStorePassword,
-                IDP_ALIAS: configs.ssoConfiguration.identityAlias
+            attr = configs.authentication.methods.sso.attributes;
+    var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Password");
+    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Location");
+    var identityAlias = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.KeyAlias");
+    var keyStoreProps = {
+                KEY_STORE_NAME: keyStoreName,
+                KEY_STORE_PASSWORD: keyStorePassword,
+                IDP_ALIAS: identityAlias,
+                USE_ST_KEY: !attr.useTenantKey
             },
             sso_sessions = application.get('sso_sessions');
+
+    var loadTenant = function(username) {
+        var carbon = require('carbon');
+        var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+        var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
+        var TenantAxisUtils = Packages.org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+
+        var service;
+        var ctx;
+        var domain = MultitenantUtils.getTenantDomain(username);
+        if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
+            service = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+            ctx = service.getServerConfigContext();
+            TenantAxisUtils.setTenantAccessed(domain, ctx);
+        }
+    };
 
     if (!sso_sessions) {
         application.put('sso_sessions', {});
@@ -44,14 +68,25 @@
         if (!sso.client.isLogoutResponse(samlRespObj)) {
 
             // validating the signature
-            if (configs.ssoConfiguration.responseSigningEnabled) {
+            if (attr.responseSigningEnabled) {
 
                 if (sso.client.validateSignature(samlRespObj, keyStoreProps)) {
                     var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
                     if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
+                        loadTenant(sessionObj.loggedInUser);
                         session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
                         session.put("Loged", "true");
+
+                        //sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId;
+
+                        log.debug("session index :: " + sessionObj.sessionIndex);
+                        log.debug("session :: " + sessionObj.sessionId);
+
+                        log.debug("real session :: " + session.getId());
+
+
+                        //sso_sessions[sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId] = sessionObj.sessionIndex;
 
                         sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
 
@@ -70,7 +105,7 @@
 
         } else {
             session.invalidate();
-            response.sendRedirect('/social');
+            response.sendRedirect(caramel.configs().context);
         }
     }
 

@@ -79,11 +79,13 @@ asset.server = function(ctx) {
             pages: [{
                 title: 'Store |  ' + typeSingularLabel,
                 url: 'details',
-                path: 'details.jag'
+                path: 'details.jag',
+                permission:'ASSET_DETAILS'
             }, {
                 title: 'Store | ' + typeSingularLabel,
                 url: 'list',
-                path: 'list.jag'
+                path: 'list.jag',
+                permission:'ASSET_LIST'
             }, {
                 title: 'Store | ' + typeSingularLabel,
                 url: 'subscriptions',
@@ -123,7 +125,7 @@ asset.configure = function() {
                 lifecycleEnabled:true
             },
             ui: {
-                icon: 'icon-cog'
+                icon: 'fw fw-resource'
             },
             categories: {
                 categoryField: 'overview_category'
@@ -186,6 +188,19 @@ asset.renderer = function(ctx) {
             },
             populateGroupingFeatureDetails: function(page,meta){
                 return decoratorApi.populateGroupingFeatureDetails(ctx,page,this);
+            },
+            sorting: function(page,meta){
+                return decoratorApi.sorting(ctx,page,this);
+            },
+            populateActionBar: function(page,meta){
+                page.actionBar = {};
+                page.actionBar.actions = [];
+                //Format
+                //var action = {};
+                //action.url = '/list';
+                //action.iconClass ='ast-create';
+                //action.name ='Create';
+                //page.actionBar.actions.push(action);
             }
         }
     };

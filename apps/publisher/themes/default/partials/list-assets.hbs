@@ -14,11 +14,21 @@
   ~ limitations under the License.
   -->
 <div class="row">
-    <div class="col-lg-10 col-md-10 col-sm-11 col-xs-12 wr-filters">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-9 wr-filters">
       {{#if assetCategoryDetails.hasCategories}}
-      <div class="wr-filter-category">
-          <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Select Category ... <span class="fa fa-angle-down pull-right"></span></a>
+        <div class="wr-filter-category">
+          <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="categoryDropDown" title="All Categories">
+              {{#if assetCategoryDetails.selectedCategory}}
+                {{assetCategoryDetails.selectedCategory}}
+              {{else}}
+                <span>All Categories</span>
+              {{/if}}
+              <span class="fa fa-angle-down pull-right"></span>
+          </a>
           <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+              {{#if assetCategoryDetails.selectedCategory}}
+                <li><a tabindex="-1" href="#">All Categories</a></li>
+              {{/if}}
               {{#each assetCategoryDetails.values}}
               <li><a tabindex="-1" href="#">{{this}}</a></li>
               {{/each}}
@@ -28,24 +38,27 @@
 
       <div class="wr-search">
         <div>
-        <form class="form-group" id="assetSearchForm" action='{{url "/asts/"}}{{rxt.shortName}}/list' style="margin-left:-4px">
+        <form class="form-group" id="assetSearchForm" action='{{url "/assets/"}}{{rxt.shortName}}/list' style="margin-left:-4px">
           <input type="text" name="query" class="" placeholder="{{t "Search.."}}" id="inp_searchAsset" value="{{paging.query}}" /><a type="button" href="#" class="btn-search" id="searchButton"><span class="fa fa-search"></span></a>
           <input type="hidden" name="sortby" value="{{paging.sortBy}}"/>
           <input type="hidden" name="sort" value="{{paging.sortOrder}}"/>
         </form>
         </div>
-      </div>       
+      </div>
+    <a href="{{url ""}}/pages/advanced-search" class="btn btn-default pull-left advance-search-btn" title="Advanced Search">
+        <span class="advanced-search-text">Advanced Search</span>
+        <span class="fa fa-cog fa-2x advanced-search-icons"></span>
+    </a>
     </div>
-    <div class="col-lg-2 col-md-2 col-sm-1 col-xs-12 wr-filters">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 wr-filters">
         <div class="dropdown pull-right">
             <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
+                <span class="sort-asset-info"><span>( <span class="hidden-xs">{{sorting.selected.help}}</span> <i class="fa {{sorting.selected.helpIcon}}"></i> )</span> <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
             </a>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                <li role="presentation"><a class="filter-item" href="?sort=+overview_name">Name</a></li>
-                <li role="presentation"><a class="filter-item" href="?sort=+overview_version">Version</a></li>
-                <li role="presentation"><a class="filter-item" href="?sort=+overview_provider">Status</a></li>
-                <li role="presentation"><a class="filter-item" href="?sort=-overview_createdtime">Date/Time Created</a></li>
+            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="ul-sort-assets">
+                {{#each sorting.list}}
+                    <li role="presentation" class="{{#if active}}active{{/if}}"><a class="filter-item" href="?sort={{sortNext}}{{sortBy.field}}"><span class="pull-left">{{sortBy.label}}</span><i class="fa {{sortIcon}} pull-right"></i> </a></li>
+                {{/each}}
             </ul>
     </div>
 </div>
@@ -53,7 +66,9 @@
         <!-- content -->
         <div class="ast-container" id="list_assets_table_body">
             {{#if assets}}
-                {{> list_assets_table_body assets}}
+                <div id="list_assets_content">
+                    {{>list_assets_table_body .}}
+                </div>
             {{else}}
                 <div class="emptyAssets-MsgDiv">
                     
@@ -62,7 +77,9 @@
                 </div>
             {{/if}}
         </div>
-    </div>
+    </div> 
 </div>
+
+
 
 

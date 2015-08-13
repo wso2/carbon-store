@@ -17,43 +17,54 @@
  *  under the License.
  *
  */
-(function(){
-    var user = require('store').server.current(session).username;//session.get("LOGGED_IN_USER");
-    if(user === null) {
-        response.sendRedirect('/portal');
-    } else {
-        var config = require('/config/publisher.js').config(),
-                sso = require('sso'),
-                sso_sessions = application.get('sso_sessions'),
-                sessionId = session.getId(),
-                encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], config.ssoConfiguration.issuer),
-                relayState = '/publisher',
-                //postUrl = "https://" + process.getProperty('carbon.local.ip') + ":" + process.getProperty('https.port');
-                postUrl = config.ssoConfiguration.identityProviderURL;
-        var log = new Log();
-
-        log.debug("portal session index : " + sso_sessions[session.getId()]);
-         log.info('Logout URL: '+postUrl);
-        %>
-        <div>
-           <p>You are now redirected to Stratos Identity. If the
-           redirection fails, please click the post button.</p>
-
-            <form id="logoutForm" method="post" action="<%=postUrl%>">
-            <p>
-                <input type="hidden" name="SAMLRequest"
-                      value="<%= encodedSAMLLogoutRequest %>"/>
-                <input type="hidden" name="RelayState" value="<%= relayState %>"/>
-                 <input type="hidden" name="SSOAuthSessionID" value="<%= sessionId %>"/>
-                <button type="submit">POST</button>
-            </p>
-            </form>
-        </div>
-        <script type = "text/javascript" >
-                       document.forms[0].submit();
-        </script>
-
-         <%
+(function(session, request, response) {
+    var log = new Log('publisher.logout');
+    var server = require('store').server;
+    var user = session.get("LOGGED_IN_USER");//var user = server.current(session);
+    var rxtAPI = require('rxt');
+    var constants = rxtAPI.constants;
+    var authMethod;
+    var redirectURL;
+    var config = require('/config/publisher.js').config();
+    var context = rxtAPI.app.getContext();
+    var queryString = request.getQueryString();
+    if (!user) {
+        response.sendRedirect(context);
+        return;
     }
-}());
-%>
+    var resolveAuthMethod = function() {
+        return config.authentication.activeMethod;
+    };
+    var getRedirectURL = function(authMethod, context) {
+        var url;
+        var endpoint = '/pages/basic-auth-logout';
+        switch (authMethod) {
+            case constants.AUTH_METHOD_BASIC:
+                endpoint = '/pages/basic-auth-logout';
+                break;
+            case constants.AUTH_METHOD_SSO:
+                endpoint = '/pages/sso-logout';
+                break;
+            case constants.AUTH_METHOD_OTHER:
+                endpoint = '/pages/other-logout';
+                break;
+            default:
+                break;
+        }
+        url = context + endpoint;
+        return url;
+    };
+    authMethod = resolveAuthMethod();
+    if (!authMethod) {
+        log.error('An authentication method has not been configured. Please make sure the activeMethod property has ' +
+        'been set in the authentication section of the publisher.json. You can find this file in the ' +
+        '/publisher/configs/publisher.json file.');
+        response.sendError(500);
+        return;
+    }
+    redirectURL = getRedirectURL(authMethod, context);
+    if(queryString){
+        redirectURL = redirectURL + "?" +  queryString;
+    }
+    response.sendRedirect(redirectURL);
+}(session, request, response)); %>

@@ -16,7 +16,7 @@
 
 var resources = function (page, meta) {
     return{
-        js: ['caramel.handlebars.client.js', 'list_assets.js'],
+        js: ['caramel.handlebars.client.js', 'list_assets.js', 'list_assets_pagging.js','jquery.cookie.js','notify.min.js','messages.js'],
         code: ['publisher.assets.hbs']
     }
 };

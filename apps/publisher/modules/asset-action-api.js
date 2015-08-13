@@ -24,12 +24,20 @@ var api = {};
     var ACTION_CHECKLIST = 'checklist';
     var ACTION_UPDATE_CHECKLIST = 'update-checklist';
     var ACTION_LC_HISTORY = 'lifecycle-history';
+    var ACTION_ADD_TAGS = 'add-tags';
+    var ACTION_REMOVE_TAGS = 'remove-tags';
+    var ACTION_RETRIEVE_TAGS = 'tags';
+    var ACTION_CREATE_VERSION = 'create-version';
     var HTTP_ERROR_NOT_IMPLEMENTED = 501;
     var CONTENT_TYPE_JSON = 'application/json';
     var MSG_ERROR_NOT_IMPLEMENTED = 'The provided action is not supported by this endpoint';
     var lifecycleAPI = require('/modules/lifecycle/lifecycle-api.js').api;
     var utils = require('utils');
     var rxtModule = require('rxt');
+    var es = require("store").server;
+    var tagsAPI = require('/modules/tags-api.js').api;
+    var assetAPI = require('/modules/asset-api.js').api;        
+    var utility = require('/modules/utility.js').rxt_utility();
     var exceptionModule = utils.exception;
     var constants = rxtModule.constants;
     var msg = function(code, message, data) {
@@ -137,6 +145,87 @@ var api = {};
         //var historyContent = utils.xml.convertE4XtoJSON(xmlHistoryContent)||{};
         return successMsg(msg(200, 'Lifecycle history retrieved successfully', history.item || []));
     };
+    api.addTags = function(req, res, session, options) {
+        var success;
+        if(req.getMethod() !== 'POST'){
+            return errorMsg(msg(405, 'Tags must be added by a POST'));
+        }
+        try {
+            success = tagsAPI.addTags(req, res, session, options);
+        } catch (e) {
+            log.error(e);
+        }
+        if (success) {
+            return successMsg(msg(200, 'Tags added successfully'));
+        }
+        return errorMsg(msg(500, 'Tags were not added'));
+    };
+    api.removeTags = function(req, res, session, options) {
+        var success;
+        if(req.getMethod() !== 'DELETE'){
+            return errorMsg(msg(405, 'Tags must be removed using a DELETE'));
+        }
+        try {
+            success = tagsAPI.removeTags(req, res, session, options);
+        } catch (e) {
+            log.error(e);
+        }
+        if (success) {
+            return successMsg(msg(200, 'Tags removed successfully'));
+        }
+        return errorMsg(msg(500, 'Tags were not removed'));
+    };
+    api.tags = function(req, res, session, options) {
+        var tags = [];
+        var success;
+        if(req.getMethod() !== 'GET'){
+            return errorMsg(msg(405, 'Tags must be retrieved using a GET'));
+        }
+        try {
+            tags = tagsAPI.tags(req,res,session,options);
+            success = true;
+        } catch(e){
+            log.error(e);
+        }
+        if (success) {
+            return successMsg(msg(200, 'Tags of the asset retrieved successfully', tags));
+        }
+        return errorMsg(msg(500, 'Tags were not retrieved'));
+    };
+    /**
+     * api to create  a new version of the given asset
+     * @param  options Object containing asset id, type, new version
+     * @param  req     jaggery request
+     * @param  res     jaggery response
+     * @param  session  sessionId
+     * @return The created asset or null if failed to create the asset
+     */
+    api.createVersion = function(req, res, session, options) {
+        var asset;
+        var createdAsset;
+        var attributes;
+        var assetModule = rxtModule.asset;
+        var am = assetModule.createUserAssetManager(session, options.type);
+        if(req.getMethod() !== 'POST'){
+            return errorMsg(msg(405, 'Create version should be done using a POST'));
+        }
+        try {
+            data = parse(req.getContent());
+            asset = am.createVersion(options, data.attributes);
+            if(asset){
+                 tenantId = es.current(session).tenantId;
+                var registry = es.systemRegistry(tenantId);
+
+                if(registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + options.id)){
+                    registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + options.id,'/_system/governance/store/asset_resources/'+ options.type + '/' + asset);
+                }
+            }
+            return successMsg(msg(200, 'New version created successfully.', asset));
+        } catch (e) {
+            log.error('Asset of type: ' + options.type + ' was not created due to ' ,e);
+            return null;
+        }
+    };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
         var result = errorMsg(msg(HTTP_ERROR_NOT_IMPLEMENTED, MSG_ERROR_NOT_IMPLEMENTED));
@@ -152,6 +241,18 @@ var api = {};
                 break;
             case ACTION_LC_HISTORY:
                 result = api.lifecycleHistory(req, res, session, options);
+                break;
+            case ACTION_ADD_TAGS:
+                result = api.addTags(req, res, session, options);
+                break;
+            case ACTION_REMOVE_TAGS:
+                result = api.removeTags(req, res, session, options);
+                break;
+            case ACTION_RETRIEVE_TAGS:
+                result = api.tags(req, res, session, options);
+                break;
+            case ACTION_CREATE_VERSION:
+                result = api.createVersion(req, res, session, options);
                 break;
             default:
                 break;

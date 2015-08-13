@@ -23,6 +23,7 @@ var uriMatcher = new URIMatcher(request.getRequestURI());
 var server = require('store').server;
 var user = server.current(session);
 var log = new Log();
+var rxtAPI = require('rxt');
 var getPage = function(uri) {
     var comps = uri.split('/');
     return comps.length > 0 ? comps[0] : null;
@@ -47,9 +48,16 @@ if (uriMatcher.match(API_URL)) {
         var file = new File(path);
         if (file.isExists()) {
             request.getMappedPath = mapper(path);
-            var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
-            if (proceed) {
-                include(path);
+            var username = user ? user.username : null;
+            var isAuthorized = rxtAPI.permissions.hasAppAPIPermission(page, tenantId, username);
+            if (!isAuthorized) {
+                log.error('user ' + username + ' does not have permission to access the api ' + page);
+                response.sendError(401,'You do not have access to this page');
+            } else {
+                var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
+                if (proceed) {
+                    include(path);
+                }
             }
         } else {
             log.error('Unable to locate mapped endpoint at path: ' + path);

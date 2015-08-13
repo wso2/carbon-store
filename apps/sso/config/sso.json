@@ -10,10 +10,15 @@
         "password": "admin"
     },
     "userRoles": [],
+
+//    permissions to be assigned to user's private role ( {username}_private )
+//    eg:-
+//         "permissions": {
+//             "login": {
+//                 "/permission/admin/login": ["ui.execute"]
+//             }
+//         }
     "permissions": {
-        "login": {
-            "/permission/admin/login": ["ui.execute"]
-        }
     },
     "userSpace": {
         "space": "portal",
@@ -35,6 +40,10 @@
             }
         ]
     },
+    "registerPermissions":{
+        "authorizedRolePublisher":[],
+        "authorizedRoleStore":["Internal/store"]
+    },
     "storeSpace": {
         "space": "store",
         "options": {
@@ -49,13 +58,10 @@
         "enabled" : true,
         "issuer" : "portal",
         "identityProviderURL" : "%https.host%/sso/samlsso.jag",
-        "keyStorePassword" : "wso2carbon",
-        "identityAlias" : "wso2carbon",
         "responseSigningEnabled" : "true",
-        "keyStoreName" : "/repository/resources/security/wso2carbon.jks"
     },
     "urls" : {
-        "publisher" : "https://localhost:9443/publisher",
-        "store" : "https://localhost:9443/store"
+        "publisher" : "%https.host%/publisher",
+        "store" : "%https.host%/store"
     }
 }

@@ -29,9 +29,12 @@ app.server = function(ctx) {
                 secured:true
             }, {
                 url: 'authenticate',
-                path: 'authenticate.jag',
-                secured:true
-            }, {
+                path: 'authenticate.jag'
+            },{
+                url: 'tags',
+                path: 'tags.jag',
+                secured: true
+            },{
                 url: 'logout',
                 path: 'logout.jag',
                 secured:true
@@ -47,6 +50,9 @@ app.server = function(ctx) {
                 url:'rate',
                 path:'rate.jag',
                 secured:true
+            },{
+                url:'partials',
+                path:'partials.jag'
             }]
         }
     };

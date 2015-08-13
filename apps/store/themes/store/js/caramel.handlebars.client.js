@@ -283,6 +283,10 @@
         return options.fn(context);
     });
 
+    Handlebars.registerHelper('dump', function (o) {
+        return JSON.stringify(o);
+    });
+
     caramel.unloaded = {};
 
     caramel.data = function (areas, options) {

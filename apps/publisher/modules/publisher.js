@@ -302,6 +302,7 @@ var buildPermissionsList = function(tenantId, username, permissions) {
     var actions;
     var collection;
     var sysRegistry = server.systemRegistry(tenantId);
+    username = store.user.cleanUsername(username);
     //Go through all of the accessible directives
     for (var index in accessible) {
         accessibleContext = accessible[index];
@@ -361,14 +362,14 @@ var configureUser = function(tenantId, user) {
     log.debug('Starting configuringUser.');
     var cleanedUsername = store.user.cleanUsername(user.username);
     //Create the permissions in the options configuration file
-    perms = buildPermissionsList(tenantId, cleanedUsername, perms, server);
+    //perms = buildPermissionsList(tenantId, cleanedUsername, perms, server);
     //Only add the role if permissions are present
-    if (!checkIfEmpty(perms)) {
+    /*if (!checkIfEmpty(perms)) {
         //Register the role
         //We assume that the private_role is already present
         //TODO: This needs to be replaced.
         um.authorizeRole(role, perms);
-    }
+    }*/
 };
 var checkIfEmpty = function(object) {
     for (var index in object) {
@@ -386,6 +387,19 @@ var exec = function(fn, request, response, session) {
     if (!user) {
         response.sendError(401, 'Unauthorized');
         return;
+    }
+    var app = require('rxt').app;
+    if (log.isDebugEnabled()) {
+        log.debug('Checking for asset types hot deployment');
+    }
+    if(app.isAssetTypesHotDeployed(tenant.tenantId)){
+        app.hotDeployAssetTypes(tenant.tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('Finished hot deployment of asset types');
+        }
+    }
+    if(log.isDebugEnabled()){
+        log.debug('Finished checking for asset types hot deployment');
     }
     es.server.sandbox({
         tenantId: tenant.tenantId,

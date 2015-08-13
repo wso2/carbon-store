@@ -44,9 +44,16 @@ asset.manager = function(ctx) {
                     endpoint = storeConstants.ADMIN_ROLE_ENDPOINT;
                 }
             }
+
+            var provider = ctx.username;
+
+            if(options.attributes.overview_provider){
+                provider = options.attributes.overview_provider;
+            }
+            provider = provider.replace(':', '@');
             //Subscribe the asset author for LC update event and asset update event
-            notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
-            notifier.subscribeToEvent(options.attributes.overview_provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
+            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
+            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
         },
         update: function(options) {
             this._super.update.call(this, options);
@@ -102,11 +109,13 @@ asset.server = function(ctx) {
             }, {
                 title: 'Create ' + type,
                 url: 'create',
-                path: 'create.jag'
+                path: 'create.jag',
+                permission: 'ASSET_CREATE'
             }, {
                 title: 'Update ' + type,
                 url: 'update',
-                path: 'update.jag'
+                path: 'update.jag',
+                permission: 'ASSET_UPDATE'
             }, {
                 title: 'Details ' + type,
                 url: 'details',
@@ -114,11 +123,13 @@ asset.server = function(ctx) {
             }, {
                 title: 'List ' + type,
                 url: 'list',
-                path: 'list.jag'
+                path: 'list.jag',
+                permission: 'ASSET_LIST'
             }, {
                 title: 'Lifecycle',
                 url: 'lifecycle',
-                path: 'lifecycle.jag'
+                path: 'lifecycle.jag',
+                permission: 'ASSET_LIFECYCLE'
             }, {
                 title: 'Old lifecycle ',
                 url: 'old-lifecycle',
@@ -127,6 +138,15 @@ asset.server = function(ctx) {
                 title: 'Statistics',
                 url: 'statistics',
                 path: 'statistics.jag'
+            }, {
+                title: 'Copy ' + type,
+                url: 'copy',
+                path: 'copy.jag',
+                permission: 'ASSET_CREATE'
+            }, {
+                title: 'Delete ' + type,
+                url: 'delete',
+                path: 'delete.jag'
             }]
         }
     };
@@ -137,14 +157,14 @@ asset.configure = function() {
             overview: {
                 fields: {
                     provider: {
-                        readonly: true
+                        auto: true
                     },
                     name: {
                         name: {
                             name: 'name',
                             label: 'Name'
                         },
-                        updatable: false,
+                        readonly: true,
                         validation: function() {}
                     },
                     version: {
@@ -172,14 +192,14 @@ asset.configure = function() {
             lifecycle: {
                 name: 'SampleLifeCycle2',
                 commentRequired: false,
-                defaultLifecycleEnabled:true,
+                defaultLifecycleEnabled: true,
                 defaultAction: 'Promote',
-                deletableStates: [],
+                deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
                 lifecycleEnabled: true
             },
             ui: {
-                icon: 'icon-cog'
+                icon: 'fw fw-resource'
             },
             categories: {
                 categoryField: 'overview_category'
@@ -192,35 +212,51 @@ asset.configure = function() {
             grouping: {
                 groupingEnabled: false,
                 groupingAttributes: ['overview_name']
+            },
+            permissions: {
+                configureRegistryPermissions: function(ctx) {
+                }
             }
         }
     };
 };
 asset.renderer = function(ctx) {
     var type = ctx.assetType;
-    var isAssetWithLifecycle = function(asset){
-        if((asset.lifecycle)&&(asset.lifecycleState)){
+    var permissionAPI = require('rxt').permissions;
+    var isAssetWithLifecycle = function(asset) {
+        if ((asset.lifecycle) && (asset.lifecycleState)) {
             return true;
         }
-        log.warn('asset: '+asset.name+' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        log.warn('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
         return false;
     };
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
-        navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
-        navList.push('Statistics', 'btn-stats', '/asts/' + type + '/statistics');
+        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
+            navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
+            navList.push('Statistics', 'btn-stats', '/assets/' + type + '/statistics');
+        }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
     };
     var buildDefaultLeftNav = function(page, util) {
         var id = page.assets.id;
+        var path = page.assets.path;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-        navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+        if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session)) {
+            navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
+        }
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         //Only render the view if the asset has a 
         if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
-            navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+            if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE, ctx.assetType, ctx.session)) {
+                navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
+            }
+        }
+        if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
+            navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);
         }
         return navList.list();
     };
@@ -312,10 +348,10 @@ asset.renderer = function(ctx) {
                         page.leftNav = buildDefaultLeftNav(page, this);
                         break;
                 }
-                if(page.leftNav){
-                    for(var navItem in page.leftNav){
-                        if(page.leftNav[navItem].name){
-                            page.leftNav[navItem].id = page.leftNav[navItem].name.replace(/\s/g,"");
+                if (page.leftNav) {
+                    for (var navItem in page.leftNav) {
+                        if (page.leftNav[navItem].name) {
+                            page.leftNav[navItem].id = page.leftNav[navItem].name.replace(/\s/g, "");
                         }
                     }
                 }
@@ -323,13 +359,14 @@ asset.renderer = function(ctx) {
             },
             ribbon: function(page) {
                 var ribbon = page.ribbon = {};
-                var DEFAULT_ICON = 'icon-cog';
+                var DEFAULT_ICON = 'fw fw-circle';
                 var assetTypes = [];
                 var assetType;
                 var assetList = ctx.rxtManager.listRxtTypeDetails();
                 for (var index in assetList) {
                     assetType = assetList[index];
-                    if (isActivatedAsset(assetType.shortName)) {
+                    //Only populate the link if the asset type is activated and the logged in user has permission to that asset
+                    if ((isActivatedAsset(assetType.shortName)) && (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIST, assetType.shortName, ctx.session))) {
                         assetTypes.push({
                             url: this.buildBaseUrl(assetType.shortName) + '/list',
                             assetIcon: assetType.ui.icon || DEFAULT_ICON,
@@ -357,6 +394,14 @@ asset.renderer = function(ctx) {
             },
             populateGroupingFeatureDetails: function(page) {
                 require('/modules/page-decorators.js').pageDecorators.populateGroupingFeatureDetails(ctx, page);
+            },
+            populateTags: function(page){
+                if(page.assets.id){
+                    require('/modules/page-decorators.js').pageDecorators.populateTagDetails(ctx,page);
+                }
+            },
+            sorting: function(page){
+                require('/modules/page-decorators.js').pageDecorators.sorting(ctx,page);
             }
         }
     };

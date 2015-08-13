@@ -15,20 +15,53 @@
 ~  specific language governing permissions and limitations
 ~  under the License.
 -->
-<a href="#" id="search-dropdown-arrow" class="search-dropdown-arrow"><i class="icon-sort-down"></i></a>
-<input type="text" class="span12" id="search" placeholder="Search">
-<a id="search-button" class=""> <i class="icon-search"></i> </a>
-<!-- dropdown -->
-<div id="search-dropdown-cont" class="search-dropdown-cont">
-    <a href="#" id="search-dropdown-close"><i class="icon-remove"></i></a>
-    {{#each searchFields}}
+
+{{#with searchBar}}
+    <input id="search" class="search-area" placeholder="Search ..." type="text" >
+    {{#if searchFields}}
+    <button id="advanced-search-btn" data-placement="bottom" class="btn btn-default float-left advanced-search-btn" data-original-title="" title=""></button>
+    <div id="advanced-search"  class="search-advance-container padding">
+        <div class="search-title">Search {{../../rxt.pluralLabel}}</div>
+        <div class="row">
+            {{#each searchFields}}
+                <div class="search-data-field col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                    <label class="black uppercase padding-top">{{name.label}}</label>
+                    {{renderSearchField .}}
+                </div>
+            {{/each}}
+        </div>
         <div>
-        	<label>{{name.label}}</label>
-    		{{renderSearchField .}}
-    	</div>
-    {{/each}}
-    <button id="search-button2" class="btn span3">
-        <i class="icon-search"></i>
-    </button>
-</div>
-				
+        <button id="search-button2" class="btn btn-primary">
+            <i class="fa fa-search"></i>&nbsp;Search
+        </button>
+        </div>
+    </div>
+    {{/if}}
+    <!-- Search Filter -->
+
+    <div class="wr-filter-category">
+        {{#if assetMeta.categories}}
+        <a aria-expanded="true" data-toggle="dropdown" placement="bottom" class="ico-filter ctrl-filter-category dropdown-toggle" href="#" id="category-dropdown">
+            <span class="ro-text">
+                    {{#if selectedCategory}}
+                        {{selectedCategory}}
+                    {{else}}
+                        All Categories
+                    {{/if}}
+            </span>
+        </a>
+        <div id="category-dropdown-content" style="display: none">
+            <ul aria-labelledby="dropdownMenu1" role="menu" class="dropdown-menu-category">
+                    <li><a href="{{tenantedUrl "/assets"}}/{{rxt.shortName}}/list">All Categories</a></li>
+                    {{#each assetMeta.categories}}
+                        <li><a href='{{tenantedUrl "/assets"}}/{{../rxt.shortName}}/list?q="overview_category":"{{this}}"'>{{this}}</a></li>
+                    {{/each}}
+            </ul>
+        </div>
+        {{/if}}
+        <button class="back-button uppercase float-left" id="search-button" >
+            <i class="fa fa-search"></i>
+        </button>
+
+    </div><!--wr-filter-category-->
+{{/with}}

@@ -18,6 +18,10 @@
  */
 $(function() {
     'use strict';
+    $.ajaxSetup ({
+        // Disable caching of AJAX responses STORE-711/STORE-712
+        cache: false
+    });
     var constants = LifecycleAPI.constants;
     var id = function(name) {
         return '#' + name;
@@ -172,6 +176,20 @@ $(function() {
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
+    var renderDeleteActions = function () {
+        var container = config(constants.CONTAINER_DELETE_ACTION_AREA);
+        var impl = LifecycleAPI.lifecycle();
+        if (impl) {
+            if (impl.isDeletable) {
+                $(id(container)).removeClass('not-active').removeAttr("title").unbind('click');
+                return;
+            }
+            $(id(container)).addClass('not-active').attr("title", "Asset is not in a delatable State!")
+                .click(function (e) {
+                    e.preventDefault()
+                });
+        }
+    };
     var unrenderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         $(id(container)).html('');
@@ -275,6 +293,7 @@ $(function() {
             }
             renderLCActions();
             renderChecklistItems();
+            renderDeleteActions();
         }
     });
     //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
@@ -295,6 +314,7 @@ $(function() {
         }
         renderLCActions();
         renderChecklistItems();
+        renderDeleteActions();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_START, function() {
         blockChecklist();
@@ -312,6 +332,7 @@ $(function() {
         }
         renderChecklistItems();
         renderLCActions();
+        renderDeleteActions();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED,function(){
         unrenderChecklistItems();

@@ -28,6 +28,7 @@ var render = function(theme, data, meta, require) {
             break;
     }
     //var assets = require('/helpers/assets.js');
+
     theme('2-column-right', {
         title: data.meta.title,
         header: [{
@@ -42,29 +43,11 @@ var render = function(theme, data, meta, require) {
             {
                 partial: 'sort-assets',
                 context: data
-             }, 
+             },
             {
                 partial: 'assets',
                 context: data
              }
-            // {
-            //     partial: 'pagination',
-            //     context: require('/helpers/pagination.js').format(data.paging)
-            // } 
-        ],
-        right: [
-            {
-                partial: 'my-assets-link',
-                context: data
-            },
-            {
-                partial: 'recent-assets',
-                context: data
-            },
-            {
-                partial: 'tags',
-                context: data
-            }
         ]
     });
 };
