@@ -327,7 +327,12 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full">' + Handlebars.Utils.escapeExpression(value) + '</textarea></div>';
                         break;
                     case 'file':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">';
+                        if(field.isImage){
+                            out += '<div class="edit-image-wrapper"><img src="'+field.src+'" /></div>';
+                        }
+                        out += '<input type="file"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' >' +
+                            '</div>';
                         break;
                     case 'date':
                         out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';

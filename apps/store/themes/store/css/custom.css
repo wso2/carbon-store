@@ -454,6 +454,7 @@ a.ast-name:hover {
     z-index: 1000;
     max-height: 800px;
     overflow-y:auto;
+    overflow-x: hidden;
 }
 
 #advanced-search label {
