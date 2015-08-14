@@ -52,7 +52,7 @@ var server = {};
                 //Check if a user logged in callback is present
                 //annd then execute it with the username
                 if (instance.onUserLoggedIn) {
-                    instance.onUserLoggedIn(user);
+                    instance.onUserLoggedIn(context);
                 }
             }
         });
