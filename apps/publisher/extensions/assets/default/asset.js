@@ -227,7 +227,9 @@ asset.renderer = function(ctx) {
         if ((asset.lifecycle) && (asset.lifecycleState)) {
             return true;
         }
-        log.warn('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        if (log.isDebugEnabled()) {
+            log.debug('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        }
         return false;
     };
     var buildListLeftNav = function(page, util) {
