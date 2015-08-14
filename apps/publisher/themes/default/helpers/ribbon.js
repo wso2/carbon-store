@@ -15,7 +15,12 @@
  */
 var resources = function(page,meta){
     return {
+<<<<<<< HEAD
+        css:['fontwso2.css','fontwso2-extend.css'],
+        js:['ribbon_front.js']
+=======
         js:['popover.js','delete-asset.js'],
         code: ['publisher.lifecycle.meta.hbs']
+>>>>>>> e5b4a54b690bc0af9abe6ba0056bd5417aae2c12
     }
 }
