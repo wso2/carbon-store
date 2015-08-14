@@ -237,7 +237,9 @@ var error = '';
         //Check if the check item state is the same as the next state
         if (state.checkItems[checkItemIndex].checked == checkItemState) {
             msg = 'The state of the check item at index ' + checkItemIndex + ' was not changed as it is already ' + checkItemState;
-            log.warn(msg);
+            if(log.isDebugEnabled()){
+                log.debug(msg);
+            }
             return;
             //throw msg;
         }
@@ -433,7 +435,9 @@ var error = '';
     var parseHistory = function (history) {
         history = history || {};
         if (!history.content) {
-            log.warn('Attempt to parse a history resource which does not have content');
+            if(log.isDebugEnabled()){
+                log.debug('Attempt to parse a history resource which does not have content');
+            }
             return {};
         }
         var xmlHistoryContent = new XML(history.content);

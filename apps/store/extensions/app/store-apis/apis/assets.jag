@@ -55,7 +55,9 @@ var handleApiEndpoint = function(request, session, uriParams) {
             }
         } else {
             if (request.getMethod() === 'GET') {
-                log.warn('Using default search endpoint');
+                if(log.isDebugEnabled()){
+                    log.debug('Using default search endpoint');
+                }
                 endpoint = getDefaultAssetSearchEndpoint();
             } else {
                 throw 'Method ' + request.getMethod() + ' is not supported';
