@@ -150,9 +150,6 @@ var user = {};
             event = require('event'),
             serv = server.instance();
         var authResult = serv.authenticate(username, password);
-        if (authResult == null) {
-            return null;
-        }
         if(authResult === false){
             return false;
         }
