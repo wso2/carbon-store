@@ -242,6 +242,9 @@ button.grey-bg:hover{background-color: #3A9ECF;}
     _____________________________________________________________________________  */
 
 .boarder-bottom-blue{border-bottom: 2px solid #006596;}
+.no-border-top{
+    border-top:none;
+}
 input::-moz-placeholder, textarea::-moz-placeholder  {
     padding: 10px 5px 12px 8px;
     color: #aba8a8;
@@ -401,7 +404,6 @@ a.ctrl-filter-category:hover {
     display: block;
 }
 label.error{
-    margin-top:5px;
     line-height: 1.5em;
     color: #fff;
     background-color: #e74c3c;
@@ -420,4 +422,22 @@ input[type="text"].error, input[type="password"].error{
 }
 .no-border-top{
     border-top:none;
+}
+.alert-success{
+    color:#fff;
+    background-color: #339900;
+    border:none;
+    border-left: 5px solid #336633;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}
+.alert-error{
+    color:#fff;
+    background-color: #e74c3c;
+    border:none;
+    border-left: 5px solid #942F25;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
 }
