@@ -51,15 +51,11 @@ var addToSessionMap = function (app, sessionInstance) {
     if (!ssoSessions) {
         app.put(SESSION_MAP, {});
         ssoSessions = app.get(SESSION_MAP);
-        if (log.isDebugEnabled){
-            log.debug('Created session as session was not present');
-        }
+        log.debug('Created session as session was not present');
     }
     if (!ssoSessions[sessionId]) {
         ssoSessions[sessionId] = '';
-        if (log.isDebugEnabled){
-            log.debug('Added session: ' + sessionId + ' to session map');
-        }
+        log.debug('Added session: ' + sessionId + ' to session map');
     } else {
         log.warn('Session already exists in the session map');
     }
@@ -73,29 +69,20 @@ switch (METHOD) {
         credentials.password = request.getParameter('password');
         //Check if a username and password is provided
         if ((!credentials.username) || (!credentials.password)) {
-            response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.BAD_REQUEST, 'error on authentication api', response, 'Username and Password must be provided', '', []);
-
+            response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.BAD_REQUEST, 'Username and Password must be provided');
 
         } else {
-            try{
-                var isAuthenticated = user.login(credentials.username, credentials.password, session);//authenticate the user
-                if (isAuthenticated) {
-                    session.put("LOGGED_IN_USER", credentials.username);
-                    session.put("Logged", "true");
+            var isAuthenticated = user.login(credentials.username, credentials.password, session);//authenticate the user
+            if (isAuthenticated) {
+                session.put("LOGGED_IN_USER", credentials.username);
+                session.put("Logged", "true");
 
-                    //Add to the session map as it is required by the session listener
-                    addToSessionMap(application, session);
-                    response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, {'sessionId': session.getId()});
-                }
-                else {
-                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED, 'error on authentication api', response, 'username/password is incorrect', '', []);
-
-                }
-            }catch(e){
-                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on authentication api', response, 'Non existing domain name',e.message, []);
-
+                //Add to the session map as it is required by the session listener
+                addToSessionMap(application, session);
+                response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, {'sessionId': session.getId()});
+            } else {
+                response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.UNAUTHORIZED, 'username/password is incorrect');
             }
-
         }
         break;
 
