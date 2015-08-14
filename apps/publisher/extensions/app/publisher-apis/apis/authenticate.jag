@@ -69,7 +69,7 @@ switch (METHOD) {
         credentials.password = request.getParameter('password');
         //Check if a username and password is provided
         if ((!credentials.username) || (!credentials.password)) {
-            response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.BAD_REQUEST, 'error on authentication api', response, 'Username and Password must be provided', 'this is more information about not provided username or password', []);
+            response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.BAD_REQUEST, 'error on authentication api', response, 'Username and Password must be provided', 'This error could cause because user attempts to login without providing username or password.So please provide username or password to login successful.These credentials cannot be empty', []);
 
 
         } else {
@@ -82,11 +82,11 @@ switch (METHOD) {
                 addToSessionMap(application, session);
                 response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, {'sessionId': session.getId()});
             }else if(isAuthenticated == null){
-                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on authentication api', response, 'The domain name of tenant  is not exists', 'this is more information about non existing tenant', []);
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on authentication api', response, 'The domain name of tenant is not exists', 'This error could cause because user try to login with a incorrect domain name.So please have a check on your domain name(example.com) that you are trying to login', []);
 
             }
             else {
-                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED, 'error on authentication api', response, 'username/password is incorrect', 'this is more information about incorrect username or password', []);
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED, 'error on authentication api', response, 'username/password is incorrect', 'This error occured because of user gave incorrect credentials(username/password).So please have a check on your credentials are correct.Check your CAPSLOCK on', []);
 
             }
         }

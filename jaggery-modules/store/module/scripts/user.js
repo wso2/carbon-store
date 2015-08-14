@@ -149,10 +149,11 @@ var user = {};
         var carbon = require('carbon'),
             event = require('event'),
             serv = server.instance();
-        if (serv.authenticate(username, password) == null) {
+        var authResult = serv.authenticate(username, password);
+        if (authResult == null) {
             return null;
         }
-        if(serv.authenticate(username, password) === false){
+        if(authResult === false){
             return false;
         }
         return user.permitted(username, session);
