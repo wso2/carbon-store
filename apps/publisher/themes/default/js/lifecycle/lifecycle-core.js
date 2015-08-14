@@ -653,7 +653,6 @@ var LifecycleUtils = {};
             if (historyEntry.comment) {
                 historyEntry.hasComment = true;
             }
-            historyEntry.dateOfTransition = entry.dateofTransition;
             //Check if it is a state change
             if (entry.targetState) {
                 historyEntry.targetState = entry.targetState;
