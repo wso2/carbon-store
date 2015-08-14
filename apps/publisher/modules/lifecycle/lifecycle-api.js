@@ -288,6 +288,10 @@ var error = '';
         }
         return success;
     };
+    var dateHistory = function (timeStamp) {
+        var res = timeStamp.split(" ");
+        return res[0];
+    };
     /**
      * The function will obtain the state detail of an asset
      * @param  options options.id=<asset-id>
@@ -411,6 +415,10 @@ var error = '';
             var index = (historyComments.length - 1) - entry.order;
             historyComments[index].comment = comments[entry.order];
         });
+        var item = history.item;
+        for(var i = 0; i<item.length;i++){
+            item[i].dateofTransition = dateHistory(item[i]['timestamp']).toString();
+        }
         return history;
     };
     api.listAllAttachedLifecycles = function (options, req, res, session) {
