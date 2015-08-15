@@ -163,27 +163,6 @@ var pageDecorators = {};
             log.debug(page.assetTags);
         }
     };
-    pageDecorators.populateImages = function(ctx,page,utils){
-        if ((page.assets) && (page.assets.id)) {
-            var imagesTable = null;
-
-            for (var i = 0; i < page.assets.tables.length; i++) {
-                if (page.assets.tables[i].name == "images") {
-                    imagesTable = page.assets.tables[i];
-                }
-            }
-            if(imagesTable){
-                if (imagesTable.fields && imagesTable.fields.thumbnail) {
-                    imagesTable.fields.thumbnail.isImage = true;
-                    imagesTable.fields.thumbnail.src = caramel.configs().context + '/storage/' + page.rxt.shortName + '/' + page.assets.id + '/' + imagesTable.fields.thumbnail.value;
-                }
-                if(imagesTable.fields && imagesTable.fields.banner){
-                    imagesTable.fields.banner.isImage = true;
-                    imagesTable.fields.banner.src = caramel.configs().context + '/storage/' + page.rxt.shortName + '/' + page.assets.id + '/' + imagesTable.fields.banner.value;
-                }
-            }
-        }
-    };
     pageDecorators.sorting = function(ctx,page){
         var queryString = request.getQueryString();
         var sortable = [

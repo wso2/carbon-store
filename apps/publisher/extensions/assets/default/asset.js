@@ -404,9 +404,6 @@ asset.renderer = function(ctx) {
             },
             sorting: function(page){
                 require('/modules/page-decorators.js').pageDecorators.sorting(ctx,page);
-            },
-            populateImages: function(page){
-                require('/modules/page-decorators.js').pageDecorators.populateImages(ctx,page,this);
             }
         }
     };
