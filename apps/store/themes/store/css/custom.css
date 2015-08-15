@@ -217,6 +217,7 @@ div.asset-well div.advanced-search-form-container h1{
 .wr-app-bar {
     background: #237bd5;
     height: 54px;
+    position: relative;
 }
 
 header {
@@ -816,10 +817,6 @@ a.ast-type-item:hover {
     float: left;
     height: 54px;
     width: 54px;
-}
-.wr-asset-type-switcher div.popover{
-    position: absolute;
-    top: 103px;
 }
 .wr-asset-type-switcher span.btn-asset {
     width: 54px;
