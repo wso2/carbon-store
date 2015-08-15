@@ -415,9 +415,8 @@ var error = '';
             var index = (historyComments.length - 1) - entry.order;
             historyComments[index].comment = comments[entry.order];
         });
-        var item = history.item;
-        for(var i = 0; i<item.length;i++){
-            item[i].dateofTransition = dateHistory(item[i]['timestamp']).toString();
+        for (var i = 0; i < historyComments.length; i++) {
+            historyComments[i].dateofTransition = dateHistory(historyComments[i]['timestamp']).toString();
         }
         return history;
     };
