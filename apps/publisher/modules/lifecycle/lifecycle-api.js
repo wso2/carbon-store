@@ -237,7 +237,9 @@ var error = '';
         //Check if the check item state is the same as the next state
         if (state.checkItems[checkItemIndex].checked == checkItemState) {
             msg = 'The state of the check item at index ' + checkItemIndex + ' was not changed as it is already ' + checkItemState;
-            log.warn(msg);
+            if(log.isDebugEnabled()){
+                log.debug(msg);
+            }
             return;
             //throw msg;
         }
@@ -285,6 +287,10 @@ var error = '';
             }
         }
         return success;
+    };
+    var dateHistory = function (timeStamp) {
+        var res = timeStamp.split(" ");
+        return res[0];
     };
     /**
      * The function will obtain the state detail of an asset
@@ -409,6 +415,9 @@ var error = '';
             var index = (historyComments.length - 1) - entry.order;
             historyComments[index].comment = comments[entry.order];
         });
+        for (var i = 0; i < historyComments.length; i++) {
+            historyComments[i].dateofTransition = dateHistory(historyComments[i]['timestamp']).toString();
+        }
         return history;
     };
     api.listAllAttachedLifecycles = function (options, req, res, session) {
@@ -433,7 +442,9 @@ var error = '';
     var parseHistory = function (history) {
         history = history || {};
         if (!history.content) {
-            log.warn('Attempt to parse a history resource which does not have content');
+            if(log.isDebugEnabled()){
+                log.debug('Attempt to parse a history resource which does not have content');
+            }
             return {};
         }
         var xmlHistoryContent = new XML(history.content);

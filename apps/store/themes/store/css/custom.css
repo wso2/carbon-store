@@ -217,6 +217,7 @@ div.asset-well div.advanced-search-form-container h1{
 .wr-app-bar {
     background: #237bd5;
     height: 54px;
+    position: relative;
 }
 
 header {
@@ -816,10 +817,6 @@ a.ast-type-item:hover {
     height: 54px;
     width: 54px;
 }
-.wr-asset-type-switcher div.popover{
-    position: absolute;
-    top: 103px;
-}
 .wr-asset-type-switcher span.btn-asset {
     width: 54px;
     height: 54px;
@@ -1386,6 +1383,9 @@ span.advanced-search-icons{
     .navbar-nav{
         margin: 0;
     }
+    .asset-details-wrapper{
+            width:100%!important;
+        }
 
 }
 /*@media (max-width: 540px) {
@@ -1448,15 +1448,15 @@ span.advanced-search-icons{
     }
 }
 */
-@media all and (max-width:320px){
-    .search-area{
-        width: 35%;
-    }
+@media all and (max-width:480px){
     .hidden-xs-320{
         display:none;
     }
     .visible-xs-320{
         display:block;
+    }
+    .tags{
+        min-width:auto!important;
     }
 }
 .loading-animation-big{
@@ -1485,8 +1485,7 @@ span.advanced-search-icons{
 .no-gutter{
     padding-left:0px;
     padding-right:0px;
-}
-.search-title{
+}.search-title{
     font-size: 25px;
     font-weight: 200;
     margin-bottom: 10px;
