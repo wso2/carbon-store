@@ -39,32 +39,4 @@ $(document).ready(function() {
             .click(function(e){e.stopProcessing = true});
     }
 
-    $('#btn-delete').on('click', function(e) {
-        var assetId = $('#asset-id').val();
-        var assetType = $('#asset-type').val();
-        var path = caramel.url('/apis/assets/' + assetId + '?type=' + assetType);
-        var landingPage = $('#landing-page').val();
-        var landingPageUrl = caramel.url(landingPage);
-        $('#btn-delete').addClass('disabled');
-        $('#delete-loading').removeClass('hide');
-
-        $.ajax({
-            url : path,
-            type : 'DELETE',
-            success : function(response) {
-                $('.alert-success').html('Asset deleted successfully! <a href="'+landingPageUrl+'"> Home </a>');
-                $('.alert-success').removeClass('hide');
-                $('#btn-delete').addClass('disabled');
-                $('#delete-loading').addClass('hide');
-            },
-            error : function() {
-                $('.alert-success').text('Error while deleting asset!');
-                $('.alert-success').removeClass('hide');
-                $('#delete-loading').removeClass('hide');
-                $('#delete-loading').addClass('hide');
-
-            }
-        });
-    });
-
 });
