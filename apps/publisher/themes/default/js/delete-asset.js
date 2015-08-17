@@ -16,27 +16,45 @@
  *  under the License.
  *
  */
-$(document).ready(function() {
-    if(store && store.publisher && store.publisher.lifecycle && store.publisher.lifecycle.deletableStates){
-        var assetState = store.publisher.lifecycle.currentState;
-        var deletableStates = store.publisher.lifecycle.deletableStates.split(',');
-        var astState = assetState ? assetState.toLowerCase() : assetState;
-        for (var index in deletableStates) {
-            if (deletableStates[index].toLowerCase() == astState) {
-                $('#Delete').removeClass('not-active').removeAttr("title");
-                continue;
-            }else{
-                $('#Delete').addClass('not-active')
-                    .attr("title","Asset is not in a delatable State!")
-                    .click(function(e){e.preventDefault()});
-            }
-        }if((!store.publisher.lifecycle.activeLifecycle)|| (store.publisher.lifecycle.activeLifecycle.length =='')){
-            $('#Delete').removeClass('not-active').removeAttr("title").unbind('click');
+$(document).ready(function () {
+    if (store && store.publisher && store.publisher.lifecycle) {
+        if ((!store.publisher.lifecycle.activeLifecycle) || (store.publisher.lifecycle.activeLifecycle.length == '')) {
+            enableDelete();
+            return;
         }
-    }else{
-        $('#Delete').addClass('not-active')
-            .attr("title","Asset is not in a delatable State!")
-            .click(function(e){e.stopProcessing = true});
-    }
+        else if (store.publisher.lifecycle.deletableStates) {
 
+            var assetState = store.publisher.lifecycle.currentState;
+            var deletableStates = store.publisher.lifecycle.deletableStates.split(',');
+            var astState = assetState ? assetState.toLowerCase() : assetState;
+
+            if (deletableStates[0].toLowerCase() == '*') {
+                enableDelete();
+                return;
+            }
+
+            for (var index in deletableStates) {
+                if (deletableStates[index].toLowerCase() == astState) {
+                    enableDelete();
+                    continue;
+                } else {
+                    disableDelete("Asset is not in a delatable State!");
+                }
+            }
+        } else {
+            disableDelete("Asset is not in a delatable State!");
+        }
+    } else {
+        disableDelete("Asset delete configurations are not provided!");
+    }
 });
+
+var enableDelete = function () {
+    $('#Delete').removeClass('not-active').removeAttr("title").unbind('click');
+};
+
+var disableDelete = function (msg) {
+    $('#Delete').addClass('not-active').attr("title", msg).click(function (e) {
+        e.preventDefault()
+    });
+};
