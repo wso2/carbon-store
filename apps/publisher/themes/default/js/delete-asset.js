@@ -38,14 +38,14 @@ $(document).ready(function () {
                     enableDelete();
                     continue;
                 } else {
-                    disableDelete("Asset is not in a delatable State!");
+                    disableDelete("Asset is not in a delatable State");
                 }
             }
         } else {
-            disableDelete("Asset is not in a delatable State!");
+            disableDelete("Asset is not in a delatable State");
         }
     } else {
-        disableDelete("Asset delete configurations are not provided!");
+        disableDelete("Asset delete configurations are not provided");
     }
 });
 
