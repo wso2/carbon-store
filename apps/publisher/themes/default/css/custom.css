@@ -249,11 +249,11 @@ header {
 	height:50px;
 }
 
-#nav.affix {
-    position: fixed;
-    top: 0;
+.ribbon-container.affix {
     width: 100%;
-    z-index:10;
+    display: block;
+    top: 0;
+    z-index: 10000;
 }
 
 .wr-asset-type-switcher {
