@@ -67,6 +67,13 @@ hr.emboss {
     opacity: 0.08;
 }
 
+.navigation-container.affix {
+    width: 100%;
+    display: block;
+    top: 0;
+    z-index: 10000;
+}
+
 .nav .dropdown-toggle .caret {
     border-bottom-color: #CCCCCC;
     border-top-color: #CCCCCC;
