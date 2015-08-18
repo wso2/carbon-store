@@ -273,7 +273,9 @@ public class SocialDBInitilizer {
 			Connection conn = dataSource.getConnection();
 			SQLWarning warning = conn.getWarnings();
 			while (warning != null) {
-				log.debug(warning + " sql warning");
+				if (log.isDebugEnabled()) {
+					log.debug(warning + " sql warning");
+				}
 				warning = warning.getNextWarning();
 			}
 			conn.clearWarnings();

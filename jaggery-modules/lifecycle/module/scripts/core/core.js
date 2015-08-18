@@ -95,8 +95,10 @@ var core = {};
         var content;
         for (var index in lifecycleList) {
             lifecycle = lifecycleList[index];
-            log.debug('About to process raw lifecycle definition and convert to json for ' + lifecycle);
-            //Obtain the definition 
+            if(log.isDebugEnabled()){
+                log.debug('About to process raw lifecycle definition and convert to json for ' + lifecycle);
+            }
+            //Obtain the definition
             content = CommonUtil.getLifecycleConfiguration(lifecycle, configReg);
             //Store the raw lifecycle
             addRawLifecycle(lifecycle, content, tenantId);
@@ -138,12 +140,16 @@ var core = {};
     core.configs = function(tenantId) {
         var lcMap = application.get(LC_MAP);
         if (!lcMap) {
-            log.debug('Creating lcMap in the application context');
+            if(log.isDebugEnabled()){
+                log.debug('Creating lcMap in the application context');
+            }
             lcMap = {};
             application.put(LC_MAP, lcMap);
         }
         if (!lcMap[tenantId]) {
-            log.debug('Creating lcMap for the tenant: ' + tenantId + ' in application context');
+            if(log.isDebugEnabled()){
+                log.debug('Creating lcMap for the tenant: ' + tenantId + ' in application context');
+            }
             lcMap[tenantId] = {};
         }
         return lcMap[tenantId];

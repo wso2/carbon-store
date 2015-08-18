@@ -85,7 +85,9 @@ require('/modules/publisher.js').exec(function(ctx) {
             var msg = {};
             msg['status'] = 'ok';
         } catch (e) {
-            log.debug('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            if (log.isDebugEnabled()){
+                log.debug('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            }
             response.sendError(404, 'The asset with id: ' + id + ' could not be found.Please refer to the server log.');
         }
     });
@@ -102,7 +104,9 @@ require('/modules/publisher.js').exec(function(ctx) {
             msg['status'] = 'ok';
             print(msg);
         } catch (e) {
-            log.debug('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            if (log.isDebugEnabled()){
+                log.debug('The asset with id: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            }
             response.sendError(404, 'The asset with id: ' + id + ' could not be found.Please refer to the server log.');
         }
     });
@@ -122,7 +126,9 @@ require('/modules/publisher.js').exec(function(ctx) {
             var msg = {};
             msg['status'] = 'ok';
         } catch (e) {
-            log.debug('The lifecyle check list item at index ' + checkListItemIndex + ' of asset id: ' + id + ' could not be unticked' + 'The following exception was thrown: ' + e);
+            if (log.isDebugEnabled()){
+                log.debug('The lifecyle check list item at index ' + checkListItemIndex + ' of asset id: ' + id + ' could not be unticked' + 'The following exception was thrown: ' + e);
+            }
             response.sendError(404, 'The lifecycle check list item at index ' + checkListItemIndex + ' of asset id: ' + id + ' could not be unchecked' + '.Please refer to the server log');
         }
     });
@@ -211,7 +217,9 @@ require('/modules/publisher.js').exec(function(ctx) {
             msg['state'] = state;
             msg['actions'] = actions;
             msg['lifecycle'] = lcJSON;
-            log.debug(msg);
+            if (log.isDebugEnabled()){
+                log.debug(msg);
+            }
             print(msg);
         } catch (e) {
             log.error('The asset with id: ' + id + ' could not be found.The following exception was thrown: ', e);
@@ -282,7 +290,9 @@ require('/modules/publisher.js').exec(function(ctx) {
     routeManager.register('GET', 'publisher', '/publisher/api/lifecycle/checklist/{type}/{id}', function(context) {
         //log.debug('short name: '+context.params.type);
         try {
-            log.debug('Entered check list/type/id ');
+            if (log.isDebugEnabled()){
+                log.debug('Entered check list/type/id ');
+            }
             var shortName = context.params.type;
             var id = context.params.id;
             var type = shortName;
@@ -295,7 +305,9 @@ require('/modules/publisher.js').exec(function(ctx) {
             msg['checkListItems'] = checkListItems;
             print(msg);
         } catch (e) {
-            log.debug('The check list names were not retrieved for artifact: ' + id + ' .The following exception was thrown: ' + e);
+            if (log.isDebugEnabled()){
+                log.debug('The check list names were not retrieved for artifact: ' + id + ' .The following exception was thrown: ' + e);
+            }
             response.sendError(404, 'The check list item names could not be retrieved for artifact: ' + id + ' .Please refer to the server log.');
         }
     });
@@ -304,7 +316,9 @@ require('/modules/publisher.js').exec(function(ctx) {
 */
     routeManager.register('GET', 'publisher', '/publisher/api/lifecycle/checklistitem/{index}/{type}/{id}', function(context) {
         try {
-            log.debug('Entered checklistitem/index/type/id ');
+            if (log.isDebugEnabled()){
+                log.debug('Entered checklistitem/index/type/id ');
+            }
             var checkListItemIndex = context.params.index;
             var shortName = context.params.type;
             var id = context.params.id;
@@ -319,7 +333,9 @@ require('/modules/publisher.js').exec(function(ctx) {
             msg['isChecked'] = isChecked;
             print(msg);
         } catch (e) {
-            log.debug('The check list item index state could not be  retrieved for aritfact: ' + id + ' .The following exception was thrown: ' + e);
+            if (log.isDebugEnabled()){
+                log.debug('The check list item index state could not be  retrieved for aritfact: ' + id + ' .The following exception was thrown: ' + e);
+            }
             response.sendError(404, 'The check list item state could not be retrieved for artifact: ' + id + ' .Please refer to the server log.');
         }
     });
@@ -344,7 +360,9 @@ require('/modules/publisher.js').exec(function(ctx) {
             });
             print(json);
         } catch (e) {
-            log.debug('The lifecycle history for artifact: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            if (log.isDebugEnabled()){
+                log.debug('The lifecycle history for artifact: ' + id + ' could not be found.The following exception was thrown: ' + e);
+            }
             response.sendError(404, 'The lifecycle history details could not be retrieved for artifact: ' + id + '.Pleas refer to the server log.');
         }
     });

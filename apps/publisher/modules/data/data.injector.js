@@ -50,7 +50,9 @@ var dataInjectorModule = function () {
 
         //Skip the injection step as the default mode will not do anything
         if(mode==INJECTOR_MODES.DEFAULT){
-            log.debug('The default mode does nothing :p .Specify an injector mode!');
+            if(log.isDebugEnabled()){
+                log.debug('The default mode does nothing :p .Specify an injector mode!');
+            }
             return;
         }
 
@@ -90,7 +92,9 @@ var dataInjectorModule = function () {
             var fullName = bundle.getName().replace(bundle.getExtension(), '');
 
             //Load the script
-            log.debug('loading script: '+INJECTOR_LOCATION + '/' + bundle.getName());
+            if(log.isDebugEnabled()){
+                log.debug('loading script: '+INJECTOR_LOCATION + '/' + bundle.getName());
+            }
 
             var file = require(INJECTOR_LOCATION + '/' + bundle.getName())[INJECTOR_MODULE_NAME]();
             //file.injector();
@@ -137,7 +141,9 @@ var dataInjectorModule = function () {
 
                 //Check if handling logic should halt
                 if (!result) {
-                    log.debug('failed to execute injector on object: ' + stringify(object));
+                    if(log.isDebugEnabled()){
+                        log.debug('failed to execute injector on object: ' + stringify(object));
+                    }
                     return;
                 }
             }

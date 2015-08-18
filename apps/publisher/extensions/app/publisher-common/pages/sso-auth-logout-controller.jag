@@ -36,8 +36,9 @@
                 relayState = request.getHeader('referer') ? request.getHeader('referer') : caramel.configs().context;
 
         relayState = (!ignoreReferer) ? relayState : context + '/login?ignoreReferer=true';
-
-        log.debug("portal session index : " + sso_sessions[session.getId()]);
+        if (log.isDebugEnabled()){
+            log.debug("portal session index : " + sso_sessions[session.getId()]);
+        }
         session.invalidate();
         %>
         <div>

@@ -1,6 +1,8 @@
 <%
 var log = new Log();
-log.debug('in redirect : ' + assertionConsumerURL);
+if (log.isDebugEnabled()) {
+    log.debug('in redirect : ' + assertionConsumerURL);
+}
 %>
 
 <p>You are now redirected back to <%=assertionConsumerURL%>. If the

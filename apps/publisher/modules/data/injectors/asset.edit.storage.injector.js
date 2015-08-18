@@ -45,8 +45,10 @@ var injector = function () {
         if(object.hasOwnProperty('attributes')){
             return true;
         }
+        if(log.isDebugEnabled()){
+            log.debug('object'+stringify(object)+' is not handled');
 
-        log.debug('object'+stringify(object)+' is not handled');
+        }
 
         return false;
     }
@@ -104,7 +106,9 @@ var injector = function () {
 
         //Do nothing if the number of components is 2 or less
         if(comps.length<=FIELD_ELEMENT_LIMIT){
-            log.debug('only uuid/file present');
+            if(log.isDebugEnabled()){
+                log.debug('only uuid/file present');
+            }
            return;
         }
 
@@ -115,7 +119,9 @@ var injector = function () {
 
         //Check if the uuid is valid
         if(!utility.isValidUuid(uuid)){
-            log.debug('the uuid: '+uuid+' is not valid for field '+field);
+            if(log.isDebugEnabled()){
+                log.debug('the uuid: '+uuid+' is not valid for field '+field);
+            }
 
             asset.attributes[field]=value;
             return;

@@ -91,8 +91,10 @@
                                 modifiedUsername);
 
                         if (hasStoreLoginPermission) {
-                             user.emitLogin(username)
-                             log.debug('user is set :::' + username);
+                             user.emitLogin(username);
+                            if (log.isDebugEnabled()) {
+                                log.debug('user is set :::' + username);
+                            }
                              response.sendRedirect(relayState);
                         }
                         else{
@@ -114,14 +116,17 @@
     // if saml request is a log out request, then invalidate session.
     if (samlRequest != null) {
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
-        log.debug('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+        if (log.isDebugEnabled()) {
+            log.debug('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+        }
 
         var jSessionId = application.get('sso_sessions')[index];
 
         delete application.get('sso_sessions')[index];
 
-
-        log.debug('store Session Id :::' + jSessionId);
+        if (log.isDebugEnabled()) {
+            log.debug('store Session Id :::' + jSessionId);
+        }
 
         session.invalidate();
     }

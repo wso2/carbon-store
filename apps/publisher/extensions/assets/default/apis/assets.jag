@@ -154,6 +154,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                 var elements = uriMatcher.elements();
                 options.id = elements.id;
                 try {
+                    //toDo set content type for update LC for asset
                     var out = lcApi.invokeStateTransition(options, req, res, session);
                     response = responseProcessor.buildSuccessResponseDefaultLC(constants.STATUS_CODES.OK, res, out);
                 } catch (e) {
@@ -250,6 +251,7 @@ require('/modules/publisher.js').exec(function (ctx) {
             break;
         case 'DELETE': // DELETE endpoints
             options.type = req.getParameter('type');
+                //check with Accept header for delete api
             if (uriMatcher.match(DELETE_ASSET_URL)) {
                 try {
                     options.id = uriMatcher.elements().id;

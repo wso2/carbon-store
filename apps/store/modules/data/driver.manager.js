@@ -211,8 +211,9 @@ var driverManager=function(){
             this.driverMap[driverType].init({queryProvider:queryProvider, queryTranslator:this.defaultQT});
             return this.driverMap[driverType];
         }
-
-        log.debug('driver for '+driverType+' not found.');
+        if (log.isDebugEnabled()) {
+            log.debug('driver for '+driverType+' not found.');
+        }
         return null;
     };
 
@@ -269,7 +270,9 @@ var driverManager=function(){
                return DB_DRIVERS[key].value;
            }
        }
-       log.debug('driver type in '+connectionUrl+' not found.');
+        if (log.isDebugEnabled()) {
+            log.debug('driver type in '+connectionUrl+' not found.');
+        }
        return null;
 
     };

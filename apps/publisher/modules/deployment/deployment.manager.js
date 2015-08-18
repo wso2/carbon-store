@@ -45,7 +45,9 @@ var deploymentManagementModule = function () {
                 that.deployedAssets.push(bundleName);
             }
             else{
-                log.debug('non config file '+bundle.getName()+'present in '+RXT_EXTENSION_PATH);
+                if(log.isDebugEnabled()){
+                    log.debug('non config file '+bundle.getName()+'present in '+RXT_EXTENSION_PATH);
+                }
             }
         });
 
@@ -112,7 +114,9 @@ var deploymentManagementModule = function () {
         for (var index in deployedAssets) {
             currentAsset = deployedAssets[index];
             if (ignored.indexOf(currentAsset) == -1) {
-                log.debug('ignoring asset '+currentAsset+' as it is ignored in the ui config file: '+UI_CONFIG_FILE);
+                if(log.isDebugEnabled()){
+                    log.debug('ignoring asset '+currentAsset+' as it is ignored in the ui config file: '+UI_CONFIG_FILE);
+                }
                 newDeployedList.push(currentAsset);
             }
         }
@@ -143,8 +147,9 @@ var deploymentManagementModule = function () {
 
         //Check if there is a default icon specified
         if (icons.hasOwnProperty('default')) {
-            log.debug('using default icon for '+assetName+' specify a custom icon in the ui config file: '
-                +UI_CONFIG_FILE);
+            if(log.isDebugEnabled()){
+                log.debug('using default icon for '+assetName+' specify a custom icon in the ui config file: ' +UI_CONFIG_FILE);
+            }
             return icons['default'];
         }
 
@@ -166,7 +171,9 @@ var deploymentManagementModule = function () {
             config = require(path);
         }
         else{
-            log.debug('a ui config file is not present at '+path);
+            if(log.isDebugEnabled()){
+                log.debug('a ui config file is not present at '+path);
+            }
         }
 
         return config;
@@ -177,7 +184,9 @@ var deploymentManagementModule = function () {
         var instance=application.get(APPLICATION_DM);
 
        if(!instance){
-            log.debug('returning a cached copy of the DeploymentManager');
+           if(log.isDebugEnabled()){
+               log.debug('returning a cached copy of the DeploymentManager');
+           }
             instance=new DeploymentManager();
             application.put(APPLICATION_DM,instance);
         }

@@ -34,7 +34,9 @@ describe('Authentication End Point - Publisher API', function () {
         try {
             var response = post(url, {"password": password, "username": username}, {}, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data).not.toBe(undefined);
             var header = {'cookie': "JSESSIONID=" + response.data.data.sessionId + ';'};
@@ -56,7 +58,9 @@ describe('Authentication End Point - Publisher API', function () {
         try {
             var response = post(url, {"password": password, "username": username}, {}, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data.sessionId).not.toBe(undefined);
             expect(response.data.data).not.toEqual(jasmine.objectContaining(jasmine.any(Object)));
@@ -80,7 +84,9 @@ describe('Authentication End Point - Publisher API', function () {
         try {
             var response = post(url, {"password": password, "username": username}, {}, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data).toBe(undefined);
             expect(response.data.error).toEqual("username/password is incorrect");
@@ -102,7 +108,9 @@ describe('Authentication End Point - Publisher API', function () {
         try {
             var response = post(url, {"password": password, "username": username}, {}, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data).toBe(undefined);
             expect(response.data.error).toEqual("username/password is incorrect");
@@ -124,7 +132,9 @@ describe('Authentication End Point - Publisher API', function () {
         try {
             var response = post(url, {"password": password, "username": username}, {}, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data).toBe(undefined);
             expect(response.data.error).toEqual("username/password is incorrect");
@@ -146,7 +156,9 @@ describe('Authentication End Point - Publisher API', function () {
         try {
             var response = post(url, {"password": password, "username": username}, {}, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data).toBe(undefined);
             expect(response.data.error).toEqual("Username and Password must be provided");

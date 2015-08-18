@@ -36,14 +36,16 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
         var status = true;//We assume that all attributes will match
         var ignoredProperty = 'attributes';
         var term = '';
+        if (log.isDebugEnabled()) {
+            log.debug('Invoked matchArtifact: '+artifact.attributes.overview_name);
+            log.debug('Ignoring property: ' + ignoredProperty);        }
 
-        log.debug('Invoked matchArtifact: '+artifact.attributes.overview_name);
-        log.debug('Ignoring property: ' + ignoredProperty);
 
         //First go through all of the non attribute properties
         for (var searchKey in searchArtifact) {
+            if (log.isDebugEnabled()) {
+                log.debug('Examining property: ' + searchKey);            }
 
-            log.debug('Examining property: ' + searchKey);
 
             if ((searchKey != ignoredProperty) && (artifact.hasOwnProperty(searchKey))) {
 
@@ -54,30 +56,35 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
 
                 //Determine if the searchKey points to an array
                 if (searchArtifact[searchKey] instanceof Array) {
+                    if (log.isDebugEnabled()) {
+                        log.debug('Checking against array of values: ' + searchArtifact[searchKey]);
+                        log.debug('Artifact value '+term);                    }
 
-                    log.debug('Checking against array of values: ' + searchArtifact[searchKey]);
-                    log.debug('Artifact value '+term);
                     //Check if the value of the artifact property is defined in the
                     //searchArtifact property array.
                     status = (searchArtifact[searchKey].indexOf(term) != -1) ? true : false;
                 }
                 else {
-                    log.debug('Artifact value: '+term);
-                    log.debug('Searched value:'+searchArtifact[searchKey]);
+                    if (log.isDebugEnabled()) {
+                        log.debug('Artifact value: '+term);
+                        log.debug('Searched value:'+searchArtifact[searchKey]);                    }
+
                     //Update the status
                     status = (searchArtifact[searchKey] == term);
                 }
 
             }
         }
-
-        log.debug('Properties match: ' + status);
+        if (log.isDebugEnabled()) {
+            log.debug('Properties match: ' + status);
+        }
 
         //If it is not a match at this time then return false, no need to check
         //if the attributes match.
         if(status==false){
-
-            log.debug(artifact.attributes.overview_name+' no match.');
+            if (log.isDebugEnabled()) {
+                log.debug(artifact.attributes.overview_name+' no match.');
+            }
             return status;
         }
 
@@ -86,8 +93,9 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
 
             //Check if the attributes match
             status = matchAttr(searchArtifact.attributes, artifact.attributes);
-
-            log.debug('Attribute match : ' + status);
+            if (log.isDebugEnabled()) {
+                log.debug('Attribute match : ' + status);
+            }
 
         }
 
@@ -305,7 +313,9 @@ var DEFAULT_ASSET_VIEW_STATE = 'published';
      * METHOD IS DEPRECATED
      */
     Manager.prototype.list = function (paging) {
-        log.debug('Calling deprecated method list - A method from down under-give him a vegimite sandwich');
+        if (log.isDebugEnabled()) {
+            log.debug('Calling deprecated method list - A method from down under-give him a vegimite sandwich');
+        }
         //Obtain the visible states from the
         /*var storeConfig = require('/store.json').lifeCycleBehaviour;
         var visibleStates = storeConfig.visibleIn || DEFAULT_ASSET_VIEW_STATE;

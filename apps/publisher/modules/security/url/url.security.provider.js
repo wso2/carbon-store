@@ -32,7 +32,9 @@ var securityModule = function () {
     function onSecurityCheckFail() {
         var app = require('rxt').app;
         var context = app.getContext();
-        log.debug('security check failed redirecting...');
+        if(log.isDebugEnabled()){
+            log.debug('security check failed redirecting...');
+        }
         response.sendRedirect(context + '/login');
     }
 

@@ -47,7 +47,9 @@ var init = function(options) {
         }
         CommonUtil.addRxtConfigs(system.registry.getChrootedRegistry("/_system/governance"), tenantId);
         um.authorizeRole(carbon.user.anonRole, GovernanceConstants.RXT_CONFIGS_PATH, carbon.registry.actions.GET);
-        log.debug('TENANT CREATED');
+        if(log.isDebugEnabled()){
+            log.debug('TENANT CREATED');
+        }
         addLifecycles(system);
     });
     event.on('tenantLoad', function(tenantId) {
@@ -64,23 +66,34 @@ var init = function(options) {
         loadTagDependencies(reg);
         //Check if the tenant is the super tenant
         if (tenantId == SUPER_TENANT) {
-            log.debug('executing default asset deployment logic since super tenant has been loaded.');
-            log.debug('attempting to load rxt templates to the registry.');
+            if(log.isDebugEnabled()){
+                log.debug('executing default asset deployment logic since super tenant has been loaded.');
+                log.debug('attempting to load rxt templates to the registry.');
+            }
+
             //Try to deploy the rxts
             CommonUtil.addRxtConfigs(reg.registry.getChrootedRegistry("/_system/governance"), reg.tenantId);
             um.authorizeRole(carbon.user.anonRole, GovernanceConstants.RXT_CONFIGS_PATH, carbon.registry.actions.GET);
-            log.debug('finished loading rxt templates to the registry.');
+            if(log.isDebugEnabled()){
+                log.debug('finished loading rxt templates to the registry.');
+            }
             //Attempt to load the default assets
             var deployer = require('/modules/deployment/asset.deployment.js').deployment_logic();
-            log.debug('starting auto deployment of default assets.');
+            if(log.isDebugEnabled()){
+                log.debug('starting auto deployment of default assets.');
+            }
             //Create a deployment manager instance
             var deploymentManager = new deployer.Deployer({
                 config: publisherConfig.defaultAssets
             });
-            log.debug('initializing deployementManager');
+            if(log.isDebugEnabled()){
+                log.debug('initializing deployementManager');
+            }
             deploymentManager.init();
             deploymentManager.autoDeploy();
-            log.debug('finished auto deployment of default assets.');
+            if(log.isDebugEnabled()){
+                log.debug('finished auto deployment of default assets.');
+            }
         }
     });
     event.on('login', function(tenantId, user, session) {
@@ -109,10 +122,14 @@ var addLifecycles = function(registry) {
         var lcJSON = utility.xml.convertE4XtoJSON(lcXml);
         //Check if the lifecycle is present
         var isPresent = CommonUtil.lifeCycleExists(lcJSON.name, configReg);
-        log.debug('Is life-cycle present: ' + isPresent);
+        if(log.isDebugEnabled()){
+            log.debug('Is life-cycle present: ' + isPresent);
+        }
         //Only add the lifecycle if it is not present in the registry
         if (!isPresent) {
-            log.debug('Adding life-cycle since it is not deployed.');
+            if(log.isDebugEnabled()){
+                log.debug('Adding life-cycle since it is not deployed.');
+            }
             CommonUtil.addLifecycle(lc, configReg, rootReg);
         }
     });
@@ -204,7 +221,9 @@ var buildManagers = function(tenantId, registry) {
     var userManager = server.userManager(tenantId);
     var storageSecurityProvider = new securityProviderModule.SecurityProvider();
     //var filterManager = new filterManagementModule.FilterManager();
-    log.debug('tenant: ' + tenantId);
+    if(log.isDebugEnabled()){
+        log.debug('tenant: ' + tenantId);
+    }
     //The security provider requires the registry and user manager to work
     storageSecurityProvider.provideContext(registry, userManager);
     //log.debug(userManager);
@@ -268,7 +287,9 @@ var loadTagDependencies = function(registry) {
     var resource = registry.get(TAGS_QUERY_PATH);
     //Check if the tag is present
     if (!resource) {
-        log.debug('tag query path does not exist.');
+        if(log.isDebugEnabled()){
+            log.debug('tag query path does not exist.');
+        }
         registry.put(TAGS_QUERY_PATH, {
             content: TAGS_QUERY,
             mediaType: 'application/vnd.sql.query',
@@ -276,7 +297,9 @@ var loadTagDependencies = function(registry) {
                 resultType: 'Tags'
             }
         });
-        log.debug('tag query has been added.');
+        if(log.isDebugEnabled()){
+            log.debug('tag query has been added.');
+        }
     }
 };
 /*
@@ -294,7 +317,9 @@ var buildPermissionsList = function(tenantId, username, permissions) {
     var user = store.user;
     //Obtain the accessible collections
     var accessible = user.configs(tenantId).accessible;
-    log.debug(stringify(accessible));
+    if(log.isDebugEnabled()){
+        log.debug(stringify(accessible));
+    }
     var id;
     var accessibleContext;
     var accessibleCollections;
@@ -318,7 +343,9 @@ var buildPermissionsList = function(tenantId, username, permissions) {
             var col = sysRegistry.get(id);
             //Only add permissions if the path  does not exist
             if (col == undefined) {
-                log.debug('collection: ' + id + ' does not exist.');
+                if(log.isDebugEnabled()){
+                    log.debug('collection: ' + id + ' does not exist.');
+                }
                 //Assign the actions to the id
                 permissions[id] = actions;
                 //Create a dummy collection, as once permissions are
@@ -331,7 +358,9 @@ var buildPermissionsList = function(tenantId, username, permissions) {
                     collection: true
                 });
             } else {
-                log.debug('collection: ' + id + 'is present.');
+                if(log.isDebugEnabled()){
+                    log.debug('collection: ' + id + 'is present.');
+                }
             }
         }
     }
@@ -359,7 +388,9 @@ var configureUser = function(tenantId, user) {
     var role = umod.privateRole(user.username);
     var defaultRoles = config.userRoles;
     var log = new Log();
-    log.debug('Starting configuringUser.');
+    if(log.isDebugEnabled()){
+        log.debug('Starting configuringUser.');
+    }
     var cleanedUsername = store.user.cleanUsername(user.username);
     //Create the permissions in the options configuration file
     //perms = buildPermissionsList(tenantId, cleanedUsername, perms, server);

@@ -38,7 +38,9 @@ var tenantLoad = function(ctx) {
             var staticPath = rxtManager.getStaticRxtStoragePath(type);
             staticPath = Utils.governanceRooted(staticPath);
             var actions = [constants.REGISTRY_ADD_ACTION];
-            log.debug('authorized ' + DEFAULT_ROLE + ' for all actions in ' + staticPath);
+            if (log.isDebugEnabled()){
+                log.debug('authorized ' + DEFAULT_ROLE + ' for all actions in ' + staticPath);
+            }
             Utils.authorizeActionsForRole(tenantId, staticPath, DEFAULT_ROLE, actions);
         }
         //Non asset type specific permissions

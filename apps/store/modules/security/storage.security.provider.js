@@ -90,7 +90,9 @@ var securityModule = function () {
         var username = null;
         //If a user is not logged in they will recieve anon rights
         if(!userInstance){
-            log.debug('a user is not logged in.');
+            if (log.isDebugEnabled()) {
+                log.debug('a user is not logged in.');
+            }
             roles.push(ROLE_ANON);
         }
         else{
@@ -103,7 +105,9 @@ var securityModule = function () {
         var field=findField(uuid,asset);
 
         if(field==''){
-            log.debug('field for '+uuid+' could not be found.');
+            if (log.isDebugEnabled()) {
+                log.debug('field for '+uuid+' could not be found.');
+            }
             return false;
         }
         var isAllowed=this.isAllowed(asset,username,roles,asset.lifecycleState,field);
@@ -127,19 +131,25 @@ var securityModule = function () {
         //Check if a storage block exists for the provided asset, if it does
         //not then it is allowed access by default
         if (!this.storageBlocks.hasOwnProperty(type)) {
-            log.debug('storage block does not exist');
+            if (log.isDebugEnabled()) {
+                log.debug('storage block does not exist');
+            }
             return true;
         }
 
         //Check if the field is supported
         if (!this.storageBlocks[type].hasOwnProperty(field)) {
-            log.debug('field ' + field + ' has no storage rules');
+            if (log.isDebugEnabled()) {
+                log.debug('field ' + field + ' has no storage rules');
+            }
             return true;
         }
 
         //Check if lifecycle constrictions have been provided
         if (!this.storageBlocks[type][field].hasOwnProperty(LIFECYCLE_BLOCK)) {
-            log.debug('field ' + field + ' does not have a ' + LIFECYCLE_BLOCK);
+            if (log.isDebugEnabled()) {
+                log.debug('field ' + field + ' does not have a ' + LIFECYCLE_BLOCK);
+            }
             return true;
         }
 
@@ -148,7 +158,9 @@ var securityModule = function () {
 
         //Determine if the current state is handled
         if (!lifecycleData.hasOwnProperty(state)) {
-            log.debug('field ' + field + ' does not have any rules for state: ' + state);
+            if (log.isDebugEnabled()) {
+                log.debug('field ' + field + ' does not have any rules for state: ' + state);
+            }
             return true;
         }
 

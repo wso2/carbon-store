@@ -54,7 +54,9 @@ var reflection = {};
             if (!(from[key] instanceof Object)) {
                 to[key] = from[key];
             } else {
-                log.debug('Not copying values of key: ' + key);
+                if (log.isDebugEnabled()) {
+                    log.debug('Not copying values of key: ' + key);
+                }
             }
         });
     };
@@ -68,7 +70,9 @@ var reflection = {};
             if ( typeof from[key] !== 'object') {
                 to[key] = from[key];
             } else {
-                log.debug('Not copying values of key: ' + key);
+                if (log.isDebugEnabled()) {
+                    log.debug('Not copying values of key: ' + key);
+                }
             }
         });
     };

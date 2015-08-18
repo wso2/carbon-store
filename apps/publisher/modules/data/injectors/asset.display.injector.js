@@ -40,8 +40,9 @@ var injector = function () {
         if(object.hasOwnProperty('attributes')){
             return true;
         }
-
-        log.debug('object'+stringify(object)+' is not handled');
+        if(log.isDebugEnabled()){
+            log.debug('object'+stringify(object)+' is not handled');
+        }
 
         return false;
     }
@@ -76,7 +77,9 @@ var injector = function () {
 
                 //Check if it is a valid uuid and create a new url
                 if((uuid)&&(utility.isValidUuid(uuid))){
-                    log.debug('creating a new url for '+url);
+                    if(log.isDebugEnabled()){
+                        log.debug('creating a new url for '+url);
+                    }
                     object.attributes[field]=getUrl(url,config,object);
                 }
 
@@ -136,8 +139,9 @@ var injector = function () {
         storageUrlPattern=storageUrlPattern.replace('{uuid}',uuid);
         storageUrlPattern=storageUrlPattern.replace('{id}',object.id);
         storageUrlPattern=storageUrlPattern.replace('{type}',object.type);
-
-        log.debug('new url: '+storageUrlPattern);
+        if(log.isDebugEnabled()){
+            log.debug('new url: '+storageUrlPattern);
+        }
         return storageUrlPattern;
     }
 

@@ -1,0 +1,4 @@
+#NOTE: This is an internal implementation file, its format can be changed without prior notice.
+#Thu Aug 13 17:21:50 IST 2015
+org.apache.felix.bundlerepository-1.6.6.jar>wso2-nexus=
+org.apache.felix.bundlerepository-1.6.6.pom>wso2-nexus=

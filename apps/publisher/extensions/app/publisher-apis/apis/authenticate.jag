@@ -51,11 +51,16 @@ var addToSessionMap = function (app, sessionInstance) {
     if (!ssoSessions) {
         app.put(SESSION_MAP, {});
         ssoSessions = app.get(SESSION_MAP);
-        log.debug('Created session as session was not present');
+        if (log.isDebugEnabled()){
+            log.debug('Created session as session was not present');
+        }
+
     }
     if (!ssoSessions[sessionId]) {
         ssoSessions[sessionId] = '';
-        log.debug('Added session: ' + sessionId + ' to session map');
+        if (log.isDebugEnabled()) {
+            log.debug('Added session: ' + sessionId + ' to session map');
+        }
     } else {
         log.warn('Session already exists in the session map');
     }

@@ -24,7 +24,7 @@
     var authenticated; //Assume that the authentication will fail
     if (!hasUsernamePassword) {
     	response.sendError(400,'Please provide the username and password to login');
-    	if(log.isDebugEnabled) {
+    	if(log.isDebugEnabled()) {
     		log.debug('Attempt to login without username and password');
     	}
     	return;

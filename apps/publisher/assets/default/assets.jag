@@ -91,7 +91,9 @@ routeMnger.register('GET', 'publisher', '/publisher/assets/{type}/', function(co
 		});
 	} catch (e) {
 		response.sendError(400, "Your request is malformed");
-		log.debug(e);
+		if (log.isDebugEnabled()){
+			log.debug(e);
+		}
 	}
 
 	/*for each(var artifact in artifacts){

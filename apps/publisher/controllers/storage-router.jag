@@ -47,7 +47,7 @@ require('/modules/publisher.js').exec(function(ctx) {
         var matchedElements = uriMatcher.elements();
         handleResourceRequest(ctx.session, matchedElements);
     } else {
-        if (log.isDebugEnabled) {
+        if (log.isDebugEnabled()) {
             log.debug('url pattern : ' + request.getRequestURI() + ' did not match neither tenanted nor non tenanted url pattern');
         }
         response.sendError(404, ERROR_NOT_FOUND);
@@ -84,7 +84,7 @@ require('/modules/publisher.js').exec(function(ctx) {
         var fetchedFile = registryOperator.getFile(compoundKey, tenantId);
         //Check if a value was returned from storage
         if ((!fetchedFile) || (!fetchedFile.resource)) {
-            if(log.isDebugEnabled){
+            if(log.isDebugEnabled()){
                 log.debug('Asset was not retrieved');
             }
             response.sendError(404, ERROR_NOT_FOUND);

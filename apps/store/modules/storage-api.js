@@ -65,7 +65,7 @@ var api = {};
         if (asset) {
             return true;
         }
-        if (log.isDebugEnabled) {
+        if (log.isDebugEnabled()) {
             log.debug('Unauthorized access attempt for ' + resourcePath + ' by user in tenant ' + tenantId);
         }
         return false;

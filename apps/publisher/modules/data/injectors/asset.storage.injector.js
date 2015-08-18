@@ -41,8 +41,9 @@ var injector=function(){
         if(object.hasOwnProperty('attributes')){
             return true;
         }
-
-        log.debug('the object: '+stringify(object)+' is not handled.');
+        if(log.isDebugEnabled()){
+            log.debug('the object: '+stringify(object)+' is not handled.');
+        }
     }
 
     /*
@@ -99,7 +100,9 @@ var injector=function(){
         //log.debug('examining path: '+path);
         //Only add it storage if it is a valid path and get the uuid
         if(file.isExists()){
-            log.debug('loaded resource '+path+' into storage.');
+            if(log.isDebugEnabled()){
+                log.debug('loaded resource '+path+' into storage.');
+            }
             fieldName=useStorageManager(path,file,context,field);
         }
 

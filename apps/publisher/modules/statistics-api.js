@@ -68,7 +68,7 @@ var filterResultsByAssetType = function(array, type, am) {
                 filteredArry.push(array[index]);
             }
         }catch(e){
-            if (log.isDebugEnabled) {
+            if (log.isDebugEnabled()) {
                 log.debug('Unable to obtain stat details for ' + aid, e);
             }
         }
@@ -120,7 +120,7 @@ var fillAssetDetails = function(assetStatInfo, stats, ticks, am, index) {
         stats.push([index, numOfBookmarks]);
         ticks.push([index, buildAssetName(assetName, assetVersion)]);
     } catch (e) {
-        if (log.isDebugEnabled) {
+        if (log.isDebugEnabled()) {
             log.debug('Unable to obtain stat details for ' + aid, e);
         }
     }
@@ -165,7 +165,7 @@ var getHotAssetStats = function(options) {
     var hotAssetStats;
     var results;
     /*log.info('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
-    if(log.isDebugEnabled){
+    if(log.isDebugEnabled()){
         log.debug('Obtaining hot asset stats for start date: '+startDate+' end date: '+endDate);
     }*/
     if (!am) {
