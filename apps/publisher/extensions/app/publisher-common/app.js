@@ -46,7 +46,8 @@ app.server = function(ctx) {
         },
         configs: {
             landingPage: '/assets/gadget/list',
-            disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint','swagger','restservice','comments','soapservice']
+            disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint','swagger','restservice','comments','soapservice'],
+            uiDisabledAssets: []
         },
         onLoadedServerConfigs:function(configs){
         }

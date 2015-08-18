@@ -274,11 +274,19 @@ var app = {};
         var configs = userMod.configs(tenantId)||{};
         var landingPage = configs.landingPage || '/';
         var disabledAssets = configs.disabledAssets || [];
+        var uiDisabledAssets = configs.uiDisabledAssets || [];
         if (serverConfigs.landingPage) {
             configs.application.landingPage = serverConfigs.landingPage;
             if(log.isDebugEnabled()){
                 log.debug('Landing page changed to : ' + configs.application.landingPage);
             }
+        }
+        if ((serverConfigs.uiDisabledAssets) && (serverConfigs.uiDisabledAssets.length > 0)) {
+            //Overriding extensions will completely replace the disabled assets list, this is required
+            //in order to allow app extensions to enable types that are already disabled by a previous extensions
+            configs.uiDisabledAssets = serverConfigs.uiDisabledAssets;
+            //configs.disabledAssets = disabledAssets.concat(serverConfigs.disabledAssets);
+            log.info('UI Disabled assets: ' + stringify(configs.uiDisabledAssets));
         }
         if ((serverConfigs.disabledAssets) && (serverConfigs.disabledAssets.length > 0)) {
             //Overriding extensions will completely replace the disabled assets list, this is required
@@ -588,6 +596,37 @@ var app = {};
         var enabledAssets = availableAssets;
         if (disabledAssets.length > 0) {
             //The enabled assets are an intersection of the disabledAssets with the available assets
+            enabledAssets = availableAssets.filter(function (item) {
+                return (disabledAssets.indexOf(item) < 0);
+            });
+        }
+        return enabledAssets;
+    };
+    /**
+     * Returns an array of all asset types that are activated in the ES UI.This method first obtains the set of
+     * all available asset types and then intersects them with assets which are disabled and UI disabled in the
+     * x-tenant.json file.
+     * @param  {Number} tenantId The tenant ID for which the activated assets must be returned
+     * @return {Array}          An array of strings indicating the asset types
+     *                          (The values returned reflect the shortName property in the rxt files)
+     * @throws Unable to locate tenant configurations in order to retrieve activated assets
+     */
+    app.getUIActivatedAssets = function (tenantId) {
+        var user = require('store').user;
+        var configs = user.configs(tenantId); //TODO: Check if a tenant ID is provided
+        if (!configs) {
+            log.warn('Unable to locate tenant configurations in order to retrieve activated assets');
+            throw 'Unable to locate tenant configurations in order to retrieve activated assets';
+        }
+        //var assets = configs.assets;
+        var uiDisabledAssets = configs.uiDisabledAssets || [];
+        var disabledAssets = configs.disabledAssets || [];
+        disabledAssets = disabledAssets.concat(uiDisabledAssets);
+        var rxtManager = core.rxtManager(tenantId);
+        var availableAssets = rxtManager.listRxtTypes();
+        var enabledAssets = availableAssets;
+        if (disabledAssets.length > 0) {
+            //enabled assets are an intersection of the (disabledAssets U uiDisabledAssets) with the available assets
             enabledAssets = availableAssets.filter(function(item) {
                 return (disabledAssets.indexOf(item) < 0);
             });

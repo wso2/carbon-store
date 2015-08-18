@@ -21,7 +21,7 @@ var pageDecorators = {};
     var log = new Log();
     var isActivatedAsset = function(assetType, tenantId) {
         var app = require('rxt').app;
-        var activatedAssets = app.getActivatedAssets(tenantId); //ctx.tenantConfigs.assets;
+        var activatedAssets = app.getUIActivatedAssets(tenantId); //ctx.tenantConfigs.assets;
         //return true;
         if (!activatedAssets) {
             throw 'Unable to load all activated assets for current tenant: ' + tenatId + '.Make sure that the assets property is present in the tenant config';

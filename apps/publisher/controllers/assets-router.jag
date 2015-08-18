@@ -113,7 +113,7 @@
 	var validateType = function (type){
 	    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
 	    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
-	    var availableTypes = rxt.app.getActivatedAssets(tenantId);
+	    var availableTypes = rxt.app.getUIActivatedAssets(tenantId);
 
 	            for (var index in availableTypes) {
 	                if(availableTypes[index] === type){
