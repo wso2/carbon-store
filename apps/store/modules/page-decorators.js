@@ -30,7 +30,7 @@ var pageDecorators = {};
         ctx = tenantAppResources.context;
         var rxtManager = ctx.rxtManager;
         //Obtain all of the available rxt types
-        var availableTypes = app.getActivatedAssets(ctx.tenantId);
+        var availableTypes = app.getUIActivatedAssets(ctx.tenantId);
         var types = [];
         var type;
         var currentType;
@@ -114,7 +114,7 @@ var pageDecorators = {};
         var tenantAssetResources;
         // Supporting cross tenant views
         ctx = tenantAppResources.context;
-        types = app.getActivatedAssets(ctx.tenantId);
+        types = app.getUIActivatedAssets(ctx.tenantId);
         var typeDetails;
         var ratingApi = require('/modules/rating-api.js').api;
         var q = page.assetMeta.q;
@@ -250,7 +250,7 @@ var pageDecorators = {};
         var tenantAssetResources;
         //Support for cross tenant views
         ctx = tenantAppResources.context;
-        var types = app.getActivatedAssets(ctx.tenantId);
+        var types = app.getUIActivatedAssets(ctx.tenantId);
         for (var index in types) {
             type = types[index];
             tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {

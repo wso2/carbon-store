@@ -51,14 +51,14 @@ var addToSessionMap = function (app, sessionInstance) {
     if (!ssoSessions) {
         app.put(SESSION_MAP, {});
         ssoSessions = app.get(SESSION_MAP);
-        if (log.isDebugEnabled()){
+
+        if (log.isDebugEnabled){
             log.debug('Created session as session was not present');
         }
-
     }
     if (!ssoSessions[sessionId]) {
         ssoSessions[sessionId] = '';
-        if (log.isDebugEnabled()) {
+        if (log.isDebugEnabled()){
             log.debug('Added session: ' + sessionId + ' to session map');
         }
     } else {
@@ -78,22 +78,25 @@ switch (METHOD) {
 
 
         } else {
-            var isAuthenticated = user.login(credentials.username, credentials.password, session);//authenticate the user
-            if (isAuthenticated) {
-                session.put("LOGGED_IN_USER", credentials.username);
-                session.put("Logged", "true");
+            try{
+                var isAuthenticated = user.login(credentials.username, credentials.password, session);//authenticate the user
+                if (isAuthenticated) {
+                    session.put("LOGGED_IN_USER", credentials.username);
+                    session.put("Logged", "true");
 
-                //Add to the session map as it is required by the session listener
-                addToSessionMap(application, session);
-                response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, {'sessionId': session.getId()});
-            }else if(isAuthenticated == null){
-                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on authentication api', response, 'The domain name of tenant is not exists', '', []);
+                    //Add to the session map as it is required by the session listener
+                    addToSessionMap(application, session);
+                    response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, {'sessionId': session.getId()});
+                }
+                else {
+                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED, 'error on authentication api', response, 'username/password is incorrect', '', []);
+
+                }
+            }catch(e){
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on authentication api', response, 'Non existing domain name',e.message, []);
 
             }
-            else {
-                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED, 'error on authentication api', response, 'username/password is incorrect', '', []);
 
-            }
         }
         break;
 

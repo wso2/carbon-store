@@ -89,7 +89,7 @@ describe('Authentication End Point - Publisher API', function () {
             }
         } finally {
             expect(response.data.data).toBe(undefined);
-            expect(response.data.error).toEqual("username/password is incorrect");
+            expect(response.data.message).toEqual("username/password is incorrect");
         }
     });
 
@@ -113,7 +113,7 @@ describe('Authentication End Point - Publisher API', function () {
             }
         } finally {
             expect(response.data.data).toBe(undefined);
-            expect(response.data.error).toEqual("username/password is incorrect");
+            expect(response.data.message).toEqual("username/password is incorrect");
         }
     });
 
@@ -137,7 +137,7 @@ describe('Authentication End Point - Publisher API', function () {
             }
         } finally {
             expect(response.data.data).toBe(undefined);
-            expect(response.data.error).toEqual("username/password is incorrect");
+            expect(response.data.message).toEqual("username/password is incorrect");
         }
     });
 
@@ -161,7 +161,7 @@ describe('Authentication End Point - Publisher API', function () {
             }
         } finally {
             expect(response.data.data).toBe(undefined);
-            expect(response.data.error).toEqual("Username and Password must be provided");
+            expect(response.data.message).toEqual("Username and Password must be provided");
         }
     });
 

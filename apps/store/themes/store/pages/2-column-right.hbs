@@ -60,5 +60,16 @@
     {{code}}
 <script src="{{url "/themes/store/js/caramel.handlebars.client.js"}}"></script>
 <script src="{{url "/themes/store/js/caramel-client.js"}}"></script>
+<script type="text/javascript">
+
+$( document ).ready(function() {
+   $('.navigation-container').affix({
+       offset: {
+           top: $('header').height()
+       }
+   });
+});
+
+</script>
 </body>
 </html>

@@ -27,7 +27,9 @@ asset.manager = function(ctx) {
         var isLCEnabled = ctx.rxtManager.isLifecycleEnabled(ctx.assetType);
         //If lifecycles are not enabled then do nothing
         if(!isLCEnabled){
-            log.warn('lifecycles disabled,not adding published states to search query');
+            if(log.isDebugEnabled()){
+                log.debug('lifecycles disabled,not adding published states to search query');
+            }
             return query;
         }
         //Get all of the published assets

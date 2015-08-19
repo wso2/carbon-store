@@ -204,7 +204,7 @@ var engine = caramel.engine('handlebars', (function() {
                 return new Handlebars.SafeString(defaultPtr(table));
             });
             var renderFieldMetaData = function(field,name,options) {
-                var isRequired=(field.required)?field.required:false;
+                var isRequired=(field.required == 'true')? true : false; //field.required is not boolean
                 var isReadOnly=false;
                 var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
@@ -238,7 +238,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var isHidden= (field.hidden)?field.hidden:false;
                 if (!isHidden && field.type != "option-text"){
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name);
-                    if (field.required){
+                    if (field.required == 'true'){ //field.required is not boolean
                         output += '<sup class="required-field">*</sup>';
                     }
                     output += '</label>';

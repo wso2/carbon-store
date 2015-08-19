@@ -237,7 +237,9 @@ var error = '';
         //Check if the check item state is the same as the next state
         if (state.checkItems[checkItemIndex].checked == checkItemState) {
             msg = 'The state of the check item at index ' + checkItemIndex + ' was not changed as it is already ' + checkItemState;
-            log.warn(msg);
+            if(log.isDebugEnabled()){
+                log.debug(msg);
+            }
             return;
             //throw msg;
         }
@@ -413,9 +415,8 @@ var error = '';
             var index = (historyComments.length - 1) - entry.order;
             historyComments[index].comment = comments[entry.order];
         });
-        var item = history.item;
-        for(var i = 0; i<item.length;i++){
-            item[i].dateofTransition = dateHistory(item[i]['timestamp']).toString();
+        for (var i = 0; i < historyComments.length; i++) {
+            historyComments[i].dateofTransition = dateHistory(historyComments[i]['timestamp']).toString();
         }
         return history;
     };
@@ -441,7 +442,9 @@ var error = '';
     var parseHistory = function (history) {
         history = history || {};
         if (!history.content) {
-            log.warn('Attempt to parse a history resource which does not have content');
+            if(log.isDebugEnabled()){
+                log.debug('Attempt to parse a history resource which does not have content');
+            }
             return {};
         }
         var xmlHistoryContent = new XML(history.content);
@@ -515,9 +518,7 @@ var error = '';
         return lifecycleComments;
     };
     var isLCActionsPermitted = function (asset, options, req, res, session) {
-        var user = storeModule.server.current(session);
-        var userManager = storeModule.server.userManager(user.tenantId);
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
-        return permissions.isLCActionsPermitted(user.username, asset.path, userManager);
+        return permissions.isLCActionsPermitted( asset.path, session);
     };
 }(api));

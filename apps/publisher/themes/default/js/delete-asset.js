@@ -16,53 +16,45 @@
  *  under the License.
  *
  */
-$(document).ready(function() {
-    if(store && store.publisher && store.publisher.lifecycle && store.publisher.lifecycle.deletableStates){
-        var assetState = store.publisher.lifecycle.currentState;
-        var deletableStates = store.publisher.lifecycle.deletableStates.split(',');
-        var astState = assetState ? assetState.toLowerCase() : assetState;
-        for (var index in deletableStates) {
-            if (deletableStates[index].toLowerCase() == astState) {
-                $('#Delete').removeClass('not-active').removeAttr("title");
-                continue;
-            }else{
-                $('#Delete').addClass('not-active')
-                    .attr("title","Asset is not in a delatable State!")
-                    .click(function(e){e.preventDefault()});
-            }
+$(document).ready(function () {
+    if (store && store.publisher && store.publisher.lifecycle) {
+        if ((!store.publisher.lifecycle.activeLifecycle) || (store.publisher.lifecycle.activeLifecycle.length == '')) {
+            enableDelete();
+            return;
         }
-    }else{
-        $('#Delete').addClass('not-active')
-            .attr("title","Asset is not in a delatable State!")
-            .click(function(e){e.stopProcessing = true});
-    }
+        else if (store.publisher.lifecycle.deletableStates) {
 
-    $('#btn-delete').on('click', function(e) {
-        var assetId = $('#asset-id').val();
-        var assetType = $('#asset-type').val();
-        var path = caramel.url('/apis/assets/' + assetId + '?type=' + assetType);
-        var landingPage = $('#landing-page').val();
-        var landingPageUrl = caramel.url(landingPage);
-        $('#btn-delete').addClass('disabled');
-        $('#delete-loading').removeClass('hide');
+            var assetState = store.publisher.lifecycle.currentState;
+            var deletableStates = store.publisher.lifecycle.deletableStates.split(',');
+            var astState = assetState ? assetState.toLowerCase() : assetState;
 
-        $.ajax({
-            url : path,
-            type : 'DELETE',
-            success : function(response) {
-                $('.alert-success').html('Asset deleted successfully! <a href="'+landingPageUrl+'"> Home </a>');
-                $('.alert-success').removeClass('hide');
-                $('#btn-delete').addClass('disabled');
-                $('#delete-loading').addClass('hide');
-            },
-            error : function() {
-                $('.alert-success').text('Error while deleting asset!');
-                $('.alert-success').removeClass('hide');
-                $('#delete-loading').removeClass('hide');
-                $('#delete-loading').addClass('hide');
-
+            if (deletableStates[0].toLowerCase() == '*') {
+                enableDelete();
+                return;
             }
-        });
-    });
 
+            for (var index in deletableStates) {
+                if (deletableStates[index].toLowerCase() == astState) {
+                    enableDelete();
+                    continue;
+                } else {
+                    disableDelete("Asset is not in a delatable State");
+                }
+            }
+        } else {
+            disableDelete("Asset is not in a delatable State");
+        }
+    } else {
+        disableDelete("Asset delete configurations are not provided");
+    }
 });
+
+var enableDelete = function () {
+    $('#Delete').removeClass('not-active').removeAttr("title").unbind('click');
+};
+
+var disableDelete = function (msg) {
+    $('#Delete').addClass('not-active').attr("title", msg).click(function (e) {
+        e.preventDefault()
+    });
+};

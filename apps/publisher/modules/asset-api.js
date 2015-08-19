@@ -204,6 +204,22 @@ var result;
         var tags = assetReq._tags || '';
         return tags.split(',');
     };
+
+    var validateEditableFeilds = function (type, assetReq) {
+        //Obtain the field definitions for each of the fields
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        for (var key in assetReq) {
+            var fieldName = key;
+            var field = rxtManager.getRxtField(type, fieldName);
+            if (field && (field.readonly || field.auto)) {
+                if(log.isDebugEnabled()){
+                    log.debug(fieldName + ' is not an editable field. Hence, ' + fieldName + ' will not be updated with the provided value : ' + assetReq[fieldName]);
+                }
+                delete assetReq[fieldName];
+            }
+        }
+        return assetReq;
+    };
     /**
      * api to create a new asset
      * @param  options incoming values
@@ -289,14 +305,18 @@ var result;
         var server = require('store').server;
         var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
+
         //TODO this code should be improve for each and every content type
         if(req.getContentType() === "application/json"){
             assetReq = processRequestBody(req, assetReq);
         }
+        assetReq = validateEditableFeilds(options.type, assetReq);
+
         var asset = null;
         var meta;
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
+            asset.attributes = validateEditableFeilds(options.type, asset.attributes);
         } else {
             meta = extractMetaProps(assetReq);
             asset = am.importAssetFromHttpRequest(assetReq);
