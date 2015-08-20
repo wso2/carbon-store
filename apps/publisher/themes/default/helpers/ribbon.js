@@ -15,6 +15,7 @@
  */
 var resources = function(page,meta){
     return {
-        js:['popover.js']
+        js:['popover.js','delete-asset.js'],
+        code: ['publisher.lifecycle.meta.hbs']
     }
 }

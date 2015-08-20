@@ -80,6 +80,7 @@ var LifecycleUtils = {};
     constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
     constants.MSG_ERROR_CHECKLIST_UPDATE = 'msgChecklistUpdateError';
+    constants.CONTAINER_DELETE_ACTION_AREA = 'deleteActionArea';
     var id = function(name) {
         return '#' + name;
     };
@@ -577,6 +578,7 @@ var LifecycleUtils = {};
                 }
                 LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS);
                 LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
+                that.fetchState();
             },
             error: function() {
                 LifecycleAPI.event(constants.EVENT_ACTION_FAILED);
@@ -619,6 +621,7 @@ var LifecycleUtils = {};
                 }
                 that.currentState = data.id.toLowerCase();
                 that.isLCActionsPermitted = data.isLCActionsPermitted;
+                that.isDeletable = data.isDeletable;
                 for (var index = 0; index < data.checkItems.length; index++) {
                     data.checkItems[index].index = index;
                 }
@@ -650,6 +653,7 @@ var LifecycleUtils = {};
             if (historyEntry.comment) {
                 historyEntry.hasComment = true;
             }
+            historyEntry.dateOfTransition = entry.dateofTransition;
             //Check if it is a state change
             if (entry.targetState) {
                 historyEntry.targetState = entry.targetState;

@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 <div class="row">
-    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 wr-filters">
+    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-9 wr-filters">
       {{#if assetCategoryDetails.hasCategories}}
         <div class="wr-filter-category">
           <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true" id="categoryDropDown" title="All Categories">
@@ -50,10 +50,10 @@
         <span class="fa fa-cog fa-2x advanced-search-icons"></span>
     </a>
     </div>
-    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 wr-filters">
+    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 wr-filters">
         <div class="dropdown pull-right">
             <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
-                <span class="sort-asset-info"><span>( {{sorting.selected.help}} <i class="fa {{sorting.selected.helpIcon}}"></i> )</span> <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
+                <span class="sort-asset-info"><span>( <span class="hidden-xs">{{sorting.selected.help}}</span> <i class="fa {{sorting.selected.helpIcon}}"></i> )</span> <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="ul-sort-assets">
                 {{#each sorting.list}}

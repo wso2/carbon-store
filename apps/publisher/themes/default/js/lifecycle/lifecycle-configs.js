@@ -30,5 +30,6 @@ LifecycleAPI.configs({
 	"msgStateChangedSuccess":"State updated successfully",
 	"msgStateChangeError":"State could not be updated",
 	"msgChecklistUpdateSuccess":"Checklist updated successfully",
-	"msgChecklistUpdateError":"Checklist was not updated"
+	"msgChecklistUpdateError":"Checklist was not updated",
+    "deleteActionArea":"Delete"
 });

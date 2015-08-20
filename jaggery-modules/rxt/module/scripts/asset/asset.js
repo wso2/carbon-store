@@ -199,7 +199,9 @@ var asset = {};
         var asset;
         options.id = id;
         if (!this.rxtManager.isGroupingEnabled(this.type)) {
-            log.info('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            if (log.isDebugEnabled()) {
+                log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            }
             return;
         }
         asset = this.get(id);
@@ -210,12 +212,15 @@ var asset = {};
             this.setAsDefaultAsset(asset);
         }
         if (!id) {
-            log.info('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
+            log.error('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
             return;
         }
     };
-    AssetManager.prototype.postCreate = function (asset, ctx) {
-        log.info('### Performing post create operations ###');
+
+    AssetManager.prototype.postCreate = function(asset,ctx){
+        if (log.isDebugEnabled()) {
+            log.debug('Performing post create operations for ' + stringify(asset));
+        }
         var username = ctx.username;
         var permissionsAPI = require('rxt').permissions;
         var userMod = require('store').user;
@@ -232,11 +237,15 @@ var asset = {};
         actions.push(constants.REGISTRY_ADD_ACTION);
         actions.push(constants.REGISTRY_DELETE_ACTION);
         actions.push(constants.REGISTRY_AUTHORIZE_ACTION);
-        log.info('Authorizing actions for role ');
+        if (log.isDebugEnabled()) {
+            log.debug('Authorizing actions for role '+ userRole);
+        }
         permissionsAPI.authorizeActionsForRole(tenantId, path, userRole, actions);
         //Deny actions for the everyone role
         permissionsAPI.denyActionsForEveryone(tenantId, path);
-        log.info('### Finished post create operations ###');
+        if (log.isDebugEnabled()) {
+            log.debug('Finished post create operations for ' + path);
+        }
         return true;
     };
     /**
@@ -412,10 +421,14 @@ var asset = {};
             }
             return locatedAsset;
         }
-        log.warn('Switching to registry search to synch the provided asset as an id was not found in the provided asset: ' + stringify(asset));
+        if (log.isDebugEnabled()) {
+            log.debug('Switching to registry search to synch the provided asset as an id was not found in the provided asset: ' + stringify(asset));
+        }
         //Construct a query which mimics the attributes in the asset
         if (!asset.attributes) {
-            log.warn('Unable to locate the asset in the registry as the provided asset does not have attributes.');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate the asset in the registry as the provided asset does not have attributes.');
+            }
             return locatedAsset;
         }
         dropEmptyFields(asset);
@@ -431,7 +444,9 @@ var asset = {};
             return true;
         });
         if (result.length > 1) {
-            log.warn('Too many assets matched the query.Unable to determine which asset to pick in order to synch: ' + stringify(asset));
+            if (log.isDebugEnabled()) {
+                log.debug('Too many assets matched the query.Unable to determine which asset to pick in order to synch: ' + stringify(asset));
+            }
             return locatedAsset;
         }
         //Update the provided asset
@@ -658,13 +673,18 @@ var asset = {};
     var buildPaginationContext = function (paging) {
         paging = paging || {};
         paging = generatePaginationContext(paging);
-        log.info('[pagination-context] settting context to : ' + stringify(paging));
-        PaginationContext.init(paging.start, paging.count, paging.sortOrder,
-            paging.sortBy, paging.paginationLimit);
+
+        if (log.isDebugEnabled()) {
+            log.debug('[pagination-context] settting context to : '+stringify(paging));
+        }
+        PaginationContext.init(paging.start,paging.count,paging.sortOrder,
+            paging.sortBy,paging.paginationLimit);
     };
     var destroyPaginationContext = function (paginationContext) {
         PaginationContext.destroy();
-        log.info('[pagination-context] successfully destroyed context')
+        if (log.isDebugEnabled()) {
+            log.debug('[pagination-context] successfully destroyed context')
+        }
     };
     var buildQuery = function (query) {
         var q = '';
@@ -687,12 +707,19 @@ var asset = {};
             mediaType = rxtManager.getMediaType(type);
         }
         try {
-            log.info('[advance search] building pagination');
+            if (log.isDebugEnabled()) {
+                log.debug('[advance search] building pagination');
+            }
             buildPaginationContext(paging);
-            log.info('[advance search] building query ');
+            if (log.isDebugEnabled()) {
+                log.debug('[advance search] building query ');
+            }
             q = buildQuery(query);
-            log.info('[advance-search] searching with query: ' + q + ' [mediaType] ' + mediaType);
-            if (q.length > 0) {
+
+            if (log.isDebugEnabled()) {
+                log.debug('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);
+            }
+            if(q.length>0){
                 governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
                 assets = GovernanceUtils.findGovernanceArtifacts(q, governanceRegistry, mediaType);
             }
@@ -738,16 +765,21 @@ var asset = {};
         if (user) {
             userRegistry = storeAPI.user.userRegistry(session);
             tenantId = user.tenantId;
-        } else {
-            log.info('Switching anonymous registry to perform advanced search as there is no logged in user');
+
+        }  else {
+            if (log.isDebugEnabled()) {
+                log.debug('Switching anonymous registry to perform advanced search as there is no logged in user');
+            }
             userRegistry = storeAPI.server.anonRegistry(tenantId);
         }
         rxtManager = core.rxtManager(tenantId);
         registry = userRegistry.registry;
         assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
         //assets is a set that must be converted to a JSON array
-        log.info('[advance search] about to process result set');
 
+        if (log.isDebugEnabled()) {
+            log.debug('[advance search] about to process result set');
+        }
         assets = processAssets(null,assets,rxtManager,tenantId);
         addMetaDataToGenericAssets(assets,session,tenantId);
         return assets;
@@ -940,7 +972,9 @@ var asset = {};
         var items = [];
         var nameField = this.rxtManager.getNameAttribute(this.type);
         if (!nameField) {
-            log.warn('There is no name field defined for type: ' + this.type + '.Unable to retrieve popular assets.');
+            if (log.isDebugEnabled()) {
+                log.debug('There is no name field defined for type: ' + this.type + '.Unable to retrieve popular assets.');
+            }
             return items;
         }
         var paging = constants.DEFAULT_POPULAR_ASSET_PAGIN;
@@ -1185,7 +1219,9 @@ var asset = {};
         var path = this.getSubscriptionSpace(session);
         var success = false;
         if (!path) {
-            log.warn('Unable to subscribe to ' + id + ' as the user space path was not located.');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to subscribe to ' + id + ' as the user space path was not located.');
+            }
             return success;
         }
         path += '/' + id;
@@ -1209,7 +1245,9 @@ var asset = {};
         var path = this.getSubscriptionSpace(session);
         var success = false;
         if (!path) {
-            log.warn('Unable to unsubscribe from ' + id + ' as the user space path was not located.');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to unsubscribe from ' + id + ' as the user space path was not located.');
+            }
             return success;
         }
         path += '/' + id;
@@ -1287,7 +1325,7 @@ var asset = {};
                 }
                 items.push(iteamOut);
             } catch (e) {
-                log.warn('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                log.error('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
             }
         });
         return items;
@@ -1346,14 +1384,17 @@ var asset = {};
     };
     AssetManager.prototype.invokeDefaultLcAction = function (asset) {
         var success = false;
-        var lifecycleName = resolveLCName(arguments, asset, 1);
+//        var lifecycleName = resolveLCName(arguments, asset, 1);
+        var lifecycleName = this.rxtManager.getLifecycleName(this.type);
         if (!asset) {
             log.error('Failed to invoke default  lifecycle action as an asset object was not provided.');
             return success;
         }
         var defaultAction = this.rxtManager.getDefaultLcAction(this.type);
         if (defaultAction == '') {
-            log.warn('Failed to invoke default action of lifecycle as one was not provided');
+            if (log.isDebugEnabled()) {
+                log.debug('Failed to invoke default action of lifecycle as one was not provided');
+            }
             return success;
         }
         success = this.invokeLcAction(asset, defaultAction, lifecycleName);
@@ -1396,12 +1437,16 @@ var asset = {};
         var success = false;
         var lifecycleName = resolveLCName(arguments, asset, 3);
         if (!asset) {
-            log.warn('Unable to locate asset details in order to invoke check item state change');
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate asset details in order to invoke check item state change');
+            }
             return success;
         }
         //Check if a check item state has been provided
         if (checkItemState == null) {
-            log.warn('The check item at index ' + checkItemIndex + ' cannot be changed as the check item state is not provided.');
+            if (log.isDebugEnabled()) {
+                log.debug('The check item at index ' + checkItemIndex + ' cannot be changed as the check item state is not provided.');
+            }
             return success;
         }
         //Obtain the number of check items for this state
@@ -1489,14 +1534,16 @@ var asset = {};
                 if (synched) {
                     this.invokeDefaultLcAction(existingAttributes);
                 } else {
-                    log.warn('Failed to invoke default action as the asset could not be synched.')
+                    if (log.isDebugEnabled()) {
+                        log.debug('Failed to invoke default action as the asset could not be synched.')
+                    }
                 }
             }
         }
 
-        if(this.registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId)){
+        /* if(this.registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId)){
             this.registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId,'/_system/governance/store/asset_resources/'+ options.type + '/' + existingAttributes.id);
-        }
+        }*/
         return existingAttributes.id;
 
     };
@@ -1505,7 +1552,9 @@ var asset = {};
         if (asset.attributes) {
             var name = asset.attributes[nameAttribute];
             if (!name) {
-                log.warn('Unable to locate nameAttribute: ' + nameAttribute + ' in asset: ' + stringify(asset));
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to locate nameAttribute: ' + nameAttribute + ' in asset: ' + stringify(asset));
+                }
                 return '';
             }
             return asset.attributes[nameAttribute];
@@ -1517,7 +1566,9 @@ var asset = {};
         if (asset.attributes) {
             var version = asset.attributes[versionAttribute];
             if (!version) {
-                log.warn('Unable to locate versionAttribute: ' + versionAttribute + ' in asset ' + stringify(asset));
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to locate versionAttribute: ' + versionAttribute + ' in asset ' + stringify(asset));
+                }
                 return '';
             }
             return asset.attributes[versionAttribute];
@@ -1557,7 +1608,9 @@ var asset = {};
         if (asset.attributes) {
             var timeStamp = asset.attributes[timestampAttribute];
             if (!timeStamp) {
-                log.warn('Unable to locate bannerAttribute ' + timestampAttribute + ' in asset ' + asset.id);
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to locate bannerAttribute ' + timestampAttribute + ' in asset ' + asset.id);
+                }
                 return '';
             }
             return asset.attributes[timestampAttribute];
@@ -1679,7 +1732,9 @@ var asset = {};
     };
     var addAssetMetaData = function (asset, am) {
         if ((!asset) || (!asset.attributes)) {
-            log.warn('Could not populate asset details of  type: ' + am.type);
+            if (log.isDebugEnabled()) {
+                log.debug('Could not populate asset details of  type: ' + am.type);
+            }
             return;
         }
         asset.name = am.getName(asset);
@@ -2065,7 +2120,9 @@ var asset = {};
             }
             if (!serverCb.endpoints) {
                 serverCb.endpoints = {};
-                log.warn('Creating endpoints object for type: ' + type);
+                if (log.isDebugEnabled()) {
+                    log.debug('Creating endpoints object for type: ' + type);
+                }
             }
             defaultCb.endpoints.apis = defaultApiEndpoints;
             serverCb.endpoints.apis = defaultApiEndpoints;
@@ -2104,7 +2161,9 @@ var asset = {};
             }
             if (!serverCb.endpoints) {
                 serverCb.endpoints = {};
-                log.warn('Creating endpoints object for type: ' + type);
+                if (log.isDebugEnabled()) {
+                    log.debug('Creating endpoints object for type: ' + type);
+                }
             }
             defaultCb.endpoints.apis = defaultApiEndpoints;
             serverCb.endpoints.apis = defaultApiEndpoints;

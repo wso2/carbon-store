@@ -196,7 +196,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			connection = DSConnection.getConnection();
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdaptorClass();
+				cls = SocialUtil.loadQueryAdapterClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 
@@ -529,7 +529,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			connection = DSConnection.getConnection();
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdaptorClass();
+				cls = SocialUtil.loadQueryAdapterClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 

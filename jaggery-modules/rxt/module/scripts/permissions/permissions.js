@@ -21,7 +21,7 @@ var permissions = {};
     var log = new Log('rxt-permissions');
     var DEFAULT_ASSET = '_default';
     var PERMISSION_LOAD_HOOK = 'tenantLoad';
-    permissions.ANON_ROLE = 'es.store.anon.user';
+    permissions.ANON_ROLE = 'Internal/everyone';
     var getAnonRole = function(tenantId) {
         return permissions.ANON_ROLE;
     };
@@ -193,12 +193,16 @@ var permissions = {};
         }
         //Check if the permission already exists
         if (!systemRegistry.exists(path)) {
-            log.info('[permissions] creating permission path: ' + path)
+            if(log.isDebugEnabled()){
+                log.debug('[permissions] creating permission path: ' + path);
+            }
             //Add the permission
             recursivelyCreatePath(path, systemRegistry);
             return true;
         }
-        log.debug('[permissions] permision path ' + path + ' not created as it already exists');
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] permision path ' + path + ' not created as it already exists');
+        }
         return false;
     };
     var addPermissionsToRole = function(permissionMap, role, tenantId) {
@@ -234,7 +238,9 @@ var permissions = {};
                 return false;
             }
         }
-        log.warn('[permissions] role ' + role + ' was not created as it already exists');
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] role ' + role + ' was not created as it already exists');
+        }
         return true;
     };
     /**
@@ -286,6 +292,13 @@ var permissions = {};
     permissions.init = function() {
         var event = require('event');
         event.on('tenantLoad', function(tenantId) {
+            loadPermissions(tenantId);
+            loadRegistryPermissions(tenantId);
+        });
+        event.on('assetTypesHotDeploy',function(tenantId){
+            if(log.isDebugEnabled()){
+                log.debug('Permissions hor deployed');
+            }
             loadPermissions(tenantId);
             loadRegistryPermissions(tenantId);
         });
@@ -529,13 +542,17 @@ var permissions = {};
         }
     };
     var loadPermissions = function(tenantId) {
-        log.info('[permissions] loading permissions for tenant ' + tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] loading permissions for tenant ' + tenantId);
+        }
         //Load the asset extension permissions.js
         loadDefaultAssetPermissions(tenantId);
         loadAssetPermissions(tenantId);
         //Load the app extension permissions.js
         loadAppPermissions(tenantId);
-        log.info('[permissions] finished loading permissions for tenant ' + tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] finished loading permissions for tenant ' + tenantId);
+        }
     };
     var mapToAssetPermission = function(key, type, tenantId, appName) {
         //Get the asset specific map
@@ -554,7 +571,9 @@ var permissions = {};
     var mapToAppPermission = function(key, tenantId, appName) {
         var permissions = assetPermissionMap(DEFAULT_ASSET, tenantId);
         var permission = permissions[key];
-        log.info('mapToAppPermission ' + permission)
+        if(log.isDebugEnabled()){
+            log.debug('AppPermission entry for the key '+ key + ' : ' + permission)
+        }
         if (!permission) {
             log.error('[permissions] unable to locate permissions for ' + key);
         }
@@ -901,6 +920,31 @@ var permissions = {};
             return true;
         }
         return isPermissable(permission, tenantId, username);
+    };
+    permissions.hasActionPermissionforPath = function() {
+        var permission = arguments[0];
+        var action = arguments[1];
+        var tenantId;
+        var username;
+        var authorized;
+        var server = require('store').server;
+        var user = server.current(arguments[2]);
+        username = user.username;
+        tenantId = user.tenantId;
+        if ((!tenantId)) {
+            throw 'Unable to resolve permissions without the tenantId';
+        }
+        var userManager = server.userManager(tenantId);
+        var authorizer = userManager.authorizer;
+
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] checking permission ' + action + ' for ' + username + ' tenantId ' + tenantId + ' path ' + path);
+        }
+        authorized = checkPermissionString(username, permission, action, authorizer);
+        if(log.isDebugEnabled()){
+            log.debug('[permissions] authorized :' + authorized);
+        }
+        return authorized;
     };
     permissions.getAnonRole = getAnonRole;
     permissions.wso2AnonUsername = wso2AnonUsername;

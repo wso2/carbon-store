@@ -39,16 +39,14 @@
             </div>
         </div>
         <div class="search">
-            {{#with searchBar}}
-                {{>search .}}
-            {{/with}}
-            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn" title="Advanced Search - All Assets"><span class="fa fa-cog advanced-search-icons"></span><span class="advanced-search-text">Advanced Search</span></a>
+            {{>search .}}
+            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn" title="Advanced Search - All Assets"><span class="fa fa-cog advanced-search-icons"></span><span class="advanced-search-text">Search All Assets</span></a>
         </div><!--search--->
     </div>
     <div class="site-wide-menu">
         <div class="inline-block margin-top-sm">
             {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
-            <a href="{{url "/pages/my-items"}}" class="bookmark-link" title="{{t "My bookmarks "}}"><span class="bookmark-link-text">{{t "My bookmarks "}}</span><i class="fw fw-store fw-inverse fw-lg bookmark-link-icon"></i></a>
+            <a href="{{url "/pages/my-items"}}" class="bookmark-link" title="{{t "My bookmarks "}}"><span class="bookmark-link-text">{{t "My bookmarks "}}</span><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i></a>
             {{/hasAppPermission}}
         </div>
     </div>

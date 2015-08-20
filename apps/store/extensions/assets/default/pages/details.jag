@@ -61,6 +61,10 @@ require('/modules/store.js').exec(function(ctx) {
                 assets.isSubscribed = am.isSubscribed(options.id, ctx.session);
             }
         } catch (e) {
+            if(e.javaException.getMessage().startsWith("Error in retrieving governance artifact by path")){
+                response.sendError(401, 'Error in retrieving governance artifact by path');
+                return;
+            }
             log.error('Unable to retrieve asset with id: ' + options.id + ' due to ', e);
         }
         if (assets == null) {

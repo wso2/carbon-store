@@ -34,10 +34,15 @@ $(function(){
     $form_asset_create.validate();
     $form_asset_create.ajaxForm({
         beforeSubmit:function(arr){
+            var createButton = $('#btn-create-asset');
+            createButton.attr('disabled','disabled');
+            createButton.next().attr('disabled','disabled');
+            caramel.render('loading','Creating asset. Please wait..', function( info , content ){
+                createButton.parent().append($(content));
+            });
             populateTags(arr);
         },
         success:function(data){
-            messages.alertSuccess('Created the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
             var options=obtainFormMeta('#form-asset-create');
             $('#btn-create-asset').removeAttr('disabled');
             $.cookie("new-asset-"+data.type , data.id + ":" + data.type + ":" + data.name );

@@ -204,6 +204,22 @@ var result;
         var tags = assetReq._tags || '';
         return tags.split(',');
     };
+
+    var validateEditableFeilds = function (type, assetReq) {
+        //Obtain the field definitions for each of the fields
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        for (var key in assetReq) {
+            var fieldName = key;
+            var field = rxtManager.getRxtField(type, fieldName);
+            if (field && (field.readonly || field.auto)) {
+                if(log.isDebugEnabled()){
+                    log.debug(fieldName + ' is not an editable field. Hence, ' + fieldName + ' will not be updated with the provided value : ' + assetReq[fieldName]);
+                }
+                delete assetReq[fieldName];
+            }
+        }
+        return assetReq;
+    };
     /**
      * api to create a new asset
      * @param  options incoming values
@@ -237,7 +253,9 @@ var result;
         } //generate asset object
         try {
             //throw 'This is to stop asset creation!';
-            log.info(asset);
+            if (log.isDebugEnabled()) {
+                log.debug('Creating Asset : ' + stringify(asset));
+            }
             var checkValidate = am.validate(asset);
             if (checkValidate.length > 0) {
                 for (var key in checkValidate) {
@@ -251,7 +269,7 @@ var result;
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ', e);
+            log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
             return null;
         }
         //Attempt to apply tags
@@ -263,10 +281,10 @@ var result;
         if (!isLCEnabled) {
             return asset;
         }
-        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
-        if (!isDefaultLCEnabled) {
-            return asset;
-        }
+//        isDefaultLCEnabled = rxtManager.isDefaultLifecycleEnabled(options.type);
+//        if (!isDefaultLCEnabled) {
+//            return asset;
+//        }
         //Continue attaching the lifecycle
         var isLcAttached = am.attachLifecycle(asset);
         //Check if the lifecycle was attached
@@ -294,14 +312,18 @@ var result;
         var server = require('store').server;
         var user = server.current(session);
         var assetReq = req.getAllParameters('UTF-8');
+
         //TODO this code should be improve for each and every content type
         if (req.getContentType() === "application/json") {
             assetReq = processRequestBody(req, assetReq);
         }
+        assetReq = validateEditableFeilds(options.type, assetReq);
+
         var asset = null;
         var meta;
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
+            asset.attributes = validateEditableFeilds(options.type, asset.attributes);
         } else {
             meta = extractMetaProps(assetReq);
             asset = am.importAssetFromHttpRequest(assetReq);

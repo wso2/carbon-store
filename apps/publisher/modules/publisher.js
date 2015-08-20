@@ -388,6 +388,19 @@ var exec = function(fn, request, response, session) {
         response.sendError(401, 'Unauthorized');
         return;
     }
+    var app = require('rxt').app;
+    if (log.isDebugEnabled()) {
+        log.debug('Checking for asset types hot deployment');
+    }
+    if(app.isAssetTypesHotDeployed(tenant.tenantId)){
+        app.hotDeployAssetTypes(tenant.tenantId);
+        if(log.isDebugEnabled()){
+            log.debug('Finished hot deployment of asset types');
+        }
+    }
+    if(log.isDebugEnabled()){
+        log.debug('Finished checking for asset types hot deployment');
+    }
     es.server.sandbox({
         tenantId: tenant.tenantId,
         username: user.username

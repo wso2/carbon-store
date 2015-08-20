@@ -21,7 +21,7 @@ var pageDecorators = {};
     var log = new Log();
     var isActivatedAsset = function(assetType, tenantId) {
         var app = require('rxt').app;
-        var activatedAssets = app.getActivatedAssets(tenantId); //ctx.tenantConfigs.assets;
+        var activatedAssets = app.getUIActivatedAssets(tenantId); //ctx.tenantConfigs.assets;
         //return true;
         if (!activatedAssets) {
             throw 'Unable to load all activated assets for current tenant: ' + tenatId + '.Make sure that the assets property is present in the tenant config';
@@ -155,9 +155,13 @@ var pageDecorators = {};
     };
     pageDecorators.populateTagDetails = function(ctx,page,utils){
         var am = assetManager(ctx);
-        log.info('Fetching tags!');
+        if(log.isDebugEnabled()){
+            log.debug('Fetching tags for asset : ' + page.assets.name);
+        }
         page.assetTags = am.getTags(page.assets.id);
-        log.info(page.assetTags);
+        if(log.isDebugEnabled()){
+            log.debug(page.assetTags);
+        }
     };
     pageDecorators.sorting = function(ctx,page){
         var queryString = request.getQueryString();

@@ -149,6 +149,10 @@ asset.server = function(ctx) {
                 url: 'copy',
                 path: 'copy.jag',
                 permission: 'ASSET_CREATE'
+            }, {
+                title: 'Delete ' + type,
+                url: 'delete',
+                path: 'delete.jag'
             }]
         }
     };
@@ -200,7 +204,7 @@ asset.configure = function() {
                 commentRequired: false,
                 defaultLifecycleEnabled: true,
                 defaultAction: 'Promote',
-                deletableStates: [],
+                deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
                 lifecycleEnabled: true
             },
@@ -221,14 +225,6 @@ asset.configure = function() {
             },
             permissions: {
                 configureRegistryPermissions: function(ctx) {
-                    var type = ctx.type;
-                    var tenantId = ctx.tenantId;
-                    var rxtManager = ctx.rxtManager;
-                    var staticPath = rxtManager.getStaticRxtStoragePath(type);
-                    var Utils = ctx.utils;
-                    staticPath = Utils.governanceRooted(staticPath);
-                    log.debug('[configure-registry-permissions] assigning permissions to static path ' + staticPath);
-                    Utils.authorizeActionsForEveryone(tenantId, staticPath);
                 }
             },
             validationMappings : {
@@ -252,7 +248,9 @@ asset.renderer = function(ctx) {
         if ((asset.lifecycle) && (asset.lifecycleState)) {
             return true;
         }
-        log.warn('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        if (log.isDebugEnabled()) {
+            log.debug('asset: ' + asset.name + ' does not have a lifecycle or a state.The lifecycle view will not be rendered for this asset');
+        }
         return false;
     };
     var buildListLeftNav = function(page, util) {
@@ -266,10 +264,12 @@ asset.renderer = function(ctx) {
     };
     var buildDefaultLeftNav = function(page, util) {
         var id = page.assets.id;
+        var path = page.assets.path;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_UPDATE, ctx.assetType, ctx.session)) {
+        if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
+            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
         navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         //Only render the view if the asset has a 
@@ -278,8 +278,8 @@ asset.renderer = function(ctx) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
-        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
-            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
+        if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
+            navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);
         }
         return navList.list();
     };
@@ -288,7 +288,7 @@ asset.renderer = function(ctx) {
     };
     var isActivatedAsset = function(assetType) {
         var app = require('rxt').app;
-        var activatedAssets = app.getActivatedAssets(ctx.tenantId); //ctx.tenantConfigs.assets;
+        var activatedAssets = app.getUIActivatedAssets(ctx.tenantId); //ctx.tenantConfigs.assets;
         //return true;
         if (!activatedAssets) {
             throw 'Unable to load all activated assets for current tenant: ' + ctx.tenatId + '.Make sure that the assets property is present in the tenant config';

@@ -190,6 +190,9 @@ h1.asset-name {
 a{
     cursor: pointer;
 }
+a:hover, a:focus{
+    text-decoration:none;
+}
 h2.field-title {
     margin:0 0 20px 0;
     border-bottom:solid 1px #f0f0f0;
@@ -246,11 +249,11 @@ header {
 	height:50px;
 }
 
-#nav.affix {
-    position: fixed;
-    top: 0;
+.ribbon-container.affix {
     width: 100%;
-    z-index:10;
+    display: block;
+    top: 0;
+    z-index: 10000;
 }
 
 .wr-asset-type-switcher {
@@ -378,7 +381,7 @@ a.ast-type-item .icon {
 }
 
 .ctrl-wr-asset {
-	width:140px;
+	width:150px;
 	height:300px;
 	float:left;
 	margin-right:22px;
@@ -399,7 +402,7 @@ a.ast-type-item .icon {
 }
 
 .itm-ast:hover h3, .itm-ast:hover .ast-auth {
-	color:#3f75ff;
+	color:#555;
 }
 
 br.c-both {
@@ -408,8 +411,8 @@ br.c-both {
 
 .ast-img img {
 	float:left;
-	width:140px;
-	height:140px;
+	width:150px;
+	height:150px;
 }
 
 .ast-desc {
@@ -451,7 +454,27 @@ h3.ast-name:after {
 .ast-auth {
 	font-weight:300;
 	font-size:13px;
-	color:#237bd5;
+	color:#666;
+}
+.ast-auth {
+    display: block;
+    white-space: nowrap;
+    word-break: keep-all;
+    display: inline-block;
+    height: 14px;
+    width:90px;
+    position: relative;
+    overflow:hidden;
+}
+.ast-auth:after {
+    content: "";
+    text-align: right;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 30%;
+    height: 20px;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
 }
 
 .ast-published {
@@ -514,13 +537,19 @@ i.cu-btn-exp-col {
 .btn-copy {
     background:url('../img/icons/ico-copy.png') 0.8em 1em no-repeat;
 }
-
-.btn-collapsed {
-    background:url('../img/icons/ico-collapsed.png') no-repeat;      
+.btn-delete {
+    background:url('../img/icons/ico-delete.png') 0.8em 1em no-repeat;
 }
-
+.not-active,.not-active:hover {
+    cursor: default;
+    background-color:#2385ee;
+    opacity: 0.3;
+}
+.btn-collapsed {
+    background:url('../img/icons/ico-expanded.png') no-repeat;
+}
 .collapsed .btn-collapsed {
-     background:url('../img/icons/ico-expanded.png') no-repeat;
+     background:url('../img/icons/ico-collapsed.png') no-repeat;
 }
 
 .sort-asset-info{
@@ -646,7 +675,8 @@ a.cu-ico-button-stats {
 
 /* filter */
 .wr-filters {
-	padding:18px 30px 15px 15px;
+	/*padding:18px 30px 15px 15px;*/
+	padding-top:15px;
 }
 
 .wr-filters .dropdown-menu .filter-item{
@@ -705,21 +735,25 @@ a.cu-ico-button-stats {
     margin-left:4px;
 }
 .wr-search input {
-    background:#bbb;
+    background:#444;
     width:380px;    
-    border:1px solid #bbb;
+    border:1px solid #444;
     color:#fff;
     font-size:18px;
     font-weight: 100;
     padding:7px 15px;
+
+}
+.wr-search input:focus{
+    outline: 0;
 }
 
 .btn-search {
     display:inline-block;
-    font-size:20px;
+    font-size:19px;
     font-weight:500;
     color:#333;
-    background:#bbb;
+    background:#444;
     position:relative;
     padding:5px 10px;
     right:40px;
@@ -801,12 +835,12 @@ h2 span.fa-stack{
 }
 .tag-element{
     background: #cdcdcd;
-    padding: 5px;
-    border-radius: 5px;
+    padding: 4px 8px;
     display: inline-block;
 }
 #tag-ui-container-view{
     padding-top:10px;
+    padding-bottom:10px;
 }
 .padding-bottom-xs{
     padding-bottom:5px;
@@ -1107,6 +1141,10 @@ div.notifyjs-happyblue-base {
 .navbar-header{
    float: right;
 }
+.loading-animation{
+    padding:15px 0 0 0;
+    font-size: 15px;
+}
 .loading-animation-big{
     background: #fefefe;
     padding:10px;
@@ -1128,4 +1166,12 @@ div.notifyjs-happyblue-base {
     text-indent: 20px;
     display: inline-block;
     position: absolute;
+}
+
+sup.required-field{
+    top: -0.25em;
+    left: 0.25em;
+    font-size:90%;
+    color:#e74c3c;
+    font-weight:400;
 }

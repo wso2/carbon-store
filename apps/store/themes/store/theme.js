@@ -80,8 +80,9 @@ var engine = caramel.engine('handlebars', (function() {
                         output = '<select id="' + options.name.fullName + '" class="selectpicker " name="' + options.name.fullName + '">';
                         var valueObj = options.values ? options.values[0] : {};
                         var values = valueObj.value ? valueObj.value : [];
+                        output += '<option value="ignore-value">-- Select ' +  options.name.label + ' --</option>';
                         for (var index in values) {
-                            output += '<option>' + Handlebars.Utils.escapeExpression(values[index].value) + '</option>';
+                            output += '<option value="' + Handlebars.Utils.escapeExpression(values[index].value) + '">' + Handlebars.Utils.escapeExpression(values[index].value) + '</option>';
                         }
                         output += '</select>';
                         break;

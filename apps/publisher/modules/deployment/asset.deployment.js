@@ -192,7 +192,9 @@ var deployment_logic = function () {
          Then path.length-1 = z
          We are currently in z, so this loop omits the z path */
         for (var index = 0; index < pathComponents.length - 1; index++) {
-            path += '/' + pathComponents[index];
+            if (pathComponents[index] != '') {
+                path += '/' + pathComponents[index];
+            }
         }
 
         //Load up the master script .

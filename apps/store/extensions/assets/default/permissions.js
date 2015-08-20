@@ -88,8 +88,9 @@ var tenantLoad = function(ctx) {
             Utils.addPermissionsToRole(permissions, ANON_ROLE, tenantId);
         }
     };
-    log.info('### Starting permission operations ###');
-    log.info('### registering default permissions ###');
+    if(log.isDebugEnabled()){
+        log.debug('Starting permission operations and registering default permissions');
+    }
     Permissions.ASSET_LIST = function(ctx) {
         if (!ctx.type) {
             throw 'Unable to resolve type to determine the ASSET_LIST permission';
@@ -120,14 +121,22 @@ var tenantLoad = function(ctx) {
     Permissions.APP_LOGIN = function(ctx){
         return ctx.utils.appFeaturePermissionString('login');
     };
-    log.info('### registering permissions not in the WSO2 permission tree ###');
+    if(log.isDebugEnabled()){
+        log.debug('Registering asset permissions not in the WSO2 permission tree');
+    }
     populateAssetPermissions(tenantId);
     populateAppPermissions(tenantId);
-    log.info('### adding permissions to role: ' + DEFAULT_ROLE + ' ###');
+    if(log.isDebugEnabled()){
+        log.debug('Adding permissions to role: ' + DEFAULT_ROLE);
+    }
     assignAllPermissionsToDefaultRole();
-    log.info('### registering store anonymous role : ' + ANON_ROLE + ' ###');
-    log.info('anonymous role registered successfully : ' + Utils.addRole(ANON_ROLE));
-    log.info('### assigning store permissions to anonymous role ###');
+    if(log.isDebugEnabled()){
+        log.debug('Registering store anonymous role : ' + ANON_ROLE);
+        log.debug('Anonymous role registered successfully : ' + Utils.addRole(ANON_ROLE));
+        log.debug('Assigning store permissions to anonymous role');
+    }
     assignPermissionsToAnonRole(tenantId);
-    log.info('### Permission operations have finished ###');
+    if(log.isDebugEnabled()){
+        log.debug('Permission operations have finished.');
+    }
 };

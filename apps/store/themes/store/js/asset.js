@@ -167,6 +167,11 @@ $(function () {
         asset.process(elem.data('type'), elem.data('aid'), location.href);
     });
 
+    $('#btn-remove-subscribe').click(function () {
+        var elem = $(this);
+        asset.unsubscribeBookmark(elem.data('type'), elem.data('aid'), location.href);
+    });
+
     $("a[data-toggle='tooltip']").tooltip();
 
     $('.embed-snippet').hide();

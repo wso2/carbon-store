@@ -1,5 +1,5 @@
 var tenantLoad = function(ctx) {
-    var log = new Log();
+    var log = new Log('default-permissions');
     var Utils = ctx.utils;
     var Permissions = ctx.permissions;
     var rxtManager = ctx.rxtManager;
@@ -34,6 +34,12 @@ var tenantLoad = function(ctx) {
             permissions.ASSET_LIST = listPermission(type);
             permissions.ASSET_UPDATE = updatePermission(type);
             Utils.addPermissionsToRole(permissions, DEFAULT_ROLE, tenantId);
+
+            var staticPath = rxtManager.getStaticRxtStoragePath(type);
+            staticPath = Utils.governanceRooted(staticPath);
+            var actions = [constants.REGISTRY_ADD_ACTION];
+            log.debug('authorized ' + DEFAULT_ROLE + ' for all actions in ' + staticPath);
+            Utils.authorizeActionsForRole(tenantId, staticPath, DEFAULT_ROLE, actions);
         }
         //Non asset type specific permissions
         permissions = {};
@@ -98,8 +104,10 @@ var tenantLoad = function(ctx) {
         }
         Utils.registerPermissions(obj,tenantId);
     };
-    log.info('### Starting permission operations ###');
-    log.info('### registering default permissions ###');
+
+    if(log.isDebugEnabled()){
+        log.debug('Starting permission operations and registering default permissions');
+    }
     Permissions.APP_LOGIN = function(ctx){
         return ctx.utils.appFeaturePermissionString('login');
     };
@@ -122,12 +130,20 @@ var tenantLoad = function(ctx) {
         return ctx.utils.assetFeaturePermissionString('update', ctx.type);
     };
     Permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
-    log.info('### registering asset permissions not in the WSO2 permission tree ###');
+    if(log.isDebugEnabled()){
+        log.debug('Registering asset permissions not in the WSO2 permission tree');
+    }
     populateAssetPermissions(tenantId);
     populateAppPermissions(tenantId);
-    log.info('### adding permissions to role: ' + DEFAULT_ROLE + ' ###');
+    if(log.isDebugEnabled()){
+        log.debug('Adding permissions to the role : ' + DEFAULT_ROLE);
+    }
     assignAllPermissionsToDefaultRole();
-    log.info('### adding permissions to reviewer role ###');
+    if(log.isDebugEnabled()){
+        log.debug('Adding permissions to reviewer role');
+    }
     assignPermissionToReviewer();
-    log.info('### Permission operations have finished ###');
+    if(log.isDebugEnabled()){
+        log.debug('Permission operations have finished');
+    }
 };

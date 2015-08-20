@@ -14,6 +14,11 @@
     "application": {
         "landingPage": "/assets/gadget/list"
     },
+    "features": {
+        "assetTypesHotDelploy": {
+            "enabled": false
+        }
+    },
     "assets":["gadget","site"],
     "disabledAssets":[],
     "userRoles": ["Internal/publisher"],
