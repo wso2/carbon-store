@@ -89,7 +89,9 @@ var api = {};
         if (!options.tags) {
             throw 'Please provide tags in the body of the request';
         }
-        log.info('tags to add: ' + stringify(options.tags));
+        if (log.isDebugEnabled()) {
+            log.debug('tags to add: ' + stringify(options.tags));
+        }
         return am.addTags(options.id, options.tags);
     };
     /**
@@ -109,7 +111,9 @@ var api = {};
         if (!options.tags) {
             throw 'Please provide tags in the body of the request';
         }
-        log.info('tags to remove: ' + stringify(options.tags));
+        if (log.isDebugEnabled()) {
+            log.debug('tags to remove: ' + stringify(options.tags));
+        }
         return am.removeTags(options.id, options.tags);
     };
     api.search = function(am, options) {
