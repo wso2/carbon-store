@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ ~ Copyright (c) 2009-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ ~
+ ~ Licensed under the Apache License, Version 2.0 (the "License");
+ ~ you may not use this file except in compliance with the License.
+ ~ You may obtain a copy of the License at
+ ~
+ ~      http://www.apache.org/licenses/LICENSE-2.0
+ ~
+ ~ Unless required by applicable law or agreed to in writing, software
+ ~ distributed under the License is distributed on an "AS IS" BASIS,
+ ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ ~ See the License for the specific language governing permissions and
+ ~ limitations under the License.
+-->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <parent>
+      <groupId>org.wso2.store</groupId>
+      <artifactId>wso2store-parent</artifactId>
+      <version>1.3.0-SNAPSHOT</version>
+      <relativePath>../../../pom.xml</relativePath>
+    </parent>
+
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>org.wso2.store.feature</artifactId>
+    <packaging>pom</packaging>
+    <name>WSO2 Enterprise Store Feature</name>
+    <url>http://wso2.org</url>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.hostobjects.sso</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.store</groupId>
+            <artifactId>org.wso2.store.admin.styles</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.store</groupId>
+            <artifactId>org.wso2.store.sso.common</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.wso2.maven</groupId>
+                <artifactId>carbon-p2-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>p2-feature-generation</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>p2-feature-gen</goal>
+                        </goals>
+                        <configuration>
+                            <id>org.wso2.store</id>
+                            <propertiesFile>../../etc/feature.properties</propertiesFile>
+                            <!--<adviceFile>
+                                <properties>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:server
+                                    </propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:false
+                                    </propertyDef>
+                                </properties>
+                            </adviceFile>-->
+                            <bundles>
+                                <bundleDef>slf4j.wso2:slf4j:1.5.10.wso2v1</bundleDef>
+                                <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.hostobjects.sso</bundleDef>-->
+                                <bundleDef>
+                                    org.wso2.store:org.wso2.store.sso.common:${carbon.store.bundle.version}</bundleDef>
+                                <bundleDef>org.wso2.store:org.wso2.store.admin.styles:${carbon.store.bundle.version}</bundleDef>
+                                <!--<bundleDef>org.wso2.store:org.wso2.carbon.social:1.0.0</bundleDef>-->
+                                <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.databridge.datasink.cassandra</bundleDef>-->
+                                <bundleDef>org.wso2.store:jaggery-scxml-executors:${carbon.store.bundle.version}</bundleDef>
+                            </bundles>
+                            <importBundles/>
+                            <importFeatures>
+                                <importFeatureDef>
+                                    org.jaggeryjs:${jaggery.feature.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.webapp.mgt.server:compatible:${carbon.kernal.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    caramel:${caramel.feature.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.registry.associations.dependencies:compatible:${carbon.registry.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.registry.community.features:compatible:${carbon.registry.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.registry.core:compatible:${carbon.registry.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.registry.resource.properties:compatible:${carbon.registry.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.registry.ui.menu.governance:compatible:${carbon.registry.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.registry.contentsearch.server:compatible:${carbon.registry.base.version}
+                                </importFeatureDef>
+                                <!--<importFeatureDef> C 4.4.0 -->
+                                    <!--org.wso2.carbon.jaxws.webapp.mgt:${carbon.platform.version}-->
+                                <!--</importFeatureDef>-->
+                                <!-- SSO -->
+                                <importFeatureDef>
+                                    org.wso2.carbon.security.mgt:compatible:${carbon.identity.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.identity.application.authenticator.basicauth.server:compatible:${carbon.identity.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.identity.application.authentication.framework.server:compatible:${carbon.identity.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.identity.authenticator.saml2.sso:compatible:${carbon.identity.base.version}
+                                </importFeatureDef>
+                                <feaureArtifactDef>
+                                    org.wso2.carbon.identity.sso.saml:compatible:${carbon.identity.base.version}
+                                </feaureArtifactDef>
+                                <!--<feaureArtifactDef>-->
+                                    <!--org.wso2.stratos.identity.saml2.sso.mgt:${stratos.version}-->
+                                <!--</feaureArtifactDef>-->
+                                <feaureArtifactDef>
+                                    org.wso2.carbon.identity.core:compatible:${carbon.identity.base.version}
+                                </feaureArtifactDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.governance.metadata:compatible:${carbon.governance.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.governance.lifecycle.management:compatible:${carbon.governance.base.version}
+                                </importFeatureDef>
+                                <!--<importFeatureDef>
+                                    org.wso2.carbon.cassandra.explorer:${carbon.platform.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.cassandra:${carbon.platform.version}
+                                </importFeatureDef>-->
+                                <importFeatureDef>
+                                    org.wso2.carbon.cassandra-jdbc-1.1.1.server:optional:4.0.1
+                                </importFeatureDef>
+                               <!-- <importFeatureDef>
+                                    org.wso2.carbon.databridge.datapublisher:4.2.1
+                                </importFeatureDef>-->
+                                <!--<importFeatureDef>
+                                    org.wso2.carbon.databridge.datareceiver:${carbon.platform.version}
+                                </importFeatureDef>-->
+                                <!--<importFeatureDef>
+                                    org.wso2.carbon.databridge.commons.server:4.2.1
+                                </importFeatureDef>-->
+                                <!--<importFeatureDef>
+                                    org.wso2.carbon.databridge.cassandra:${carbon.platform.version}
+                                </importFeatureDef>-->
+                                <importFeatureDef>
+                                    org.wso2.carbon.module.mgt.server:compatible:${carbon.kernal.base.version}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.user.mgt:compatible:${carbon.identity.base.version}
+                                </importFeatureDef>
+                                <!--<importFeatureDef>
+                                    org.wso2.carbon.databridge.streamdefn.cassandra:${carbon.platform.version}
+                                </importFeatureDef>-->
+                                <!-- Stratos features    -->
+                                <!--<importFeatureDef> C 4.4.0 -->
+                                    <!--org.wso2.carbon.stratos.common:2.3.0-->
+                                <!--</importFeatureDef>-->
+                                <importFeatureDef>
+                                    org.wso2.carbon.event:compatible:${patch.version.421}
+                                </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.carbon.registry.ws:compatible:${carbon.registry.base.version}
+                                </importFeatureDef>
+                            </importFeatures>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prefilter-resources</id>
+			<phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>p2.inf</include>
+                                    </includes>
+                                </resource>
+				<resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>dbscripts/**</include>
+                                    </includes>
+                                </resource>
+                                <resource>
+                                    <directory>../../</directory>
+                                    <includes>
+                                        <include>jaggery-modules/**</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>clean_target</id>
+                        <phase>install</phase>
+                        <configuration>
+                            <tasks>
+                                <delete dir="src"/>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

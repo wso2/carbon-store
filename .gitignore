@@ -2,20 +2,9 @@
 *.iml
 .idea
 *.~
-.DS_Store
-
 
 # Package Files #
 *.jar
 *.war
 *.ear
 *.zip
-
-target
-.classpath
-.settings
-.project
-*.iml
-*.iws
-*.ipr
-.idea
