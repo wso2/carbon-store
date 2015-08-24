@@ -1,6 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
       <parent>
-       <groupId>org.wso2.carbon</groupId>
+       <groupId>org.wso2.carbon.store</groupId>
        <artifactId>social</artifactId>
         <version>1.3.0-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
@@ -16,7 +16,7 @@
 		<artifactId>commons-logging</artifactId>
 	</dependency>
         <dependency>
-            <groupId>org.wso2.carbon</groupId>
+            <groupId>org.wso2.carbon.store</groupId>
             <artifactId>org.wso2.carbon.social.core</artifactId>
         </dependency>
   </dependencies>
@@ -45,7 +45,7 @@
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Axis2Module>${project.artifactId}-${project.version}</Axis2Module>
                         <Export-Package>
-                            org.wso2.carbon.social.db.adapter.*;version="${carbon.social.pkg.version}"
+                            org.wso2.carbon.social.db.adapter.*;version="${carbon.store.version}"
                         </Export-Package>
                         <Private-Package>
                             org.wso2.carbon.social.db.adapter.internal

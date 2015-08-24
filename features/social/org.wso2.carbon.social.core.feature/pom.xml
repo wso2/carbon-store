@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
    <parent>
-       <groupId>org.wso2.carbon</groupId>
+       <groupId>org.wso2.carbon.store</groupId>
        <artifactId>social-feature</artifactId>
        <version>1.3.0-SNAPSHOT</version>
        <relativePath>../pom.xml</relativePath>
@@ -62,7 +62,7 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.social.core:${carbon.social.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.store:org.wso2.carbon.social.core:${carbon.store.version}</bundleDef>
                             </bundles>
 
                             <importFeatures>
