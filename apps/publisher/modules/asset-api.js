@@ -239,7 +239,6 @@ var result;
         for (var key in fields) {
                 if (fields.hasOwnProperty(key)) {
                     var field =  fields[key];
-                    log.info(field);
                     if (field && field.name && field.required && field.name.fullName) {
                         validateRequiredFeild(field.name.fullName, assetReq);
                     }
