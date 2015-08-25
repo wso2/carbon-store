@@ -36,6 +36,8 @@
     }
 
     if(authenticated){
+        session.put("LOGGED_IN_USER", params.username);
+        session.put("Loged", "true");
     	response.code = 200;
     } else {
     	response.sendError(401);
