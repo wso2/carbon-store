@@ -220,6 +220,41 @@ var result;
         }
         return assetReq;
     };
+
+    var validateRequiredFeilds = function (type, assetReq) {
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        var name = rxtManager.getNameAttribute(type);
+        if(name && name.length >1){
+            validateRequiredFeild(name, assetReq);
+        }
+        var version = rxtManager.getVersionAttribute(type);
+        if(version && version.length >1){
+            validateRequiredFeild(version, assetReq);
+        }
+        var provider = rxtManager.getProviderAttribute(type);
+        if(provider && provider.length >1){
+            validateRequiredFeild(provider, assetReq);
+        }
+        var fields = rxtManager.listRxtFields(type);
+        for (var key in fields) {
+                if (fields.hasOwnProperty(key)) {
+                    var field =  fields[key];
+                    log.info(field);
+                    if (field && field.name && field.required && field.name.fullName) {
+                        validateRequiredFeild(field.name.fullName, assetReq);
+                    }
+                }
+        }
+    };
+
+    var validateRequiredFeild = function (feildName, assetReq) {
+        if (!assetReq.attributes.hasOwnProperty(feildName)) {
+            var msg = feildName + ' is not provided. Please provide a value for ' + feildName + ' since it is a required field';
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
+        }
+    };
+
+
     /**
      * api to create a new asset
      * @param  options incoming values
@@ -256,12 +291,16 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
+            validateRequiredFeilds(options.type, asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
+            if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
+                throw e;
+            }
             log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
             return null;
         }
