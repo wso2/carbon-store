@@ -248,7 +248,8 @@ var result;
     };
 
     var validateRequiredFeild = function (feildName, assetReq) {
-        if (!assetReq.attributes.hasOwnProperty(feildName)) {
+        var resources = request.getAllFiles();
+        if ((!assetReq.attributes.hasOwnProperty(feildName)) && !(resources && resources.hasOwnProperty(feildName))){
             var msg = feildName + ' is not provided. Please provide a value for ' + feildName + ' since it is a required field';
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
         }
