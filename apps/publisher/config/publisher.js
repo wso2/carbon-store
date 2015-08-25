@@ -5,7 +5,8 @@ var config;
             pinch = require('/modules/pinch.min.js').pinch,
             config = require('/config/publisher.json'),
             process = require('process'),
-            localIP = process.getProperty('server.host'),
+            CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils,
+            localIP = CarbonUtils.getServerConfiguration().getFirstProperty("HostName"),
             httpPort = process.getProperty('http.port'),
             httpsPort = process.getProperty('https.port');
          var carbonLocalIP=process.getProperty('carbon.local.ip');
