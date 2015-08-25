@@ -77,22 +77,22 @@ public class SocialUtil {
 			OMElement root = OMXMLBuilderFactory.createOMBuilder(inStream)
 					.getDocumentElement();
 
-			OMElement QueryAdapterClass = root.getFirstChildWithName(new QName(
-					"QueryAdapterClass"));
+			OMElement QueryAdaptorClass = root.getFirstChildWithName(new QName(
+					"QueryAdaptorClass"));
 
-			if (QueryAdapterClass == null) {
+			if (QueryAdaptorClass == null) {
 				throw new SocialActivityException(
-						"No <QueryAdapterClass> element found within "
+						"No <QueryAdaptorClass> element found within "
 								+ configPath);
 			}
 
 			if (log.isDebugEnabled()) {
-				log.debug("QueryAdapterClass in use is: "
-						+ QueryAdapterClass.getText());
+				log.debug("QueryAdaptorClass in use is: "
+						+ QueryAdaptorClass.getText());
 			}
 
 			inStream.close();
-			return QueryAdapterClass.getText();
+			return QueryAdaptorClass.getText();
 
 		} catch (FileNotFoundException e) {
 			log.error("Unable to find the social.xml configuration file in "
@@ -123,7 +123,7 @@ public class SocialUtil {
 	}
 
 	@SuppressWarnings("rawtypes")
-	public static Class loadQueryAdapterClass() throws SocialActivityException {
+	public static Class loadQueryAdaptorClass() throws SocialActivityException {
 		Class<?> cls = null;
 		String loadQueryErrorMessage = "Unable to load Query Adapter class.";
 		try {

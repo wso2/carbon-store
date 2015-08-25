@@ -159,7 +159,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			connection.setAutoCommit(false);
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdapterClass();
+				cls = SocialUtil.loadQueryAdaptorClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 
@@ -395,7 +395,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 		try {
 
 			if (obj == null) {
-				cls = SocialUtil.loadQueryAdapterClass();
+				cls = SocialUtil.loadQueryAdaptorClass();
 				obj = SocialUtil.getQueryAdaptorObject(cls);
 			}
 
@@ -491,7 +491,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	}
 
 	@Override
-	public boolean remove(int activityId, String userId)
+	public boolean remove(String activityId, String userId)
 			throws SocialActivityException {
 		Connection connection = null;
 		String errorMessage = "Error while removing the activity. Activity ID: "
@@ -514,7 +514,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 				}
 
 				deleteComment = connection.prepareStatement(DELETE_COMMENT_SQL);
-				deleteComment.setInt(1, activityId);
+				deleteComment.setString(1, activityId);
 				ret = deleteComment.executeUpdate();
 			}
 			connection.commit();
@@ -551,7 +551,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	 * @throws SQLException
 	 * @throws SocialActivityException
 	 */
-	private boolean removeRating(int activityId, Connection connection,
+	private boolean removeRating(String activityId, Connection connection,
 			String userId) throws SQLException, JsonSyntaxException,
 			SocialActivityException {
 		ResultSet selectResultSet;
@@ -567,7 +567,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			selectStatement = connection
 					.prepareStatement(COMMENT_ACTIVITY_SELECT_SQL);
-			selectStatement.setInt(1, activityId);
+			selectStatement.setString(1, activityId);
 			selectResultSet = selectStatement.executeQuery();
 
 			if (!selectResultSet.next()) {

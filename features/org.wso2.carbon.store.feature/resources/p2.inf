@@ -1,9 +1,0 @@
-instructions.configure = \
-org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../deployment/server/jaggeryapps); \
-org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../repository); \
-org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../dbscripts); \
-org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../../client); \
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.store_${feature.version}/apps/,target:${installFolder}/../../deployment/server/jaggeryapps,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.store_${feature.version}/resources/dbscripts/,target:${installFolder}/../../../dbscripts,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.store_${feature.version}/client/,target:${installFolder}/../../../client,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/org.wso2.carbon.store_${feature.version}/resources/repository/,target:${installFolder}/../../../repository,overwrite:true);\

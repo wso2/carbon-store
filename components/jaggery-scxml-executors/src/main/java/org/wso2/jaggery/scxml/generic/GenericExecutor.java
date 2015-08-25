@@ -24,6 +24,7 @@ import org.wso2.carbon.context.PrivilegedCarbonContext;
 
 import java.util.Map;
 import org.wso2.carbon.user.api.UserRealm;
+import org.wso2.carbon.utils.CarbonUtils;
 import org.wso2.jaggery.scxml.RealmContext;
 import org.wso2.jaggery.scxml.management.DynamicValueInjector;
 import org.wso2.jaggery.scxml.management.StateExecutor;
@@ -76,7 +77,15 @@ public class GenericExecutor implements Execution
         DynamicValueInjector dynamicValueInjector=new DynamicValueInjector();
 
         //Set the asset author key
-        dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY,requestContext.getResource().getAuthorUserName());
+	//Workaround for https://wso2.org/jira/browse/REGISTRY-2214
+        boolean isEmailEnabled = Boolean.parseBoolean(CarbonUtils.getServerConfiguration().getFirstProperty("EnableEmailUserName"));
+        String provider = requestContext.getResource().getAuthorUserName();
+//        if (provider != null && !isEmailEnabled && provider.contains("-AT-")) {
+//            provider = provider.substring(0, provider.indexOf("-AT-"));
+//
+//        }
+	//dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY,requestContext.getResource().getAuthorUserName());
+        dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY,provider);
 
         //Execute all permissions for the current state
         //this.stateExecutor.executePermissions(this.userRealm,dynamicValueInjector,path,s2);
@@ -97,16 +106,13 @@ public class GenericExecutor implements Execution
     The method obtains the tenant id from a string tenant id
      */
     private void obtainTenantId(){
-
-        String stringTenantDomain=PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
-
-        try{
-            this.tenantId=RealmContext.getRealmService().getTenantManager().getTenantId(stringTenantDomain);
-        }
-        catch(Exception e){
-        	String errorMessage = "Failed to obtain Tenant id";
-        	log.error(errorMessage);
-        }
+	String stringTenantDomain=PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain();
+	try{
+		this.tenantId=RealmContext.getRealmService().getTenantManager().getTenantId(stringTenantDomain);
+	}
+	catch(Exception e){
+		log.debug("Failed to obtain Tenant id");
+	}
     }
 
     /*
@@ -117,8 +123,7 @@ public class GenericExecutor implements Execution
             this.userRealm=RealmContext.getRealmService().getTenantUserRealm(this.tenantId);
         }
         catch(Exception e){
-        	String errorMessage = "Failed to load User Realm Manager.";
-        	log.error(errorMessage);
+            log.debug("Failed to load User Realm Manager.");
         }
     }
 

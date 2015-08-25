@@ -59,8 +59,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
-import  org.wso2.carbon.governance.registry.extensions.aspects.utils.*;
-//import  org.wso2.carbon.governance.registry.extensions.aspects.utils.Utils.getCheckItemName;
+import static org.wso2.carbon.governance.registry.extensions.aspects.utils.Utils.*;
+import static org.wso2.carbon.governance.registry.extensions.aspects.utils.Utils.getCheckItemName;
 
 
 import org.apache.axis2.util.XMLUtils;
@@ -146,7 +146,6 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
         aspectName = currentAspectName;
         currentAspectName = currentAspectName.replaceAll("\\s", "");
         stateProperty = LifecycleConstants.REGISTRY_LIFECYCLE + currentAspectName + ".state";
-	lifecycleProperty = lifecycleProperty + "." + currentAspectName ;
 
         Iterator configChildElements = config.getChildElements();
         while (configChildElements.hasNext()) {
@@ -256,11 +255,12 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
 
 //            Creating the checklist
 //            this is the first time the life cycle is associated with a resource.
+            String aspectName = scxml.getInitial();
             String initialState = scxml.getInitial();
-            Utils.addCheckItems(resource, checkListItems.get(initialState), initialState, aspectName);
-            Utils.addTransitionApprovalItems(resource, transitionApproval.get(initialState), initialState, aspectName);
-            Utils.addScripts(initialState, resource,scriptElements.get(initialState), aspectName);
-            Utils.addTransitionUI(resource,transitionUIs.get(initialState), aspectName);
+            addCheckItems(resource, checkListItems.get(initialState), initialState, aspectName);
+            addTransitionApprovalItems(resource, transitionApproval.get(initialState), initialState, aspectName);
+            addScripts(initialState, resource,scriptElements.get(initialState), aspectName);
+            addTransitionUI(resource,transitionUIs.get(initialState), aspectName);
 
         } catch (Exception e) {
             String message = "Resource does not contain a valid XML configuration: " + e.toString();
@@ -285,7 +285,6 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
         statCollection.setResourcePath(resource.getPath());
         statCollection.setUserName(CurrentSession.getUser());
         statCollection.setOriginalPath(resource.getPath());
-	statCollection.setAspectName(aspectName);
 
 //      writing the logs to the registry
         if (isAuditEnabled) {
@@ -329,7 +328,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
                 String transitionName = t.getEvent();
 
                 List<String> possibleActions = getPossibleActions(resource, currentState);
-                if ((Utils.isTransitionAllowed(roles, permissionsBeans, transitionName) || permissionsBeans == null)
+                if ((isTransitionAllowed(roles, permissionsBeans, transitionName) || permissionsBeans == null)
                         && possibleActions.contains(transitionName)) {
                     actions.add(transitionName);
                 }
@@ -406,13 +405,12 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
         statCollection.setResourcePath(resourcePath);
         statCollection.setUserName(user);
         statCollection.setOriginalPath(resourcePath);
-	statCollection.setAspectName(aspectName);
 
         //        Here we are doing the checkitem related operations.
         if("voteClick".equals(action)){
-            handleApprovalClick(resource,currentState,Utils.extractVotesValues(parameterMap),user,roles,requestContext);
+            handleApprovalClick(resource,currentState,extractVotesValues(parameterMap),user,roles,requestContext);
         }else{
-            handleItemClick(resource,currentState,Utils.extractCheckItemValues(parameterMap),roles,requestContext);
+            handleItemClick(resource,currentState,extractCheckItemValues(parameterMap),roles,requestContext);
         }
 
 
@@ -426,7 +424,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
                     if (possibleEvents.contains(eventName) && eventName.equals(action)) {
                         //                           transition validations go here
                         //                           There is need to check the transition permissions again as well to avoid fraud
-                        if (Utils.isTransitionAllowed(roles, transitionPermission.get(currentState), eventName)) {
+                        if (isTransitionAllowed(roles, transitionPermission.get(currentState), eventName)) {
                             if (doAllCustomValidations(requestContext, currentState,eventName)) {
                                 //                              adding log
                                 statCollection.setActionType(LifecycleConstants.TRANSITION);
@@ -486,15 +484,16 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
         newResourcePath = requestContext.getResourcePath().getPath();
 
         if (!currentState.equals(nextState)) {
+            String aspectName = scxml.getInitial();
             State state = (State) scxml.getChildren().get(nextState);
             resource.setProperty(stateProperty, state.getId().replace(".", " "));
 
-            Utils.clearCheckItems(resource, aspectName);
-            Utils.clearTransitionApprovals(resource, aspectName);
-            Utils.addCheckItems(resource, checkListItems.get(state.getId()), state.getId(), aspectName);
-            Utils.addTransitionApprovalItems(resource, transitionApproval.get(state.getId()), state.getId(), aspectName);
-            Utils.addScripts(state.getId(), resource,scriptElements.get(state.getId()), aspectName);
-            Utils.addTransitionUI(resource, transitionUIs.get(state.getId()), aspectName);
+            clearCheckItems(resource, aspectName);
+            clearTransitionApprovals(resource, aspectName);
+            addCheckItems(resource, checkListItems.get(state.getId()), state.getId(), aspectName);
+            addTransitionApprovalItems(resource, transitionApproval.get(state.getId()), state.getId(), aspectName);
+            addScripts(state.getId(), resource,scriptElements.get(state.getId()), aspectName);
+            addTransitionUI(resource, transitionUIs.get(state.getId()), aspectName);
 
             //            For auditing purposes
             statCollection.setTargetState(nextState);
@@ -502,7 +501,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
         if (!preserveOldResource) {
             requestContext.getRegistry().delete(resourcePath);
         }
-        requestContext.getRegistry().put(newResourcePath, resource);
+//        requestContext.getRegistry().put(newResourcePath, resource);
 
         //        adding the logs to the registry
         if (isAuditEnabled) {
@@ -549,13 +548,13 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
                     * when associating we will map the custom data model to a set of beans.
                     * These will be used for further actions.
                     * */
-                    Utils.populateCheckItems(currentStateName, node,checkListItems);
-                    Utils.populateTransitionValidations(currentStateName, node,transitionValidations);
-                    Utils.populateTransitionPermissions(currentStateName, node,transitionPermission);
-                    Utils.populateTransitionScripts(currentStateName, node,scriptElements);
-                    Utils.populateTransitionUIs(currentStateName, node,transitionUIs);
-                    Utils.populateTransitionExecutors(currentStateName, node,transitionExecution);
-                    Utils.populateTransitionApprovals(currentStateName,node,transitionApproval);
+                    populateCheckItems(currentStateName, node,checkListItems);
+                    populateTransitionValidations(currentStateName, node,transitionValidations);
+                    populateTransitionPermissions(currentStateName, node,transitionPermission);
+                    populateTransitionScripts(currentStateName, node,scriptElements);
+                    populateTransitionUIs(currentStateName, node,transitionUIs);
+                    populateTransitionExecutors(currentStateName, node,transitionExecution);
+                    populateTransitionApprovals(currentStateName,node,transitionApproval);
                 }
             }
 
@@ -670,7 +669,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
 
                     if (!customValidations.validate(context)) {
                         statCollection.addValidations(customCodeBean.getClass().getName(),
-                                Utils.getHistoryInfoElement("validation failed"));
+                                getHistoryInfoElement("validation failed"));
 
 //                    We have added this to add a custom message that should be displayed to the user
                         String userMsg = (String) context.getProperty(LifecycleConstants.VALIDATIONS_MESSAGE_KEY);
@@ -704,7 +703,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
 
                     if (!customExecutor.execute(context,currentState,nextState)) {
                         statCollection.addExecutors(customExecutor.getClass().getName(),
-                                Utils.getHistoryInfoElement("executor failed"));
+                                getHistoryInfoElement("executor failed"));
 
 //                        We have added this to display a custom message to the user
                         String userMsg = (String) context.getProperty(LifecycleConstants.EXECUTOR_MESSAGE_KEY);
@@ -751,7 +750,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
                                 if(checkItemBean.getName().equals(name)){
 
 //                                    Checking for permissions
-                                    if(!Utils.isCheckItemClickAllowed(roles, checkItemBean.getPermissionsBeans())){
+                                    if(!isCheckItemClickAllowed(roles, checkItemBean.getPermissionsBeans())){
                                         String message = "User is not authorized to check item :" + name;
                                         log.error(message);
                                         throw new RegistryException(message);
@@ -770,7 +769,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
 
                         //                    logging
                         StatCollection statCollection = (StatCollection) context.getProperty(LifecycleConstants.STAT_COLLECTION);
-                        statCollection.setAction(Utils.getCheckItemName(propertyValues));
+                        statCollection.setAction(getCheckItemName(propertyValues));
                         statCollection.setActionType(LifecycleConstants.ITEM_CLICK);
                         statCollection.setActionValue(replace);
 
@@ -848,7 +847,7 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
 
                         // logging
                         StatCollection statCollection = (StatCollection) requestContext.getProperty(LifecycleConstants.STAT_COLLECTION);
-                        statCollection.setAction(Utils.getCheckItemName(propertyValues));
+                        statCollection.setAction(getCheckItemName(propertyValues));
                         statCollection.setActionType(LifecycleConstants.VOTE);
                         statCollection.setActionValue(entry.getValue());
 
