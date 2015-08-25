@@ -288,6 +288,7 @@ var result;
         var am = assetModule.createUserAssetManager(session, options.type);
         var server = require('store').server;
         var user = server.current(session);
+        var result;
         var assetReq = req.getAllParameters('UTF-8');
         //TODO this code should be improve for each and every content type
         if(req.getContentType() === "application/json"){
@@ -325,7 +326,7 @@ var result;
             try {
                 //Set any meta properties provided by the API call (e.g. _default)
                 setMetaProps(asset, meta);
-                am.update(asset);
+                result = am.update(asset);
             } catch (e) {
                 asset = null;
                 var errMassage = 'Failed to update the asset of id:' + options.id;
@@ -336,7 +337,7 @@ var result;
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             }
         }
-        return asset;
+        return result || asset;
     };
     /**
      *
