@@ -5,6 +5,8 @@
                 <a class="ast-img " href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}">
                                                          {{> assets-thumbnail ..}}
                 </a>
+                {{#if ../../showType}}<div class="ast-type-display">{{../../type}}</div>{{/if}}
+
                 <div class="ast-content">
                     <div class="ast-title padding">
                         <a class="ast-name truncate" href="{{tenantedUrl "/assets"}}/{{../type}}/details/{{../id}}" title="{{overview_name}}">{{overview_name}}</a>

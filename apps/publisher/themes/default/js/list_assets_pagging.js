@@ -93,7 +93,7 @@ store.infiniteScroll.getItems = function (from, to) {
                 if (response) {
                     var assets = convertTimeToUTC(response.list);
                     caramel.render('list_assets_table_body', assets, function (info, content) {
-                        $('.loading-animation').addClass('loading-animation-big').remove();
+                        $('.loading-animation-big').addClass('loading-animation-big').remove();
                         $('#list_assets_content').append($(content));
                     });
                 } else { //if no assets retrieved for this page
