@@ -1408,8 +1408,11 @@ var asset = {};
         //TODO remove hardcoded attributename
         existingAttributes.name = existingAsset.attributes['overview_name'];
 
+        var tags = this.registry.tags(existingAsset.path);
+
         this.create(existingAttributes);
         createdAsset = this.get(existingAttributes.id);
+        this.addTags(existingAttributes.id,tags);
 
         isLCEnabled = context.rxtManager.isLifecycleEnabled(options.type);
         isDefaultLCEnabled = context.rxtManager.isDefaultLifecycleEnabled(options.type);
