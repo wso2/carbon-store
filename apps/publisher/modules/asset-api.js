@@ -327,7 +327,7 @@ var result;
                 //Set any meta properties provided by the API call (e.g. _default)
                 setMetaProps(asset, meta);
                 result = am.update(asset);
-		asset.result=result;
+		//asset.result=result;
             } catch (e) {
                 asset = null;
                 var errMassage = 'Failed to update the asset of id:' + options.id;
@@ -338,7 +338,7 @@ var result;
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             }
         }
-        return asset;
+        return result || asset;
     };
     /**
      *
