@@ -189,7 +189,7 @@ var themeModule = require('/modules/theme.js');
         });
 
         jQuery.validator.addMethod("usrName", function (value, element) {
-            return this.optional(element) || /^[a-zA-Z0-9\-]*$/.test(value);
+            return this.optional(element) || /^[a-zA-Z0-9\-\@\.]*$/.test(value);
         }, "Only alphanumeric characters and '-' allowed");
         jQuery.validator.addMethod("usrNameLength", function (value, element) {
             return value.length >= 3 && value.length <= 30;

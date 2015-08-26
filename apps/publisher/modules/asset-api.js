@@ -201,8 +201,11 @@ var result;
         return assetReq;
     };
     var processTags = function (assetReq) {
-        var tags = assetReq._tags || '';
-        return tags.split(',');
+        if (assetReq._tags) {
+            return assetReq._tags.split(',');
+        } else {
+            return [];
+        }
     };
 
     var validateEditableFeilds = function (type, assetReq) {
@@ -304,6 +307,7 @@ var result;
         var am = assetModule.createUserAssetManager(session, options.type);
         var server = require('store').server;
         var user = server.current(session);
+        var result;
         var assetReq = req.getAllParameters('UTF-8');
 
         //TODO this code should be improve for each and every content type
@@ -345,7 +349,8 @@ var result;
             try {
                 //Set any meta properties provided by the API call (e.g. _default)
                 setMetaProps(asset, meta);
-                am.update(asset);
+                result = am.update(asset);
+		//asset.result=result;
             } catch (e) {
                 asset = null;
                 var errMassage = 'Failed to update the asset of id:' + options.id;
@@ -356,7 +361,7 @@ var result;
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             }
         }
-        return asset;
+        return result || asset;
     };
     /**
      *

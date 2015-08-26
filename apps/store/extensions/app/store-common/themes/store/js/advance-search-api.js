@@ -20,6 +20,98 @@ $(function(){
 	var SEARCH_API = '/apis/assets?q=';
 	var SEARCH_BUTTON = '#search-btn';
 	var SEARCH_FORM = '#search-form';
+    var rows_added = 0;
+    var last_to = 0;
+    var items_per_row = 0;
+    var doPagination = true;
+    store.infiniteScroll ={};
+    store.infiniteScroll.recalculateRowsAdded = function(){
+        return (last_to - last_to%items_per_row)/items_per_row;
+    };
+    store.infiniteScroll.addItemsToPage = function(query){
+
+        var screen_width = $(window).width();
+        var screen_height = $(window).height();
+
+
+        var header_height = 400;
+        var thumb_width = 170;
+        var thumb_height = 280;
+        var gutter_width = 20;
+
+        screen_width = screen_width - gutter_width; // reduce the padding from the screen size
+        screen_height = screen_height - header_height;
+
+        items_per_row = (screen_width-screen_width%thumb_width)/thumb_width;
+        //var rows_per_page = (screen_height-screen_height%thumb_height)/thumb_height;
+        var scroll_pos = $(document).scrollTop();
+        var row_current =  (screen_height+scroll_pos-(screen_height+scroll_pos)%thumb_height)/thumb_height;
+        row_current +=3 ; // We increase the row current by 2 since we need to provide one additional row to scroll down without loading it from backend
+
+
+        var from = 0;
+        var to = 0;
+        if(row_current > rows_added && doPagination){
+            from = rows_added * items_per_row;
+            to = row_current*items_per_row;
+            last_to = to; //We store this os we can recalculate rows_added when resolution change
+            rows_added = row_current;
+            store.infiniteScroll.getItems(from,to,query);
+            //console.info('getting items from ' + from + " to " + to + " screen_width " + screen_width + " items_per_row " + items_per_row);
+        }
+
+    };
+    store.infiniteScroll.getItems = function(from, to, query ){
+        var count = to-from;
+        var dynamicData = {};
+        dynamicData["from"] = from;
+        dynamicData["to"] = to;
+        var path = window.location.href; //current page path
+        // Returns the jQuery ajax method
+        var url = caramel.tenantedUrl(SEARCH_API+query+"&paginationLimit=" + to + "&start="+from+"&count="+count);
+        console.info(url);
+
+        caramel.render('loading','Loading assets from ' + from + ' to ' + to + '.', function( info , content ){
+            $('.loading-animation-big').remove();
+            $('body').append($(content));
+        });
+
+        $.ajax({
+            url:url,
+            method:'GET',
+            success:function(data){
+
+                var results = data.data || [];
+                if(results.length<=0) {
+                        $('#search-results').html('We are sorry but we could not find any matching assets');
+                        $('.loading-animation-big').remove();
+                } else {
+                    results = {assets:results,showType:true};
+                    loadPartials('assets', function(partials) {
+                        caramel.partials(partials, function () {
+                            caramel.render('assets-thumbnails', results, function (info, content) {
+                                $('#search-results').append($(content));
+                                $('.loading-animation-big').remove();
+                            });
+                        });
+                    });
+                }
+            },error:function(){
+            }
+        });
+    };
+    store.infiniteScroll.showAll = function(query){
+        store.infiniteScroll.addItemsToPage(query);
+        $(window).scroll(function(){
+            store.infiniteScroll.addItemsToPage(query);
+        });
+        $(window).resize(function () {
+            //recalculate "rows_added"
+            rows_added = store.infiniteScroll.recalculateRowsAdded();
+            store.infiniteScroll.addItemsToPage(query);
+        });
+    };
+
 	var processInputField = function(field){
 		var result = field;
 		switch(field.type) {
@@ -46,7 +138,7 @@ $(function(){
 	};
 	var createQueryString = function(key,value){
 		return '"'+key+'":"'+value+'"';
-	}
+	};
 	var buildQuery = function(){
 		var fields = getInputFields();
 		var queryString =[];
@@ -61,138 +153,24 @@ $(function(){
 		query = query.trim();
 		return (query.length <= 0);
 	};
-	var createAPIQuery = function(query) {
-		//TODO:Remove this
-		return caramel.url(SEARCH_API+query+'&count=100');
-		//return caramel.url('/apis/assets?type=gadget&q='+query);
-	};
-	var partial = function(name) {
-        return '/themes/' + caramel.themer + '/partials/' + name + '.hbs';
-    };
-    var spinnerURL = function() {
-        return caramel.url('/themes/'+caramel.themer+'/img/preloader-40x40.gif');
-    };
-    var loadPartials = function (type, partial, done) {
+    var loadPartials = function (partial, done) {
         $.ajax({
-            url: caramel.url('/apis/partials') + '?type=' + type + '&partial=' + partial,
+            url: caramel.url('/apis/partials') + '?partial=' + partial,
             success: function (data) {
-                done(false, data);
+                done(data);
             },
             error: function () {
                 done(err);
             }
         });
     };
-    var render = function (type, partial, data, done) {
-        loadPartials(type, partial, function (err, partials) {
-            caramel.partials(partials, function () {
-                caramel.render(partial, data, function (err, html) {
-                    var partial;
-                    for (partial in partials) {
-                        if (partials.hasOwnProperty(partial)) {
-                            delete Handlebars.partials[partial];
-                        }
-                    }
-                    done(err, html);
-                });
-            })
-        });
-    };
-    var renderPartial = function(partialKey, containerKey, data, fn) {
-        fn = fn || function() {};
-        var partialName = partialKey;
-        var containerName = containerKey;
-        if (!partialName) {
-            throw 'A template name has not been specified for template key ' + partialKey;
-        }
-        if (!containerName) {
-            throw 'A container name has not been specified for container key ' + containerKey;
-        }
-
-        var i;
-        var length = data.length;
-        var el = $('#'+containerName);
-        var jobs = [];
-        for(i = 0; i < length; i++) {
-            jobs.push((function(data) {
-                return function(done) {
-                    render(data.type, partialKey, data, function (err, html) {
-                        el.append(html);
-                        done();
-                    });
-                };
-            }(data[i])));
-        }
-        async.series(jobs, function(err, results) {
-            removeSpinner();
-        });
-        fn(containerName);
-    };
-	var renderResults = function(data){
-		renderPartial('advance-search-result-list', 'search-results-sandbox', data);
-	};
-	var renderEmptyResults = function() {
-        removeSpinner();
-		$('#search-results-sandbox').html('We are sorry but we could not find any matching assets');
-	};
-	var renderSpinner = function(){
-		var imgString = '<img src='+spinnerURL()+' alt="ajax loading icon" >';
-		$('#search-results-loader').html(imgString);
-	};
-    var removeSpinner = function() {
-        $('#search-results-loader').empty();
-    };
-	var processResults = function(data){
-		var assets = data;
-		var asset;
-		var map = {};
-		var arr = [];
-		var type;
-		for(var index = 0; index < assets.length; index++){
-			asset = assets[index];
-			type = asset.type;
-			if(!map[type]){
-				map[type] = {};
-				map[type].type = type;
-				map[type].assets = [];
-			}
-			map[type].assets.push(asset);
-		}
-
-		for(var item in map){
-			arr.push(map[item]);
-		}
-
-		return arr;
-	};
-	var performSearchQuery = function(url) {
-        $('#search-results-sandbox').empty();
-		renderSpinner();
-		$.ajax({
-			url:url,
-			method:'GET',
-			success:function(data){
-				var results = data.data || [];
-				if(results.length<=0) {
-					renderEmptyResults();
-				} else {
-					results = processResults(results);
-					renderResults(results||[]);
-				}
-			},error:function(){
-				alert('Failed to get results');
-			}
-		});
-	};
 	$(SEARCH_BUTTON).on('click',function(e){
 		e.preventDefault();
 		var query = buildQuery();
-		var apiQuery;
 		if(isEmptyQuery(query)) {
 			console.log('User has not entered anything');
 			return;
 		}
-		apiQuery = createAPIQuery(query);
-		performSearchQuery(apiQuery);
-	})
+        store.infiniteScroll.showAll(query);
+	});
 });
