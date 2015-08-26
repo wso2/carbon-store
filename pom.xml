@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.wso2.carbon.store</groupId>
   <artifactId>carbon-store</artifactId>
-  <version>1.3.0-SNAPSHOT</version>
+  <version>1.4.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>WSO2 Enterprise Store - Parent</name>
   <url>http://wso2.org/projects/appserver/java</url>
@@ -259,7 +259,7 @@
 
   <properties>
     <project.scm.id>github-scm</project.scm.id>
-    <carbon.store.version>1.3.0-SNAPSHOT</carbon.store.version>
+    <carbon.store.version>1.4.0-SNAPSHOT</carbon.store.version>
     <carbon.kernal.version>4.4.1</carbon.kernal.version>
     <carbon.kernal.base.version>4.4.0</carbon.kernal.base.version>
     <carbon.platform.version>4.4.1</carbon.platform.version>
