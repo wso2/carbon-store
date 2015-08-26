@@ -6,15 +6,40 @@ var config;
             config = require('/config/sso.json'),
             process = require('process'),
             CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils,
-            localIP = CarbonUtils.getServerConfiguration().getFirstProperty("HostName"),
-            httpPort = process.getProperty('http.port'),
+            localIP = CarbonUtils.getServerConfiguration().getFirstProperty("HostName") || process.getProperty('server.host'),
+            carbon = require('carbon'),
+            ccs = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService'),
+            httpPort = CarbonUtils.getTransportProxyPort(ccs.getServerConfigContext(), 'http'),
+            httpsPort = CarbonUtils.getTransportProxyPort(ccs.getServerConfigContext(), 'https'),
+            carbonLocalIP = process.getProperty('carbon.local.ip'),
+            httpPortPart, httpsPortPart;
+        if (httpPort == -1) {
+            httpPort = process.getProperty('http.port');
+        }
+        if (httpPort == 80) {
+            httpPortPart = '';
+        } else {
+            httpPortPart = ':' + httpPort;
+        }
+
+        if (httpsPort == -1) {
             httpsPort = process.getProperty('https.port');
+        }
+        if (httpsPort == 443) {
+            httpsPortPart = '';
+        } else {
+            httpsPortPart = ':' + httpsPort;
+        }
 
         pinch(config, /^/, function (path, key, value) {
             if ((typeof value === 'string') && value.indexOf('%https.host%') > -1) {
-                return value.replace('%https.host%', 'https://' + localIP + ':' + httpsPort);
+                return value.replace('%https.host%', 'https://' + localIP + httpsPortPart);
             } else if ((typeof value === 'string') && value.indexOf('%http.host%') > -1) {
-                return value.replace('%http.host%', 'http://' + localIP + ':' + httpPort);
+                return value.replace('%http.host%', 'http://' + localIP + httpPortPart);
+            } else if ((typeof value === 'string') && value.indexOf('%https.carbon.local.ip%') > -1) {
+                return value.replace('%https.carbon.local.ip%', 'https://' + carbonLocalIP + ':' + httpsPort);
+            } else if ((typeof value === 'string') && value.indexOf('%http.carbon.local.ip%') > -1) {
+                return value.replace('%http.carbon.local.ip%', 'http://' + carbonLocalIP + ':' + httpPort);
             }
             return  value;
         });

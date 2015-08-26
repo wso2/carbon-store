@@ -29,7 +29,7 @@
             "sso": {
                 "attributes": {
                     "issuer": "store",
-                    "identityProviderURL": "%https.carbon.local.ip%/samlsso",
+                    "identityProviderURL": "%https.host%/samlsso",
                     "responseSigningEnabled": "true",
                     "acs": "%https.host%/store/acs",
                     "identityAlias": "wso2carbon",

@@ -52,7 +52,7 @@
             "sso": {
                 "attributes": {
                     "issuer": "publisher",
-                    "identityProviderURL": "%https.carbon.local.ip%/samlsso",
+                    "identityProviderURL": "%https.host%/samlsso",
                     "responseSigningEnabled": "true",
                     "acs": "%https.host%/publisher/acs",
                     "identityAlias": "wso2carbon",
