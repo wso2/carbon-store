@@ -46,10 +46,10 @@
             </field>
         </table>
         <table name="Images">
-            <field type="text" required="true">
+            <field type="text">
                 <name>Thumbnail</name>
             </field>
-            <field type="text" required="true">
+            <field type="text"=>
                 <name>Banner</name>
             </field>
         </table>
