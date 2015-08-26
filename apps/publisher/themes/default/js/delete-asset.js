@@ -57,4 +57,7 @@ var disableDelete = function (msg) {
     $('#Delete').addClass('not-active').attr("title", msg).click(function (e) {
         e.preventDefault()
     });
+
+    $('#btn-delete-con').hide();
+    $('#delete-msg').text('Asset is not in a deletable state');
 };

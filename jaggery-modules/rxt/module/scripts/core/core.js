@@ -526,23 +526,21 @@ var core = {};
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return lifecycle ');
             throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return lifecycle ';
         }
-        if(this.isDefaultLifecycleEnabled(type)) {
-            if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
-                return rxtDefinition.meta.lifecycle.name || '';
-            }
-            if (log.isDebugEnabled()) {
-                log.debug('Unable to locate a meta property in order retrieve default lifecycle name for ' + type);
-            }
-            return '';
-        }else{
-            if (rxtDefinition.lifecycle && (rxtDefinition.lifecycle[0]) && (rxtDefinition.lifecycle[0].lifecycle)) {
-                return rxtDefinition.lifecycle[0].lifecycle || '';
-            }
-            if (log.isDebugEnabled()) {
-                log.debug('Unable to locate a lifecycle property in order retrieve default lifecycle name for ' + type);
-            }
-            return '';
+        if (rxtDefinition.lifecycle && (rxtDefinition.lifecycle[0]) && (rxtDefinition.lifecycle[0].lifecycle)) {
+            return rxtDefinition.lifecycle[0].lifecycle || '';
         }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate a lifecycle property in RXT in order retrieve default lifecycle name for ' + type);
+        }
+        if(this.isDefaultLifecycleEnabled(type)) {
+            if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle) && (rxtDefinition.meta.lifecycle.name)) {
+                return rxtDefinition.meta.lifecycle.name ;
+            }
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate a meta property in asset.js extension, in-order to retrieve default lifecycle name for ' + type);
+            }
+        }
+        return '';
     };
     /**
      * Returns the action that is invoked when a lifecycle is first attached to an asset of a given RXT type.
