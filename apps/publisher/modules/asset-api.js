@@ -201,8 +201,11 @@ var result;
         return assetReq;
     };
     var processTags = function (assetReq) {
-        var tags = assetReq._tags || '';
-        return tags.split(',');
+        if (assetReq._tags) {
+            return assetReq._tags.split(',');
+        } else {
+            return [];
+        }
     };
 
     var validateEditableFeilds = function (type, assetReq) {
