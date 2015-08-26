@@ -233,7 +233,7 @@ var result;
         }
         var provider = rxtManager.getProviderAttribute(type);
         if(provider && provider.length >1){
-            validateRequiredFeild(provider, assetReq);
+            assetReq.attributes[provider] = user.username;
         }
         var fields = rxtManager.listRxtFields(type);
         for (var key in fields) {
