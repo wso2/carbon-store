@@ -49,7 +49,7 @@
             <field type="text">
                 <name>Thumbnail</name>
             </field>
-            <field type="text"=>
+            <field type="text">
                 <name>Banner</name>
             </field>
         </table>
