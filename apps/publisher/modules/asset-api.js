@@ -235,7 +235,7 @@ var result;
             validateRequiredFeild(version, assetReq);
         }
         var provider = rxtManager.getProviderAttribute(type);
-        if(provider && provider.length >1){
+        if(provider && provider.length >1 && assetReq.hasOwnProperty('attributes')){
             assetReq.attributes[provider] = user.username;
         }
         var fields = rxtManager.listRxtFields(type);
@@ -251,7 +251,7 @@ var result;
 
     var validateRequiredFeild = function (feildName, assetReq) {
         var resources = request.getAllFiles();
-        if ((!assetReq.attributes.hasOwnProperty(feildName)) && !(resources && resources.hasOwnProperty(feildName))){
+        if ((!assetReq.hasOwnProperty(feildName)) && (!assetReq.attributes.hasOwnProperty(feildName)) && !(resources && resources.hasOwnProperty(feildName))){
             var msg = feildName + ' is not provided. Please provide a value for ' + feildName + ' since it is a required field';
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
         }
