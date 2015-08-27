@@ -120,7 +120,9 @@ require('/modules/store.js').exec(function(ctx) {
         //query = replaceNameQuery(query,rxtManager,type);
         query = replaceCategoryQuery(query,rxtManager,type);
         query = addGroupingStateToQuery(query, type, ctx.request, rxtManager);
-        log.info('list page search query: '+stringify(query));
+        if (log.isDebugEnabled()) {
+            log.debug('list page search query: ' + stringify(query));
+        }
         assets = am.advanceSearch(query, PAGING);
     } else {
         if (PAGING.sortOrder == 'popular') {
