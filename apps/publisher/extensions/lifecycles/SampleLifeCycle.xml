@@ -43,7 +43,7 @@
                                 <parameter name="STATE_RULE1:In-Review"
                                            value="Internal/private_{asset_author}:+get,-add,-delete,-authorize"/>
                                 <parameter name="STATE_RULE2:In-Review"
-                                           value="Internal/reviewer:+get,+add,-delete,+authorize"/>
+                                           value="Internal/reviewer:+get,-add,-delete,+authorize"/>
                                 <parameter name="STATE_RULE3:In-Review"
                                            value="Internal/everyone:-get,-add,-delete,-authorize"/>
 
@@ -121,7 +121,7 @@
                                 <parameter name="STATE_RULE1:In-Review"
                                            value="Internal/private_{asset_author}:+get,-add,-delete,-authorize"/>
                                 <parameter name="STATE_RULE2:In-Review"
-                                           value="Internal/reviewer:+get,+add,-delete,+authorize"/>
+                                           value="Internal/reviewer:+get,-add,-delete,+authorize"/>
                                 <parameter name="STATE_RULE3:In-Review"
                                            value="Internal/everyone:-get,-add,-delete,-authorize"/>
 
