@@ -34,6 +34,7 @@ var pageDecorators = {};
         var types = [];
         var type;
         var currentType;
+        page.isUserDomainAndUrlDomainDifferent = tenantAppResources.isUserDomainAndUrlDomainDifferent;
         page.navigationBar = {};
         for (var index in availableTypes) {
             type = availableTypes[index];

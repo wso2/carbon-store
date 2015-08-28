@@ -1221,7 +1221,9 @@ var asset = {};
                 }
                 items.push(iteamOut);
             } catch (e) {
-                log.error('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                if (log.isDebugEnabled()) {
+                    log.debug('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                }
             }
         });
         return items;

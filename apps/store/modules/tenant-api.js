@@ -163,6 +163,7 @@ var api = {};
         var resources = {};
         var appManager;
         var context;
+        resources.isUserDomainAndUrlDomainDifferent = false;
         //Set the urlTenantId if a domain was provided
         if (domain) {
             urlTenantId = carbon.server.tenantId({
@@ -175,6 +176,7 @@ var api = {};
             if (isUserDomainAndUrlDomainDifferent(domain, urlTenantId, tenantId)) {
                 appManager = rxt.app.createAnonAppManager(session, urlTenantId);
                 context = rxt.core.createAnonAppContext(session,urlTenantId);
+                resources.isUserDomainAndUrlDomainDifferent = true;
             }
             //Case: A logged in user visiting the store by either giving their tenant domain or not 
             else {
