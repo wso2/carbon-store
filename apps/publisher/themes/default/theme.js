@@ -205,7 +205,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var isRequired=(field.required == 'true' || field.required)? true : false; //field.required is not boolean
                 var isReadOnly=false;
                 var placeHolder = (field.placeholder)?field.placeholder:false;
-                var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" class="input-large"';
+                var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" '+
+                         ' id="' + (name?name:field.name.tableQualifiedName) + '" '+
+                         ' class="input-large"';
                 var isUpdatable = true;
                 var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
                 if(mode == "edit"){
