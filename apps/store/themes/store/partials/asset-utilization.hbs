@@ -24,20 +24,21 @@
                    data-toggle="modal"
                    data-aid="{{assets.id}}" data-type="{{assets.type}}"> {{>processed-asset-text}}</a>
     {{else}}
-        {{#if cuser.username}}
-        <a id="btn-add-gadget" class="blue-button margin-left float-left" href="#modal-add-gadget"
-                           data-toggle="modal"
-                           data-aid="{{assets.id}}"
-                           data-type="{{assets.type}}"> {{>process-asset-text }}</a>
-        {{else}}
-        <a id="btn-add-gadget" class="blue-button margin-left float-left" href='{{url ""}}{{getLoginUrl .}}'
-                       data-toggle="modal"
-                       data-aid="{{assets.id}}" data-type="{{assets.type}}"> {{>process-asset-text }}</a>
-        {{/if}}
+        {{#unless ../isUserDomainAndUrlDomainDifferent}}
+            {{#if cuser.username}}
+                <a id="btn-add-gadget" class="blue-button margin-left float-left" href="#modal-add-gadget"
+                                   data-toggle="modal"
+                                   data-aid="{{assets.id}}"
+                                   data-type="{{assets.type}}"> {{>process-asset-text }}</a>
+                {{else}}
+                <a id="btn-add-gadget" class="blue-button margin-left float-left" href='{{url ""}}{{getLoginUrl .}}'
+                               data-toggle="modal"
+                               data-aid="{{assets.id}}" data-type="{{assets.type}}"> {{>process-asset-text }}</a>
+                {{/if}}
+        {{/unless}}
     {{/if}}
 
 </div>
-
 
 
 <!--

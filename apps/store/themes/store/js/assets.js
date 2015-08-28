@@ -134,7 +134,7 @@ $(function() {
     * */
     $('#assets-container').on('click', '.js_bookmark', function () {
         var elem = $(this);
-        asset.process(elem.data('type'), elem.data('aid'), location.href);
+        asset.process(elem.data('type'), elem.data('aid'), location.href, elem);
     });
 
     /*
@@ -142,7 +142,7 @@ $(function() {
     * */
 	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
 		var parent = $(this).parent().parent().parent();
-		asset.process(parent.data('type'), parent.data('id'), location.href);
+		asset.process(parent.data('type'), parent.data('id'), location.href, parent);
 		event.stopPropagation();
 	});
     /*

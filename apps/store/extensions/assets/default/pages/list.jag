@@ -136,7 +136,8 @@ require('/modules/store.js').exec(function(ctx) {
         }
     }
     var username = user ? user.username : null;
-    var bookmarkable = permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
+    var bookmarkable = permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId,
+            username) && !page.isUserDomainAndUrlDomainDifferent;
     assets.forEach(function(asset) {
         asset.bookmarkable = bookmarkable;
     });
