@@ -165,13 +165,15 @@ asset.configure = function() {
                             label: 'Name'
                         },
                         readonly: true,
+                        required:true,
                         validation: function() {}
                     },
                     version: {
                         name: {
                             label: 'Version'
                         },
-                        readonly: true
+                        readonly: true,
+                        required:true
                     },
                     createdtime: {
                         hidden: true
