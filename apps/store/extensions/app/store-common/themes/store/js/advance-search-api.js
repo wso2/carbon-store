@@ -82,9 +82,12 @@ $(function(){
             success:function(data){
 
                 var results = data.data || [];
-                if(results.length<=0) {
-                        $('#search-results').html('We are sorry but we could not find any matching assets');
+                if(results.length==0) {
+                        if(from == 0){
+                            $('#search-results').html('We are sorry but we could not find any matching assets');
+                        }
                         $('.loading-animation-big').remove();
+                        doPagination = false;
                 } else {
                     results = {assets:results,showType:true};
                     loadPartials('assets', function(partials) {
@@ -97,6 +100,8 @@ $(function(){
                     });
                 }
             },error:function(){
+                doPagination = false;
+                $('.loading-animation-big').remove();
             }
         });
     };

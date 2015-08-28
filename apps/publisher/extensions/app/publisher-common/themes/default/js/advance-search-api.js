@@ -79,14 +79,19 @@ $(function(){
             url:url,
             method:'GET',
             success:function(data){
-
-                var results = data.list || [];
+                var results = [];
+                if(data){
+                    results = data.list || [];
+                }
                 for(var i = 0; i < results.length; i++){
                     results[i].showType = true;
                 }
-                if(results.length<=0) {
-                    $('#search-results').html('We are sorry but we could not find any matching assets');
+                if(results.length==0) {
+                    if(from == 0) {
+                        $('#search-results').html('We are sorry but we could not find any matching assets');
+                    }
                     $('.loading-animation-big').remove();
+                    doPagination = false;
                 } else {
                     loadPartials('list-assets', function(partials) {
                         caramel.partials(partials, function () {
@@ -99,6 +104,7 @@ $(function(){
                 }
             },error:function(){
                 doPagination = false;
+                $('.loading-animation-big').remove();
             }
         });
     };

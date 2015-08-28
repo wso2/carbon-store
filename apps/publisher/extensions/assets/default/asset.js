@@ -172,6 +172,7 @@ asset.configure = function() {
                         name: {
                             label: 'Version'
                         },
+                        readonly: true,
                         required:true
                     },
                     createdtime: {

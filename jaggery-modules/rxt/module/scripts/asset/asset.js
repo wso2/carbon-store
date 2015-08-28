@@ -375,12 +375,17 @@ var asset = {};
      */
     AssetManager.prototype.list = function(paging) {
         var paging = paging || this.defaultPaging;
+        var assets;
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
-        var assets = this.am.list(paging);
-        addAssetsMetaData(assets, this);
-        return assets;
+        try{
+            assets = this.am.list(paging);
+            addAssetsMetaData(assets, this);
+        } catch (e){
+            log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters');
+        }
+        return assets || [];
     };
     /**
      * Returns the asset with the provided id
@@ -431,8 +436,12 @@ var asset = {};
         }
         log.debug('performing a non group search');
         //query = addWildcard(query);
-        assets = this.am.search(query, paging);
-        addAssetsMetaData(assets, this);
+        try {
+            assets = this.am.search(query, paging);
+            addAssetsMetaData(assets, this);
+        }catch (e){
+            log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters');
+        }
         return assets;
     };
     var buildQueryString = function(query,options) {
@@ -588,7 +597,7 @@ var asset = {};
          return q;
     };
     var doAdvanceSearch = function(type,query,paging,registry,rxtManager) {
-        var assets = [];
+        var assets = null;
         var q;
         var governanceRegistry;
         var mediaType = '';
@@ -612,8 +621,7 @@ var asset = {};
                 assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
             }      
         } catch (e) {
-            log.error(e);
-            log.error('Unable to retrieve assets',e);
+            log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters',e);
         } finally {
             destroyPaginationContext();
         }
@@ -666,8 +674,10 @@ var asset = {};
         if (log.isDebugEnabled()) {
             log.debug('[advance search] about to process result set');
         }
-        assets = processAssets(null,assets,rxtManager,tenantId);
-        addMetaDataToGenericAssets(assets,session,tenantId);
+        if(assets){
+            assets = processAssets(null,assets,rxtManager,tenantId);
+            addMetaDataToGenericAssets(assets,session,tenantId);
+        }
         return assets;
     };
     /**
@@ -1211,7 +1221,9 @@ var asset = {};
                 }
                 items.push(iteamOut);
             } catch (e) {
-                log.error('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                if (log.isDebugEnabled()) {
+                    log.debug('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                }
             }
         });
         return items;

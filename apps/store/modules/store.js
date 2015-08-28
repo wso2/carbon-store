@@ -290,7 +290,9 @@ Store.prototype.subscriptions = function (type) {
 
                 items.push(iteamOut);
             } catch (e) {
-                log.warn('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                if (log.isDebugEnabled()) {
+                    log.debug('asset for path="' + path + '" could not be retrieved, try reverting it form registry.');
+                }
             }
         });
 
