@@ -81,6 +81,7 @@ store.infiniteScroll.getItems = function (from, to) {
         var loadingAnimationTop = $(document).height() - 320;
         $('.loading-animation-big').css('top',loadingAnimationTop+'px');
     });
+    console.info('loading','Loading assets from ' + from + ' to ' + to + '.');
     //var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);     //TODO enable tenanted url thing..
     var loadAssets = function () {
         $.ajax({
@@ -92,6 +93,10 @@ store.infiniteScroll.getItems = function (from, to) {
             success: function (response) { //on success
                 if (response) {
                     var assets = convertTimeToUTC(response.list);
+                    console.info(assets);
+                    if(assets.length == 0 ){
+                        doPagination = false;
+                    }
                     caramel.render('list_assets_table_body', assets, function (info, content) {
                         $('.loading-animation-big').addClass('loading-animation-big').remove();
                         $('#list_assets_content').append($(content));
