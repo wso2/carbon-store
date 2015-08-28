@@ -170,7 +170,8 @@ asset.configure = function() {
                     version: {
                         name: {
                             label: 'Version'
-                        }
+                        },
+                        readonly: true
                     },
                     createdtime: {
                         hidden: true
