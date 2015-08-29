@@ -294,8 +294,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
-            validateRequiredFeilds(options.type, asset);
             am.create(asset);
+            validateRequiredFeilds(options.type, asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
