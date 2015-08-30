@@ -174,6 +174,8 @@ $(function(){
     };
     $(SEARCH_BUTTON).on('click',function(e){
         e.preventDefault();
+        rows_added = 0;
+        $('#search-results').html('');       
         var query = buildQuery();
         if(isEmptyQuery(query)) {
             console.log('User has not entered anything');
