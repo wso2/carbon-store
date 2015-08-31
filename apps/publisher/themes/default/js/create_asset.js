@@ -49,6 +49,7 @@ $(function(){
         error:function(){
             messages.alertError('Unable to add the '+PublisherUtils.resolveCurrentPageAssetType()+' instance.');
             $('#btn-create-asset').removeAttr('disabled');
+            $('.fa-spinner').parent().remove();
 
         }
     });
