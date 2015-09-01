@@ -177,7 +177,7 @@ var api = {};
      */
     Lifecycle.prototype.state = function (stateName) {
         //Convert the state to lowercase
-        var stateName = stateName ? stateName.toLowerCase() : stateName;
+        var stateName = stateName ? String(stateName).toLowerCase().replace(/ /g, '.') : stateName;
         var states = this.definition.configuration.lifecycle.scxml.state;
         var state = {};
         if (!states) {
