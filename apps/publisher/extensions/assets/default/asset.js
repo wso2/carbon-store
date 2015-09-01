@@ -176,12 +176,14 @@ asset.configure = function() {
                             server: []
                         },
                         readonly: true,
-
+                        required:true
                     },
                     version: {
                         name: {
                             label: 'Version'
-                        }
+                        },
+                        readonly: true,
+                        required:true
                     },
                     createdtime: {
                         hidden: true
@@ -217,6 +219,7 @@ asset.configure = function() {
             },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
+            nameAttribute: 'overview_name',
             versionAttribute: 'overview_version',
             providerAttribute: 'overview_provider',
             timestamp: 'overview_createdtime',

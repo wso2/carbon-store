@@ -54,7 +54,6 @@ else {
 
 function loadTenant(domain) {
     var tenantId =  carbon.server.tenantId({domain: domain});
-    log.info(tenantId);
     if (tenantId == -1 ){
         response.sendError(404, 'Unable to locate a suitable endpoint for ' + domain);
         return false;

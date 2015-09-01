@@ -89,7 +89,10 @@ var api = {};
             throw 'The state: ' + currentStateName + ' is not present in the lifecycle: ' + this.getName();
         }
         if (!states[currentStateName].transition) {
-            throw 'The state: ' + currentStateName + ' has not defined any transitions in the lifecycle: ' + this.getName();
+            if (log.isDebugEnabled()) {
+                log.debug('The state: ' + currentStateName + ' has not defined any transitions in the lifecycle: ' + this.getName());
+            }
+            return nextStates;
         }
         var transitions = states[currentStateName].transition;
         for (var index = 0; index < transitions.length; index++) {
@@ -133,7 +136,10 @@ var api = {};
         var state = {};
         state.id = rawState.id;
         if (!rawState.datamodel) {
-            log.warn('Unable to read data model of the state ');
+            if (log.isDebugEnabled()) {
+                log.warn('Unable to read data model of the state ');
+            }
+            state.checkItems = {};
             return state;
         }
         var checkItems = getCheckitems(rawState.datamodel.data || {});
@@ -171,7 +177,7 @@ var api = {};
      */
     Lifecycle.prototype.state = function (stateName) {
         //Convert the state to lowercase
-        var stateName = stateName ? stateName.toLowerCase() : stateName;
+        var stateName = stateName ? String(stateName).toLowerCase().replace(/ /g, '.') : stateName;
         var states = this.definition.configuration.lifecycle.scxml.state;
         var state = {};
         if (!states) {

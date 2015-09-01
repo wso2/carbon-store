@@ -186,6 +186,19 @@ h2.app-title {
 .wr-global-header {
     background: #444;
 }
+.ast-type-display{
+    background: #222;
+    color: #fff;
+    font-size: 11px;
+    margin-top: -20px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-top: 3px;
+    position: absolute;
+    text-align: left;
+    width: 100%;
+    opacity: 0.8;
+}
 .assets-container{
     margin-top:20px;
 }
@@ -450,11 +463,12 @@ a.ast-name:hover {
     height: auto;
     left: 61px;
     position: absolute;
-    top: 98px;
+    top: 55px;
     width: 50.3%;
     z-index: 1000;
     max-height: 800px;
     overflow-y:auto;
+    overflow-x: hidden;
 }
 
 #advanced-search label {
@@ -480,11 +494,15 @@ a.ast-name:hover {
     width: 100%;
     margin-bottom: 5px;
 }
-
+#search-results i.cu-btn-exp-col{
+    padding-left: 0;
+}
 #search-results-loader {
     text-align: center;
 }
-
+.advanced-search-cont{
+    font-size: 11px;
+}
 .advance-search-btn{
     height: 42px;
     padding-top:15px;

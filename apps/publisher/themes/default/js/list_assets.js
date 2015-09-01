@@ -64,7 +64,7 @@ var setSortingParams = function(path) {
             }
         }
     }else{
-        sorting = '&&sort=+overview_createdtime';
+        sorting = '';
     }
     return sorting;
 };

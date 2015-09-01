@@ -9,7 +9,7 @@
             "sso": {
                 "attributes": {
                     "issuer": "social",
-                    "identityProviderURL": "%https.carbon.local.ip%/samlsso",
+                    "identityProviderURL": "%https.host%/samlsso",
                     "responseSigningEnabled": "true",
                     "storeAcs" : "%https.host%/store/acs.jag",
                     "useTenantKey": false

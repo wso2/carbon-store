@@ -201,8 +201,11 @@ var result;
         return assetReq;
     };
     var processTags = function (assetReq) {
-        var tags = assetReq._tags || '';
-        return tags.split(',');
+        if (assetReq._tags) {
+            return assetReq._tags.split(',');
+        } else {
+            return [];
+        }
     };
 
     var validateEditableFeilds = function (type, assetReq) {
@@ -220,6 +223,41 @@ var result;
         }
         return assetReq;
     };
+
+    var validateRequiredFeilds = function (type, assetReq) {
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        var name = rxtManager.getNameAttribute(type);
+        if(name && name.length >1){
+            validateRequiredFeild(name, assetReq);
+        }
+        var version = rxtManager.getVersionAttribute(type);
+        if(version && version.length >1){
+            validateRequiredFeild(version, assetReq);
+        }
+        var provider = rxtManager.getProviderAttribute(type);
+        if(provider && provider.length >1 && assetReq.hasOwnProperty('attributes')){
+            assetReq.attributes[provider] = user.username;
+        }
+//        var fields = rxtManager.listRxtFields(type);
+//        for (var key in fields) {
+//                if (fields.hasOwnProperty(key)) {
+//                    var field =  fields[key];
+//                    if (field && field.name && field.required && field.name.fullName) {
+//                        validateRequiredFeild(field.name.fullName, assetReq);
+//                    }
+//                }
+//        }
+    };
+
+    var validateRequiredFeild = function (feildName, assetReq) {
+        var resources = request.getAllFiles();
+        if ((!assetReq.hasOwnProperty(feildName)) && (!assetReq.attributes.hasOwnProperty(feildName)) && !(resources && resources.hasOwnProperty(feildName))){
+            var msg = feildName + ' is not provided. Please provide a value for ' + feildName + ' since it is a required field';
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
+        }
+    };
+
+
     /**
      * api to create a new asset
      * @param  options incoming values
@@ -256,7 +294,9 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
+
             var checkValidate = am.validate(asset);
+            validateRequiredFeilds(options.type, asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
@@ -264,11 +304,14 @@ var result;
             am.update(asset);
         } catch (e) {
             if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
+
                 //log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
                 //return null;
                 throw e;
             }
-
+            throw e;
+            log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
+            return null;
         }
         //Attempt to apply tags
         if (tags.length > 0) {
@@ -309,6 +352,7 @@ var result;
         var am = assetModule.createUserAssetManager(session, options.type);
         var server = require('store').server;
         var user = server.current(session);
+        var result;
         var assetReq = req.getAllParameters('UTF-8');
 
         //TODO this code should be improve for each and every content type
@@ -351,7 +395,8 @@ var result;
                 //Set any meta properties provided by the API call (e.g. _default)
                 var checkValidate = am.validate(asset);
                 setMetaProps(asset, meta);
-                am.update(asset);
+                result = am.update(asset);
+		//asset.result=result;
             } catch (e) {
                 asset = null;
                 var errMassage = 'Failed to update the asset of id:' + options.id;
@@ -365,7 +410,7 @@ var result;
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             }
         }
-        return asset;
+        return result || asset;
     };
     /**
      *

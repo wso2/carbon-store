@@ -385,6 +385,7 @@ a.ast-type-item .icon {
 	height:300px;
 	float:left;
 	margin-right:22px;
+    position: relative;
 }
 
 .itm-ast {
@@ -1140,6 +1141,19 @@ div.notifyjs-happyblue-base {
 }
 .navbar-header{
    float: right;
+}
+.ast-type-display{
+    background: #222;
+    color: #fff;
+    font-size: 11px;
+    margin-top: -20px;
+    padding-bottom: 3px;
+    padding-left: 10px;
+    padding-top: 3px;
+    position: absolute;
+    text-align: left;
+    width: 100%;
+    opacity: 0.8;
 }
 .loading-animation{
     padding:15px 0 0 0;
