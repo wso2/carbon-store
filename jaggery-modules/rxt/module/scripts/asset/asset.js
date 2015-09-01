@@ -324,7 +324,6 @@ var asset = {};
      * @lends AssetManager.prototype
      */
     AssetManager.prototype.validate = function (options) {
-        var validateData = [];
         var curObject = this;
         var rxtMetaMappings = curObject.rxtManager.isValidationMappings(curObject.type);
         for (var key in options.attributes) {
@@ -336,69 +335,55 @@ var asset = {};
                 if (rxtField.validations != null && rxtField.validations.server != null && rxtField.validations.server.length > 0) {
                     var serverSideValid = rxtField.validations.server;
                     for (i = 0; i < serverSideValid.length; i++) {
-                        errorObj = errorObjStatus(key, serverSideValid[i], valueofAttrib);
-                        if (Object.getOwnPropertyNames(errorObj).length != 0) {
-                            validateData.push(errorObj);
-                        }
+                        getErrorStatus(key, serverSideValid[i], valueofAttrib);
                     }
                 }else{
                     for(var keyField in rxtField){
                         if(rxtField.hasOwnProperty(keyField)){
                             var keyFieldValue = rxtField[keyField];
                             if(keyField === 'type' || keyField === 'required' || keyField === 'readonly' || keyField === 'updatable'){
-                                errorObj = validationMappingDefault(key,keyField,keyFieldValue,valueofAttrib,rxtMetaMappings);
-                                if (errorObj.length != 0) {
-                                    for (i = 0; i < errorObj.length; i++) {
-                                        if (Object.getOwnPropertyNames(errorObj[i]).length != 0) {
-                                            validateData.push(errorObj[i]);
-                                        }
-                                    }
-                                }
+                                getValidationMapping(key,keyField,keyFieldValue,valueofAttrib,rxtMetaMappings);
                             }
                         }
                     }
                 }
             }
         }
-        return validateData;
     };
-    var validationMappingDefault = function (fieldName, rxtObj, rxtObjValue, fieldValue, rxtMetaMappings) {
-        var validationStatus = [];
+    var getValidationMapping = function (fieldName, rxtObj, rxtObjValue, fieldValue, rxtMetaMappings) {
         var validationsMappingsType;
         var i;
         if( rxtObj === "type"){
             validationsMappingsType = rxtMetaMappings["type"][rxtObjValue] || '';
             for(i = 0; i < validationsMappingsType.length; i++){
-                validationStatus.push(errorObjStatus(fieldName,validationsMappingsType[i],fieldValue));
+                getErrorStatus(fieldName,validationsMappingsType[i],fieldValue)
             }
         }
         if(rxtObj === "required" || rxtObj === "readonly" || rxtObj === "updatable"){
             if(rxtObjValue === true){
                 validationsMappingsType = rxtMetaMappings[rxtObj] || '';
                 for(i = 0; i < validationsMappingsType.length; i++){
-                    validationStatus.push(errorObjStatus(fieldName,validationsMappingsType[i],fieldValue));
+                    getErrorStatus(fieldName,validationsMappingsType[i],fieldValue);
                 }
             }
         }
-        return validationStatus;
     };
-    var errorObjStatus = function (key, validationName, value) {
+    var getErrorStatus = function (key, validationName, value) {
+        var exceptionModule = require('utils').exception;
+        var constants = require('rxt').constants;
         var status;
         var extJsFile = require(asset.getAssetDefaultPath()+"/validation.js");
         var validations = extJsFile.validations;
-        var errObj = {};
+        var validationMsg;
         for (var validateName in validations) {
-            if (validations.hasOwnProperty(validateName)) {
-                if (validationName === validateName) {
+            if (validations.hasOwnProperty(validateName) && validationName === validateName) {
                     status = validations[validateName].validateFunc(value);
                     if (status === false) {
-                        errObj.name = key;
-                        errObj.message = "Unable to create asset Error in " + key + " value of " + value + " on server side " + validationName + " validations ";
+                        validationMsg = "Unable to create asset Error in " + key + " value of " + value + " on server side " + validationName + " validations ";
+                        throw exceptionModule.buildExceptionObject(validationMsg, constants.STATUS_CODES.BAD_REQUEST);
                     }
-                }
             }
         }
-        return errObj;
     };
     /**
      * Updates the provided asset with the latest values in the registry.If the asset is not succsessfully
@@ -549,6 +534,7 @@ var asset = {};
         var queryString = [];
         var value;
         options = options || {};
+        //TODo just for fix changed true to false
         var wildcard = options.hasOwnProperty('wildcard') ? options.wildcard : true; //Default to a wildcard search
         for (var key in query) {
             //Drop the type property from the query
@@ -561,7 +547,7 @@ var asset = {};
                 //with a underscore (_)
                 key = key.replace('_', ':');
                 //Check if wildcard search is enabled
-                if (wildcard) {
+                if (wildcard === true) {
                     value = '*' + value + '*';
                 }
                 queryString.push(key + '=' + value);
@@ -686,10 +672,11 @@ var asset = {};
             log.debug('[pagination-context] successfully destroyed context')
         }
     };
-    var buildQuery = function (query) {
+    var buildQuery = function (query,wildCardStatus) {
         var q = '';
         var options = {};
-        options.wildcard = true; //Assume that wildcard is enabled
+        //options.wildcard = true; //Assume that wildcard is enabledard
+        options.wildcard = wildCardStatus;
         //Check if grouping is enabled
         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             options.wildcard = false;//query[constants.Q_PROP_GROUP];
@@ -698,7 +685,7 @@ var asset = {};
         q = buildQueryString(query, options);
         return q;
     };
-    var doAdvanceSearch = function (type, query, paging, registry, rxtManager) {
+    var doAdvanceSearch = function (type, query, paging, registry, rxtManager, wildcardStatus) {
         var assets = [];
         var q;
         var governanceRegistry;
@@ -714,7 +701,7 @@ var asset = {};
             if (log.isDebugEnabled()) {
                 log.debug('[advance search] building query ');
             }
-            q = buildQuery(query);
+            q = buildQuery(query,wildcardStatus);
 
             if (log.isDebugEnabled()) {
                 log.debug('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);
@@ -731,7 +718,7 @@ var asset = {};
         }
         return assets;
     };
-    AssetManager.prototype.advanceSearch = function (query, paging) {
+    AssetManager.prototype.advanceSearch = function (query, paging, wildCardStatus) {
         var assets = [];
         var type = query.type;
         var mediaType = '';
@@ -741,7 +728,7 @@ var asset = {};
         type = this.type;
         query = query || {};
         paging = paging || null;
-        assets = doAdvanceSearch(type, query, paging, registry, rm);
+        assets = doAdvanceSearch(type, query, paging, registry, rm, wildCardStatus);
         //assets is a set that must be converted to a JSON array
         assets = processAssets(type, assets, rm);
         //Add additional meta data

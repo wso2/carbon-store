@@ -243,9 +243,9 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return output;
             };
-            var renderOptions = function(value, values, field,count,defaultCls,validationCls) {
+            var renderOptions = function(value, values, field,count,validationCls) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
-                var out = '<select class="'+validationCls+'"' + defaultCls + renderFieldMetaData(field,id) + '>';
+                var out = '<select class="'+validationCls+'"' + renderFieldMetaData(field,id) + '>';
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
@@ -275,7 +275,7 @@ var engine = caramel.engine('handlebars', (function() {
                 out += '</select>';
                 return out;
             };
-            var renderOptionsTextField = function(field,defaultCls,validationCls) {
+            var renderOptionsTextField = function(field,validationCls) {
                 var value;
                 var values = field.value;
                 var output = '';
@@ -294,7 +294,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var text = value.substring(delimter + 1, value.length);
                         output += '<tr>';
                         output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
-                        output += '<td valign="top"><input type="text" class="form-control'+validationCls+'"'+defaultCls+' value="' + Handlebars.Utils.escapeExpression(text) + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                        output += '<td valign="top"><input type="text" class="form-control'+validationCls+'" value="' + Handlebars.Utils.escapeExpression(text) + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
                         output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                         output += '</tr>';
                     }
@@ -302,7 +302,7 @@ var engine = caramel.engine('handlebars', (function() {
                     output += '<tr id="table_reference_'+field.name.name+'">';
                     var index='0';
                     output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
-                    output += '<td valign="top"><input type="text" class="form-control '+validationCls+'"'+defaultCls + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                    output += '<td valign="top"><input type="text" class="form-control '+validationCls+'"'+ renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
                     output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>'
                     output += '</tr>';
                 }
@@ -323,7 +323,6 @@ var engine = caramel.engine('handlebars', (function() {
             var renderField = function(field, options) {
                 var out = '';
                 var validationCls = '';
-                var cls = '';
                 var value = field.value || '';
                 var fieldMetadata = field;
                 if (fieldMetadata.validations != null) {
@@ -338,27 +337,21 @@ var engine = caramel.engine('handlebars', (function() {
                         }
                     }
                 }
-                if (field.required) {
-                    cls += ' required="required" '
-                }
-                if (field.readonly) {
-                    cls += ' readonly="readonly" '
-                }
                 switch (field.type) {
                     case 'options':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">' + renderOptions(field.value, field.values[0].value, field,'',cls,validationCls) + '</div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">' + renderOptions(field.value, field.values[0].value, field,'',validationCls) + '</div>';
                         break;
                     case 'text':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="form-control '+validationCls+'"'+cls+'  value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="form-control '+validationCls+'"  value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
                         break;
                     case 'text-area':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full '+validationCls+'"'+cls+'>' + Handlebars.Utils.escapeExpression(value) + '</textarea></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full '+validationCls+'">' + Handlebars.Utils.escapeExpression(value) + '</textarea></div>';
                         break;
                     case 'file':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file" class="'+validationCls+'"'+cls+'  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file" class="'+validationCls+'"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'date':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="'+validationCls+'"'+cls+' data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="'+validationCls+'" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'checkbox':
                         var checkboxString = "";
@@ -371,11 +364,11 @@ var engine = caramel.engine('handlebars', (function() {
                         }else{
                             value="on";
                         }
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="checkbox" '+ validationCls+ cls + renderFieldMetaData(field, null, options) + ' '+checkboxString+' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="checkbox" '+ validationCls + renderFieldMetaData(field, null, options) + ' '+checkboxString+' ></div>';
                         break;
                     case 'password':
 
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" class="'+validationCls+'"'+cls+' value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
+                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" class="'+validationCls+'" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
                         break;
                     case 'option-text':
                         if(field.maxoccurs && field.maxoccurs == "unbounded"){
@@ -385,7 +378,7 @@ var engine = caramel.engine('handlebars', (function() {
                                 '<table class="tablex cu-data-table js-unbounded-table" id="table_'+field.name.name+'">'+
                                 '<thead><tr style="display: none"><th></th><th></th><th></th></tr></thead>'+
                                 '<tbody>'+
-                                renderOptionsTextField(field,cls,validationCls)+
+                                renderOptionsTextField(field,validationCls)+
                                       '</tbody>'+
                                       '</table>'+
                                   '</div>';

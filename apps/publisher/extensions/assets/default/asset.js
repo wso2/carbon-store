@@ -171,8 +171,9 @@ asset.configure = function() {
                             label: 'Name'
                         },
                         validations: {
-                            client: ['isUniqueField'],
-                            server: ['isAlphaNumericOnly']
+                            //this order should be maintain
+                            client: ['ignoreSpecialCharacters','isUniqueField'],
+                            server: []
                         },
                         readonly: true,
 
@@ -229,10 +230,9 @@ asset.configure = function() {
             },
             validationMappings : {
                 type : {
-                    text : ['isAlphaNumericOnly']
-                    //,
-                    //url : ['url'],
-                    //email : ['email']
+                    //text : [],
+                    url : ['isValidUrl'],
+                    email : ['isValidEmail']
                 },
                 required : [],
                 updatable : [],

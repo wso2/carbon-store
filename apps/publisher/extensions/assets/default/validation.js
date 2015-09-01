@@ -21,41 +21,30 @@ var validations = {
     isAlphaOnly: {
         validateFunc: function (ctx) {
             var letters = /^[a-zA-Z]+$/;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.test(ctx.trim());
         }
     },
     isAlphaNumericOnly: {
         validateFunc: function (ctx) {
             var letters = /^[0-9a-zA-Z]+$/;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.test(ctx.trim());
         }
     },
     isNumericOnly: {
         validateFunc: function (ctx) {
             var letters = /^[0-9]+$/;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.test(ctx.trim());
         }
     },
     isDecimalOnly: {
         validateFunc: function (ctx) {
             var letters = /^[-+]?[0-9]+\.[0-9]+$/;
-            if (ctx.match(letters)) {
-                return true;
-            }
-            return false;
+            return letters.test(ctx.trim());
         }
     },
     isValidDate: {
         validateFunc: function (ctx) {
+            var pdate;
             var dateformat = /^(0?[1-9]|[12][0-9]|3[01])[\/\-](0?[1-9]|1[012])[\/\-]\d{4}$/;
             // Match the date format through regular expression
             if (value.match(dateformat)) {
@@ -66,9 +55,9 @@ var validations = {
                 lopera2 = opera2.length;
                 // Extract the string into month, date and year
                 if (lopera1 > 1) {
-                    var pdate = inputText.value.split('/');
+                    pdate = inputText.value.split('/');
                 } else if (lopera2 > 1) {
-                    var pdate = inputText.value.split('-');
+                    pdate = inputText.value.split('-');
                 }
                 var dd = parseInt(pdate[0]);
                 var mm = parseInt(pdate[1]);
@@ -105,48 +94,31 @@ var validations = {
     isValidDateTime: {
         validateFunc: function (ctx) {
             var dateTimeFormat = /^[0,1]?\d\/(([0-2]?\d)|([3][01]))\/((199\d)|([2-9]\d{3}))\s[0-2]?[0-9]:[0-5][0-9] (am|pm)?$/;
-            if (ctx.match(dateTimeFormat)) {
-                return true;
-            }
-            return false;
+            return dateTimeFormat.test(ctx.trim());
         }
     },
     isValidTime: {
         validateFunc: function (ctx) {
             var timeFormat = /^(?:0?[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/;
-            if (ctx.match(timeFormat)) {
-                return true;
-            }
-            return false;
+            return timeFormat.test(ctx.trim());
         }
     },
     isValidEmail: {
         validateFunc: function (ctx) {
             var emailFormat = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
-            if (ctx.match(emailFormat)) {
-                return true;
-            }
-            return false;
+            return emailFormat.test(ctx.trim());
         }
     },
     isValidUrl: {
         validateFunc: function (ctx) {
-            log.info(ctx);
             var urlFormat = /^(?:(?:https?|ftp):\/\/)(?:\S+(?::\S*)?@)?(?:(?!10(?:\.\d{1,3}){3})(?!127(?:\.\d{1,3}){3})(?!169\.254(?:\.\d{1,3}){2})(?!192\.168(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/[^\s]*)?$/i;
-            log.info(urlFormat.test(ctx.trim()));
-            if (urlFormat.test(ctx.trim())) {
-                return true;
-            }
-            return false;
+            return urlFormat.test(ctx.trim());
         }
     },
     isValidTelephoneNo: {
         validateFunc: function (ctx) {
             var phoneno = /^\d{10}$/;
-            if (ctx.match(phoneno)) {
-                return true;
-            }
-            return false;
+            return phoneno.test(ctx.trim());
         }
     }
 };

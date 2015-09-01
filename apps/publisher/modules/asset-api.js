@@ -257,20 +257,18 @@ var result;
                 log.debug('Creating Asset : ' + stringify(asset));
             }
             var checkValidate = am.validate(asset);
-            if (checkValidate.length > 0) {
-                for (var key in checkValidate) {
-                    log.error(checkValidate[key].message);
-                }
-                return null;
-            }
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
             am.update(asset);
         } catch (e) {
-            log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
-            return null;
+            if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
+                //log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
+                //return null;
+                throw e;
+            }
+
         }
         //Attempt to apply tags
         if (tags.length > 0) {
@@ -352,12 +350,6 @@ var result;
             try {
                 //Set any meta properties provided by the API call (e.g. _default)
                 var checkValidate = am.validate(asset);
-                if (checkValidate.length > 0) {
-                    for (var key in checkValidate) {
-                        log.error(checkValidate[key].message);
-                    }
-                    return null;
-                }
                 setMetaProps(asset, meta);
                 am.update(asset);
             } catch (e) {
@@ -366,6 +358,9 @@ var result;
                 log.error(e);
                 if (log.isDebugEnabled()) {
                     log.debug('Failed to update the asset ' + stringify(asset));
+                }
+                if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
+                    throw e;
                 }
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             }
@@ -508,6 +503,7 @@ var result;
         paging.start = (request.getParameter("start") || paging.start);
         paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
         var q = (request.getParameter("q") || '');
+        var wildCardStatus = request.getParameter("_wildcard") || true;
         var isGroupingEnabled = false;//Grouping is disabled by default
         try {
             var assets;
@@ -527,7 +523,7 @@ var result;
                     log.debug('processed query used for searching: ' + stringify(query));
                     log.debug('grouping enabled: ' + isGroupingEnabled);
                 }
-                assets = assetManager.advanceSearch(query, paging); // asset manager back-end call with search-query
+                assets = assetManager.advanceSearch(query, paging, wildCardStatus); // asset manager back-end call with search-query
             } else {
                 //If grouping is enabled then do a group search
                 if (rxtManager.isGroupingEnabled(options.type)) {
