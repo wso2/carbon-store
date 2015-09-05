@@ -175,7 +175,9 @@ var core = {};
                 transformDefinition(rxtDefinition);
                 this.rxtMap[rxtDefinition.shortName] = rxtDefinition;
             } catch (e) {
-                log.debug('Unable to load RXT definition for : ' + rxtPaths[index] + '.The following exception occured: ' + e);
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to load RXT definition for : ' + rxtPaths[index] + '.The following exception occured: ' + e);
+                }
             }
         }
     };
@@ -209,7 +211,9 @@ var core = {};
     RxtManager.prototype.getRxtStoragePath = function(rxtType) {
         var def = this.rxtMap[rxtType];
         if (!def) {
-            log.debug('Unable to locate rxt definition for ' + rxtType);
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate rxt definition for ' + rxtType);
+            }
             return '';
         }
         var pathItem = def.storagePath;
@@ -1006,7 +1010,9 @@ var core = {};
         }
         var manager = map[tenantId].rxtManager;
         if (!manager) {
-            log.debug('Creating a new rxt manager');
+            if (log.isDebugEnabled()) {
+                log.debug('Creating a new rxt manager');
+            }
             manager = createRxtManager(tenantId, map);
             map[tenantId].rxtManager = manager;
         }
@@ -1212,7 +1218,9 @@ var core = {};
         var userDetails = server.current(session);
         //If there is no user then build an anonymous registry for the super tenant
         if (!userDetails) {
-            log.debug('Obtaining anon asset context for ' + type);
+            if (log.isDebugEnabled()) {
+                log.debug('Obtaining anon asset context for ' + type);
+            }
             return this.createAnonAssetContext(session, type, tenantID);
         } else {
             return this.createUserAssetContext(session, type);
@@ -1313,7 +1321,9 @@ var core = {};
         var user = require('store').user;
         var userDetails = server.current(session);
         if (!userDetails) {
-            log.debug('Obtaining anon app context ');
+            if (log.isDebugEnabled()) {
+                log.debug('Obtaining anon app context ');
+            }
             return this.createAnonAppContext(session, tenantID);
         } else {
             return this.createUserAppContext(session);

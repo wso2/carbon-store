@@ -78,11 +78,12 @@
                         session.put("Loged", "true");
 
                         //sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId;
+                        if (log.isDebugEnabled()){
+                            log.debug("session index :: " + sessionObj.sessionIndex);
+                            log.debug("session :: " + sessionObj.sessionId);
+                            log.debug("real session :: " + session.getId());
+                        }
 
-                        log.debug("session index :: " + sessionObj.sessionIndex);
-                        log.debug("session :: " + sessionObj.sessionId);
-
-                        log.debug("real session :: " + session.getId());
 
 
                         //sso_sessions[sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId] = sessionObj.sessionIndex;
@@ -103,7 +104,9 @@
 
                         if (hasPublisherLoginPermission) {
                             user.emitLogin(username)
-                            log.debug('user is set :::' + username);
+                            if (log.isDebugEnabled()){
+                                log.debug('user is set :::' + username);
+                            }
                             response.sendRedirect(context);
                         }
                         else{
@@ -125,14 +128,17 @@
     // if saml request is a log out request, then invalidate session.
     if (samlRequest != null) {
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
-        log.debug('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+        if (log.isDebugEnabled()){
+            log.debug('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+        }
 
         var jSessionId = application.get('sso_sessions')[index];
 
         delete application.get('sso_sessions')[index];
 
-
-        log.debug('portal Session Id :::' + jSessionId);
+        if (log.isDebugEnabled()){
+            log.debug('portal Session Id :::' + jSessionId);
+        }
 
         session.invalidate();
     }

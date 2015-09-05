@@ -33,7 +33,9 @@ public class Activator implements BundleActivator {
 
 	@Override
 	public void stop(BundleContext bundleContext) throws Exception {
-		log.debug("BAM client bundle shut down");
+		if (log.isDebugEnabled()) {
+			log.debug("BAM client bundle shut down");
+		}
 		EventPublisher.shutDownPublisher();
 	}
 }

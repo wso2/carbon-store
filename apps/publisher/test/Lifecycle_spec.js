@@ -38,7 +38,9 @@ describe('Lifecycle GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             post(server_url + '/logout', {}, header, 'json');
             expect(response.data.data).not.toBe(undefined);
@@ -58,7 +60,9 @@ describe('Lifecycle GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             post(server_url + '/logout', {}, header, 'json');
             expect(response.data.data).not.toBe(undefined);

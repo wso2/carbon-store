@@ -49,7 +49,9 @@ var engine = caramel.engine('handlebars', (function() {
             var appExtensionMediator = rxtAPI.core.defaultAppExtensionMediator();
             if(appExtensionMediator){
                 var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme,'partials'));
-                log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+                if (log.isDebugEnabled()) {
+                    log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+                }
                 partials(new File(defaultExtensionPartialsPath));
             }
             partials(new File(theme.resolve('partials')));
@@ -99,7 +101,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var output = "";
                 var ptr;
                 if (!security) {
-                    log.debug('Unable to locate security details in order to render authentication ui elements');
+                    if (log.isDebugEnabled()) {
+                        log.debug('Unable to locate security details in order to render authentication ui elements');
+                    }
                     return;
                 }
                 //Determine the authentication method
@@ -172,7 +176,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var security=options.security;
                 var output='/login';
                 if(!security){
-                    log.debug('Unable to determine login url as the security block was not pesent');
+                    if (log.isDebugEnabled()) {
+                        log.debug('Unable to determine login url as the security block was not pesent');
+                    }
                     return output;
                 }
                 switch(security.method){

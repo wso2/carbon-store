@@ -30,8 +30,9 @@ routeManager.register('GET', 'publisher', '/publisher/api/tag/{type}', function 
     var type = context.params.type;
 
     var tags = rxtManager.registry.query(TAG_QUERY);
-
-    log.debug('tags retrieved: ' + tags);
+    if (log.isDebugEnabled()){
+        log.debug('tags retrieved: ' + tags);
+    }
 
     var tagManager = new tagModule.TagManager();
 
@@ -75,8 +76,9 @@ routeManager.register('PUT', 'publisher', '/publisher/api/tag/{type}/{id}', func
     var type = context.params.type;
     var id = context.params.id;
 
-
-    log.debug(context.content);
+    if (log.isDebugEnabled()){
+        log.debug(context.content);
+    }
 
     //Get the tag array
     var tags = context.content.tags || [];

@@ -34,7 +34,9 @@ describe('Logout END Point - Publisher API', function () {
         try {
             var response = post(url, {"password": password, "username": username}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data.message).not.toBe(undefined);
         }
@@ -58,7 +60,9 @@ describe('Logout END Point - Publisher API', function () {
         try {
             var response = post(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data.message).not.toBe(undefined);
             expect(response.data.data.message).toEqual('User Logged out successfully');
@@ -83,7 +87,9 @@ describe('Logout END Point - Publisher API', function () {
         try {
             var response = post(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug(e);
+            }
         } finally {
             expect(response.data.data).toBe(undefined);
             expect(response.data.error).toEqual('Unable to logout user!');

@@ -62,13 +62,16 @@ var deployment_logic = function () {
      Loads the bundle manager
      */
     Deployer.prototype.init = function () {
-        log.debug('initializing bundle manager for ' + this.config.root);
+        if(log.isDebugEnabled()){
+            log.debug('initializing bundle manager for ' + this.config.root);
+        }
 
         this.bundleManager = new bundler.BundleManager({
             path: this.config.root
         });
-
-        log.debug('finished initializing bundle manager');
+        if(log.isDebugEnabled()){
+            log.debug('finished initializing bundle manager');
+        }
 
     };
 
@@ -99,8 +102,9 @@ var deployment_logic = function () {
 
         //Check if any of the vital resources are missing
         if ((!artifactManager) || (!userManager) || (!registry)) {
-
-            log.debug('there is no artifact manager ,userManager or registry  for ' + assetType + ' that can handle deployment.');
+            if(log.isDebugEnabled()){
+                log.debug('there is no artifact manager ,userManager or registry  for ' + assetType + ' that can handle deployment.');
+            }
             return;
         }
 
@@ -147,7 +151,9 @@ var deployment_logic = function () {
 
             //Check if there is a current asset to which the operations can be performed
             if (!context.currentAsset) {
-                log.debug('there is no current asset.Aborting all other operations.');
+                if(log.isDebugEnabled()){
+                    log.debug('there is no current asset.Aborting all other operations.');
+                }
                 return;
             }
 
@@ -171,8 +177,9 @@ var deployment_logic = function () {
         /*if (this.handlers.hasOwnProperty(assetType)) {
          this.handlers[assetType](bundle, {currentPath: this.config.root + '/' + assetType + '/' + bundle.getName(), type: assetType});
          }*/
-
-        log.debug('no handler specified for deploying : ' + assetType);
+        if(log.isDebugEnabled()){
+            log.debug('no handler specified for deploying : ' + assetType);
+        }
     };
 
     /*
@@ -180,8 +187,9 @@ var deployment_logic = function () {
      */
     Deployer.prototype.autoDeploy = function () {
         var that = this;
-
-        log.debug('attempting to locate master install script.');
+        if(log.isDebugEnabled()){
+            log.debug('attempting to locate master install script.');
+        }
 
         //Break up the path x/y/z into its components x,y,and z
         var pathComponents = this.bundleManager.path.split('/');
@@ -201,24 +209,30 @@ var deployment_logic = function () {
         var masterInstallScript = getInstallScript(this.bundleManager.getRoot(), path);
 
         if (!masterInstallScript) {
-            log.debug('aborting auto deployment as the master install script was not found.This should be present as install.js in the '
-                + this.bundleManager.path);
+            if(log.isDebugEnabled()){
+                log.debug('aborting auto deployment as the master install script was not found.This should be present as install.js in the ' + this.bundleManager.path);
+            }
             return;
         }
         //Create a master script object
         this.masterScriptObject = new ScriptObject(masterInstallScript);
 
-        log.debug('starting auto deploying assets in ' + this.config.root);
+        if(log.isDebugEnabled()){
+            log.debug('starting auto deploying assets in ' + this.config.root);
+        }
 
         this.bundleManager.getRoot().each(function (asset) {
 
             //Check if the bundle is a directory
             if (!asset.isDirectory()) {
-
-                log.debug('ignoring ' + asset.getName() + ' as it is not a deployable bundle.');
+                if(log.isDebugEnabled()){
+                    log.debug('ignoring ' + asset.getName() + ' as it is not a deployable bundle.');
+                }
                 return;
             }
-            log.debug('auto deployment of ' + asset.getName());
+            if(log.isDebugEnabled()){
+                log.debug('auto deployment of ' + asset.getName());
+            }
             that.deploy(asset.getName());
         })
     }
@@ -235,13 +249,17 @@ var deployment_logic = function () {
         //Check if a configuration block exists for the
         //provided asset type
         if (!assetConfiguration) {
-            log.debug('could not deploy ' + assetType + ' as configuration information was not found.');
+            if(log.isDebugEnabled()){
+                log.debug('could not deploy ' + assetType + ' as configuration information was not found.');
+            }
             return;
         }
 
         //Check if the asset type has been ignored
         if (isIgnored(this.config, assetType)) {
-            log.debug('asset type : ' + assetType + ' is ignored.');
+            if(log.isDebugEnabled()){
+                log.debug('asset type : ' + assetType + ' is ignored.');
+            }
             return;
         }
 
@@ -252,8 +270,9 @@ var deployment_logic = function () {
         if (rootBundle) {
 
             var that = this;
-
-            log.debug('[' + assetType.toUpperCase() + '] been deployed.');
+            if(log.isDebugEnabled()){
+                log.debug('[' + assetType.toUpperCase() + '] been deployed.');
+            }
             var basePath = this.bundleManager.path;
 
             //Check if there is a root level install script specified
@@ -282,12 +301,15 @@ var deployment_logic = function () {
 
             //Deploy each bundle
             rootBundle.each(function (bundle) {
-
-                log.debug('deploying ' + assetType + ' : ' + bundle.getName());
+                if(log.isDebugEnabled()){
+                    log.debug('deploying ' + assetType + ' : ' + bundle.getName());
+                }
 
                 //Check if the bundle is a directory
                 if (!bundle.isDirectory()) {
-                    log.debug('ignoring bundle: ' + bundle.getName() + ' not a deployable target');
+                    if(log.isDebugEnabled()){
+                        log.debug('ignoring bundle: ' + bundle.getName() + ' not a deployable target');
+                    }
                     return;
                 }
 
@@ -300,11 +322,14 @@ var deployment_logic = function () {
                 //log.debug('finished deploying ' + assetType + ' : ' + bundle.getName());
 
             });
-
-            log.debug('[' + assetType.toUpperCase() + '] ending deployment');
+            if(log.isDebugEnabled()){
+                log.debug('[' + assetType.toUpperCase() + '] ending deployment');
+            }
         }
         else {
-            log.debug('could not deploy asset ' + assetType + ' since a bundle was not found.');
+            if(log.isDebugEnabled()){
+                log.debug('could not deploy asset ' + assetType + ' since a bundle was not found.');
+            }
         }
 
     };
@@ -373,7 +398,9 @@ var deployment_logic = function () {
 
         if (script) {
             scriptPath = rootLocation + '/' + bundleLocation + '/' + script.getName();
-            log.debug('script found : ' + scriptPath);
+            if(log.isDebugEnabled()){
+                log.debug('script found : ' + scriptPath);
+            }
             scriptInstance = require(scriptPath);
         }
 
@@ -402,8 +429,9 @@ var deployment_logic = function () {
         var logicObject = {};
         //Check if the module we need is present
         if (scriptInstance.hasOwnProperty(INSTALLER_MODULE_NAME)) {
-
-            log.debug('installer module found.');
+            if(log.isDebugEnabled()){
+                log.debug('installer module found.');
+            }
 
             logicObject = scriptInstance[INSTALLER_MODULE_NAME]();
 
@@ -429,7 +457,9 @@ var deployment_logic = function () {
             this.functionObject[methodName].apply(this.functionObject, arguments);
             return true;
         }
-        log.debug('unable to invoke ' + methodName);
+        if(log.isDebugEnabled()){
+            log.debug('unable to invoke ' + methodName);
+        }
         return false;
     };
 
@@ -452,7 +482,9 @@ var deployment_logic = function () {
 
             //Go through each property in the logic object
             for (var index in logicObject) {
-                log.debug('overriding ' + index);
+                if(log.isDebugEnabled()){
+                    log.debug('overriding ' + index);
+                }
 
                 //Check if the clone has the property before attempting
                 //to replace

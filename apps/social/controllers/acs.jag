@@ -81,11 +81,12 @@
                         session.put("Loged", "true");
 
                         //sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId;
+                        if (log.isDebugEnabled()){
+                            log.debug("session index :: " + sessionObj.sessionIndex);
+                            log.debug("session :: " + sessionObj.sessionId);
+                            log.debug("real session :: " + session.getId());
+                        }
 
-                        log.debug("session index :: " + sessionObj.sessionIndex);
-                        log.debug("session :: " + sessionObj.sessionId);
-
-                        log.debug("real session :: " + session.getId());
 
 
                         //sso_sessions[sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId] = sessionObj.sessionIndex;

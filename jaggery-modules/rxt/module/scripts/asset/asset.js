@@ -110,7 +110,9 @@ var asset = {};
                     log.debug("setting the field " + attrName + ' with value ' + data[attrName]);                    
                 }
             } else {
-                log.debug(attrName + ' will not be saved.');
+                if(log.isDebugEnabled()){
+                    log.debug(attrName + ' will not be saved.');
+                }
             }
         }
         return attributes;
@@ -279,6 +281,7 @@ var asset = {};
      * @param  {Object} options A JSON object of the asset instance to be updated
      */
     AssetManager.prototype.update = function(options) {
+        new Log('!!!!!!!!!!!!!!!!!!!').info(options);
         var isDefault = false;
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             isDefault = true;
@@ -289,7 +292,9 @@ var asset = {};
         this.am.update(options);
         var asset = this.am.get(options.id);
         if (!this.rxtManager.isGroupingEnabled(this.type)) {
-            log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            if(log.isDebugEnabled()){
+                log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            }
             return;
         }
         if (isDefault) {
@@ -429,12 +434,16 @@ var asset = {};
         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             //Delete the group property as it is not used in the
             //search
-            log.debug('performing a  group search');
+            if(log.isDebugEnabled()){
+                log.debug('performing a  group search');
+            }
             delete query[constants.Q_PROP_GROUP];
             query = addWildcard(query);
             return this.searchByGroup(query, paging);
         }
-        log.debug('performing a non group search');
+        if(log.isDebugEnabled()){
+            log.debug('performing a non group search');
+        }
         //query = addWildcard(query);
         try {
             assets = this.am.search(query, paging);
@@ -689,7 +698,9 @@ var asset = {};
         if ((q.hasOwnProperty(constants.Q_PROP_WILDCARD)) && (q[constants.Q_PROP_WILDCARD] === false)) {
             return;
         }
-        log.debug('[search] enabling wildcard search');
+        if(log.isDebugEnabled()){
+            log.debug('[search] enabling wildcard search');
+        }
         delete q[constants.Q_PROP_WILDCARD];
         for (var key in q) {
             q[key] = '*' + q[key] + '*';
@@ -1128,7 +1139,9 @@ var asset = {};
             });
             success = true;
         } else {
-            log.debug('The user has already subscribed to asset : ' + id + ' or the path is invalid.');
+            if(log.isDebugEnabled()){
+                log.debug('The user has already subscribed to asset : ' + id + ' or the path is invalid.');
+            }
         }
         return success;
     };
@@ -1208,7 +1221,9 @@ var asset = {};
         var items = [];
         var obj = registry.content(path);
         if (!obj) {
-            log.debug('There is no content in the subscription path ' + path);
+            if(log.isDebugEnabled()){
+                log.debug('There is no content in the subscription path ' + path);
+            }
             return items;
         }
         obj.forEach(function(path) {
@@ -1784,7 +1799,9 @@ var asset = {};
         //Deteremine if the user has specified keyword all.if so then all
         //fields can be searched
         if ((definedFields.length == 1) && (definedFields[0] == 'all')) {
-            log.debug('All of the ' + this.type + ' fields can be searched.');
+            if(log.isDebugEnabled()){
+                log.debug('All of the ' + this.type + ' fields can be searched.');
+            }
             searchFields = this.rxtManager.listRxtFields(this.type);
             return searchFields;
         }
@@ -1914,7 +1931,9 @@ var asset = {};
             }
             //Check if there is a default manager provided by an app default asset extension
             if (defaultAppExtensionMediator) {
-                log.debug('using custom default asset extension to load an asset manager');
+                if(log.isDebugEnabled()){
+                    log.debug('using custom default asset extension to load an asset manager');
+                }
                 assetResources = defaultAppExtensionMediator.manager() ? defaultAppExtensionMediator.manager()(context) : assetResources;
             }
         } else {
@@ -1970,12 +1989,16 @@ var asset = {};
                     endpoints[endpointIndex].url = otherEndpoints[index].url;
                     endpoints[endpointIndex].path = otherEndpoints[index].path;
                     found = true; //break the loop since we have already located the endpoint
-                    log.debug('Overriding existing endpoint ' + otherEndpoints[index].url);
+                    if(log.isDebugEnabled()){
+                        log.debug('Overriding existing endpoint ' + otherEndpoints[index].url);
+                    }
                 }
             }
             //Only add the endpoint if it has not already been defined
             if (!found) {
-                log.debug('Adding new endpoint ' + otherEndpoints[index].url);
+                if(log.isDebugEnabled()){
+                    log.debug('Adding new endpoint ' + otherEndpoints[index].url);
+                }
                 endpoints.push(otherEndpoints[index]);
             }
         }

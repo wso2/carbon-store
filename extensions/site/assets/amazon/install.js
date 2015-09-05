@@ -11,7 +11,9 @@ var installer=function(){
 
 
     var onCreate=function(context){
-        log.debug('on create called by amazon.');
+        if(log.isDebugEnabled()){
+            log.debug('on create called by amazon.');
+        }
     };
 
 

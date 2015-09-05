@@ -39,7 +39,9 @@ var log = new Log('exception_module');
         var constants = require('rxt').constants;
 
         if (type == constants.THROW_EXCEPTION_TO_CLIENT) {
-            log.debug(exception);
+            if (log.isDebugEnabled()) {
+                log.debug(exception);
+            }
             var e = exceptionModule.buildExceptionObject(exception, code);
             throw e;
         } else if (type == constants.LOG_AND_THROW_EXCEPTION) {
@@ -51,7 +53,9 @@ var log = new Log('exception_module');
             var e = exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             throw e;
         } else if (type == constants.LOG_EXCEPTION_AND_CONTINUE) {
-            log.debug(exception);
+            if (log.isDebugEnabled()) {
+                log.debug(exception);
+            }
         }
         else {
             log.error(exception);

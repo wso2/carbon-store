@@ -23,19 +23,24 @@ var installer = function () {
      */
 
     function onAssetTypeInitialisation(context){
-         log.debug('loading site rxt data');
+        if(log.isDebugEnabled()){
+            log.debug('loading site rxt data');
+        }
     }
 
     function onAssetInitialization(context) {
-        log.debug('reading configuration data from ' + context.bundle.getName() + ' [json].');
+        if(log.isDebugEnabled()){
+            log.debug('reading configuration data from ' + context.bundle.getName() + ' [json].');
+        }
 
         //obtain the configuration file
         var configFile = context.bundle.get({extension: 'json'}).result();
 
         //If the configuration file does not exist then stop.
         if (!configFile) {
-
-            log.debug('unable to load configuration file for ' + context.bundle.getName());
+            if(log.isDebugEnabled()){
+                log.debug('unable to load configuration file for ' + context.bundle.getName());
+            }
             context['stopProcessing'] = true;
             return;
         }
@@ -81,8 +86,10 @@ var installer = function () {
         context['path'] = '/_system/governance/' + context.assetType + '/' + artifact.attributes.overview_provider +
             '/' + artifact.attributes.overview_name + '/' + artifact.attributes.overview_version;
         context['type'] = 'site';
-        log.debug('tags located: ' + context.tags);
-        log.debug('rate located: ' + context.rate);
+        if(log.isDebugEnabled()){
+            log.debug('tags located: ' + context.tags);
+            log.debug('rate located: ' + context.rate);        }
+
     }
 
     /*
@@ -95,16 +102,21 @@ var installer = function () {
         var currentLifeCycleState = currentAsset.lifecycleState || null;
         var attempts = 0;
 
-        log.debug('attaching lifecycle to: ' + currentAsset.attributes.overview_name);
+        if(log.isDebugEnabled()){
+            log.debug('attaching lifecycle to: ' + currentAsset.attributes.overview_name);
 
-        log.debug('current lifecycle: ' + currentLifeCycleName + ' , current state: ' + currentLifeCycleState);
+            log.debug('current lifecycle: ' + currentLifeCycleName + ' , current state: ' + currentLifeCycleState);
+        }
+
 
 
         //Check if a lifecycle has been attached
         if (!currentLifeCycleName) {
+            if(log.isDebugEnabled()){
+                log.debug('before calling current asset ' + DEFAULT_LIFECYCLE);
+                log.debug(currentAsset);            }
 
-            log.debug('before calling current asset ' + DEFAULT_LIFECYCLE);
-            log.debug(currentAsset);
+
 
             //Attach the lifecycle
             artifactManager.attachLifecycle(DEFAULT_LIFECYCLE, currentAsset);
@@ -114,15 +126,19 @@ var installer = function () {
         }
         else {
             //We skip moving to the Published state.
-            log.debug('skipping promotion operations as a lifecycle has been attached');
+            if(log.isDebugEnabled()){
+                log.debug('skipping promotion operations as a lifecycle has been attached');
+            }
             return;
         }
-
-        log.debug('attempting to execute the robot path: '+stringify(pathToDesiredState));
+        if(log.isDebugEnabled()){
+            log.debug('attempting to execute the robot path: '+stringify(pathToDesiredState));
+        }
 
         executeRobotPath(pathToDesiredState,artifactManager,currentAsset);
-
-        log.debug('finished executing robot path');
+        if(log.isDebugEnabled()){
+            log.debug('finished executing robot path');
+        }
 
         //Try to reach the desired life-cycle state before the attempt limit
         /*while ((currentLifeCycleState != DESIRED_LIFECYCLE_STATE) && (attempts < PROMOTE_COUNT)) {
@@ -147,9 +163,13 @@ var installer = function () {
         for(var index in path){
             operation=path[index];
 
-            log.debug('invoking action: '+operation.action);
+            if(log.isDebugEnabled()){
+                log.debug('invoking action: '+operation.action);
+            }
             artifactManager.promoteLifecycleState(operation.action,asset);
-            log.debug('new state: '+artifactManager.getLifecycleState(asset));
+            if(log.isDebugEnabled()){
+                log.debug('new state: '+artifactManager.getLifecycleState(asset));
+            }
 
         }
     }

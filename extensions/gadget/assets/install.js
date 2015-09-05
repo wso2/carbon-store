@@ -14,14 +14,17 @@ var installer = function () {
      @context: An object containing a reference to the root of an asset
      */
     function onAssetInitialization(context) {
-
-        log.debug('loading ' + context.bundle.getName() + ' configuration data');
+        if(log.isDebugEnabled()){
+            log.debug('loading ' + context.bundle.getName() + ' configuration data');
+        }
 
         //obtain the configuration file
         var xmlConfig = context.bundle.get({extension: 'xml'}).result();
 
         if (!xmlConfig) {
-            log.debug('configuration file for ' + context.bundle.getName() + 'could not be found.');
+            if(log.isDebugEnabled()){
+                log.debug('configuration file for ' + context.bundle.getName() + 'could not be found.');
+            }
             return;
         }
 

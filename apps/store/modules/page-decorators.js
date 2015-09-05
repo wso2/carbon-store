@@ -285,7 +285,9 @@ var pageDecorators = {};
         //Supprt for cross tenant views
         ctx = resources.context;
         if ((!ctx.assetType) || (ctx.isAnonContext)) {
-            log.debug('Ignoring my assets decorator as the asset type was not present');
+            if (log.isDebugEnabled()) {
+                log.debug('Ignoring my assets decorator as the asset type was not present');
+            }
             return page;
         }
         var am = resources.am;
@@ -296,7 +298,9 @@ var pageDecorators = {};
         var app = require('rxt').app;
         var constants = require('rxt').constants;
         if (!app.isFeatureEnabled(ctx.tenantId, constants.SOCIAL_FEATURE)) {
-            log.debug('social feature has been disabled.');
+            if (log.isDebugEnabled()) {
+                log.debug('social feature has been disabled.');
+            }
             return page;
         }
         var tenantAppResources = tenantApi.createTenantAwareAppResources(ctx.session);

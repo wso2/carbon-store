@@ -25,14 +25,18 @@ securityManagementModule=function(){
 
         //Checks whether the request can be handled
         if(this.provider.isPermitted(session)){
-            log.debug('passed the security check.');
+            if(log.isDebugEnabled()){
+                log.debug('passed the security check.');
+            }
 
             this.provider.onSecurityCheckPass();
 
             passed=true;
         }
         else{
-            log.debug('failed the security check.');
+            if(log.isDebugEnabled()){
+                log.debug('failed the security check.');
+            }
 
             //Check if a user has provided a call back
             if(cb){

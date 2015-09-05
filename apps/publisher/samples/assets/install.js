@@ -27,15 +27,18 @@ var installer = function () {
      @context: An object containing a reference to the root of an asset
      */
     function onAssetInitialization(context) {
-        log.debug('reading configuration data from ' + context.bundle.getName() + ' [json].');
+        if(log.isDebugEnabled()){
+            log.debug('reading configuration data from ' + context.bundle.getName() + ' [json].');
+        }
 
         //obtain the configuration file
         var configFile = context.bundle.get({extension: 'json'}).result();
 
         //If the configuration file does not exist then stop.
         if (!configFile) {
-
-            log.debug('unable to load configuration file for ' + context.bundle.getName());
+            if(log.isDebugEnabled()){
+                log.debug('unable to load configuration file for ' + context.bundle.getName());
+            }
             context['stopProcessing'] = true;
             return;
         }
@@ -66,9 +69,11 @@ var installer = function () {
         context['rate'] = jsonConfig.rate;
         context['path'] = '/_system/governance/' + context.assetType + '/' + artifact.attributes.overview_provider +
             '/' + artifact.attributes.overview_name + '/' + artifact.attributes.overview_version;
+        if(log.isDebugEnabled()){
+            log.debug('tags located: ' + context.tags);
+            log.debug('rate located: ' + context.rate);
+        }
 
-        log.debug('tags located: ' + context.tags);
-        log.debug('rate located: ' + context.rate);
     }
 
     /*
@@ -77,8 +82,9 @@ var installer = function () {
      @context: An object containing a reference to the root of an asset
      */
     function onAssetTypeInitialisation(context) {
-        log.debug('master asset type initialization called.This should be overridden by using a installer script at the '
-            + ' root level of the asset.');
+        if(log.isDebugEnabled()){
+            log.debug('master asset type initialization called.This should be overridden by using a installer script at the ' + ' root level of the asset.');
+        }
     }
 
     /*
@@ -104,7 +110,9 @@ var installer = function () {
             //Create a new artifact manager
             var artifactManager = new carbon.registry.ArtifactManager(registry, context.assetType);
         } catch (e) {
-            log.debug('unable to create artifactManager of type: ' + context.assetType);
+            if(log.isDebugEnabled()){
+                log.debug('unable to create artifactManager of type: ' + context.assetType);
+            }
             return;
         }
 
@@ -113,8 +121,9 @@ var installer = function () {
         context['artifactManager'] = artifactManager;
         context['registry'] = registry;
         context['userManager'] = userManager;
-
-        log.debug('created artifact manager for ' + context.assetType);
+        if(log.isDebugEnabled()){
+            log.debug('created artifact manager for ' + context.assetType);
+        }
     }
 
     /*
@@ -125,7 +134,9 @@ var installer = function () {
         var userManager = context.userManager;
 
         //log.debug('anon role: '+carbon.user.anonRole);
-        log.debug('giving anon role GET rights to ' + context.path);
+        if(log.isDebugEnabled()){
+            log.debug('giving anon role GET rights to ' + context.path);
+        }
         userManager.authorizeRole(carbon.user.anonRole, context.path, carbon.registry.actions.GET);
     }
 
@@ -158,7 +169,9 @@ var installer = function () {
 
         //Check if any assets were located
         if (locatedAssets.length > 0) {
-            log.debug('asset is present');
+            if(log.isDebugEnabled()){
+                log.debug('asset is present');
+            }
             context['isExisting'] = true;
             context['currentAsset'] = locatedAssets[0];
         }
@@ -197,7 +210,9 @@ var installer = function () {
 
 
         //Add the asset
-        log.debug('about to add the asset : ' + artifact.name);
+        if(log.isDebugEnabled()){
+            log.debug('about to add the asset : ' + artifact.name);
+        }
 
 
         var assetId = artifactManager.add(artifact);
@@ -260,16 +275,21 @@ var installer = function () {
         var currentLifeCycleState = currentAsset.lifecycleState || null;
         var attempts = 0;
 
-        log.debug('attaching lifecycle to: '+currentAsset.attributes.overview_name);
+        if(log.isDebugEnabled()){
+            log.debug('attaching lifecycle to: '+currentAsset.attributes.overview_name);
+            log.debug('current lifecycle: ' + currentLifeCycleName + ' , current state: ' + currentLifeCycleState);
+        }
 
-        log.debug('current lifecycle: ' + currentLifeCycleName + ' , current state: ' + currentLifeCycleState);
 
 
         //Check if a lifecycle has been attached
         if (!currentLifeCycleName) {
 
-            log.debug('before calling current asset ' + DEFAULT_LIFECYCLE);
-            log.debug(currentAsset);
+            if(log.isDebugEnabled()){
+                log.debug('before calling current asset ' + DEFAULT_LIFECYCLE);
+                log.debug(currentAsset);
+            }
+
 
             //Attach the lifecycle
             artifactManager.attachLifecycle(DEFAULT_LIFECYCLE, currentAsset);
@@ -279,7 +299,9 @@ var installer = function () {
         }
         else {
             //We skip moving to the Published state.
-            log.debug('skipping promotion operations as a lifecycle has been attached');
+            if(log.isDebugEnabled()){
+                log.debug('skipping promotion operations as a lifecycle has been attached');
+            }
             return;
         }
 
@@ -294,10 +316,14 @@ var installer = function () {
             //Increase the attempts by one
             attempts++;
 
-            log.debug('current lifecycle state: ' + currentLifeCycleState);
+            if(log.isDebugEnabled()){
+                log.debug('current lifecycle state: ' + currentLifeCycleState);
+            }
         }
 
-        log.debug('final state of : '+currentAsset.attributes.overview_name+' '+currentLifeCycleState);
+        if(log.isDebugEnabled()){
+            log.debug('final state of : '+currentAsset.attributes.overview_name+' '+currentLifeCycleState);
+        }
     }
 
     /*
@@ -307,7 +333,9 @@ var installer = function () {
 
         var tags = context.tags;
 
-        log.debug('adding tags [' + context.tags + '] to path ' + context.path);
+        if(log.isDebugEnabled()){
+            log.debug('adding tags [' + context.tags + '] to path ' + context.path);
+        }
 
         //Go through all tags
         for (tag in tags) {
@@ -317,7 +345,9 @@ var installer = function () {
             }
         }
 
-        log.debug('finished adding tags');
+        if(log.isDebugEnabled()){
+            log.debug('finished adding tags');
+        }
     }
 
     /*
@@ -327,7 +357,9 @@ var installer = function () {
 
         var rate = context.rate;
 
-        log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+        if(log.isDebugEnabled()){
+            log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+        }
 
         if (!rate) {
             context.registry.rate(context.path, rate);

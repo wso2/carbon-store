@@ -63,8 +63,9 @@ var xml = {};
      @return: A JSON object mirroring the provided Xml object
      */
     var recursiveConvertE4XtoJSON = function (root) {
-
-        log.debug('Root: ' + root.localName());
+        if (log.isDebugEnabled()) {
+            log.debug('Root: ' + root.localName());
+        }
 
         //Obtain child nodes
         var children = root.*;
@@ -87,13 +88,15 @@ var xml = {};
             for (var childElementKey in children) {
 
                 var child = children[childElementKey];
-
-                log.debug('Examining child: ' + child.localName());
+                if (log.isDebugEnabled()) {
+                    log.debug('Examining child: ' + child.localName());
+                }
 
                 //If the child just contains a single value then stop
                 if (child.localName() == undefined) {
-
-                    log.debug('Child is undefined: ' + child.toString());
+                    if (log.isDebugEnabled()) {
+                        log.debug('Child is undefined: ' + child.toString());
+                    }
 
                     //Change the object to just a key value pair
                     rootObject[root.localName()] = child.toString();
@@ -102,25 +105,29 @@ var xml = {};
 
                 //Make a recursive call to construct the child element
                 var createdObject = recursiveConvertE4XtoJSON(child);
-
-                log.debug('Converted object: ' + stringify(createdObject));
+                if (log.isDebugEnabled()) {
+                    log.debug('Converted object: ' + stringify(createdObject));
+                }
 
                 //Check if the root object has the property
                 if (rootObject.hasOwnProperty(child.localName())) {
-
-                    log.debug('key: ' + child.localName() + ' already present.');
+                    if (log.isDebugEnabled()) {
+                        log.debug('key: ' + child.localName() + ' already present.');
+                    }
                     rootObject[child.localName()].push(createdObject);
                 }
                 else {
-
-                    log.debug('key: ' + child.localName() + ' not present.');
+                    if (log.isDebugEnabled()) {
+                        log.debug('key: ' + child.localName() + ' not present.');
+                    }
                     rootObject[child.localName()] = [];
                     rootObject[child.localName()].push(createdObject);
 
                 }
             }
-
-            log.debug('root: ' + root.localName());
+            if (log.isDebugEnabled()) {
+                log.debug('root: ' + root.localName());
+            }
 
             return rootObject;
         }

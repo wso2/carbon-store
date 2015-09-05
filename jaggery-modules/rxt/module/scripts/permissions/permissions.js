@@ -683,7 +683,9 @@ var permissions = {};
 
         //Check if the path exists
         if(!systemRegistry.exists(path)) {
-            log.debug('[permissions] Recursively creating path in order to eagerly assign actions : '+path);
+            if(log.isDebugEnabled()) {
+                log.debug('[permissions] Recursively creating path in order to eagerly assign actions : '+path);
+            }
             recursivelyCreatePath(path, systemRegistry);
         }
         obj[path] = actions;

@@ -100,7 +100,9 @@ var responseProcessor = require('utils').response;
             resourceField = resourceFields[index];
             //If the asset attribute value is null then use the old resource
             if ((!asset.attributes[resourceField]) || (asset.attributes[resourceField] == '')) {
-                log.debug('Copying old resource attribute value for ' + resourceField);
+                if (log.isDebugEnabled()) {
+                    log.debug('Copying old resource attribute value for ' + resourceField);
+                }
                 asset.attributes[resourceField] = original.attributes[resourceField];
             }
         }
@@ -116,7 +118,9 @@ var responseProcessor = require('utils').response;
             //We need to add the original values if the attribute was not present in the data object sent from the client
             //and it was not deleted by the user (the sent data has an empty value)
             if (((!asset.attributes[key]) || (asset.attributes[key].length == 0)) && (!isPresent(key, sentData))) {
-                log.debug('Copying old attribute value for ' + key);
+                if (log.isDebugEnabled()) {
+                    log.debug('Copying old attribute value for ' + key);
+                }
                 asset.attributes[key] = original.attributes[key];
             }
         }
@@ -163,8 +167,11 @@ var responseProcessor = require('utils').response;
         try {
             am.update(asset);
         } catch (e) {
-            log.debug('Failed to update the asset ' + stringify(asset));
-            log.debug(e);
+            if (log.isDebugEnabled()) {
+                log.debug('Failed to update the asset ' + stringify(asset));
+                log.debug(e);
+            }
+
             asset = null;
         }
         return asset;

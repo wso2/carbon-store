@@ -200,7 +200,11 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+
+            }
         } finally {
             deleteAssetWithID(assetId);
             logoutAuthorizedUser(header);
@@ -222,7 +226,11 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+
+            }
         } finally {
             logoutAuthorizedUser(header);
             expect(response.data).not.toBe(undefined);
@@ -243,7 +251,11 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+
+            }
         } finally {
             logoutAuthorizedUser(header);
             expect(response.data).not.toBe(undefined);
@@ -265,7 +277,11 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+
+            }
         } finally {
             deleteAssetWithID(id)
             logoutAuthorizedUser(header);
@@ -288,7 +304,11 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+
+            }
         } finally {
             deleteAssetWithID(id)
             logoutAuthorizedUser(header);
@@ -311,7 +331,10 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+            }
         } finally {
             deleteAssetWithID(id);
             logoutAuthorizedUser(header);
@@ -336,7 +359,11 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+
+            }
         } finally {
             deleteAssetWithID(id);
             logoutAuthorizedUser(header);
@@ -358,7 +385,11 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+
+            }
         } finally {
             deleteAssetWithID(id);
             logoutAuthorizedUser(header);
@@ -382,7 +413,10 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+            }
         } finally {
             logoutAuthorizedUser(header);
             for (var index = 0; index < response.data.list.length; index++) {
@@ -408,7 +442,10 @@ describe('Assets GET - Publisher API', function () {
         try {
             var response = get(url, {}, header, 'json');
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+            }
         } finally {
             logoutAuthorizedUser(header);
             expect(response.data).not.toBe(undefined);
@@ -438,7 +475,10 @@ describe('Assets GET - Publisher API', function () {
             var response = get(url, {}, header, 'json');
 
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+            }
         } finally {
             logoutAuthorizedUser(header);
             for (var i in response.data.list) {
@@ -502,7 +542,10 @@ describe('Assets DELETE - Publisher API', function () {
         try {
             var response = del(url, {}, header);
         } catch (e) {
-            log.debug(e);
+            if(log.isDebugEnabled()){
+                log.debug('adding rating : ' + context.rate + ' to path ' + context.path);
+                log.debug(e);
+            }
         } finally {
             logoutAuthorizedUser(header);
             expect(response.xhr.status).toEqual(200);

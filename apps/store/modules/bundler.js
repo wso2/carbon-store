@@ -116,11 +116,14 @@ var bundle_logic = function () {
      */
     BundleContainer.prototype.get = function (predicate) {
         var qContainer = new BundleContainer();
+        if (log.isDebugEnabled()) {
+            log.debug('get called with : ' + stringify(predicate));
+            log.debug('current bundle: ' + this.bundle.name);        }
 
-        log.debug('get called with : ' + stringify(predicate));
-        log.debug('current bundle: ' + this.bundle.name);
         if (!this.bundle) {
-            log.debug('cannot get when there is no bundle present.');
+            if (log.isDebugEnabled()) {
+                log.debug('cannot get when there is no bundle present.');
+            }
             return qContainer;
         }
 
@@ -130,7 +133,9 @@ var bundle_logic = function () {
         qContainer = new BundleContainer({
             queryBundles: bundlesFound
         });
-        log.debug('get has found: ' + bundlesFound.length);
+        if (log.isDebugEnabled()) {
+            log.debug('get has found: ' + bundlesFound.length);
+        }
         return qContainer;
     };
 
@@ -158,7 +163,9 @@ var bundle_logic = function () {
         //If the bundle container contains a reference to
         //a single bundle then iterate through the children
         if (this.bundle) {
-            log.debug('Iterating child bundles');
+            if (log.isDebugEnabled()) {
+                log.debug('Iterating child bundles');
+            }
 
             for (var index in this.bundle.children) {
                 tempBundle = new BundleContainer({
@@ -187,7 +194,9 @@ var bundle_logic = function () {
      @iterator: A function which recieves the first query bundle as a parameter
      */
     BundleContainer.prototype.first = function (iterator) {
-        log.debug('queried bundles ' + this.queryBundles.length);
+        if (log.isDebugEnabled()) {
+            log.debug('queried bundles ' + this.queryBundles.length);
+        }
         var queryBundleCount = (this.queryBundles) ? this.queryBundles.length : 0;
 
         //Check if there are any queryBundles
@@ -241,8 +250,9 @@ var bundle_logic = function () {
             });
             return bundleContainer;
         }
-
-        log.debug('A matching bundle was not found for query: ' + stringify(predicate));
+        if (log.isDebugEnabled()) {
+            log.debug('A matching bundle was not found for query: ' + stringify(predicate));
+        }
 
         return bundleContainer;
     };
@@ -258,7 +268,9 @@ var bundle_logic = function () {
 
             //Check if the current root is a match
             if (utility.isEqual(predicate, root)) {
-                log.debug('Found a match as  leaf: ' + root.name);
+                if (log.isDebugEnabled()) {
+                    log.debug('Found a match as  leaf: ' + root.name);
+                }
                 return root;
             }
 
@@ -268,7 +280,9 @@ var bundle_logic = function () {
 
             //Check if the directory will be a match
             if (utility.isEqual(predicate, root)) {
-                log.debug('Found a match as a root: ' + root.name);
+                if (log.isDebugEnabled()) {
+                    log.debug('Found a match as a root: ' + root.name);
+                }
                 return root;
             }
 
@@ -284,7 +298,9 @@ var bundle_logic = function () {
 
                 //Check if a resource was found.
                 if (foundResource) {
-                    log.debug('adding bundle: ' + foundResource.name);
+                    if (log.isDebugEnabled()) {
+                        log.debug('adding bundle: ' + foundResource.name);
+                    }
                     found.push(foundResource);
                 }
             }
@@ -307,14 +323,16 @@ var bundle_logic = function () {
                 extension: utility.fileio.getExtension(file),
                 instance: file
             });
-
-            log.debug(file.getName() + ' not a directory ');
+            if (log.isDebugEnabled()) {
+                log.debug(file.getName() + ' not a directory ');
+            }
 
             return resource;
         }
         else {
-
-            log.debug(file.getName() + ' will be a root bundle.');
+            if (log.isDebugEnabled()) {
+                log.debug(file.getName() + ' will be a root bundle.');
+            }
 
             //Create a resource of root type
             var dir = new Bundle({
@@ -325,14 +343,17 @@ var bundle_logic = function () {
 
             //Obtain the sub resources within the given directory
             var resources = file.listFiles();
-
-            log.debug('resources found: ' + resources.length);
+            if (log.isDebugEnabled()) {
+                log.debug('resources found: ' + resources.length);
+            }
 
             //Go through each file
             for (var index in resources) {
 
                 var current = recursiveBuild(resources[index], dir);
-                log.debug('adding: ' + current.name + ' as a child resource of ' + dir.name);
+                if (log.isDebugEnabled()) {
+                    log.debug('adding: ' + current.name + ' as a child resource of ' + dir.name);
+                }
 
                 dir.add(current);
             }
