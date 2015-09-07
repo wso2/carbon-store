@@ -250,7 +250,9 @@ asset.renderer = function(ctx) {
         var path = page.assets.path;
         var navList = util.navList();
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
-        if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session)) {
+        var user = require('store').server.current(session);
+        var username = user? user.username : null;
+        if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session) && permissionAPI.hasAssetPagePermission(type,'update',user.tenantId,username)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
             navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
