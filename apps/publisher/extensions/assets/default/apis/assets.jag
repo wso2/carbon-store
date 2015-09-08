@@ -116,17 +116,17 @@ require('/modules/publisher.js').exec(function (ctx) {
                     addAsset(options, req, res, session);
                 } catch (e) {
                     if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
-                        log.error("Error while creating asset for the request due to " + e.message);
 
-                        response = responseProcessor.buildErrorResponseDefault(e.code, 'error on create asset', res,
-                                        'Failed to create asset of type: ' + options.type, e.message, []);
+                        log.error(e.message, e);
+                        response = responseProcessor.buildErrorResponseDefault(e.code, 'error on create asset', res,'Failed to create asset of type: ' + options.type, e.message, []);
                         return;
                     }
-                    log.error(e.message, e);
-                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on create asset', res, 'Failed to create asset of type: ' + options.type, 'more information on create asset error', []);
                     if (log.isDebugEnabled()) {
                         log.debug("Error while creating asset for the request : " + e);
                     }
+                    log.error(e.message, e);
+                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on create asset', res, 'Failed to create asset of type: ' + options.type, 'more information on create asset error', []);
+
                 }
             } else if (uriMatcher.match(UPDATE_URL)) {//to update asset
                 contentTypeheader = req.getHeader('Content-Type') || '';
@@ -152,7 +152,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                     }
                     if (log.isDebugEnabled()) {
                         log.debug("Error while updating asset for the request : " + e);
-                        return;
                     }
                     log.error(e.message, e);
                     response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on update asset', res, 'Failed to update asset of asset: ' + options.id, 'more information on update asset error', []);
@@ -171,7 +170,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                     }
                     if (log.isDebugEnabled()) {
                         log.debug("Error while changing asset lifecycle for the request : " + e);
-                        return;
                     }
                     log.error(e.message, e);
                     response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on update asset lifecycle of asset', res, 'Failed to update asset lifecycle of asset: ' + options.id, 'more information on update asset lifecycle error', []);
@@ -207,7 +205,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                 } catch (e) {
                     if (log.isDebugEnabled()) {
                         log.debug("Error while getting assets for the request : " + e);
-                        return;
                     }
                     log.error(e.message, e);
                     response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on get assets', res, 'Failed to get assets', 'more information on get asset list error', []);
@@ -226,7 +223,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                 } catch (e) {
                     if (log.isDebugEnabled()) {
                         log.debug("Error while getting a asset for the request : " + e);
-                        return;
                     }
                     log.error(e.message, e);
                     response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.INTERNAL_SERVER_ERROR, 'error on get asset', res, 'Failed to get asset', 'more information on get asset error', []);

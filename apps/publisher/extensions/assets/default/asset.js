@@ -97,6 +97,12 @@ asset.server = function(ctx) {
             }, {
                 url: 'statistics',
                 path: 'statistics.jag'
+            },{
+                url: 'validation',
+                path: 'validate.jag'
+            },{
+                url: 'assetsanon',
+                path: 'assets.jag'
             }],
             pages: [{
                 title: 'Asset: ' + type,
@@ -164,9 +170,13 @@ asset.configure = function() {
                             name: 'name',
                             label: 'Name'
                         },
+                        validations: {
+                            //this order should be maintain
+                            client: ['ignoreSpecialCharacters','isUniqueField'],
+                            server: []
+                        },
                         readonly: true,
-                        required:true,
-                        validation: function() {}
+                        required:true
                     },
                     version: {
                         name: {
@@ -220,6 +230,16 @@ asset.configure = function() {
             permissions: {
                 configureRegistryPermissions: function(ctx) {
                 }
+            },
+            validationMappings : {
+                type : {
+                    //text : [],
+                    url : ['isValidUrl'],
+                    email : ['isValidEmail']
+                },
+                required : [],
+                updatable : [],
+                readonly : []
             }
         }
     };

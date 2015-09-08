@@ -17,6 +17,7 @@
  *
  */
 $(function(){
+    var $form_asset_create = $('#form-asset-create');
     $('#btn-create-asset').removeAttr('disabled');
     var obtainFormMeta=function(formId){
 		return $(formId).data();
@@ -30,7 +31,8 @@ $(function(){
             }
         }
     };
-    $('#form-asset-create').ajaxForm({
+    $form_asset_create.validate();
+    $form_asset_create.ajaxForm({
         beforeSubmit:function(arr){
             var createButton = $('#btn-create-asset');
             createButton.attr('disabled','disabled');

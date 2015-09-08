@@ -294,6 +294,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
+
+            var checkValidate = am.validate(asset);
             validateRequiredFeilds(options.type, asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
@@ -302,8 +304,12 @@ var result;
             am.update(asset);
         } catch (e) {
             if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
+
+                //log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
+                //return null;
                 throw e;
             }
+            throw e;
             log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
             return null;
         }
@@ -350,7 +356,7 @@ var result;
         var assetReq = req.getAllParameters('UTF-8');
 
         //TODO this code should be improve for each and every content type
-        if(req.getContentType() === "application/json"){
+        if (req.getContentType() === "application/json") {
             assetReq = processRequestBody(req, assetReq);
         }
         assetReq = validateEditableFeilds(options.type, assetReq);
@@ -387,6 +393,7 @@ var result;
             }
             try {
                 //Set any meta properties provided by the API call (e.g. _default)
+                var checkValidate = am.validate(asset);
                 setMetaProps(asset, meta);
                 result = am.update(asset);
 		//asset.result=result;
@@ -396,6 +403,9 @@ var result;
                 log.error(e);
                 if (log.isDebugEnabled()) {
                     log.debug('Failed to update the asset ' + stringify(asset));
+                }
+                if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
+                    throw e;
                 }
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             }
@@ -538,6 +548,7 @@ var result;
         paging.start = (request.getParameter("start") || paging.start);
         paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
         var q = (request.getParameter("q") || '');
+        var wildCardStatus = request.getParameter("_wildcard") || true;
         var isGroupingEnabled = false;//Grouping is disabled by default
         try {
             var assets;
@@ -557,7 +568,7 @@ var result;
                     log.debug('processed query used for searching: ' + stringify(query));
                     log.debug('grouping enabled: ' + isGroupingEnabled);
                 }
-                assets = assetManager.advanceSearch(query, paging); // asset manager back-end call with search-query
+                assets = assetManager.advanceSearch(query, paging, wildCardStatus); // asset manager back-end call with search-query
             } else {
                 //If grouping is enabled then do a group search
                 if (rxtManager.isGroupingEnabled(options.type)) {
