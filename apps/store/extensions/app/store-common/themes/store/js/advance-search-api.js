@@ -171,6 +171,7 @@ $(function(){
     };
 	$(SEARCH_BUTTON).on('click',function(e){
 		e.preventDefault();
+        doPagination = true;
         rows_added = 0;
         $('#search-results').html('');       
 		var query = buildQuery();
