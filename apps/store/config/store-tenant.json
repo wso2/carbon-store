@@ -8,7 +8,7 @@
             "keys": {
                 "socialScriptSource": "%https.host%/social/export-js/social.js",
                 "socialScriptType": "text/javascript",
-                "socialAppUrl": "%https.host%/social"
+                "socialAppUrl": "https://localhost:9443/social"
             }
         },
         "assetTypesHotDelploy": {
