@@ -132,7 +132,7 @@ var result;
             resourceField = resourceFields[index];
             //If the asset attribute value is null then use the old resource
             //            if ((!asset.attributes[resourceField]) || (asset.attributes[resourceField] == '')) {
-            if (!asset.attributes[resourceField]) {
+            if (!asset.attributes[resourceField] && original.attributes[resourceField]) {
                 if (log.isDebugEnabled()) {
                     log.debug('Copying old resource attribute value for ' + resourceField);
                 }
