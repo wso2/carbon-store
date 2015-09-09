@@ -644,7 +644,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	public int warmUpRatingCache(String targetId)
 			throws SocialActivityException {
 		PreparedStatement insertCacheWarmUpStatement;
-		Connection connection;
+		Connection connection = null;
 		String tenantDomain = SocialUtil.getTenantDomain();
 		String errorMessage = "Unable to publish the target: " + targetId
 				+ " in to the rating cache.";
@@ -669,9 +669,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			log.error(errorMessage + e.getMessage(), e);
 			throw new SocialActivityException(errorMessage, e);
 		} catch (DataSourceException e) {
-			log.error(errorMessage + e.getMessage(), e);
-			throw new SocialActivityException(errorMessage, e);
-		}
-	}
+            log.error(errorMessage + e.getMessage(), e);
+            throw new SocialActivityException(errorMessage, e);
+        }finally {
+            DSConnection.closeConnection(connection);
+        }
+    }
 
 }
