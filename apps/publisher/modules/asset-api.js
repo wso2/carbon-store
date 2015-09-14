@@ -132,7 +132,7 @@ var result;
             resourceField = resourceFields[index];
             //If the asset attribute value is null then use the old resource
             //            if ((!asset.attributes[resourceField]) || (asset.attributes[resourceField] == '')) {
-            if (!asset.attributes[resourceField]) {
+            if (!asset.attributes[resourceField] && original.attributes[resourceField]) {
                 if (log.isDebugEnabled()) {
                     log.debug('Copying old resource attribute value for ' + resourceField);
                 }
@@ -238,15 +238,15 @@ var result;
         if(provider && provider.length >1 && assetReq.hasOwnProperty('attributes')){
             assetReq.attributes[provider] = user.username;
         }
-        var fields = rxtManager.listRxtFields(type);
-        for (var key in fields) {
-                if (fields.hasOwnProperty(key)) {
-                    var field =  fields[key];
-                    if (field && field.name && field.required && field.name.fullName) {
-                        validateRequiredFeild(field.name.fullName, assetReq);
-                    }
-                }
-        }
+//        var fields = rxtManager.listRxtFields(type);
+//        for (var key in fields) {
+//                if (fields.hasOwnProperty(key)) {
+//                    var field =  fields[key];
+//                    if (field && field.name && field.required && field.name.fullName) {
+//                        validateRequiredFeild(field.name.fullName, assetReq);
+//                    }
+//                }
+//        }
     };
 
     var validateRequiredFeild = function (feildName, assetReq) {
@@ -294,8 +294,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
-            am.create(asset);
             validateRequiredFeilds(options.type, asset);
+            am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
             putInStorage(asset, am, user.tenantId); //save to the storage
