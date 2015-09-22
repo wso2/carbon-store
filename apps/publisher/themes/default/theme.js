@@ -427,7 +427,7 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     case 'text-area':
-                        out = '<td valign="top"><input type="text-area" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + '></td>';
+                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px" ' + renderFieldMetaData(field) + '>' + Handlebars.Utils.escapeExpression(value) + '</textarea></td>';
                         break;
                     case 'file':
                         out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';
