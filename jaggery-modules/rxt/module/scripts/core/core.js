@@ -109,7 +109,7 @@ var core = {};
                 //Get the first letter of the word and convert it to Uppercase
                 comps[index] = makeWordUpperCase(compsTemp[index]);
             }
-        } else {
+        } else if (comps.length == 1)  {
             comps[0] = makeWordLowerCase(compsTemp[0]);
         }
         return comps.join('');
