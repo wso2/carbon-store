@@ -85,5 +85,5 @@ var SUPER_TENANT = -1234;
 var event = require('event');
 event.emit('tenantLoad', SUPER_TENANT);
 
-setTimeout(logPublisherUrl, 7000);
+//setTimeout(logPublisherUrl, 7000);
 

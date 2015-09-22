@@ -96,7 +96,11 @@ var engine = caramel.engine('handlebars', (function() {
                         var delimter = value.indexOf(':')
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
-                        output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';
+                        if (field.url == 'true' && text && text.lastIndexOf('http', 0) === 0){
+                            output += '<tr><td>' + option + '</td><td><a href="'+text+'">' + text + '</a></td></tr>';
+                        } else {
+                            output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';
+                        }
                     }
                 }
                 return output;
@@ -145,7 +149,11 @@ var engine = caramel.engine('handlebars', (function() {
                         index = 0;
                         out += '</tr><tr>';
                     }
-                    out += '<td>' + (fields[key].value || ' ') + '</td>';
+                    if (fields[key].url == 'true' && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
+                        out += '<td><a href="'+fields[key].value+'">' + (fields[key].value || ' ') + '</a></td>';
+                    } else {
+                        out += '<td>' + (fields[key].value || ' ') + '</td>';
+                    }
                     index++;
                 }
                 return out;
@@ -427,7 +435,7 @@ var engine = caramel.engine('handlebars', (function() {
                         out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';
                         break;
                     case 'text-area':
-                        out = '<td valign="top"><input type="text-area" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + '></td>';
+                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px" ' + renderFieldMetaData(field) + '>' + Handlebars.Utils.escapeExpression(value) + '</textarea></td>';
                         break;
                     case 'file':
                         out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';

@@ -88,8 +88,18 @@ var core = {};
         }
         return word;
     };
+    var makeWordLowerCase = function(word) {
+        if (word == word.toUpperCase()){
+            return word.toLowerCase();
+        }
+        if (word.length > 1) {
+            return word[0].toLowerCase() + word.substring(1);
+        }
+        return word;
+    };
     var createCamelCaseName = function(fieldName) {
         var comps = fieldName.split(' ');
+        var compsTemp = fieldName.split(' ');
         for (var index in comps) {
             comps[index] = comps[index].toLowerCase();
         }
@@ -97,8 +107,10 @@ var core = {};
         if (comps.length > 1) {
             for (var index = 1; index < comps.length; index++) {
                 //Get the first letter of the word and convert it to Uppercase
-                comps[index] = makeWordUpperCase(comps[index]);
+                comps[index] = makeWordUpperCase(compsTemp[index]);
             }
+        } else if (comps.length == 1)  {
+            comps[0] = makeWordLowerCase(compsTemp[0]);
         }
         return comps.join('');
     };

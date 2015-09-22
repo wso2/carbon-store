@@ -413,6 +413,7 @@ var responseProcessor = require('utils').response;
             log.error(e);
         }
         ratingApi.addRatings(result);
+        response.characterEncoding = 'ISO-8859-1';
         return result;  
     };
     var replaceCategoryQuery = function(q, rxtManager, type) {
