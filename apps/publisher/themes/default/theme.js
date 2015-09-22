@@ -485,7 +485,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var label = renderFieldLabel(field);
                 return new Handlebars.SafeString(label + renderField(field, options));
             });
-            Handlebars.registerHelper('renderEditableHeadingTableRow', function(table) {
+            Handlebars.registerHelper('renderEditableUnboundTableRow', function(table) {
                 var field = getFirstField(table);
                 var fieldValue = '';
                 if(field.values && typeof field.values === "object"){
@@ -511,7 +511,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
             });
             //If there is no rows then a single empty row with the fields should be rendererd
-            Handlebars.registerHelper('renderEditableUnboundTableRow', function(table) {
+            /*Handlebars.registerHelper('renderEditableUnboundTableRow', function(table) {
                 //Get the number of rows in the table
 
                 var fields = table.fields;
@@ -526,7 +526,7 @@ var engine = caramel.engine('handlebars', (function() {
 
                 return new Handlebars.SafeString(out);
 
-            });
+            });*/
             Handlebars.registerHelper('renderEditableUnboundTable', function(table) {
                 //Get the number of rows in the table
                 var rowCount = getNumOfRowsUnbound(table);
@@ -565,17 +565,15 @@ var engine = caramel.engine('handlebars', (function() {
                 var headingPtr = Handlebars.compile('{{> editable_heading_table .}}');
                 var defaultPtr = Handlebars.compile('{{> editable_default_table .}}');
                 var unboundPtr = Handlebars.compile('{{> editable_unbound_table .}}');
-                var headings = getHeadings(table);
+                if(table.subheading && table.subheading.length > 0){
+                    table.subheading = table.subheading[0].heading;
+                }
                 //Check if the table is unbounded
-                if ((table.maxoccurs) && (table.maxoccurs == 'unbounded')) {
-                    if (headings.length > 0) {
-                        table.subheading = table.subheading[0].heading;
-                    }
+                if ( table.fields.asset && table.fields.asset.maxoccurs && (table.fields.asset.maxoccurs == 'unbounded' )) {
                     return new Handlebars.SafeString(unboundPtr(table));
                 }
                 //Check if the table has headings
-                if (headings.length > 0) {
-                    table.subheading = table.subheading[0].heading;
+                if (table.subheading && table.subheading.length > 0) {
                     return new Handlebars.SafeString(headingPtr(table));
                 }
                 //Check if the table is a normal table

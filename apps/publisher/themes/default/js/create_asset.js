@@ -92,7 +92,7 @@ $(function(){
         var newRow = referenceRow.clone().removeAttr('id');
         $('input[type="text"]', newRow).val('');
         table.show().append(newRow);
-
+        table.find('thead').show();
         $('input[type="text"]',newRow).each(initDatePicker);
 
     });
