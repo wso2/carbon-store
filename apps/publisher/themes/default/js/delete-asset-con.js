@@ -21,6 +21,7 @@ $(document).ready(function() {
     $('#btn-delete-con').on('click', function(e) {
         var assetId = $('#asset-id').val();
         var assetType = $('#asset-type').val();
+        var asset_Name = $('#asset-name').val();
         var path = caramel.url('/apis/assets/' + assetId + '?type=' + assetType);
         var landingPage = $('#landing-page').val();
         var landingPageUrl = caramel.url(landingPage);
@@ -31,10 +32,11 @@ $(document).ready(function() {
             url : path,
             type : 'DELETE',
             success : function(response) {
-                $('.alert-success').html('Asset deleted successfully! <a href="'+landingPageUrl+'"> Home </a>');
+                $('.alert-success').html(asset_Name + ' deleted successfully! <a href="'+landingPageUrl+'"> Home </a>');
                 $('.alert-success').removeClass('hide');
-                $('#btn-delete-con').addClass('disabled');
+                $('#btn-delete-con').addClass('hide ');
                 $('#delete-loading').addClass('hide');
+                $('#delete-msg').addClass('hide');
             },
             error : function() {
                 $('.alert-success').text('Error while deleting asset!');
