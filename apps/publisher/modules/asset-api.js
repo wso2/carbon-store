@@ -636,7 +636,6 @@ var result;
                 log.debug("Error while searching assets as for the request : " + req.getQueryString());
             }
         }
-        response.characterEncoding = 'ISO-8859-1';
         return result;
     };
     var replaceCategoryQuery = function (q, rxtManager, type) {

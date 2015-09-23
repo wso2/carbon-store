@@ -1063,7 +1063,6 @@ var asset = {};
         } catch(e){
             log.error('Unable to retrieve the tags of the provided asset ',e);
         }
-	response.characterEncoding = 'ISO-8859-1';
         return tags;
     };
     /**
