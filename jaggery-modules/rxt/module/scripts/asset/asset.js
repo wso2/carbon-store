@@ -88,7 +88,6 @@ var asset = {};
         return result;
     };
     var setField = function(field, attrName, data, attributes, table) {
-        log.info(field.type);
         if (field.type == 'option-text') {
             var optionsSet = [];
             var textSet = [];
