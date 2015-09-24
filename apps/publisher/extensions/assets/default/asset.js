@@ -239,7 +239,7 @@ asset.renderer = function(ctx) {
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
-            navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
+            navList.push('Add ', 'btn-add-new', util.buildUrl('create'));
             navList.push('Statistics', 'btn-stats', '/assets/' + type + '/statistics');
         }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
