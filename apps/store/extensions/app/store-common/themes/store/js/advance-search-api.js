@@ -89,6 +89,14 @@ $(function(){
                         $('.loading-animation-big').remove();
                         doPagination = false;
                 } else {
+                    for (var index in results) {
+                        var asset = results[index];
+                        //Doing this because when there are no value specified in column such as thumbnail column it return string "null"
+                        // value which need be explicitly set to null
+                        if(asset.thumbnail == 'null') {
+                            asset.thumbnail = null;
+                        }
+                    }
                     results = {assets:results,showType:true};
                     loadPartials('assets', function(partials) {
                         caramel.partials(partials, function () {

@@ -45,6 +45,20 @@ var asset = {};
         var value = attributes[expression];
         return value;
     };
+    var resolveValues = function (id, path, className, registry) {
+        var dataListObject = {};
+        try {
+            var returnedValues = Packages.java.lang.Class.forName(className).newInstance().getList(id, path, registry.registry);
+            var dataListObject = {};
+            dataListObject.value = [];
+            for (var index in returnedValues) {
+                dataListObject.value.push({value: returnedValues[index]});
+            }
+        } catch (e) {
+            log.error('Unable to populate values from given class : ' + className);
+        }
+        return dataListObject;
+    };
     var resolveField = function(attributes, tableName, fieldName, field, table) {
         var value;
         var ref = require('utils').reflection;
@@ -1582,6 +1596,10 @@ var asset = {};
                 //If the field exists then update the value
                 if (attrFieldValue) {
                     fields[fieldName].value = attrFieldValue;
+                }
+                if (field.type == 'options' && field.values[0].class) {
+                    var values = resolveValues(asset.id, asset.path, field.values[0].class, this.registry);
+                    field.values[0] = values;
                 }
             }
         }

@@ -51,18 +51,11 @@ store.infiniteScroll.addItemsToPage = function () {
     row_current = row_current + 3; // We increase the row current by 2 since we need to provide one additional row to scroll down without loading it from backend
     var from = 0;
     var to = 0;
-    var assetsAddedFromBackEnd = $('.ctrl-wr-asset').length;
     //debugger;
     if (row_current > rows_added && doPagination) {
-        if(assetsAddedFromBackEnd == parseInt(store.publisher.itemsPerPage)){
-            from = parseInt(store.publisher.itemsPerPage);
-            to = from + row_current*items_per_row;
-        }else if (assetsAddedFromBackEnd < parseInt(store.publisher.itemsPerPage)){ //no need of paging
-            return;
-        }else{
-            from = rows_added * items_per_row;
-            to = row_current*items_per_row;
-        }
+        from = rows_added * items_per_row;
+        to = row_current*items_per_row;
+
         last_to = to; //We store this os we can recalculate rows_added when resolution change
         rows_added = row_current;
         //console.info("from = " + from + " count = " + (to - from) + " row_current = ", row_current + " screen_height = " + screen_height + " scroll_pos = " + scroll_pos + " thumb_height = " + thumb_height);
@@ -145,7 +138,7 @@ store.infiniteScroll.getItems = function (from, to) {
  * This method binds scroll and resize events to addItemsToPage callback
  */
 store.infiniteScroll.showAll = function () {
-    //$('.assets-container section').empty();
+    $('#list_assets_content').empty();
     store.infiniteScroll.addItemsToPage();
     $(window).scroll(function () {
         store.infiniteScroll.addItemsToPage();

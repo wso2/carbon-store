@@ -96,7 +96,11 @@ var engine = caramel.engine('handlebars', (function() {
                         var delimter = value.indexOf(':')
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
-                        output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';
+                        if (field.url == 'true' && text && text.lastIndexOf('http', 0) === 0){
+                            output += '<tr><td>' + option + '</td><td><a href="'+text+'">' + text + '</a></td></tr>';
+                        } else {
+                            output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';
+                        }
                     }
                 }
                 return output;
@@ -145,7 +149,11 @@ var engine = caramel.engine('handlebars', (function() {
                         index = 0;
                         out += '</tr><tr>';
                     }
-                    out += '<td>' + (fields[key].value || ' ') + '</td>';
+                    if (fields[key].url == 'true' && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
+                        out += '<td><a href="'+fields[key].value+'">' + (fields[key].value || ' ') + '</a></td>';
+                    } else {
+                        out += '<td>' + (fields[key].value || ' ') + '</td>';
+                    }
                     index++;
                 }
                 return out;
@@ -310,90 +318,40 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return output;
             };
-            var renderFileField = function(field, value) {
-                var out = '<td><input type="hidden" name="old_' + field.name.tableQualifiedName + '" value="' + Handlebars.Utils.escapeExpression(value) + '" >';
-                out += '<input type="file" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field) + '></td>';
-                return out;
-            };
-            var renderField = function(field, options) {
-                var out = '';
-                var value = field.value || '';
-                switch (field.type) {
-                    case 'options':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">' + renderOptions(field.value, field.values[0].value, field) + '</div>';
-                        break;
-                    case 'text':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" class="form-control"  value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field, null, options) + ' class="span8" ></div>';
-                        break;
-                    case 'text-area':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, options) + ' class="width-full">' + Handlebars.Utils.escapeExpression(value) + '</textarea></div>';
-                        break;
-                    case 'file':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="file"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
-                        break;
-                    case 'date':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
-                        break;
-                    case 'checkbox':
-                        var checkboxString = "";
-                        if(options.hash.mode == "edit"){
-                            if(value == "on"){
-                                checkboxString = 'checked="checked"';
-                            }else{
-                                checkboxString = '';
-                            }
-                        }else{
-                            value="on";
-                        }
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="checkbox" ' + renderFieldMetaData(field, null, options) + ' '+checkboxString+' ></div>';
-                        break;
-                    case 'password':
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12"><input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, options) + ' ></div>';
-                        break;
-                    case 'option-text':
-                        if(field.maxoccurs && field.maxoccurs == "unbounded"){
-                            out = '<div class="col-lg-2 col-md-2 col-sm-12 col-xs-12" style="padding:0">&nbsp;</div>' +
-                                  '<div style="border:0px solid #ff0000; padding:0" class="col-lg-10 col-md-10 col-sm-12 col-xs-12">'+
-//                                      '<div class="add-unbounded-row"><a class="js-add-unbounded-row" data-name="'+field.name.name+'"><i class="fa fa-plus-circle"></i> Add '+field.name.name+'</a></div>' +
-                                      '<table class="tablex cu-data-table js-unbounded-table" id="table_'+field.name.name+'">'+
-                                      '<thead><tr style="display: none"><th></th><th></th><th></th></tr></thead>'+
-                                      '<tbody>'+
-                                       renderOptionsTextField(field)+
-                                      '</tbody>'+
-                                      '</table>'+
-                                  '</div>';
 
-                            /*out+= '<table style="display: none;" class="tmp_refernceTableForOptionText">'+
-                                    renderOptionsTextField({name:field.name,values:field.values,label:field.label})+
-                                  '</table>';*/
-                        }
-
-                        break;
-                    default:
-                        out = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">Normal Field' + field.type + '</div>';
-                        break;
-                }
-                return out;
-            };
             var renderTableField = function(field,mode) {
                 var out = '';
-                var value = field.value || '';
+                var value = field.valueActive || field.value || '';
+                var elementPrefix;
+                var elementSuffix;
+                if(field.renderInTable){
+                    elementPrefix = '<td valign="top">';
+                    elementSuffix = '</td>';
+                } else {
+                    elementPrefix = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">';
+                    elementSuffix = '</div>';
+                }
 
                 switch (field.type) {
                     case 'options':
-                        out = '<td valign="top">' + renderOptions(field.value, field.values[0].value, field) + '</td>';
+                        out = elementPrefix + renderOptions(field.value, field.values[0].value, field) + elementSuffix;
+                        break;
+                    case 'option-text':
+                        var values = value.split(":");
+                        out = elementPrefix + renderOptions(values[0], field.values[0].value, field) + elementSuffix;
+                        out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(values[1]) + '"' + renderFieldMetaData(field) + ' >' + elementSuffix;
                         break;
                     case 'text':
-                        out = '<td valign="top"><input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field) + ' class="span8" ></td>';
+                        out = elementPrefix + '<input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field) + ' >' + elementSuffix;
                         break;
                     case 'text-area':
-                        out = '<td valign="top"><textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + ' class="span8">' + Handlebars.Utils.escapeExpression(value) + '</textarea></td>';
+                        out = elementPrefix + '<textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + '>' + Handlebars.Utils.escapeExpression(value) + '</textarea>' + elementSuffix;
                         break;
                     case 'file':
-                        out = '<td valign="top"><input type="file" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field) + ' ></td>';
+                        out = elementPrefix + '<input type="file" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field) + ' >' + elementSuffix;
                         break;
                     case 'date':
-                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        out = elementPrefix + '<input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' >' + elementSuffix;
                         break;
                     case 'checkbox':
                         var checkboxString = "";
@@ -406,57 +364,18 @@ var engine = caramel.engine('handlebars', (function() {
                         }else{
                             value="on";
                         }
-                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' ></td>';
+                        out = elementPrefix + '<input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' >' + elementSuffix;
                         break;
                     case 'password':
-                        out = '<td valign="top"><input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
+                        out = elementPrefix + '<input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' >' + elementSuffix;
                         break;
                     default:
-                        out = '<td valign="top">Normal Field' + field.type + '</td>';
+                        out = elementPrefix + 'Normal Field' + field.type + elementSuffix;
                         break;
                 }
                 return out;
             };
-            var renderFieldValue = function(field, value, mode) {
-                var out = '';
-                switch (field.type) {
-                    case 'options':
-                        out = '<td valign="top">' + renderOptions(value, field.values[0].value, field) + '</td>';
-                        break;
-                    case 'text':
-                        out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';
-                        break;
-                    case 'text-area':
-                        out = '<td valign="top"><input type="text-area" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + '></td>';
-                        break;
-                    case 'file':
-                        out = '<td valign="top"><input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"' + renderFieldMetaData(field) + ' ></td>';
-                        break;
-                    case 'date':
-                        out = '<td valign="top"><input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
-                        break;
-                    case 'checkbox':
-                        var checkboxString = "";
-                        if(mode == "edit"){
-                            if(value == "on"){
-                                checkboxString = 'checked="checked"';
-                            }else{
-                                checkboxString = '';
-                            }
-                        }else{
-                            value="on";
-                        }
-                        out = '<td valign="top"><input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' ></td>';
-                        break;
-                    case 'password':
-                        out = '<td valign="top"><input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ></td>';
-                        break;
-                    default:
-                        out = '<td valign="top">Normal Field' + field.type + '</td>';
-                        break;
-                }
-                return out;
-            };
+
             var renderEditableHeadingField = function(table) {
                 var fields = table.fields;
                 var columns = table.columns;
@@ -467,6 +386,7 @@ var engine = caramel.engine('handlebars', (function() {
                         index = 0;
                         out += '</tr><tr>';
                     }
+                    fields[key].renderInTable = true;
                     out += renderTableField(fields[key]);
                     index++;
                 }
@@ -477,15 +397,16 @@ var engine = caramel.engine('handlebars', (function() {
                 var field;
                 for (var key in fields) {
                     field = fields[key];
-                    out += renderField(field);
+                    out += renderTableField(field,'edit');
                 }
                 return new Handlebars.SafeString(out);
             });
-            Handlebars.registerHelper('renderEditableField', function(field, options) {
+            Handlebars.registerHelper('renderEditableField', function(field, mode) {
                 var label = renderFieldLabel(field);
-                return new Handlebars.SafeString(label + renderField(field, options));
+                field.renderInTable = false;
+                return new Handlebars.SafeString(label + renderTableField(field, mode));
             });
-            Handlebars.registerHelper('renderEditableHeadingTableRow', function(table) {
+            Handlebars.registerHelper('renderEditableUnboundTableRow_optionText', function(table) {
                 var field = getFirstField(table);
                 var fieldValue = '';
                 if(field.values && typeof field.values === "object"){
@@ -500,15 +421,7 @@ var engine = caramel.engine('handlebars', (function() {
                 return new Handlebars.SafeString(output);
             });
             Handlebars.registerHelper('renderEditableHeadingTable', function(table) {
-                var fieldCount = getFieldCount(table);
-                var firstField = getFirstField(table);
-
-                //Determine if there is only one field and it is an option text
-                if ((fieldCount == 1) && (firstField.type == 'option-text')) {
-                    return new Handlebars.SafeString(renderOptionsTextField(firstField));
-                } else {
-                    return new Handlebars.SafeString(renderEditableHeadingField(table));
-                }
+                return new Handlebars.SafeString(renderEditableHeadingField(table));
             });
             //If there is no rows then a single empty row with the fields should be rendererd
             Handlebars.registerHelper('renderEditableUnboundTableRow', function(table) {
@@ -519,6 +432,7 @@ var engine = caramel.engine('handlebars', (function() {
                 out += '<tr id="table_reference_'+table.name+'">';
                 for (var key in fields) {
                     fields[key].value = "";
+                    fields[key].renderInTable = true;
                     out += renderTableField(fields[key]);
                 }
                 out += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
@@ -527,7 +441,7 @@ var engine = caramel.engine('handlebars', (function() {
                 return new Handlebars.SafeString(out);
 
             });
-            Handlebars.registerHelper('renderEditableUnboundTable', function(table) {
+            Handlebars.registerHelper('renderEditableUnboundTable', function(table, renderType) {
                 //Get the number of rows in the table
                 var rowCount = getNumOfRowsUnbound(table);
                 var fields = table.fields;
@@ -535,29 +449,25 @@ var engine = caramel.engine('handlebars', (function() {
                 var mode=table.mode;
                 var ref = require('utils').reflection;
                 //If there is no rows then a single empty row with the fields should be rendererd
-                if (rowCount == 0) {
+
+                //Go through each row
+                for (var index = 0; index < rowCount; index++) {
                     out += '<tr>';
                     for (var key in fields) {
-                        out += renderField(fields[key]);
-                    }
-                    out += '</tr>';
-                } else {
-                    //Go through each row 
-                    for (var index = 0; index < rowCount; index++) {
-                        out += '<tr>';
-                        for (var key in fields) {
-                            //Determine if the value is an array
-                            if (!ref.isArray(fields[key].value)) {
-                                fields[key].value = [fields[key].value];
-                            }
-                            var value = fields[key].value[index] ? fields[key].value[index] : ' ';
-                            var field = fields[key];
-                            out += renderFieldValue(field, value, mode);
+                        //Determine if the value is an array
+                        if (!ref.isArray(fields[key].value)) {
+                            fields[key].value = [fields[key].value];
                         }
-                        out += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
-                        out += '</tr>';
+                        var value = fields[key].value[index] ? fields[key].value[index] : ' ';
+                        var field = fields[key];
+                        field.renderInTable = true;
+                        field.valueActive = value;
+                        out += renderTableField(field, mode);
                     }
+                    out += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
+                    out += '</tr>';
                 }
+
                 return new Handlebars.SafeString(out);
             });
             Handlebars.registerHelper('renderTable', function(table, options) {
@@ -565,17 +475,36 @@ var engine = caramel.engine('handlebars', (function() {
                 var headingPtr = Handlebars.compile('{{> editable_heading_table .}}');
                 var defaultPtr = Handlebars.compile('{{> editable_default_table .}}');
                 var unboundPtr = Handlebars.compile('{{> editable_unbound_table .}}');
-                var headings = getHeadings(table);
-                //Check if the table is unbounded
-                if ((table.maxoccurs) && (table.maxoccurs == 'unbounded')) {
-                    if (headings.length > 0) {
-                        table.subheading = table.subheading[0].heading;
+                if(table.subheading && table.subheading.length > 0){
+                    table.subheading = table.subheading[0].heading;
+                }
+                //Check if the table is option-text unbounded
+                var unboundedOptionText = false;
+                var withValues = false;
+                for(var index in table.fields){
+                    if(table.fields.hasOwnProperty(index)){
+                        var field = table.fields[index];
+                        if(field.maxoccurs && field.maxoccurs == "unbounded"){
+                            unboundedOptionText = true;
+                        }
+                        if(field.value){
+                            withValues = true;
+                        }
                     }
+                }
+                table.withValues = withValues;
+
+                if ( unboundedOptionText) {
+                    table.optionText = true;
+                    return new Handlebars.SafeString(unboundPtr(table));
+                }
+                //Check if the table is unbounded
+                if ( table.maxoccurs && (table.maxoccurs == 'unbounded' )) {
+                    table.optionText = false;
                     return new Handlebars.SafeString(unboundPtr(table));
                 }
                 //Check if the table has headings
-                if (headings.length > 0) {
-                    table.subheading = table.subheading[0].heading;
+                if (table.subheading && table.subheading.length > 0) {
                     return new Handlebars.SafeString(headingPtr(table));
                 }
                 //Check if the table is a normal table

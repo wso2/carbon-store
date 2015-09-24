@@ -184,7 +184,7 @@ require('/modules/publisher.js').exec(function (ctx) {
             options.type = req.getParameter('type');
             if (uriMatcher.match(LIST_ASSETS_URL)) {//return assets by type
                 //it always return */* when Accept header is not defined
-                acceptHeader = req.getHeader('Accept');
+                acceptHeader = req.getHeader('Accept') || '*/*';
                 jsonHeaderAccept = acceptHeader.indexOf('application/json');
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader === '*/*') {
@@ -215,7 +215,7 @@ require('/modules/publisher.js').exec(function (ctx) {
             } else if (uriMatcher.match(GET_ASSET_URL)) {//return asset by id
                 options.id = uriMatcher.elements().id;
                 //it always return */* when Accept header is not defined
-                acceptHeader = req.getHeader('Accept');
+                acceptHeader = req.getHeader('Accept') || '*/*';
                 jsonHeaderAccept = acceptHeader.indexOf('application/json');
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader === '*/*') {
@@ -235,7 +235,7 @@ require('/modules/publisher.js').exec(function (ctx) {
             } else if (uriMatcher.match(ASSET_STATE_URL)) {//return asset state by id
                 try {
                     options.id = uriMatcher.elements().id;
-                    acceptHeader = req.getHeader('Accept');
+                    acceptHeader = req.getHeader('Accept') || '*/*';
                     jsonHeaderAccept = acceptHeader.indexOf('application/json');
                     if (jsonHeaderAccept >= 0 || acceptHeader === '*/*') {
                         getAssetState(options, req, res, session);
