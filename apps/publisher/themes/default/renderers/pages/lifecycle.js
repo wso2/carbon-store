@@ -17,9 +17,8 @@
  *
  */
 var render = function(theme, data, meta, require) {
-
     theme('single-col-fluid', {
-        title: 'Asset',
+        title: 'Life cycle',
         header: [{
             partial: 'header',
             context: data
