@@ -36,14 +36,11 @@ $(document).ready(function () {
             for (var index in deletableStates) {
                 if (deletableStates[index].toLowerCase() == astState) {
                     enableDelete();
-                    continue;
-                } else {
-                    disableDelete("Asset is not in a delatable State");
+                    return;
                 }
             }
-        } else {
-            disableDelete("Asset is not in a delatable State");
         }
+		disableDelete("Asset is not in a delatable State");
     } else {
         disableDelete("Asset delete configurations are not provided");
     }
