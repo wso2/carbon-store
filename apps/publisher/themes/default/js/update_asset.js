@@ -75,11 +75,12 @@ $(function() {
     $('.js-add-unbounded-row').click(function(){
         var tableName = $(this).attr('data-name');
         var table = $('#table_'+tableName);
+        table.find('thead').show();
         var referenceRow = $('#table_reference_'+tableName);
         var newRow = referenceRow.clone().removeAttr('id');
         $('input[type="text"]', newRow).val('');
         table.show().append(newRow);
-
+        table.find('thead').show();
         $('input[type="text"]',newRow).each(initDatePicker);
 
     });

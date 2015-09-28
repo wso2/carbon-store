@@ -103,7 +103,7 @@ var logStoreUrl = function() {
 	log.info("Store URL : " + configs.server.http + caramel.configs().context);
 };
 
-setTimeout(logStoreUrl, 7000);
+//setTimeout(logStoreUrl, 7000);
 
 
 

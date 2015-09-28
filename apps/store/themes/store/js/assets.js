@@ -50,17 +50,9 @@ store.infiniteScroll.addItemsToPage = function(){
 
     var from = 0;
     var to = 0;
-    var assetsAddedFromBackEnd = $('.ctrl-wr-asset').length;
     if(row_current > rows_added && doPagination){
-        if(assetsAddedFromBackEnd == store.asset.paging.size){
-            from = store.asset.paging.size;
-            to = from + row_current*items_per_row;
-        }else if (assetsAddedFromBackEnd < store.asset.paging.size){ //no need of paging
-            return;
-        }else{
-            from = rows_added * items_per_row;
-            to = row_current*items_per_row;
-        }
+        from = rows_added * items_per_row;
+        to = row_current*items_per_row;
         last_to = to; //We store this os we can recalculate rows_added when resolution change
         rows_added = row_current;
 
@@ -107,7 +99,6 @@ store.infiniteScroll.getItems = function(from,to){
 
 };
 store.infiniteScroll.showAll = function(){
-    //$('.assets-container section').empty();
     store.infiniteScroll.addItemsToPage();
     $(window).scroll(function(){
         store.infiniteScroll.addItemsToPage();
@@ -162,7 +153,8 @@ $(function() {
     /*
     * Pagination for listing page
     * */
-    store.infiniteScroll.showAll();
+     $('.assets-container section').empty();
+     store.infiniteScroll.showAll();
 	caramel.loaded('js', 'assets');
 	caramel.loaded('js', 'sort-assets');
 });
