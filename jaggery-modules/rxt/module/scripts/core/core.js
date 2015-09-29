@@ -36,6 +36,7 @@ var core = {};
     var DEF_APP_EXTENSION_MEDIATOR = 'default.app.extension';
     var EMPTY = '';
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    var Character = Packages.java.lang.Character;
     var DEFAULT_TENANT = -1234;
     var utils = require('utils');
     var log = new Log('rxt.core');
@@ -88,15 +89,17 @@ var core = {};
         }
         return word;
     };
-    var makeWordLowerCase = function(word) {
-        if (word == word.toUpperCase()){
-            return word.toLowerCase();
+
+    var makeWordLowerCase = function (word) {
+        for (var i = 0; i < word.length; i++) {
+            var c = word[i];
+            if (!Character.isLetter(c) || Character.isLowerCase(c)) {
+                break;
+            }
         }
-        if (word.length > 1) {
-            return word[0].toLowerCase() + word.substring(1);
-        }
-        return word;
+        return word.substring(0, i).toLowerCase() + word.substring(i);
     };
+
     var createCamelCaseName = function(fieldName) {
         var comps = fieldName.split(' ');
         var compsTemp = fieldName.split(' ');
