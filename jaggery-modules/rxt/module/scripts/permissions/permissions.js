@@ -617,9 +617,6 @@ var permissions = {};
         var isAuthorized = false; //Assume authorization will fail
         var context;
         var result;
-        if (!username) {
-            throw 'Unable to resolve permissions without a username';
-        }
         if (!tenantId) {
             throw 'Unable to resolve permissions without a tenantId';
         }
