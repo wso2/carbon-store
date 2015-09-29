@@ -91,13 +91,16 @@ var core = {};
     };
 
     var makeWordLowerCase = function (word) {
-        for (var i = 0; i < word.length; i++) {
-            var c = word[i];
-            if (!Character.isLetter(c) || Character.isLowerCase(c)) {
-                break;
+        if (word) {
+            for (var i = 0; i < word.length; i++) {
+                var c = word[i];
+                if (!Character.isLetter(c) || Character.isLowerCase(c)) {
+                    break;
+                }
             }
+            return word.substring(0, i).toLowerCase() + word.substring(i);
         }
-        return word.substring(0, i).toLowerCase() + word.substring(i);
+        return word;
     };
 
     var createCamelCaseName = function(fieldName) {
