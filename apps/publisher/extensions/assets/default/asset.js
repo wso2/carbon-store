@@ -160,18 +160,11 @@ asset.configure = function() {
                         auto: true
                     },
                     name: {
-                        name: {
-                            name: 'name',
-                            label: 'Name'
-                        },
                         readonly: true,
                         required:true,
                         validation: function() {}
                     },
                     version: {
-                        name: {
-                            label: 'Version'
-                        },
                         readonly: true,
                         required:true
                     },

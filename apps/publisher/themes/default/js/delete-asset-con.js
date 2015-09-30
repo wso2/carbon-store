@@ -35,6 +35,7 @@ $(document).ready(function() {
                 $('.alert-success').html(asset_Name + ' deleted successfully! <a href="'+landingPageUrl+'"> Home </a>');
                 $('.alert-success').removeClass('hide');
                 $('#btn-delete-con').addClass('hide ');
+                $('#btn-cancel-con').addClass('hide ');
                 $('#delete-loading').addClass('hide');
                 $('#delete-msg').addClass('hide');
             },
@@ -44,6 +45,18 @@ $(document).ready(function() {
                 $('#delete-loading').removeClass('hide');
                 $('#delete-loading').addClass('hide');
 
+            }
+        });
+    });
+
+    $('#btn-cancel-con').on('click', function(e) {
+        var assetId = $('#asset-id').val();
+        var assetType = $('#asset-type').val();
+        var path = caramel.url('/assets/'+assetType + '/details/' + assetId);
+
+        $.ajax({
+            success : function(response) {
+                window.location = path;
             }
         });
     });
