@@ -242,7 +242,7 @@ var result;
         for (var key in fields) {
                 if (fields.hasOwnProperty(key)) {
                     var field =  fields[key];
-                    if (field && field.name && field.required && field.name.fullName) {
+                    if (field && field.name && field.required == "true" && field.name.fullName) {
                         validateRequiredFeild(field.name.fullName, assetReq);
                     }
                     if (field && field.name && field.validate && field.name.fullName) {
