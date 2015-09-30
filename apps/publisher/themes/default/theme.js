@@ -285,39 +285,6 @@ var engine = caramel.engine('handlebars', (function() {
                 out += '</select>';
                 return out;
             };
-            var renderOptionsTextField = function(field) {
-                var value;
-                var values = field.value;
-                var output = '';
-                var ref = require('utils').reflection;
-                var buttonName = field.name?field.name.label:'Cannot locate name';
-                if (values) {
-                    //If there is only a single entry then the registry API will send a string
-                    //In order to uniformly handle these scenarios we must make it an array
-                    if (!ref.isArray(values)) {
-                        values = [values];
-                    }
-                    for (var index in values) {
-                        value = values[index];
-                        var delimter = value.indexOf(':')
-                        var option = value.substring(0, delimter);
-                        var text = value.substring(delimter + 1, value.length);
-                        output += '<tr>';
-                        output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
-                        output += '<td valign="top"><input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(text) + '" ' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
-                        output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
-                        output += '</tr>';
-                    }
-                } else {
-                    output += '<tr id="table_reference_'+field.name.name+'">';
-                    var index='0';
-                    output += '<td valign="top">' + renderOptionsForOptionsText(option, field.values[0].value, field) + '</td>';
-                    output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
-                    output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>'
-                    output += '</tr>';
-                }
-                return output;
-            };
 
             var renderTableField = function(field,mode) {
                 var out = '';
@@ -338,8 +305,8 @@ var engine = caramel.engine('handlebars', (function() {
                         break;
                     case 'option-text':
                         var values = value.split(":");
-                        out = elementPrefix + renderOptions(values[0], field.values[0].value, field) + elementSuffix;
-                        out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(values[1]) + '"' + renderFieldMetaData(field) + ' >' + elementSuffix;
+                        out = elementPrefix + renderOptionsForOptionsText(values[0], field.values[0].value, field) + elementSuffix;
+                        out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(values[1]) + '" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' />' + elementSuffix;
                         break;
                     case 'text':
                         out = elementPrefix + '<input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field) + ' >' + elementSuffix;
