@@ -226,27 +226,49 @@ var result;
 
     var validateRequiredFeilds = function (type, assetReq) {
         var rxtManager = rxtModule.core.rxtManager(user.tenantId);
-        var name = rxtManager.getNameAttribute(type);
+        /*var name = rxtManager.getNameAttribute(type);
         if(name && name.length >1){
             validateRequiredFeild(name, assetReq);
         }
         var version = rxtManager.getVersionAttribute(type);
         if(version && version.length >1){
             validateRequiredFeild(version, assetReq);
-        }
+        }*/
         var provider = rxtManager.getProviderAttribute(type);
         if(provider && provider.length >1 && assetReq.hasOwnProperty('attributes')){
             assetReq.attributes[provider] = user.username;
         }
-//        var fields = rxtManager.listRxtFields(type);
-//        for (var key in fields) {
-//                if (fields.hasOwnProperty(key)) {
-//                    var field =  fields[key];
-//                    if (field && field.name && field.required && field.name.fullName) {
-//                        validateRequiredFeild(field.name.fullName, assetReq);
-//                    }
-//                }
-//        }
+        var fields = rxtManager.listRxtFields(type);
+        for (var key in fields) {
+                if (fields.hasOwnProperty(key)) {
+                    var field =  fields[key];
+                    if (field && field.name && field.required && field.name.fullName) {
+                        validateRequiredFeild(field.name.fullName, assetReq);
+                    }
+                    if (field && field.name && field.validate && field.name.fullName) {
+                        validateRegExField(field.name.fullName,assetReq, field.validate);
+                    }
+                }
+        }
+    };
+
+    var validateRegExField = function (fieldName, assetReq, regex) {
+        var resources = request.getAllFiles();
+        var value;
+        if (assetReq.hasOwnProperty(fieldName)){
+            value = assetReq[fieldName];
+        }
+        if (!value && assetReq.attributes.hasOwnProperty(fieldName)){
+            value = assetReq.attributes[fieldName];
+        }
+        if (!value && resources && resources.hasOwnProperty(fieldName)){
+            value = resources[fieldName];
+        }
+        var reg = new RegExp(regex);
+        if (!reg.test(value)){
+            var msg = fieldName + ' value is invalide. Please provide correct value for ' + fieldName ;
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
+        }
     };
 
     var validateRequiredFeild = function (feildName, assetReq) {
