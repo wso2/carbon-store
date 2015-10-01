@@ -113,9 +113,9 @@ var asset = {};
             attributes[attrName] = list;
         } else if (field.type == 'checkbox') {
             if (data[attrName] == null || data[attrName] == undefined) {
-                attributes[attrName] = "off"; // When there is no value for a checkbox we set it's value to empty
+                attributes[attrName] = "false"; // When there is no value for a checkbox we set it's value to false
             } else {
-                attributes[attrName] = "on"; //We set it's value to on
+                attributes[attrName] = "true"; //We set it's value to true
             }
         } else {
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
