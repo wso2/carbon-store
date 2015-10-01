@@ -236,7 +236,7 @@ var engine = caramel.engine('handlebars', (function() {
 
                 //File required checking
                 var isRequired = false;
-                if( field.required  == "true"){
+                if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
                     isRequired = true;
                 }
 //                var isRequired=(field.required == 'true' || ( field.required && field.required != "false"))? true : false; //field.required is not boolean
@@ -258,9 +258,10 @@ var engine = caramel.engine('handlebars', (function() {
             var renderFieldLabel = function(field) {
                 var output = '';
                 var isHidden= (field.hidden)?field.hidden:false;
+
                 if (!isHidden && field.type != "option-text"){
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name);
-                    if (field.required && field.required == 'true' || ( field.required && field.required != "false")){ //field.required is not boolean
+                    if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
                         output += '<sup class="required-field">*</sup>';
                     }
                     output += '</label>';
