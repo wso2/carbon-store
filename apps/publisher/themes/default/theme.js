@@ -316,6 +316,10 @@ var engine = caramel.engine('handlebars', (function() {
                 if(mode && mode.hash && mode.hash.mode == null && field.default){
                     value = field.default;
                 }
+                var modeValue = 'create';
+                if(mode && mode.hash && mode.hash.mode && mode.hash.mode == "edit"){
+                    modeValue = "edit";
+                }
                 switch (field.type) {
                     case 'options':
                         out = elementPrefix + renderOptions(field.value, field.values[0].value, field) + elementSuffix;
@@ -339,14 +343,14 @@ var engine = caramel.engine('handlebars', (function() {
                         break;
                     case 'checkbox':
                         var checkboxString = "";
-                        if(mode == "edit"){
-                            if(value == "on"){
+                        if(modeValue == "edit"){
+                            if( (typeof(value) == "boolean" && value) || (typeof(value) == "string" && value == "true" )){
                                 checkboxString = 'checked="checked"';
                             }else{
                                 checkboxString = '';
                             }
                         }else{
-                            value="on";
+                            value="true";
                         }
                         out = elementPrefix + '<input type="checkbox" ' + renderFieldMetaData(field, null, mode) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' >' + elementSuffix;
                         break;
