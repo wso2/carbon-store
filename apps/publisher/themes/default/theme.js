@@ -210,29 +210,43 @@ var engine = caramel.engine('handlebars', (function() {
                 return new Handlebars.SafeString(defaultPtr(table));
             });
             var renderFieldMetaData = function(field,name,options) {
-                var isRequired=(field.required == 'true' || field.required)? true : false; //field.required is not boolean
                 var isReadOnly=false;
                 var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" '+
                          ' id="' + (name?name:field.name.tableQualifiedName) + '" '+
                          ' class="input-large"';
                 var isUpdatable = true;
-                var mode = options?(options.hash.mode?options.hash.mode:'create'):'create';
+
+                var mode = 'create';
+                if(options && options.hash && options.hash.mode && options.hash.mode == "edit"){
+                    mode = "edit";
+                }
+
+                //Readonly attribute setting
                 if(mode == "edit"){
-                    isReadOnly = field.readonly || field.auto;
+                    isReadOnly = ( field.readonly && field.readonly != 'false' ) || field.auto;
                 }else{
                     isReadOnly = (field.auto)?field.auto:false;
-                }
-                if(isRequired && field.type != 'file'){
-                    meta+=' required';
-                } else if (isRequired && field.type == 'file' && mode == 'create') {
-                    meta+=' required';
                 }
                 if(isReadOnly){
                     meta+=' readonly';
                 } else if(!isUpdatable && mode == 'edit'){
                     meta+=' readonly';
                 }
+
+                //File required checking
+                var isRequired = false;
+                if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
+                    isRequired = true;
+                }
+//                var isRequired=(field.required == 'true' || ( field.required && field.required != "false"))? true : false; //field.required is not boolean
+
+                if(isRequired && field.type != 'file'){
+                    meta+=' required';
+                } else if (isRequired && field.type == 'file' && mode == 'create') {
+                    meta+=' required';
+                }
+
                 if(placeHolder){
                     meta += ' placeholder="'+ placeHolder +'"';
                 }
@@ -244,9 +258,10 @@ var engine = caramel.engine('handlebars', (function() {
             var renderFieldLabel = function(field) {
                 var output = '';
                 var isHidden= (field.hidden)?field.hidden:false;
+
                 if (!isHidden && field.type != "option-text"){
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name);
-                    if (field.required == 'true' || field.required){ //field.required is not boolean
+                    if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
                         output += '<sup class="required-field">*</sup>';
                     }
                     output += '</label>';
@@ -298,7 +313,13 @@ var engine = caramel.engine('handlebars', (function() {
                     elementPrefix = '<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">';
                     elementSuffix = '</div>';
                 }
-
+                if(mode && mode.hash && mode.hash.mode == null && field.default){
+                    value = field.default;
+                }
+                var modeValue = 'create';
+                if(mode && mode.hash && mode.hash.mode && mode.hash.mode == "edit"){
+                    modeValue = "edit";
+                }
                 switch (field.type) {
                     case 'options':
                         out = elementPrefix + renderOptions(field.value, field.values[0].value, field) + elementSuffix;
@@ -306,35 +327,35 @@ var engine = caramel.engine('handlebars', (function() {
                     case 'option-text':
                         var values = value.split(":");
                         out = elementPrefix + renderOptionsForOptionsText(values[0], field.values[0].value, field) + elementSuffix;
-                        out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(values[1]) + '" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' />' + elementSuffix;
+                        out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(values[1]) + '" class="form-control"' + renderFieldMetaData(field, field.name.tableQualifiedName+'_text', mode) + ' />' + elementSuffix;
                         break;
                     case 'text':
-                        out = elementPrefix + '<input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field) + ' >' + elementSuffix;
+                        out = elementPrefix + '<input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     case 'text-area':
-                        out = elementPrefix + '<textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field) + '>' + Handlebars.Utils.escapeExpression(value) + '</textarea>' + elementSuffix;
+                        out = elementPrefix + '<textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, mode) + '>' + Handlebars.Utils.escapeExpression(value) + '</textarea>' + elementSuffix;
                         break;
                     case 'file':
-                        out = elementPrefix + '<input type="file" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field) + ' >' + elementSuffix;
+                        out = elementPrefix + '<input type="file" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     case 'date':
-                        out = elementPrefix + '<input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' >' + elementSuffix;
+                        out = elementPrefix + '<input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     case 'checkbox':
                         var checkboxString = "";
-                        if(mode == "edit"){
-                            if(value == "on"){
+                        if(modeValue == "edit"){
+                            if( (typeof(value) == "boolean" && value) || (typeof(value) == "string" && value == "true" )){
                                 checkboxString = 'checked="checked"';
                             }else{
                                 checkboxString = '';
                             }
                         }else{
-                            value="on";
+                            value="true";
                         }
-                        out = elementPrefix + '<input type="checkbox" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' >' + elementSuffix;
+                        out = elementPrefix + '<input type="checkbox" ' + renderFieldMetaData(field, null, mode) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' >' + elementSuffix;
                         break;
                     case 'password':
-                        out = elementPrefix + '<input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, {"hash" : {"mode" : null}}) + ' >' + elementSuffix;
+                        out = elementPrefix + '<input type="password" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     default:
                         out = elementPrefix + 'Normal Field' + field.type + elementSuffix;
@@ -375,6 +396,7 @@ var engine = caramel.engine('handlebars', (function() {
             });
             Handlebars.registerHelper('renderEditableUnboundTableRow_optionText', function(table) {
                 var field = getFirstField(table);
+                var mode = {"hash" : {"mode" : table.mode}};
                 var fieldValue = '';
                 if(field.values && typeof field.values === "object"){
                     fieldValue = field.values[0].value;
@@ -382,7 +404,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var output = '';
                 output += '<tr id="table_reference_'+table.name+'">';
                 output += '<td valign="top">' + renderOptionsForOptionsText('', fieldValue, field) + '</td>';
-                output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text') + ' /></td>';
+                output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text',mode) + ' /></td>';
                 output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                 output += '</tr>';
                 return new Handlebars.SafeString(output);
