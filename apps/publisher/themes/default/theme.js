@@ -236,7 +236,7 @@ var engine = caramel.engine('handlebars', (function() {
 
                 //File required checking
                 var isRequired = false;
-                if( field.required  == "true"){
+                if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
                     isRequired = true;
                 }
 //                var isRequired=(field.required == 'true' || ( field.required && field.required != "false"))? true : false; //field.required is not boolean
@@ -258,9 +258,10 @@ var engine = caramel.engine('handlebars', (function() {
             var renderFieldLabel = function(field) {
                 var output = '';
                 var isHidden= (field.hidden)?field.hidden:false;
+
                 if (!isHidden && field.type != "option-text"){
                     output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name);
-                    if (field.required && field.required == 'true' || ( field.required && field.required != "false")){ //field.required is not boolean
+                    if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
                         output += '<sup class="required-field">*</sup>';
                     }
                     output += '</label>';
@@ -315,6 +316,10 @@ var engine = caramel.engine('handlebars', (function() {
                 if(mode && mode.hash && mode.hash.mode == null && field.default){
                     value = field.default;
                 }
+                var modeValue = 'create';
+                if(mode && mode.hash && mode.hash.mode && mode.hash.mode == "edit"){
+                    modeValue = "edit";
+                }
                 switch (field.type) {
                     case 'options':
                         out = elementPrefix + renderOptions(field.value, field.values[0].value, field) + elementSuffix;
@@ -338,14 +343,14 @@ var engine = caramel.engine('handlebars', (function() {
                         break;
                     case 'checkbox':
                         var checkboxString = "";
-                        if(mode == "edit"){
-                            if(value == "on"){
+                        if(modeValue == "edit"){
+                            if( (typeof(value) == "boolean" && value) || (typeof(value) == "string" && value == "true" )){
                                 checkboxString = 'checked="checked"';
                             }else{
                                 checkboxString = '';
                             }
                         }else{
-                            value="on";
+                            value="true";
                         }
                         out = elementPrefix + '<input type="checkbox" ' + renderFieldMetaData(field, null, mode) + ' ' + Handlebars.Utils.escapeExpression(checkboxString) + ' >' + elementSuffix;
                         break;
