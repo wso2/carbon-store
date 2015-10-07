@@ -2,7 +2,7 @@
     <div class="container-fluid ">
         <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">{{rxt.pluralLabel}}</a></div><!--title-->
         {{#if assetCategoryDetails.hasCategories}}
-            <div class="wr-filter-category">
+            <div class="wr-filter-category category-dropdown">
                 <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown"
                    aria-expanded="true" id="categoryDropDown" title="All Categories">
                     {{#if assetCategoryDetails.selectedCategory}}
