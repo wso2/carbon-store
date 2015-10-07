@@ -1,6 +1,27 @@
 <div class="ast-container " id="ast-container">
     <div class="container-fluid ">
         <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">{{rxt.pluralLabel}}</a></div><!--title-->
+        {{#if assetCategoryDetails.hasCategories}}
+            <div class="wr-filter-category">
+                <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown"
+                   aria-expanded="true" id="categoryDropDown" title="All Categories">
+                    {{#if assetCategoryDetails.selectedCategory}}
+                        {{assetCategoryDetails.selectedCategory}}
+                    {{else}}
+                        <span>All Categories</span>
+                    {{/if}}
+                    <span class="fa fa-angle-down pull-right"></span>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                    {{#if assetCategoryDetails.selectedCategory}}
+                        <li><a tabindex="-1" href="#">All Categories</a></li>
+                    {{/if}}
+                    {{#each assetCategoryDetails.values}}
+                        <li><a tabindex="-1" href="#">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div>
+        {{/if}}
         <div class="pull-right sort-asset-container">
 
             <a aria-expanded="false" data-toggle="dropdown" id="sortDropdown" type="button" class="dropdown-toggle" href="#">

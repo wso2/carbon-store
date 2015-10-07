@@ -1508,3 +1508,44 @@ span.advanced-search-icons{
     font-weight: 200;
     margin-bottom: 10px;
 }
+
+
+a.ctrl-filter-category {
+    display:inline-block;
+    background:#237bd5;
+    border:1px solid #237bd5;
+    color:#fff;
+    text-decoration:none;
+    padding:7px 10px 7px 20px;
+    width:180px;
+    font-size:18px;
+    font-weight:100;
+}
+
+.category-dropdown {
+    padding-top: 16px;
+    padding-left: 27px;
+}
+
+.wr-filter-category .dropdown-menu {
+    border: 0px solid #237bd5;
+    background: #237bd5;
+    top: 158px;
+    left: 139px;
+    width: 180px;
+    padding-top: 0;
+    padding-bottom: 0;
+    color: #fff;
+    font-size: 17px;
+}
+
+.wr-filter-category .dropdown-menu li a {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    font-weight: 100;
+    color: #fff;
+}
+
+.wr-filter-category .dropdown-menu li a:hover {
+    background:#61a3e6;
+}
