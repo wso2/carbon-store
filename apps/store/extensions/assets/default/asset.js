@@ -203,6 +203,9 @@ asset.renderer = function(ctx) {
                 //action.iconClass ='ast-create';
                 //action.name ='Create';
                 //page.actionBar.actions.push(action);
+            },
+            list: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page, this);
             }
         }
     };

@@ -62,7 +62,6 @@ var propCount = function (obj) {
 var parseUsedDefinedQuery = function (input) {
     var terms;
     var q = {};
-    var current;
     var term;
     var arr = [];
     var previous;
@@ -71,7 +70,6 @@ var parseUsedDefinedQuery = function (input) {
         q.name = input;
         return q;
     }
-    //Remove trailing whitespaces if any
     input = input.trim();
     //Use case #2: The user has entered a complex query
     //and one or more properties in the query could values
