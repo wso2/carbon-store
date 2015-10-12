@@ -60,6 +60,9 @@ var pageDecorators = {};
         return page;
     };
     pageDecorators.assetCategoryDetails = function(ctx, page, utils) {
+        if (page.meta.pageName != 'list') {
+            return;
+        }
         page.assetCategoryDetails = {};
         page.assetCategoryDetails.hasCategories = false;
         page.assetCategoryDetails.values = [];
