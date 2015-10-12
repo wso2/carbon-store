@@ -98,6 +98,33 @@ var pageDecorators = {};
         page.recentAssets = assets;
         return page;
     };
+    pageDecorators.assetCategoryDetails = function (ctx, page, utils) {
+        page.assetCategoryDetails = {};
+        page.assetCategoryDetails.hasCategories = false;
+        page.assetCategoryDetails.values = [];
+        var categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
+        var categoryValues = [];
+        var field = ctx.rxtManager.getRxtField(ctx.assetType, categoryField);
+        var q = request.getParameter("q");
+        if (q) {
+            var options = parse("{" + q + "}");
+            if (options.category) {
+                page.assetCategoryDetails.selectedCategory = options.category;
+            }
+        }
+        if (!field) {
+            return;
+        }
+        var values = field.values[0].value;
+        if (!values) {
+            return;
+        }
+        for (var index = 0; index < values.length; index++) {
+            categoryValues.push(values[index].value);
+        }
+        page.assetCategoryDetails.hasCategories = true;
+        page.assetCategoryDetails.values = categoryValues;
+    };
     pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
