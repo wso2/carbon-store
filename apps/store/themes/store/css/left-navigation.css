@@ -415,6 +415,16 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 .wr-asset-type-switcher span {
     float: left;
 }
+
+.more {
+    color: #000;
+    float: right;
+    background-image: url(../img/icons/more-icon.png)!important;
+    background-position: center left;
+    background-repeat: no-repeat;
+    text-transform: uppercase;
+    padding: 23px 3px 16px 36px !important;
+}
 /*==========  Non-Mobile First Method  ==========*/
 
 /* Large Devices, Wide Screens */
