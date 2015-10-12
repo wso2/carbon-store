@@ -17,7 +17,7 @@
  */
 
 var initCategorySelection = function () {
-    $('div.wr-filter-category ul.dropdown-menu li a').click(function (e) {
+    $('div.category ul.dropdown-menu li a').click(function (e) {
         e.preventDefault();
         var selectedCategory = $(this).text();
         window.location = createQuery({

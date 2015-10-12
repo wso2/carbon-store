@@ -1012,8 +1012,6 @@ a.more:focus {
     border-right: 1px solid #ededed;
     border-width: 0 1px 1px;
     display: block;
-    padding: 2em 1.4em;
-    min-height: 110px;
 }
 #socialIfr{ background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
     border-bottom: 1px solid #ededed;
@@ -1305,8 +1303,8 @@ h2.app-title {
     margin-right:22px;
     margin-bottom: 40px;
 }
-.ctrl-wr-asset .ast-content{
-
+.ctrl-wr-asset .ast-content {
+    background-color: #fff;
 }
 
 
