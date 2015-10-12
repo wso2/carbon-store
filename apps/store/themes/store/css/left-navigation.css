@@ -240,6 +240,7 @@ nav.navigation .second_level > .left-menu-item {
     background-color: #fff;
     border-bottom: 1px solid #e7e7e7;
     margin-top: -10px;
+    margin-top: 45px !important;
 }
 
 .category {
