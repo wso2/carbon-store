@@ -190,12 +190,26 @@ var initSearch = function() {
     //Support for searching when pressing enter
     $('#assetSearchForm').submit(function(e) {
         e.preventDefault();
-        window.location = createQuery();
+        var selectedCategory = $('#categoryDropDown').text();
+        selectedCategory = selectedCategory.replace(/\s/g, '');
+        if(selectedCategory == "AllCategories"){
+            selectedCategory = "";
+        }
+        window.location = createQuery({
+            category: selectedCategory
+        });
     });
     //Support for searching by clicking on the search button
     $('#searchButton').click(function(e) {
         e.preventDefault();
-        window.location = createQuery();
+        var selectedCategory = $('#categoryDropDown').text();
+        selectedCategory = selectedCategory.replace(/\s/g, '');
+        if(selectedCategory == "AllCategories"){
+            selectedCategory = "";
+        }
+        window.location = createQuery({
+            category: selectedCategory
+        });
     });
 };
 var initCategorySelection = function() {
