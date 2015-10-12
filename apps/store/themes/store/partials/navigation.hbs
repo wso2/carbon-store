@@ -55,8 +55,14 @@
             </div>
         </div>
         <div class="search">
-            {{>search .}}
-            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn" title="Advanced Search - All Assets"><span class="fa fa-cog advanced-search-icons"></span><span class="advanced-search-text">Search All Assets</span></a>
+            <div class="input-group input-wrap">
+                <input  id="search"  type="text" class="form-control" placeholder="Search for...">
+                <div class="input-group-btn">
+                    <button class="btn btn-default wrap-input-right" type="button" title="Search">
+                        <i class="fw fw-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
         </div>
         <!--search--->
     </div>
