@@ -58,7 +58,7 @@
             <div class="input-group input-wrap">
                 <input  id="search"  type="text" class="form-control" placeholder="Search for...">
                 <div class="input-group-btn">
-                    <button class="btn btn-default wrap-input-right" type="button" title="Search">
+                    <button class="btn btn-default wrap-input-right" id="search-button" type="button" title="Search">
                         <i class="fw fw-search" aria-hidden="true"></i>
                     </button>
                 </div>
@@ -75,30 +75,30 @@
             </div>
         </div>
     {{/unless}}
-
-    <div class="col-md-12 category-wrapper">
-        {{#if assetCategoryDetails.hasCategories}}
-            <div class="col-xs-1 col-sm-2 col-md-1 col-lg-1 left-col"></div>
-            <div class="col-xs-10 col-sm-8 col-md-4 col-lg-10">
-                <div class="category padding-top">
-                    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true"  id="categoryDropDown" title="All Categories">
-                        {{#if assetCategoryDetails.selectedCategory}}
-                            {{assetCategoryDetails.selectedCategory}}
-                        {{else}}
-                            <span>All Categories</span>
-                        {{/if}}
-                    </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                        {{#if assetCategoryDetails.selectedCategory}}
-                            <li><a tabindex="-1" href="#">All Categories</a></li>
-                        {{/if}}
-                        {{#each assetCategoryDetails.values}}
-                            <li><a tabindex="-1" href="#">{{this}}</a></li>
-                        {{/each}}
-                    </ul>
-                </div></div>
-        {{/if}}
-    </div>
 </div>
 <!-- secondary header - app bar -->
 {{> action-bar .}}
+
+<div class="col-md-12 category-wrapper">
+    {{#if assetCategoryDetails.hasCategories}}
+        <div class="col-xs-1 col-sm-2 col-md-1 col-lg-1 left-col"></div>
+        <div class="col-xs-10 col-sm-8 col-md-4 col-lg-10">
+            <div class="category padding-top">
+                <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true"  id="categoryDropDown" title="All Categories">
+                    {{#if assetCategoryDetails.selectedCategory}}
+                        {{assetCategoryDetails.selectedCategory}}
+                    {{else}}
+                        <span>All Categories</span>
+                    {{/if}}
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                    {{#if assetCategoryDetails.selectedCategory}}
+                        <li><a tabindex="-1" href="#">All Categories</a></li>
+                    {{/if}}
+                    {{#each assetCategoryDetails.values}}
+                        <li><a tabindex="-1" href="#">{{this}}</a></li>
+                    {{/each}}
+                </ul>
+            </div></div>
+    {{/if}}
+</div>

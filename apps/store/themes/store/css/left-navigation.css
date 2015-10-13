@@ -240,7 +240,7 @@ nav.navigation .second_level > .left-menu-item {
     background-color: #fff;
     border-bottom: 1px solid #e7e7e7;
     margin-top: -10px;
-    margin-top: 45px !important;
+    width:101%;
 }
 
 .category {
@@ -444,7 +444,12 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     border-collapse: separate;
 }
 .input-group-btn:last-child>.btn, .input-group-btn:last-child>.btn-group {
-    margin-top: 3px; height: 35px;}
+    margin-top: 3px;
+    height: 35px;
+    border-radius: 0px;
+    height: 35px;
+    border: 0px;
+}
 .form-control::-webkit-input-placeholder {
     font-size: 15px;
     font-weight: 100;
@@ -628,6 +633,5 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         margin-right: -20px !important;
     }
 }
-
 
 
