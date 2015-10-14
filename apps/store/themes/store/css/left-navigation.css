@@ -496,6 +496,35 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     box-shadow: inset 0 0 0 rgba(0,0,0,.075), 0 0 0 rgba(102, 175, 233, .6);
 }
 
+.all-item {
+    display: table-row-group !important;
+} /* Will be displayed in the middle */
+.top-item {
+    display: table-header-group !important;
+    background: #27ae60;
+    color: white;
+    width: 77.5%;
+    height: 40px;
+
+} /* Will be displayed at the top */
+
+nav.navigation > a.top-item .icon {
+    background: #27ae60;
+    color: white;
+}
+
+nav.navigation > a.top-item:hover > .icon {
+    background: #27ae60;
+    color: white;
+}
+
+nav.navigation > a.top-item:hover > .left-menu-item, nav.navigation > a.top-item.active > .left-menu-item, nav.navigation > a.top-item.hover > .left-menu-item {
+    background: #27ae60;
+    color: white;
+    width: 77.5%;
+    height: 40px;
+}
+
 
 
 /*==========  Non-Mobile First Method  ==========*/
