@@ -36,19 +36,24 @@ var pageDecorators = {};
         var currentType;
         page.isUserDomainAndUrlDomainDifferent = tenantAppResources.isUserDomainAndUrlDomainDifferent;
         page.navigationBar = {};
+        var isLandingPage = true;
         for (var index in availableTypes) {
             type = availableTypes[index];
             if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
                 currentType = rxtManager.getRxtTypeDetails(type);
                 currentType.selected = false;
+                currentType.style = "all-item";
                 currentType.listingUrl = utils.buildAssetPageUrl(currentType.shortName, '/list');
-                if (currentType.shortName == ctx.assetType) {
+                if (currentType.shortName == page.rxt.shortName) {
                     currentType.selected = true;
+                    currentType.style = "active home top-item";
+                    isLandingPage = false;
                 }
                 types.push(currentType);
             }
         }
         page.navigationBar.types = types;
+        page.navigationBar.landingPage = isLandingPage;
         return page;
     };
     /**
