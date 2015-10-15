@@ -3,6 +3,7 @@
         <div class="container-fluid padding-none ">
             <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">{{rxt.pluralLabel}}</a></div>
             <!-- sorting start-->
+            {{#if assets}}
             <div class="pull-right sort-asset-container">
                 <a aria-expanded="false" data-toggle="dropdown" id="sortDropdown" type="button" class="dropdown-toggle" href="#">
                     <span class="sort-asset-info">( {{sorting.sortHelp}} <i class="fa {{sorting.sortHelpIcon}}"></i> )</span>
@@ -20,6 +21,7 @@
                     </li>
                 </ul>
             </div>
+            {{/if}}
         </div>
     </div>
 </div>

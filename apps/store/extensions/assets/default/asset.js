@@ -127,7 +127,8 @@ asset.configure = function() {
                 lifecycleEnabled:true
             },
             ui: {
-                icon: 'fw fw-resource'
+                icon: 'fw fw-resource',
+                iconColor: 'purple'
             },
             categories: {
                 categoryField: 'overview_category'
