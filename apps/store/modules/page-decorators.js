@@ -22,6 +22,10 @@ var pageDecorators = {};
     var tenantApi = require('/modules/tenant-api.js').api;
     var permissionsAPI = require('rxt').permissions;
     var log = new Log('store-page-decorators');
+    var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
+    var HashMap = java.util.HashMap;
+
     pageDecorators.navigationBar = function(ctx, page, utils) {
         var app = require('rxt').app;
         //Change the context to support cross tenant views
@@ -306,7 +310,14 @@ var pageDecorators = {};
         if(page.assets.id){
             page.tags = am.getTags(page.assets.id);
         }else {
-            page.tags = am.tags();
+            var paging = {
+                'start': 0,
+                'count': 1000,
+                'sortOrder': 'ASC',
+                'sortBy': '',
+                'paginationLimit': 1000
+            };
+            page.tags = doTermSearch(ctx,'tags', paging, true);
         }
         return page;
     };
@@ -554,5 +565,69 @@ var pageDecorators = {};
     };
     var diggitLink = function(assetUrl, asset) {
         return storeConstants.DIGG_SHARE_LINK + assetUrl;
+    };
+
+    /**
+     * Find all possible terms and its count for the given facet field
+     * @param ctx context
+     * @param facetField field used for faceting
+     * @param paging pagination context param
+     * @param authRequired authorization required flag
+     * @returns {Array} term results
+     */
+    var doTermSearch = function (ctx, facetField, paging, authRequired) {
+        var terms = [];
+        var results;
+        var map = HashMap();
+        var mediaType = 'application/*';
+        if (ctx.assetType) {
+            var rxtManager = ctx.rxtManager;
+            mediaType = rxtManager.getMediaType(ctx.assetType);
+        }
+
+        if (facetField) {
+            try {
+                buildPaginationContext(paging);
+                results = GovernanceUtils.getTermDataList(map, facetField, mediaType, authRequired);
+                var iterator = results.iterator();
+                while (iterator.hasNext()) {
+                    var current = iterator.next();
+                    var term = {};
+                    term.value = current.term;
+                    term.frequency = current.frequency;
+                    terms.push(term);
+                }
+            } finally {
+                destroyPaginationContext();
+            }
+        }
+        return terms;
+    };
+
+    var generatePaginationContext = function(paging){
+        var page = {};
+        page.start = paging.start || constants.DEFAULT_TAGS_PAGIN.start;
+        page.count = paging.count || constants.DEFAULT_TAGS_PAGIN.count;
+        page.sortOrder = paging.sortOrder || constants.DEFAULT_TAGS_PAGIN.sortOrder;
+        page.sortBy = paging.sortBy || constants.DEFAULT_TAGS_PAGIN.sortBy;
+        page.paginationLimit = paging.paginationLimit || constants.DEFAULT_TAGS_PAGIN.paginationLimit;
+        return page;
+    };
+
+    var buildPaginationContext = function(paging){
+        paging = paging || {};
+        paging = generatePaginationContext(paging);
+        if (log.isDebugEnabled()) {
+            log.debug('[pagination-context] settting context to : '+stringify(paging));
+        }
+        PaginationContext.init(paging.start,paging.count,paging.sortOrder,
+            paging.sortBy,paging.paginationLimit);
+    };
+
+    var destroyPaginationContext = function() {
+        PaginationContext.destroy();
+        if (log.isDebugEnabled()) {
+            log.debug('[pagination-context] successfully destroyed context')
+        }
     };
 }());

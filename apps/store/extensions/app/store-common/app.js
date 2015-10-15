@@ -84,6 +84,9 @@ app.renderer = function(ctx) {
             recentAssetsOfActivatedTypes: function(page) {
                 return decoratorApi.recentAssetsOfActivatedTypes(ctx, page, this);
             },
+            tags: function(page) {
+                return decoratorApi.tags(ctx, page);
+            },
             popularAssets:function(page){
                 return decoratorApi.popularAssets(ctx,page,this);
             }
