@@ -161,6 +161,14 @@ var constants = {};
         paginationLimit: 100
     };
 
+    constants.DEFAULT_TAGS_PAGIN = {
+        start: 0,
+        count: 1000,
+        sortBy: '',
+        sortOrder: 'ASC',
+        paginationLimit: 1000
+    };
+
     constants.MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 }(constants));
