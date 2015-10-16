@@ -220,6 +220,64 @@ var error = '';
         return checkItems;
     };
     /**
+     * this method sets the checkItems visibility and checked state to current state
+     * @param checkItems
+     * @param lcCurrentStatesCheckitems
+     * @return A list of check-items ,checked:true/false ,isVisible:true/false
+     */
+    var setCurrentCheckItemState = function (checkItems, lcCurrentStatesCheckitems) {
+        try {
+            replaceCheckItems = [];
+            var lifeCycleCheckListItemBeans = lcCurrentStatesCheckitems.getLifeCycleCheckListItemBeans();
+
+            for (var i = 0; i < lifeCycleCheckListItemBeans.size(); i++) {
+                var item = lifeCycleCheckListItemBeans.get(i);
+                    var checkItem =  new Object();
+
+                    checkItem.name = item.getName();
+                    checkItem.checked = item.getValue();
+                    checkItem.isVisible = item.getVisible();
+
+                    replaceCheckItems[item.getOrder()] = checkItem;
+            } 
+
+            checkItems = replaceCheckItems;
+        } catch (e) {
+            var msg = 'No check items are available for this asset state';
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+        }
+        return checkItems;
+    };
+    /**
+     * this method returns an object with all allowed lc actions
+     * @param approvedActions
+     * @param lcCurrentStatesCheckitems
+     * @return An object of LCActions with approved:true
+     */
+    var setAvailableApprovedActions = function (approvedActions, lcCurrentStatesCheckitems) {
+        try {
+            var replaceApprovedActions = new Object();
+
+            if (lcCurrentStatesCheckitems.getLifeCycleActionsBean()){
+                var approvedLCActions = lcCurrentStatesCheckitems.getLifeCycleActionsBean().getActions();
+                for (var i = 0; i < approvedLCActions.length; i++) {
+                    replaceApprovedActions[approvedLCActions[i]] = true;
+                }
+            }
+
+            approvedActions = replaceApprovedActions;
+        } catch (e) {
+            var msg = 'No approved acions are available for this asset state';
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+        }
+
+        return approvedActions;
+    };
+    /**
      * The function changes the state of a single check item
      * @param  checkItemIndex      The index of the check item to be changed
      * @param  checkItemState The new state of the check item
