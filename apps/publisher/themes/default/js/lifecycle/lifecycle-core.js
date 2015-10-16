@@ -502,6 +502,12 @@ var LifecycleUtils = {};
             return datamodel.checkItems ? datamodel.checkItems : [];
         }
     };
+    /**
+     * This method returns the available actions of a given lifecycle state
+     * if required state is not provided it is assumed to be current state
+     * Note : as this method only returns pre-set allowed actions for the current state,
+     * allowed actions should be set calling setAllowedActions(actions)
+     */																																																																													
     LifecycleImpl.prototype.actions = function() {
         //Assume that a state has not been provided
         var currentState = this.currentState;
@@ -514,9 +520,24 @@ var LifecycleUtils = {};
         var transition;
         for (var index = 0; index < transitions.length; index++) {
             transition = transitions[index];
-            actions.push(transition.event);
+            if (currentState == this.currentState) {
+                if (state.allowedActions && state.allowedActions[transition.event]){
+                    actions.push(transition.event);
+                }
+            }
+            else {
+                    actions.push(transition.event);
+            }
         }
         return actions;
+    };
+    LifecycleImpl.prototype.setAllowedActions = function(actions) {
+        var currentState = this.currentState;
+        var state = this.stateMap.states[currentState] || {};
+
+        state.allowedActions = actions;
+
+        return state.allowedActions;
     };
     LifecycleImpl.prototype.nextStateByAction = function(action, state) {
         //Get tinformation about the state
@@ -626,6 +647,7 @@ var LifecycleUtils = {};
                     data.checkItems[index].index = index;
                 }
                 that.checklist(data.checkItems);
+                that.setAllowedActions(data.approvedActions);
                 LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS);
             },
             error: function() {
