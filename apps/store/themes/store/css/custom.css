@@ -924,7 +924,7 @@ a.more:focus {
     padding:20px;
     border:solid 1px #ccc;
     background: rgba(48, 162, 249, 0.06);
-    margin:10px;
+    margin:10px 10px 10px 2px;
 }
 .wr-filter-category {
     float: left;

@@ -381,7 +381,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 }
 
-.tag-content > label {
+.tag-content > a > label {
     padding: 3px;
     line-height: 19px;
     font-weight: 100;
@@ -391,7 +391,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     font-size: 12px;
 }
 
-.tag-content > label:hover {
+.tag-content > a > label:hover {
     background-color: #C9E4FF;
     border: 1px solid #C9E4FF;
 }
@@ -439,7 +439,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     float: left;
     width: 40%;
     margin-bottom: 0;
-    margin-left: 220px;
+    margin-left: 208px;
     height: 35px !important;
     margin-top: 3px;
 }
