@@ -806,16 +806,15 @@ a.ast-type-item:hover {
     float: left;
     font-size: 22px;
     height: 59px;
-    padding: 14px 0px 0;
+    padding: 27px 0px 0;
     width: auto;
     margin-bottom: 15px;
-    margin-left: -12px;
 }
 
 .title a {
     color: #333;
     font-weight: 200;
-    font-size: 26px;
+    font-size: 20px;
 }
 
 .title a:hover {
@@ -1324,7 +1323,8 @@ h2.app-title {
     cursor: pointer;
     padding:0;
     margin-bottom:0px;
-    width:152px;
+    width: 100%;
+    min-width:152px;
     border: 1px solid #efefef;
 }
 .itm-ast:hover h3, .itm-ast:hover {
