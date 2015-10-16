@@ -614,6 +614,7 @@ var LifecycleUtils = {};
         data.checklist = [];
         data.checklist.push(entry);
         LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START);
+        var that = this;
         $.ajax({
             type: 'POST',
             url: this.urlUpdateChecklist(),
@@ -622,6 +623,7 @@ var LifecycleUtils = {};
             success: function() {
                 //Update the internal check list items
                 LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_SUCCESS);
+                that.fetchState();
             },
             error: function() {
                 LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED);
