@@ -34,6 +34,7 @@ var asset = {};
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
     var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
+    var LifeCycleService = carbon.server.osgiService('org.wso2.carbon.governance.lcm.services.LifeCycleService');
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
@@ -1400,6 +1401,16 @@ var asset = {};
     };
     AssetManager.prototype.getLifecycleState = function(asset, lifecycle) {
         return this.am.getLifecycleState(asset, lifecycle);
+    };
+    /**
+     * Returns state of the lifecycle on specified asset w.r.t. current user session's privileges
+     * @param  {String}	artifactId
+     * @param  {String} artifactLC
+     * @return {org.wso2.carbon.governance.lcm.beans.LifeCycleCheckListItemBean}
+     */
+    AssetManager.prototype.getLifecycleCheckedState = function(artifactId, artifactLC) {
+        var lifeCycleStateBean = LifeCycleService.getLifeCycleStateBean(artifactId, artifactLC);
+        return lifeCycleStateBean;
     };
     AssetManager.prototype.getLifecycleHistory = function(id) {
         var artifact = this.am.get(id);
