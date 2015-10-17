@@ -34,6 +34,7 @@ var asset = {};
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
     var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
+    var LifeCycleService = carbon.server.osgiService('org.wso2.carbon.governance.lcm.services.LifeCycleService');
     var defaultPalette = [
         "#F44336","#D32F2F","#B71C1C","#E91E63","#F06292","#D81B60","#AD1457","#880E4F","#9C27B0","#BA68C8",
         "#FF8A80","#FF5252","#FF1744","#D50000","#FF80AB","#FF4081","#F50057","#C51162","#EA80FC","#E040FB",
@@ -90,7 +91,7 @@ var asset = {};
         //If there is a list then  it can be either an array or a string(If it is an array it sends it back as a Java array which is not detected)
         list = parse(stringify(list));
         var ref = require('utils').reflection;
-        //Determine if the list is provided as a string
+        //Determine if the list is provided as a string 
         if (!ref.isArray(list)) {
             list = list.split(',');
         }
@@ -135,7 +136,7 @@ var asset = {};
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
                 if(log.isDebugEnabled()){
-                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);
+                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);                    
                 }
             } else {
                 log.debug(attrName + ' will not be saved.');
@@ -286,10 +287,10 @@ var asset = {};
         var group = this.getAssetGroup(currentAsset);
         var asset;
         //Go through each asset in the group and remove the default property
-        //if it is present
+        //if it is present 
         for (var index = 0; index < group.length; index++) {
             asset = group[index];
-            //Omit the current asset
+            //Omit the current asset 
             if (asset.id !== currentAsset.id) {
                 var properties = this.registry.properties(asset.path);
                 //Check if the default property is present and remove it
@@ -474,14 +475,14 @@ var asset = {};
     };
     var buildQueryString = function(query,options) {
         var queryString = [];
-        var value;
+        var value;  
         options = options || {};
         var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
         for(var key in query) {
             //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
                 value = query[key];
-                //If the key contains an underscore (_) we
+                //If the key contains an underscore (_) we 
                 //need  replace it with a semi colon (:)
                 //as the underlying API requires this
                 //Note: This prevents us from searching props
@@ -489,7 +490,7 @@ var asset = {};
                 key = key.replace('_',':');
                 //Check if wildcard search is enabled
                 if(wildcard){
-                    value = '*'+value+'*';
+                    value = '*'+value+'*'; 
                 }
                 queryString.push(key+'='+value);
             }
@@ -546,7 +547,7 @@ var asset = {};
                 try{
                     //This is wrapped in a try catch as
                     //some generic artifacts do no have the getMediaType method
-                    mediaType = current.getMediaType();
+                    mediaType = current.getMediaType(); 
                 } catch (e){
                     log.error('Unable to resolve the media type of an asset returned from a cross type search.This asset will be dropped from the result set');
                 }
@@ -580,7 +581,7 @@ var asset = {};
                     assetManager = asset.createUserAssetManager(session,item.type);
                 } else {
                     assetManager = asset.createAnonAssetManager(session,item.type, tenantId);
-                }
+                }          
                 assetManagers[item.type] = assetManager;
             } else {
                 assetManager = assetManagers[item.type];
@@ -620,7 +621,7 @@ var asset = {};
          if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             options.wildcard = false;//query[constants.Q_PROP_GROUP];
             delete query[constants.Q_PROP_GROUP];
-         }
+         } 
          q  = buildQueryString(query, options);
          return q;
     };
@@ -647,7 +648,7 @@ var asset = {};
             if(q.length>0){
                 governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
                 assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
-            }
+            }      
         } catch (e) {
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters',e);
         } finally {
@@ -684,7 +685,7 @@ var asset = {};
         if((!user)&&(!tenantId)) {
             log.error('Unable to create registry instance without a tenantId when there is no logged in user');
             throw 'Unable to create registry instance without a tenantId when there is no logged in user';
-        }
+        } 
         //Determine if a user exists
         if(user){
             userRegistry = storeAPI.user.userRegistry(session);
@@ -1023,7 +1024,7 @@ var asset = {};
         var asset = this.get(id);
         var tagged; //Assume that the tag will not be applied
         var utilsAPI = require('utils');
-        //If the user has provided a single tag then it should be
+        //If the user has provided a single tag then it should be 
         //assigned to an array to keep the registry invocation uniform
         if (!utilsAPI.reflection.isArray(tags)) {
             tags = [tags];
@@ -1210,7 +1211,7 @@ var asset = {};
         var subscriptions = [];
         if (!userSpace) {
             if(log.isDebugEnabled()){
-                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');
+                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');                
             }
             return subscriptions;
         }
@@ -1291,7 +1292,7 @@ var asset = {};
             log.error('Failed to attach a lifecycle as an asset object was not provided.');
             return success;
         }
-        //Check if a lifecycle was provided,if not check if it is provided in the
+        //Check if a lifecycle was provided,if not check if it is provided in the 
         //configuration
         if (lifecycle == '') {
             lifecycle = this.rxtManager.getLifecycleName(this.type);
@@ -1414,6 +1415,16 @@ var asset = {};
     };
     AssetManager.prototype.getLifecycleState = function(asset, lifecycle) {
         return this.am.getLifecycleState(asset, lifecycle);
+    };
+    /**
+     * Returns state of the lifecycle on specified asset w.r.t. current user session's privileges
+     * @param  {String}	artifactId
+     * @param  {String} artifactLC
+     * @return {org.wso2.carbon.governance.lcm.beans.LifeCycleCheckListItemBean}
+     */
+    AssetManager.prototype.getLifecycleCheckedState = function(artifactId, artifactLC) {
+        var lifeCycleStateBean = LifeCycleService.getLifeCycleStateBean(artifactId, artifactLC);
+        return lifeCycleStateBean;
     };
     AssetManager.prototype.getLifecycleHistory = function(id) {
         var artifact = this.am.get(id);
