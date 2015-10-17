@@ -34,13 +34,27 @@ var asset = {};
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
     var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
+    var defaultPalette = [
+        "#F44336","#D32F2F","#B71C1C","#E91E63","#F06292","#D81B60","#AD1457","#880E4F","#9C27B0","#BA68C8",
+        "#FF8A80","#FF5252","#FF1744","#D50000","#FF80AB","#FF4081","#F50057","#C51162","#EA80FC","#E040FB",
+        "#D500F9","#AA00FF","#673AB7","#9575CD","#7E57C2","#5E35B1","#512DA8","#4527A0","#B388FF","#7C4DFF",
+        "#651FFF","#6200EA","#3F51B5","#5C6BC0","#3F51B5","#303F9F","#1A237E","#536DFE","#3D5AFE","#304FFE",
+        "#448AFF","#2979FF","#2962FF","#2196F3","#64B5F6","#1E88E5","#1976D2","#1565C0","#0D47A1","#03A9F4",
+        "#4FC3F7","#29B6F6","#039BE5","#0288D1","#0277BD","#01579B","#40C4FF","#00B0FF","#0091EA","#00BCD4",
+        "#4DD0E1","#00ACC1","#0097A7","#00E5FF","#00B8D4","#009688","#4DB6AC","#00897B","#00796B","#00695C",
+        "#004D40","#00BFA5","#4CAF50","#66BB6A","#43A047","#388E3C","#2E7D32","#1B5E20","#8BC34A","#9CCC65",
+        "#7CB342","#558B2F","#33691E","#CDDC39","#D4E157","#AFB42B","#9E9D24","#827717","#FFEB3B","#FFEE58",
+        "#FDD835","#FBC02D","#F9A825","#F57F17","#FFC107","#FFCA28","#FFB300","#FF8F00","#FF6F00","#FF9800",
+        "#FFA726","#F57C00","#E65100","#FF6D00","#FF5722","#E64A19","#D84315","#BF360C","#DD2C00","#795548",
+        "#3E2723","#607D8B","#455A64","#37474F","#263238"
+    ];
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
         return result;
     };
     var getOptionTextField = function(attributes, tableName, fieldName, field, table) {
-        //Determine the number of headings 
+        //Determine the number of headings
         var expression = tableName + '_entry';
         var value = attributes[expression];
         return value;
@@ -76,7 +90,7 @@ var asset = {};
         //If there is a list then  it can be either an array or a string(If it is an array it sends it back as a Java array which is not detected)
         list = parse(stringify(list));
         var ref = require('utils').reflection;
-        //Determine if the list is provided as a string 
+        //Determine if the list is provided as a string
         if (!ref.isArray(list)) {
             list = list.split(',');
         }
@@ -121,7 +135,7 @@ var asset = {};
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
                 if(log.isDebugEnabled()){
-                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);                    
+                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);
                 }
             } else {
                 log.debug(attrName + ' will not be saved.');
@@ -272,10 +286,10 @@ var asset = {};
         var group = this.getAssetGroup(currentAsset);
         var asset;
         //Go through each asset in the group and remove the default property
-        //if it is present 
+        //if it is present
         for (var index = 0; index < group.length; index++) {
             asset = group[index];
-            //Omit the current asset 
+            //Omit the current asset
             if (asset.id !== currentAsset.id) {
                 var properties = this.registry.properties(asset.path);
                 //Check if the default property is present and remove it
@@ -460,14 +474,14 @@ var asset = {};
     };
     var buildQueryString = function(query,options) {
         var queryString = [];
-        var value;  
+        var value;
         options = options || {};
         var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
         for(var key in query) {
             //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
                 value = query[key];
-                //If the key contains an underscore (_) we 
+                //If the key contains an underscore (_) we
                 //need  replace it with a semi colon (:)
                 //as the underlying API requires this
                 //Note: This prevents us from searching props
@@ -475,7 +489,7 @@ var asset = {};
                 key = key.replace('_',':');
                 //Check if wildcard search is enabled
                 if(wildcard){
-                    value = '*'+value+'*'; 
+                    value = '*'+value+'*';
                 }
                 queryString.push(key+'='+value);
             }
@@ -532,7 +546,7 @@ var asset = {};
                 try{
                     //This is wrapped in a try catch as
                     //some generic artifacts do no have the getMediaType method
-                    mediaType = current.getMediaType(); 
+                    mediaType = current.getMediaType();
                 } catch (e){
                     log.error('Unable to resolve the media type of an asset returned from a cross type search.This asset will be dropped from the result set');
                 }
@@ -566,7 +580,7 @@ var asset = {};
                     assetManager = asset.createUserAssetManager(session,item.type);
                 } else {
                     assetManager = asset.createAnonAssetManager(session,item.type, tenantId);
-                }          
+                }
                 assetManagers[item.type] = assetManager;
             } else {
                 assetManager = assetManagers[item.type];
@@ -606,7 +620,7 @@ var asset = {};
          if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             options.wildcard = false;//query[constants.Q_PROP_GROUP];
             delete query[constants.Q_PROP_GROUP];
-         } 
+         }
          q  = buildQueryString(query, options);
          return q;
     };
@@ -633,7 +647,7 @@ var asset = {};
             if(q.length>0){
                 governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
                 assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
-            }      
+            }
         } catch (e) {
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters',e);
         } finally {
@@ -670,7 +684,7 @@ var asset = {};
         if((!user)&&(!tenantId)) {
             log.error('Unable to create registry instance without a tenantId when there is no logged in user');
             throw 'Unable to create registry instance without a tenantId when there is no logged in user';
-        } 
+        }
         //Determine if a user exists
         if(user){
             userRegistry = storeAPI.user.userRegistry(session);
@@ -1009,7 +1023,7 @@ var asset = {};
         var asset = this.get(id);
         var tagged; //Assume that the tag will not be applied
         var utilsAPI = require('utils');
-        //If the user has provided a single tag then it should be 
+        //If the user has provided a single tag then it should be
         //assigned to an array to keep the registry invocation uniform
         if (!utilsAPI.reflection.isArray(tags)) {
             tags = [tags];
@@ -1196,7 +1210,7 @@ var asset = {};
         var subscriptions = [];
         if (!userSpace) {
             if(log.isDebugEnabled()){
-                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');                
+                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');
             }
             return subscriptions;
         }
@@ -1277,7 +1291,7 @@ var asset = {};
             log.error('Failed to attach a lifecycle as an asset object was not provided.');
             return success;
         }
-        //Check if a lifecycle was provided,if not check if it is provided in the 
+        //Check if a lifecycle was provided,if not check if it is provided in the
         //configuration
         if (lifecycle == '') {
             lifecycle = this.rxtManager.getLifecycleName(this.type);
@@ -1606,6 +1620,49 @@ var asset = {};
         modAsset.tables = tables;
         return modAsset;
     };
+
+    AssetManager.prototype.setUIMetaData = function (asset) {
+        if ((!asset) || (!asset.attributes)) {
+            if (log.isDebugEnabled()) {
+                log.debug('Could not populate asset details of  type: ' + asset.type);
+            }
+            return;
+        }
+        if (asset.name) {
+            var value = asset.name;
+            if (value) {
+                var str = value.trim().split(" ");
+                try {
+                    var firstChar = str[0].charAt(0);
+                    var secondChar = str[1].charAt(0).toLowerCase();
+                } catch (err) {
+                    if (typeof secondChar === 'undefined') {
+                        secondChar = "";
+                    }
+                }
+                asset.nameToChar = firstChar + secondChar;
+                asset.uniqueColor = getColorCode(asset.type, asset.nameToChar);
+            }
+        } else {
+            asset.uniqueColor = [Math.floor(Math.random() * defaultPalette.length)]
+        }
+        return asset;
+    };
+
+    var getColorCode = function (type, nameToChar) {
+        var typeArr = type.split('');
+        var colorArr = nameToChar.split('');
+        var intValue = 0;
+        for (i = 0; i < typeArr.length; i++) {
+            intValue += typeArr[i].charCodeAt(0);
+        }
+        for (i = 0; i < colorArr.length; i++) {
+            intValue += colorArr[i].charCodeAt(0);
+        }
+        intValue = (intValue % defaultPalette.length);
+        return defaultPalette[Math.round(intValue)];
+    };
+
     var renderSingleAssetPage = function(page, assets, am) {
         page.assets.name = am.getName(assets);
         page.assets.thumbnail = am.getThumbnail(assets);
@@ -1649,9 +1706,11 @@ var asset = {};
             var assets = asset;
             for (var index in assets) {
                 addAssetMetaData(assets[index], am);
+                am.setUIMetaData(assets[index]);
             }
         } else {
             addAssetMetaData(asset, am);
+            am.setUIMetaData(asset, am);
         }
     };
     var addAssetMetaData = function(asset, am) {

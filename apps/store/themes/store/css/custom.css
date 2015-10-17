@@ -1295,15 +1295,6 @@ h2.app-title {
     height: 28px;
     overflow: hidden;
 }
-.ctrl-wr-asset .ast-img {
-    width: 100%;
-    display: block;
-    min-height: 150px;
-    max-height: 150px;
-    min-width: 150px;
-    max-width: 150px;
-    overflow: hidden;
-}
 .ctrl-wr-asset {
     position: relative;
     height: 255px;
@@ -1316,6 +1307,13 @@ h2.app-title {
 .ctrl-wr-asset .ast-content {
     background-color: #fff;
 }
+
+.ctrl-wr-asset.selected {
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #ccc;
+    margin-right: 1.5%;
+}
+
 
 
 .itm-ast {

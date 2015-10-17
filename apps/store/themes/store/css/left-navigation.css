@@ -510,6 +510,90 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     transition: all 0.5s ease;
     border: 1px solid #F1EBEB;
 }
+
+
+/* ============================================================ */
+
+.ast-img {
+    width: 100%;
+    background: #ffffff;
+    height:145px;
+    overflow-y: hidden;
+}
+
+.ast-img img{
+    width:100%;
+    height: auto;
+}
+.ast-img .ast-name-icon{
+    color:#fff;
+    width:100%;
+    font-size:6.5em;
+    text-align:center;
+    font-weight:200;
+    text-transform:capitalize;
+}
+.ast-img .ast-name-img{
+    text-align:center;
+    width:100%;
+    overflow:hidden;
+    position: relative;
+    overflow: hidden;
+}
+.ast-img .ast-name-img:before {
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: 100%;
+}
+
+.ast-img .ast-name-img > .square-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+
+.ast-img .ast-type-icon{
+    display:block;
+    background:rgba(0, 0, 0, .3);
+    color:#fff;
+    width:40px;
+    height:40px;
+    position:absolute;
+    top:105px;
+    z-index: 999;
+}
+.ast-img .ast-type-icon i{
+    font-size:2.2em;
+    padding:9px 6px;
+}
+.ast-desc {
+    /*float:left;*/
+    margin-left:0;
+    position: relative;
+}
+.ast-desc:hover {
+    color: #222222 !important;
+}
+
+.ast-desc span:before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    width: 25px;
+    height: 100%;
+    top: 0;
+    right: 0;
+
+}
+
+
+/* ============================================================ */
+
+
 /*==========  Non-Mobile First Method  ==========*/
 
 /* Large Devices, Wide Screens */
