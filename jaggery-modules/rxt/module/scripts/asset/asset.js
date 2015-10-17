@@ -1603,6 +1603,7 @@ var asset = {};
         modAsset.mediaType = asset.mediaType;
         modAsset.type = asset.type;
         modAsset.path = asset.path;
+        modAsset.name = asset.name;
         var tables = this.rxtManager.listRxtTypeTables(this.type);
         var table;
         var fields;
@@ -1629,15 +1630,18 @@ var asset = {};
             }
         }
         modAsset.tables = tables;
+        if (modAsset.name) {
+            modAsset = this.setUIMetaData(modAsset);
+        }
         return modAsset;
     };
 
     AssetManager.prototype.setUIMetaData = function (asset) {
-        if ((!asset) || (!asset.attributes)) {
+        if ((!asset) || (!asset.name)) {
             if (log.isDebugEnabled()) {
                 log.debug('Could not populate asset details of  type: ' + asset.type);
             }
-            return;
+            return asset;
         }
         if (asset.name) {
             var value = asset.name;
