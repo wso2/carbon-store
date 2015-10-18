@@ -1,12 +1,13 @@
 {{#if thumbnail}}
     <div class="ast-img setbgcolor">
-        <span class="ast-type-icon">
-            <i class="fw fw-resource fw-lg"></i>
-        </span>
+                                    <span class="ast-type-icon">
+                                        <i class="fw fw-resource fw-lg"></i>
+                                    </span>
         <div class="ast-name-img">
             <img alt="thumbnail" class="square-element" src="{{tenantedUrl ""}}/storage/{{type}}/{{id}}/{{thumbnail}}">
         </div>
     </div>
+
 {{else}}
-    {{> assets-default-thumbnail ..}}
+    {{> asset-default-thumbnail ..}}
 {{/if}}
