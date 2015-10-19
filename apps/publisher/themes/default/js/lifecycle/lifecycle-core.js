@@ -601,8 +601,8 @@ var LifecycleUtils = {};
                 LifecycleAPI.event(constants.EVENT_STATE_CHANGE);
                 that.fetchState();
             },
-            error: function() {
-                LifecycleAPI.event(constants.EVENT_ACTION_FAILED);
+            error: function (jqXHR, textStatus, errorThrown) {
+                LifecycleAPI.event(constants.EVENT_ACTION_FAILED, jqXHR.responseJSON);
             }
         });
     };

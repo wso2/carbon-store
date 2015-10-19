@@ -366,9 +366,18 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_ACTION_FAILED, function() {
         unblockLCActions();
         //unrenderTransitionUI();
-        LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
-            type: 'error'
-        });
+        var notifyMessage = constants.MSG_ERROR_STATE_CHANGE;
+        if (arguments[0] && arguments[0].error && arguments[0].error.message){
+            notifyMessage = arguments[0].error.message;
+            LifecycleAPI.notify(notifyMessage, {
+                type: 'error'
+            });
+        }
+        else{
+            LifecycleAPI.notify(config(config(constants.MSG_ERROR_STATE_CHANGE)), {
+                type: 'error'
+            });
+        }
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
         renderHistory();
