@@ -374,7 +374,7 @@ var error = '';
         var lifecycle = lcApi.getLifecycle(lcName, tenantId);
         var rxtManager = coreApi.rxtManager(tenantId);
         var lcState = am.getLifecycleState(asset, lcName);
-		var lcCheckedStates = am.getLifecycleCheckedState(asset.id, lcName);
+        var lcCheckedStates = am.getLifecycleCheckedState(asset.id, lcName);
         //Obtain the state data
         state = lifecycle.state(lcState);
         if (!state) {
@@ -394,7 +394,6 @@ var error = '';
         }
         //Update the state of the check items
         state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates);
-        state.approvedActions = new Object();
         state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
         state.isLCActionsPermitted = isLCActionsPermitted(asset, options, req, res, session);
         return state;
