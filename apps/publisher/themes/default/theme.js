@@ -545,6 +545,25 @@ var engine = caramel.engine('handlebars', (function() {
                 log.error('[hasAppPermission] User ' + username + ' does not have permission: ' + key + ' to see ui area');
                 return ;
             });
+            Handlebars.registerHelper('renderCheckbox', function(value) {
+                var out = '';
+                if( value === "true") {
+                    out += '<div class="col-sm-10"><input type="checkbox" checked disabled="disabled"/></div>';
+                } else {
+                    out += '<div class="col-sm-10"><input type="checkbox" disabled="disabled"/></div>';
+                }
+                return new Handlebars.SafeString(out);
+            });
+
+            Handlebars.registerHelper('if_equal', function(lvalue, rvalue, options) {
+                if (arguments.length < 3)
+                    throw new Error("Handlebars Helper equal needs 2 parameters");
+                if( lvalue!=rvalue ) {
+                    return options.inverse(this);
+                } else {
+                    return options.fn(this);
+                }
+            });
         },
         render: function(data, meta) {
             this.__proto__.render.call(this, data, meta);
