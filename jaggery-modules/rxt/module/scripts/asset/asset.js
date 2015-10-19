@@ -1349,6 +1349,7 @@ var asset = {};
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
+            throw e;
         }
         return success;
     };

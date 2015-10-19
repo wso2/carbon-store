@@ -132,7 +132,8 @@ var error = '';
             if (log.isDebugEnabled()) {
                 log.debug(e);
             }
-            throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
+            // throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.INTERNAL_SERVER_ERROR );
+            throw exceptionModule.buildExceptionObject(e.message, constants.STATUS_CODES.INTERNAL_SERVER_ERROR );
         }
         return success;
     };

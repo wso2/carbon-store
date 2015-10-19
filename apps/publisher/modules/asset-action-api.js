@@ -113,7 +113,12 @@ var api = {};
         options.nextState = data.nextState;
         options.comment = data.comment;
         //Call the state change api
-        success = lifecycleAPI.changeState(options, req, res, session);
+
+        try {
+            success = lifecycleAPI.changeState(options, req, res, session);
+        } catch (e) {
+            throw e;
+        }
         if (success) {
             //Obtain the next states
             result.newState = data.nextState;
