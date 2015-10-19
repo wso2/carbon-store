@@ -157,7 +157,6 @@ footer {
 .wrapper {
     min-width: 320px;
     min-height: 500px;
-    overflow-x: hidden;
 }
 
 
@@ -807,16 +806,15 @@ a.ast-type-item:hover {
     float: left;
     font-size: 22px;
     height: 59px;
-    padding: 14px 0px 0;
+    padding: 27px 0px 0;
     width: auto;
     margin-bottom: 15px;
-    margin-left: -12px;
 }
 
 .title a {
     color: #333;
     font-weight: 200;
-    font-size: 26px;
+    font-size: 20px;
 }
 
 .title a:hover {
@@ -925,7 +923,7 @@ a.more:focus {
     padding:20px;
     border:solid 1px #ccc;
     background: rgba(48, 162, 249, 0.06);
-    margin:10px;
+    margin:10px 10px 10px 2px;
 }
 .wr-filter-category {
     float: left;
@@ -1297,15 +1295,6 @@ h2.app-title {
     height: 28px;
     overflow: hidden;
 }
-.ctrl-wr-asset .ast-img {
-    width: 100%;
-    display: block;
-    min-height: 150px;
-    max-height: 150px;
-    min-width: 150px;
-    max-width: 150px;
-    overflow: hidden;
-}
 .ctrl-wr-asset {
     position: relative;
     height: 255px;
@@ -1319,13 +1308,21 @@ h2.app-title {
     background-color: #fff;
 }
 
+.ctrl-wr-asset.selected {
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #ccc;
+    margin-right: 1.5%;
+}
+
+
 
 .itm-ast {
     display:block;
     cursor: pointer;
     padding:0;
     margin-bottom:0px;
-    width:152px;
+    width: 100%;
+    min-width:152px;
     border: 1px solid #efefef;
 }
 .itm-ast:hover h3, .itm-ast:hover {

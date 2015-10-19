@@ -157,6 +157,11 @@ Publisher.prototype.assetLinks = function(type) {
     mod = require(path);
     return mod.assetLinks(this.user);
 };
+
+Publisher.prototype.setUIMetaData = function (asset) {
+    return this.rxtManager.setUIMetaData(asset)
+};
+
 /**
  * Returns apis of a asset for the current user
  * @param type Asset type

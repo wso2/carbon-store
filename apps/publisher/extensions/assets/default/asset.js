@@ -383,6 +383,10 @@ asset.renderer = function(ctx) {
                 ribbon.breadcrumb = assetTypes;
                 return page;
             },
+            getStoreUrl: function (page) {
+                page.storeUrl = require('/config/publisher.js').config().storeUrl;
+                return page;
+            },
             populateAttachedLifecycles: function(page) {
                 if (page.assets.id) {
                     require('/modules/page-decorators.js').pageDecorators.populateAttachedLifecycles(ctx, page, this);

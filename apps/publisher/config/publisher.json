@@ -66,5 +66,6 @@
     },
     "constants": {
         "assetCreatedDateLength": 20
-    }
+    },
+  "storeUrl" : "%https.host%/store"
 }

@@ -218,50 +218,88 @@ a.ctrl-filter-category:hover {
 
 
 
-/* testing */
+/* ============================================================ */
 
-/*GROW*/
-/*
-.ast-img img {
-  -webkit-transition: all 0.5s ease;
-     -moz-transition: all 0.5s ease;
-       -o-transition: all 0.5s ease;
-      -ms-transition: all 0.5s ease;
-          transition: all 0.5s ease;
-}
- 
-.ast-img img:hover {
-  width: 150px;
-  height: 150px;
-}
-*/
 .ast-img {
-    width:    150px;
-    height:   150px;
-    display:  inline-block;
+    width: 100%;
+    background: #ffffff;
+    height:145px;
+    overflow-y: hidden;
+}
+
+.ast-img img{
+    width:100%;
+    height: auto;
+}
+.ast-img .ast-name-icon{
+    color:#fff;
+    width:100%;
+    max-width: 150px;
+    max-height: 150px;
+    font-size:6.5em;
+    text-align:center;
+    font-weight:200;
+    text-transform:capitalize;
+}
+.ast-img .ast-name-img{
+    text-align:center;
+    width:100%;
+    overflow:hidden;
     position: relative;
     overflow: hidden;
 }
-.ast-img img {
+.ast-img .ast-name-img:before {
+    display: block;
+    content: "";
+    width: 100%;
+    padding-top: 100%;
+}
+
+.ast-img .ast-name-img > .square-element {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+
+.ast-img .ast-type-icon{
+    display:block;
+    background:rgba(0, 0, 0, .3);
+    color:#fff;
+    width:40px;
+    height:40px;
     position:relative;
-    top:0px;
-    left:0px;
-    width:       100%;
-    height:      100%;
-    line-height: 0;
-    -webkit-transition: all 0.1s ease;
-    -moz-transition:    all 0.1s ease;
-    -o-transition:      all 0.1s ease;
-    -ms-transition:     all 0.1s ease;
-    transition:         all 0.1s ease;
+    top:105px;
+    z-index: 999;
 }
-.ast-img img:hover {
-    top:-8px;
-    left:-8px;
-    opacity: 0.8;
-    width:   110%;
-    height:  110%;
+.ast-img .ast-type-icon i{
+    font-size:2.2em;
+    padding:9px 6px;
 }
+.ast-desc {
+    /*float:left;*/
+    margin-left:0;
+    position: relative;
+}
+.ast-desc:hover {
+    color: #222222 !important;
+}
+
+.ast-desc span:before {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    width: 25px;
+    height: 100%;
+    top: 0;
+    right: 0;
+
+}
+
+
+/* ============================================================ */
 
 .advanced-search-icons{
     display: none;

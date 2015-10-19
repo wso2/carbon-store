@@ -58,6 +58,12 @@ require('/modules/store.js').exec(function (ctx) {
     }*/
     page.assetMeta.q = q;
     var output = appManager.render([], page);
+    var recentAssets = output.recentAssets;
+    for(var i in recentAssets){
+        if(recentAssets[i].thumbnail == 'null'){
+            recentAssets[i].thumbnail = null;
+        }
+    }
     caramel.render(output);
     //print(page);
 }, request, response, session);

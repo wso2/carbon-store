@@ -34,13 +34,28 @@ var asset = {};
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
     var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
+    var LifeCycleService = carbon.server.osgiService('org.wso2.carbon.governance.lcm.services.LifeCycleService');
+    var defaultPalette = [
+        "#F44336","#D32F2F","#B71C1C","#E91E63","#F06292","#D81B60","#AD1457","#880E4F","#9C27B0","#BA68C8",
+        "#FF8A80","#FF5252","#FF1744","#D50000","#FF80AB","#FF4081","#F50057","#C51162","#EA80FC","#E040FB",
+        "#D500F9","#AA00FF","#673AB7","#9575CD","#7E57C2","#5E35B1","#512DA8","#4527A0","#B388FF","#7C4DFF",
+        "#651FFF","#6200EA","#3F51B5","#5C6BC0","#3F51B5","#303F9F","#1A237E","#536DFE","#3D5AFE","#304FFE",
+        "#448AFF","#2979FF","#2962FF","#2196F3","#64B5F6","#1E88E5","#1976D2","#1565C0","#0D47A1","#03A9F4",
+        "#4FC3F7","#29B6F6","#039BE5","#0288D1","#0277BD","#01579B","#40C4FF","#00B0FF","#0091EA","#00BCD4",
+        "#4DD0E1","#00ACC1","#0097A7","#00E5FF","#00B8D4","#009688","#4DB6AC","#00897B","#00796B","#00695C",
+        "#004D40","#00BFA5","#4CAF50","#66BB6A","#43A047","#388E3C","#2E7D32","#1B5E20","#8BC34A","#9CCC65",
+        "#7CB342","#558B2F","#33691E","#CDDC39","#D4E157","#AFB42B","#9E9D24","#827717","#FFEB3B","#FFEE58",
+        "#FDD835","#FBC02D","#F9A825","#F57F17","#FFC107","#FFCA28","#FFB300","#FF8F00","#FF6F00","#FF9800",
+        "#FFA726","#F57C00","#E65100","#FF6D00","#FF5722","#E64A19","#D84315","#BF360C","#DD2C00","#795548",
+        "#3E2723","#607D8B","#455A64","#37474F","#263238"
+    ];
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
         return result;
     };
     var getOptionTextField = function(attributes, tableName, fieldName, field, table) {
-        //Determine the number of headings 
+        //Determine the number of headings
         var expression = tableName + '_entry';
         var value = attributes[expression];
         return value;
@@ -1334,6 +1349,7 @@ var asset = {};
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
+            throw e;
         }
         return success;
     };
@@ -1400,6 +1416,16 @@ var asset = {};
     };
     AssetManager.prototype.getLifecycleState = function(asset, lifecycle) {
         return this.am.getLifecycleState(asset, lifecycle);
+    };
+    /**
+     * Returns state of the lifecycle on specified asset w.r.t. current user session's privileges
+     * @param  {String}	artifactId
+     * @param  {String} artifactLC
+     * @return {org.wso2.carbon.governance.lcm.beans.LifeCycleCheckListItemBean}
+     */
+    AssetManager.prototype.getLifecycleCheckedState = function(artifactId, artifactLC) {
+        var lifeCycleStateBean = LifeCycleService.getLifeCycleStateBean(artifactId, artifactLC);
+        return lifeCycleStateBean;
     };
     AssetManager.prototype.getLifecycleHistory = function(id) {
         var artifact = this.am.get(id);
@@ -1578,6 +1604,7 @@ var asset = {};
         modAsset.mediaType = asset.mediaType;
         modAsset.type = asset.type;
         modAsset.path = asset.path;
+        modAsset.name = asset.name;
         var tables = this.rxtManager.listRxtTypeTables(this.type);
         var table;
         var fields;
@@ -1604,8 +1631,54 @@ var asset = {};
             }
         }
         modAsset.tables = tables;
+        if (modAsset.name) {
+            modAsset = this.setUIMetaData(modAsset);
+        }
         return modAsset;
     };
+
+    AssetManager.prototype.setUIMetaData = function (asset) {
+        if ((!asset) || (!asset.name)) {
+            if (log.isDebugEnabled()) {
+                log.debug('Could not populate asset details of  type: ' + asset.type);
+            }
+            return asset;
+        }
+        if (asset.name) {
+            var value = asset.name;
+            if (value) {
+                var str = value.trim().split(" ");
+                try {
+                    var firstChar = str[0].charAt(0);
+                    var secondChar = str[1].charAt(0).toLowerCase();
+                } catch (err) {
+                    if (typeof secondChar === 'undefined') {
+                        secondChar = "";
+                    }
+                }
+                asset.nameToChar = firstChar + secondChar;
+                asset.uniqueColor = getColorCode(asset.type, asset.nameToChar);
+            }
+        } else {
+            asset.uniqueColor = [Math.floor(Math.random() * defaultPalette.length)]
+        }
+        return asset;
+    };
+
+    var getColorCode = function (type, nameToChar) {
+        var typeArr = type.split('');
+        var colorArr = nameToChar.split('');
+        var intValue = 0;
+        for (i = 0; i < typeArr.length; i++) {
+            intValue += typeArr[i].charCodeAt(0);
+        }
+        for (i = 0; i < colorArr.length; i++) {
+            intValue += colorArr[i].charCodeAt(0);
+        }
+        intValue = (intValue % defaultPalette.length);
+        return defaultPalette[Math.round(intValue)];
+    };
+
     var renderSingleAssetPage = function(page, assets, am) {
         page.assets.name = am.getName(assets);
         page.assets.thumbnail = am.getThumbnail(assets);
@@ -1649,9 +1722,11 @@ var asset = {};
             var assets = asset;
             for (var index in assets) {
                 addAssetMetaData(assets[index], am);
+                am.setUIMetaData(assets[index]);
             }
         } else {
             addAssetMetaData(asset, am);
+            am.setUIMetaData(asset, am);
         }
     };
     var addAssetMetaData = function(asset, am) {

@@ -306,19 +306,14 @@ var pageDecorators = {};
         page.popularAssets = items;
     };
     pageDecorators.tags = function(ctx, page) {
-        var am = getAssetManager(ctx);
-        if(page.assets.id){
-            page.tags = am.getTags(page.assets.id);
-        }else {
-            var paging = {
-                'start': 0,
-                'count': 1000,
-                'sortOrder': 'ASC',
-                'sortBy': '',
-                'paginationLimit': 1000
-            };
-            page.tags = doTermSearch(ctx,'tags', paging, true);
-        }
+        var paging = {
+            'start': 0,
+            'count': 1000,
+            'sortOrder': 'ASC',
+            'sortBy': '',
+            'paginationLimit': 1000
+        };
+        page.tags = doTermSearch(ctx,'tags', paging, true);
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {
@@ -580,9 +575,11 @@ var pageDecorators = {};
         var results;
         var map = HashMap();
         var mediaType = 'application/*';
+        var searchPage = '/pages/top-assets';
         if (ctx.assetType) {
             var rxtManager = ctx.rxtManager;
             mediaType = rxtManager.getMediaType(ctx.assetType);
+            searchPage =  '/assets/'+ctx.assetType+'/list';
         }
 
         if (facetField) {
@@ -595,6 +592,7 @@ var pageDecorators = {};
                     var term = {};
                     term.value = current.term;
                     term.frequency = current.frequency;
+                    term.searchPage = searchPage;
                     terms.push(term);
                 }
             } finally {

@@ -657,6 +657,10 @@ Store.prototype.assetsFromProvider = function (asset, type, paging) {
     return assetsFromProvider;
 };
 
+Store.prototype.setUIMetaData = function (asset) {
+    return this.assetManager(asset.type).setUIMetaData(asset)
+};
+
 //TODO: check the logic
 Store.prototype.isuserasset = function (aid, type) {
     var j,

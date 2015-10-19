@@ -11,7 +11,7 @@ var permissions={};
     var isLCActionsPermitted = function(resourcePath, session) {
     	//log.info('###Checking permissions ###');
         var permissionAPI = require('rxt').permissions;
-        var isAuthorized =   permissionAPI.hasActionPermissionforPath(resourcePath, 'authorize', session);
+        var isAuthorized =   permissionAPI.hasActionPermissionforPath(resourcePath, 'write', session);
         return isAuthorized;
     };
     permissions.isLCActionsPermitted = isLCActionsPermitted;

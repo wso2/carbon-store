@@ -10,8 +10,11 @@
                 {{#if this.url}}
                     <div class="col-sm-10"><a href="{{value}}">{{value}}</a></div>
                 {{else}}
-
-                    <div class="col-sm-10">{{value}}</div>
+                    {{#if_equal this.type "checkbox"}}
+                        {{renderCheckbox value}}
+                    {{else}}
+                        <div class="col-sm-10">{{value}}</div>
+                    {{/if_equal}}
                 {{/if}}
             </div>
     {{/eachField}}
