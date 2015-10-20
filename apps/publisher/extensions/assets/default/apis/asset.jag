@@ -45,10 +45,15 @@ require('/modules/publisher.js').exec(function(ctx) {
         result.success = false;
         result.code = 500;
         result.message = 'Oops, something has gone wrong.Check the server logs for more information.';
+        result.errorContent = new Object();
+
+        result.errorContent.message = e.message;
+        result.errorContent.exception = e;
+
     }
     if (result.success) {
         response = responseProcessor.buildSuccessResponse(response, result.code, result.data);
     } else {
-    	response = responseProcessor.buildErrorResponse(response, result.code, result.message);
+    	response = responseProcessor.buildErrorResponse(response, result.code, result.errorContent);
     }
 }, request, response, session); %>
