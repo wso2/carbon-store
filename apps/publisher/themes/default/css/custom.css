@@ -462,7 +462,7 @@ h3.ast-name:after {
     white-space: nowrap;
     word-break: keep-all;
     display: inline-block;
-    height: 14px;
+    height: 15px;
     width:90px;
     position: relative;
     overflow:hidden;
