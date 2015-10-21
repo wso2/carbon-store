@@ -24,6 +24,8 @@ var log = new Log();
 var relyingParty = request.getParameter('relyingParty');
 var RelayState = request.getParameter('RelayState');
 RelayState = RelayState.replace(/\W+/g, "");
+var sessionDataKey = escape(request.getParameter("sessionDataKey"));
+
 //TODO: this should be fixed properly
 if (relyingParty instanceof Array) {
     relyingParty = relyingParty.pop();
@@ -84,7 +86,7 @@ if(RelayState){
                                 </div>
                                     <!--<input type="checkbox" value="remember-me" style="display: inline"> Remember me
                                     <br><br>-->
-                                <input type="hidden" name="sessionDataKey" value="<%=request.getParameter("sessionDataKey")%>">
+                                <input type="hidden" name="sessionDataKey" value="<%=sessionDataKey%>">
                                 <input type="hidden" name="RelayState" value="<%=RelayState%>">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <% if (isPasswordRecoveryEnabled) { %>
