@@ -23,6 +23,7 @@ var e = request.getParameter('authFailure');
 var log = new Log();
 var relyingParty = request.getParameter('relyingParty');
 var RelayState = request.getParameter('RelayState');
+RelayState = RelayState.replace(/\W+/g, "");
 //TODO: this should be fixed properly
 if (relyingParty instanceof Array) {
     relyingParty = relyingParty.pop();
