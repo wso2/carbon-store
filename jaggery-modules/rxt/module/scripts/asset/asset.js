@@ -36,18 +36,10 @@ var asset = {};
     var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
     var LifeCycleService = carbon.server.osgiService('org.wso2.carbon.governance.lcm.services.LifeCycleService');
     var defaultPalette = [
-        "#F44336","#D32F2F","#B71C1C","#E91E63","#F06292","#D81B60","#AD1457","#880E4F","#9C27B0","#BA68C8",
-        "#FF8A80","#FF5252","#FF1744","#D50000","#FF80AB","#FF4081","#F50057","#C51162","#EA80FC","#E040FB",
-        "#D500F9","#AA00FF","#673AB7","#9575CD","#7E57C2","#5E35B1","#512DA8","#4527A0","#B388FF","#7C4DFF",
-        "#651FFF","#6200EA","#3F51B5","#5C6BC0","#3F51B5","#303F9F","#1A237E","#536DFE","#3D5AFE","#304FFE",
-        "#448AFF","#2979FF","#2962FF","#2196F3","#64B5F6","#1E88E5","#1976D2","#1565C0","#0D47A1","#03A9F4",
-        "#4FC3F7","#29B6F6","#039BE5","#0288D1","#0277BD","#01579B","#40C4FF","#00B0FF","#0091EA","#00BCD4",
-        "#4DD0E1","#00ACC1","#0097A7","#00E5FF","#00B8D4","#009688","#4DB6AC","#00897B","#00796B","#00695C",
-        "#004D40","#00BFA5","#4CAF50","#66BB6A","#43A047","#388E3C","#2E7D32","#1B5E20","#8BC34A","#9CCC65",
-        "#7CB342","#558B2F","#33691E","#CDDC39","#D4E157","#AFB42B","#9E9D24","#827717","#FFEB3B","#FFEE58",
-        "#FDD835","#FBC02D","#F9A825","#F57F17","#FFC107","#FFCA28","#FFB300","#FF8F00","#FF6F00","#FF9800",
-        "#FFA726","#F57C00","#E65100","#FF6D00","#FF5722","#E64A19","#D84315","#BF360C","#DD2C00","#795548",
-        "#3E2723","#607D8B","#455A64","#37474F","#263238"
+        "#1abc9c", "#16a085", "#2ecc71", "#27ae60",
+        "#3498db", "#2980b9", "#9b59b6", "#8e44ad",
+        "#34495e", "#2c3e50", "#f1c40f", "#f39c12",
+        "#e67e22", "#d35400", "#e74c3c", "#c0392b"
     ];
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
@@ -1349,6 +1341,7 @@ var asset = {};
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
+            throw e;
         }
         return success;
     };
@@ -1652,7 +1645,11 @@ var asset = {};
                     var secondChar = str[1].charAt(0).toLowerCase();
                 } catch (err) {
                     if (typeof secondChar === 'undefined') {
-                        secondChar = "";
+                        if (str.length > 2){
+                            secondChar =str[0].charAt(1);
+                        } else {
+                            secondChar = "";
+                        }
                     }
                 }
                 asset.nameToChar = firstChar + secondChar;
@@ -1741,6 +1738,7 @@ var asset = {};
         asset.rating = 0;
         asset.version = am.getVersion(asset);
         am.setDefaultAssetInfo(asset);
+        am.setUIMetaData(asset, am);
         //am.setAssetVersionInfo(asset);
     };
     /**

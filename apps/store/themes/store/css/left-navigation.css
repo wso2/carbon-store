@@ -1,6 +1,6 @@
 /* Custom Stylesheet */
 body {
-    background: #f9f9f9;
+    background: #EFEFEF;
 }
 nav.navigation {
     background: #525252;
@@ -255,7 +255,7 @@ nav.navigation .second_level > .left-menu-item {
     padding-top: 10px;
 }
 
-dropdown-menu> li a:hover {
+.dropdown-menu> li a:hover {
     background: #1a78d8;
     cursor: pointer;
     color: #fff;
@@ -355,11 +355,10 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     font-weight:100;
     margin-left:33px;
 }
-
+.tags-wrapper{margin-top: 15px;}
 .tag-title {
     background-color: #f4f4f4;
-    border-right: 1px solid #e9e9e9;
-    border-bottom: 2px solid #e9e9e9;
+    border: 1px solid #e9e9e9;
     height: 40px;
     padding-top: 5px;
     width: 200px;
@@ -377,17 +376,19 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     border-bottom: 2px solid #e9e9e9;
     padding-bottom: 15px;
     background-color: #FDFDFD;
+    padding-top: 10px;
 
 }
 
 .tag-content > a > label {
-    padding: 3px;
+    padding: 3px 8px;
     line-height: 19px;
     font-weight: 100;
     margin-right: 5px;
     cursor: pointer;
     border: 1px solid #E4E3E3;
     font-size: 12px;
+    color: #333;
 }
 
 .tag-content > a > label:hover {
@@ -563,8 +564,11 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     width:40px;
     height:40px;
     position:absolute;
-    top:105px;
+    top:110px;
     z-index: 999;
+}
+.asset-details-header .ast-img .ast-type-icon{
+    top:120px;
 }
 .ast-img .ast-type-icon i{
     font-size:2.2em;
@@ -590,7 +594,20 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 }
 
-
+.details-container {
+    margin-top: 30px;
+}
+.details-image {
+    margin-top: 15px;
+}
+.asset-description-header h3{
+    padding-bottom:10px;
+    padding-top:10px;
+    border-bottom:1px solid #ccc;
+}
+#social-button-div{
+    padding-top:12px;
+}
 /* ============================================================ */
 
 
@@ -610,6 +627,8 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         background: #fbfbfb;
         transition: all 0.5s ease;
         border: 1px solid #F1EBEB;
+        height: auto;
+        margin-right: 3%;
     }
     .wr-asset {
         width: 19%;

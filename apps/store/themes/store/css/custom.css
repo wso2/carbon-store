@@ -299,17 +299,19 @@ a.ast-name:after {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
 
 }
-a.ast-name {
-    font-weight:300;
-    font-size:20px;
-    color:#555;
-    margin-top:2px;
-    margin-bottom:2px;
-    display: block;
+a.ast-name{
+    font-size: 16px !important;
+    font-weight: unset;
+    color: #555;
+    margin-bottom: 3px;
+    max-height: 45px;
     overflow: hidden;
-    white-space: nowrap;
-    height: 26px;
-    position: relative;
+    font-weight: 100;
+    padding-top: 0px;
+    margin-top: 0px;
+    height: 32px;
+    word-wrap: break-word !important;
+    white-space: normal !important;
 }
 
 a.ast-name:hover {
@@ -522,6 +524,7 @@ a.ast-name:hover {
     right: 31px;
     /* top: -8px; */
     margin-top: -3px;
+    height: auto;
 }
 .bookmark-link span{
     padding-right:4px;
@@ -1295,6 +1298,14 @@ h2.app-title {
     height: 28px;
     overflow: hidden;
 }
+.ctrl-wr-asset .ast-img {
+    width: 100%;
+    display: block;
+    min-height: 150px;
+    max-height: 150px;
+    min-width: 150px;
+    overflow: hidden;
+}
 .ctrl-wr-asset {
     position: relative;
     height: 255px;
@@ -1346,7 +1357,7 @@ h2.app-title {
 a.more-list:hover {
     background-color: #dfdfdf;
     float: right;
-    height: 58px;
+    height: 28px;
     opacity: 1;
     padding-right: 22px
 }
