@@ -20,12 +20,12 @@
             <div class="ctrl-asset-type-switcher">
                 <div class="left-menu">
                     <nav class="navigation">
-                        <a href='{{tenantedUrl ""}}/pages/top-assets' class="active home">
+                        <a href='{{tenantedUrl ""}}/pages/top-assets' class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}">
                             <span class="icon"><i class="fw fw-store"></i></span> <span class="left-menu-item">ALL</span>
                         </a>
                         {{#with navigationBar}}
                             {{#each types}}
-                                <a href='{{tenantedUrl ""}}{{this.listingUrl}}' class="purple">
+                                <a href='{{tenantedUrl ""}}{{this.listingUrl}}' class="{{ui.iconColor}} {{this.style}}">
                                     <span class="icon"><i class="{{ui.icon}}"></i></span> <span class="left-menu-item">{{singularLabel}}</span>
                                 </a>
                             {{/each}}
@@ -34,29 +34,23 @@
                     <div class="tags-wrapper">
                         <div class="tag-title"> Tags </div>
                         <div class="tag-content">
-                            <label>Business</label>
-                            <label>Comics</label>
-                            <label>Communication</label>
-                            <label>Education</label>
-                            <label>Entertainment</label>
-                            <label>Finance</label>
-                            <label>Health &amp; Fitness</label>
-                            <label>Media &amp; Video</label>
-                            <label>Medical</label>
-                            <label>Music &amp; Audio</label>
-                            <label>Shopping</label>
-                            <label>Social</label>
-                            <label>Sports</label>
-                            <label>Travel &amp; Local</label>
-                            <label>Widgets</label>
+                            {{#each tags}}
+                                <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><label>{{this.value}}</label></a>
+                            {{/each}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div class="search">
-            {{>search .}}
-            <a href="{{url ""}}/pages/advanced-search" class="pull-left advance-search-btn" title="Advanced Search - All Assets"><span class="fa fa-cog advanced-search-icons"></span><span class="advanced-search-text">Search All Assets</span></a>
+            <div class="input-group input-wrap">
+                <input  id="search"  type="text" class="form-control" placeholder="Search for...">
+                <div class="input-group-btn">
+                    <button class="btn btn-default wrap-input-right" id="search-button" type="button" title="Search">
+                        <i class="fw fw-search" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
         </div>
         <!--search--->
     </div>
@@ -69,13 +63,17 @@
             </div>
         </div>
     {{/unless}}
-
+</div>
+<!-- secondary header - app bar -->
+{{> action-bar .}}
+{{#if assetCategoryDetails.hasCategories}}
     <div class="col-md-12 category-wrapper">
         {{#if assetCategoryDetails.hasCategories}}
             <div class="col-xs-1 col-sm-2 col-md-1 col-lg-1 left-col"></div>
             <div class="col-xs-10 col-sm-8 col-md-4 col-lg-10">
                 <div class="category padding-top">
-                    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true"  id="categoryDropDown" title="All Categories">
+                    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown"
+                       aria-expanded="true" id="categoryDropDown" title="All Categories">
                         {{#if assetCategoryDetails.selectedCategory}}
                             {{assetCategoryDetails.selectedCategory}}
                         {{else}}
@@ -90,9 +88,8 @@
                             <li><a tabindex="-1" href="#">{{this}}</a></li>
                         {{/each}}
                     </ul>
-                </div></div>
+                </div>
+            </div>
         {{/if}}
     </div>
-</div>
-<!-- secondary header - app bar -->
-{{> action-bar .}}
+{{/if}}

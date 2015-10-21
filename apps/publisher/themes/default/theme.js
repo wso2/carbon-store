@@ -213,8 +213,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var isReadOnly=false;
                 var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" '+
-                         ' id="' + (name?name:field.name.tableQualifiedName) + '" '+
-                         ' class="input-large"';
+                         ' id="' + (name?name:field.name.tableQualifiedName) + '" ';
+                var className = " input-large form-control ";
+
                 var isUpdatable = true;
 
                 var mode = 'create';
@@ -240,11 +241,14 @@ var engine = caramel.engine('handlebars', (function() {
                     isRequired = true;
                 }
 //                var isRequired=(field.required == 'true' || ( field.required && field.required != "false"))? true : false; //field.required is not boolean
-
+                if(field.validate){
+                    className += ' validate-regexp validate-required';
+                    meta += ' data-regexp="' + field.validate + '" ';
+                }
                 if(isRequired && field.type != 'file'){
-                    meta+=' required';
+                    className += ' validate-required';
                 } else if (isRequired && field.type == 'file' && mode == 'create') {
-                    meta+=' required';
+                    className += ' validate-required';
                 }
 
                 if(placeHolder){
@@ -253,6 +257,7 @@ var engine = caramel.engine('handlebars', (function() {
                 if(field.tooltip){
                     meta += ' data-toggle="tooltip" data-placement="left" title="'+field.tooltip+'" ';
                 }
+                meta += ' class="' + className + '"';
                 return meta;
             };
             var renderFieldLabel = function(field) {
@@ -327,16 +332,16 @@ var engine = caramel.engine('handlebars', (function() {
                     case 'option-text':
                         var values = value.split(":");
                         out = elementPrefix + renderOptionsForOptionsText(values[0], field.values[0].value, field) + elementSuffix;
-                        out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(values[1]) + '" class="form-control"' + renderFieldMetaData(field, field.name.tableQualifiedName+'_text', mode) + ' />' + elementSuffix;
+                        out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(values[1]) + '" ' + renderFieldMetaData(field, field.name.tableQualifiedName+'_text', mode) + ' />' + elementSuffix;
                         break;
                     case 'text':
-                        out = elementPrefix + '<input type="text" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
+                        out = elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(value) + '"" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     case 'text-area':
                         out = elementPrefix + '<textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, mode) + '>' + Handlebars.Utils.escapeExpression(value) + '</textarea>' + elementSuffix;
                         break;
                     case 'file':
-                        out = elementPrefix + '<input type="file" class="form-control" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
+                        out = elementPrefix + '<input type="file" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     case 'date':
                         out = elementPrefix + '<input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
@@ -544,6 +549,25 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 log.error('[hasAppPermission] User ' + username + ' does not have permission: ' + key + ' to see ui area');
                 return ;
+            });
+            Handlebars.registerHelper('renderCheckbox', function(value) {
+                var out = '';
+                if( value === "true") {
+                    out += '<div class="col-sm-10"><input type="checkbox" checked disabled="disabled"/></div>';
+                } else {
+                    out += '<div class="col-sm-10"><input type="checkbox" disabled="disabled"/></div>';
+                }
+                return new Handlebars.SafeString(out);
+            });
+
+            Handlebars.registerHelper('if_equal', function(lvalue, rvalue, options) {
+                if (arguments.length < 3)
+                    throw new Error("Handlebars Helper equal needs 2 parameters");
+                if( lvalue!=rvalue ) {
+                    return options.inverse(this);
+                } else {
+                    return options.fn(this);
+                }
             });
         },
         render: function(data, meta) {

@@ -28,7 +28,7 @@ var constants = {};
     constants.DEFAULT_DESCRIPTION = 'this is list of top assets';
     constants.MSG_PAGE_INFO_NOT_FOUND = 'Title not found';
     constants.DEFAULT_TENANT = -1234;
-    constants.RECENT_ASSET_COUNT = 5; //The default number of recent assets to be retrieved
+    constants.RECENT_ASSET_COUNT = 7; //The default number of recent assets to be retrieved
     constants.POPULAR_ASSET_COUNT = 1;
     constants.DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime';
     constants.ASSET_PROVIDER = 'overview_provider';
@@ -159,6 +159,14 @@ var constants = {};
         sortBy: 'overview_createdtime',
         sortOrder: 'DESC',
         paginationLimit: 100
+    };
+
+    constants.DEFAULT_TAGS_PAGIN = {
+        start: 0,
+        count: 1000,
+        sortBy: '',
+        sortOrder: 'ASC',
+        paginationLimit: 1000
     };
 
     constants.MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;

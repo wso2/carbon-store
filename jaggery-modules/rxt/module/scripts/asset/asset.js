@@ -34,13 +34,20 @@ var asset = {};
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
     var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
+    var LifeCycleService = carbon.server.osgiService('org.wso2.carbon.governance.lcm.services.LifeCycleService');
+    var defaultPalette = [
+        "#1abc9c", "#16a085", "#2ecc71", "#27ae60",
+        "#3498db", "#2980b9", "#9b59b6", "#8e44ad",
+        "#34495e", "#2c3e50", "#f1c40f", "#f39c12",
+        "#e67e22", "#d35400", "#e74c3c", "#c0392b"
+    ];
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
         return result;
     };
     var getOptionTextField = function(attributes, tableName, fieldName, field, table) {
-        //Determine the number of headings 
+        //Determine the number of headings
         var expression = tableName + '_entry';
         var value = attributes[expression];
         return value;
@@ -1334,6 +1341,7 @@ var asset = {};
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
+            throw e;
         }
         return success;
     };
@@ -1400,6 +1408,16 @@ var asset = {};
     };
     AssetManager.prototype.getLifecycleState = function(asset, lifecycle) {
         return this.am.getLifecycleState(asset, lifecycle);
+    };
+    /**
+     * Returns state of the lifecycle on specified asset w.r.t. current user session's privileges
+     * @param  {String}	artifactId
+     * @param  {String} artifactLC
+     * @return {org.wso2.carbon.governance.lcm.beans.LifeCycleCheckListItemBean}
+     */
+    AssetManager.prototype.getLifecycleCheckedState = function(artifactId, artifactLC) {
+        var lifeCycleStateBean = LifeCycleService.getLifeCycleStateBean(artifactId, artifactLC);
+        return lifeCycleStateBean;
     };
     AssetManager.prototype.getLifecycleHistory = function(id) {
         var artifact = this.am.get(id);
@@ -1578,6 +1596,7 @@ var asset = {};
         modAsset.mediaType = asset.mediaType;
         modAsset.type = asset.type;
         modAsset.path = asset.path;
+        modAsset.name = asset.name;
         var tables = this.rxtManager.listRxtTypeTables(this.type);
         var table;
         var fields;
@@ -1604,8 +1623,58 @@ var asset = {};
             }
         }
         modAsset.tables = tables;
+        if (modAsset.name) {
+            modAsset = this.setUIMetaData(modAsset);
+        }
         return modAsset;
     };
+
+    AssetManager.prototype.setUIMetaData = function (asset) {
+        if ((!asset) || (!asset.name)) {
+            if (log.isDebugEnabled()) {
+                log.debug('Could not populate asset details of  type: ' + asset.type);
+            }
+            return asset;
+        }
+        if (asset.name) {
+            var value = asset.name;
+            if (value) {
+                var str = value.trim().split(" ");
+                try {
+                    var firstChar = str[0].charAt(0);
+                    var secondChar = str[1].charAt(0).toLowerCase();
+                } catch (err) {
+                    if (typeof secondChar === 'undefined') {
+                        if (str.length > 2){
+                            secondChar =str[0].charAt(1);
+                        } else {
+                            secondChar = "";
+                        }
+                    }
+                }
+                asset.nameToChar = firstChar + secondChar;
+                asset.uniqueColor = getColorCode(asset.type, asset.nameToChar);
+            }
+        } else {
+            asset.uniqueColor = [Math.floor(Math.random() * defaultPalette.length)]
+        }
+        return asset;
+    };
+
+    var getColorCode = function (type, nameToChar) {
+        var typeArr = type.split('');
+        var colorArr = nameToChar.split('');
+        var intValue = 0;
+        for (i = 0; i < typeArr.length; i++) {
+            intValue += typeArr[i].charCodeAt(0);
+        }
+        for (i = 0; i < colorArr.length; i++) {
+            intValue += colorArr[i].charCodeAt(0);
+        }
+        intValue = (intValue % defaultPalette.length);
+        return defaultPalette[Math.round(intValue)];
+    };
+
     var renderSingleAssetPage = function(page, assets, am) {
         page.assets.name = am.getName(assets);
         page.assets.thumbnail = am.getThumbnail(assets);
@@ -1649,9 +1718,11 @@ var asset = {};
             var assets = asset;
             for (var index in assets) {
                 addAssetMetaData(assets[index], am);
+                am.setUIMetaData(assets[index]);
             }
         } else {
             addAssetMetaData(asset, am);
+            am.setUIMetaData(asset, am);
         }
     };
     var addAssetMetaData = function(asset, am) {
@@ -1667,6 +1738,7 @@ var asset = {};
         asset.rating = 0;
         asset.version = am.getVersion(asset);
         am.setDefaultAssetInfo(asset);
+        am.setUIMetaData(asset, am);
         //am.setAssetVersionInfo(asset);
     };
     /**

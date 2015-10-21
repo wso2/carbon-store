@@ -1030,7 +1030,10 @@ h2 span.fa-stack{
     padding-left:39px;
     margin-bottom:20px;
 }
-
+.error{
+    color: #d10000;
+    margin-top:5px;
+}
 /* custome tables */
 .cu-data-table {
     margin-bottom:25px;

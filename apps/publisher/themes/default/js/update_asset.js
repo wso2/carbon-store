@@ -18,6 +18,7 @@
  */
 
 $(function() {
+    validator.initValidationEvents('form-asset-update',function(){});
     $('#editAssetButton').removeAttr('disabled');
     var obtainFormMeta = function(formId) {
         return $(formId).data();
@@ -25,7 +26,28 @@ $(function() {
 
     $('#form-asset-update').ajaxForm({
         beforeSubmit:function(){
-            $('#editAssetButton').attr('disabled','disabled');
+            var editButton = $('#editAssetButton');
+            editButton.attr('disabled', 'disabled');
+            editButton.next().attr('disabled', 'disabled');
+            caramel.render('loading', 'Creating asset. Please wait..', function (info, content) {
+                var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
+                editButton.parent().append($content);
+            });
+            if (!validator.isValidForm('form-asset-update')) {
+                window.scrollTo(0, 0);
+                $('div.error').each(function () {
+                    var $container = $(this).closest('div.responsive-form-container');
+                    if (!$container.hasClass('in')) {
+                        $container.show('fast').addClass('in');
+                    }
+                });
+                $('#editAssetButton').removeAttr('disabled');
+                setTimeout(
+                    function () {
+                        $('.loading-animation').remove();
+                    }, 1000);
+                return false;
+            }
         },
         success: function(data) {
             messages.alertSuccess('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
@@ -39,7 +61,6 @@ $(function() {
     });
 
     var initDatePicker =  function(){
-        console.info('init date picker');
         if($(this).attr('data-render-options') == "date-time"){
             var dateField = this;
             $(this).DatePicker({
