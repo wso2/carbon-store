@@ -22,6 +22,7 @@ var e = request.getParameter('authFailure');
 
 var log = new Log();
 var relyingParty = request.getParameter('relyingParty');
+relyingParty = relyingParty.replace(/\W+/g, "");
 
 if(!request.isSecure()){
     response.content = { 'authFailure' : e , 'relyingParty' : relyingParty };
