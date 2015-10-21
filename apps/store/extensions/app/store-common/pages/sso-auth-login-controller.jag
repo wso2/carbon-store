@@ -55,7 +55,7 @@
                             <form method="post" action="<%=postUrl%>">
                             <p>
                                <input type="hidden" name="SAMLRequest" value="<%= encodedSAMLAuthRequest %>"/>
-                               <input type="hidden" name="RelayState" value="<%= relayState %>"/>
+                               <input type="hidden" name="RelayState" value="<%= escape(relayState) %>"/>
                                <input type="hidden" name="SSOAuthSessionID" value="<%= sessionId %>"/>
                                <button type="submit">Redirect manually</button>
                            </p>
