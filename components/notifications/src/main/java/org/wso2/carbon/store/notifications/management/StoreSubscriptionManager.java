@@ -17,10 +17,10 @@
 package org.wso2.carbon.store.notifications.management;
 
 import org.wso2.carbon.context.PrivilegedCarbonContext;
-import org.wso2.carbon.event.core.exception.EventBrokerException;
-import org.wso2.carbon.event.core.subscription.Subscription;
-import org.wso2.carbon.event.ws.internal.builders.exceptions.InvalidMessageException;
-import org.wso2.carbon.event.ws.internal.builders.utils.BuilderUtils;
+import org.wso2.carbon.registry.event.core.exception.EventBrokerException;
+import org.wso2.carbon.registry.event.core.subscription.Subscription;
+import org.wso2.carbon.registry.event.ws.internal.builders.exceptions.InvalidMessageException;
+import org.wso2.carbon.registry.event.ws.internal.builders.utils.BuilderUtils;
 import org.wso2.carbon.registry.common.eventing.RegistryEvent;
 import org.wso2.carbon.registry.core.ResourcePath;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
