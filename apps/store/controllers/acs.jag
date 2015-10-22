@@ -24,7 +24,8 @@
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
             //see https://wso2.org/jira/browse/IDENTITY-3454
-            relayState = decodeURIComponent(request.getParameter('RelayState')),
+            //relayState = decodeURIComponent(request.getParameter('RelayState')),
+            relayState = session.get('initUrl'),
             attr = configs.authentication.methods.sso.attributes,
             sso = require('sso'),
             samlRespObj;
