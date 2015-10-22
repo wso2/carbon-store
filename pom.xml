@@ -314,6 +314,16 @@
                 <version>${carbon.registry.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.wso2.carbon.registry</groupId>
+                <artifactId>org.wso2.carbon.registry.event.core</artifactId>
+                <version>${carbon.registry.version}</version>
+            </dependency>
+             <dependency>
+                <groupId>org.wso2.carbon.registry</groupId>
+                <artifactId>org.wso2.carbon.registry.event.ws</artifactId>
+                <version>${carbon.registry.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.shindig</groupId>
                 <artifactId>shindig-server</artifactId>
                 <version>${shindig.version}</version>

@@ -16,9 +16,9 @@
 
 package org.wso2.carbon.store.notifications.service;
 
-import org.wso2.carbon.event.core.exception.EventBrokerException;
-import org.wso2.carbon.event.core.subscription.Subscription;
-import org.wso2.carbon.event.ws.internal.builders.exceptions.InvalidMessageException;
+import org.wso2.carbon.registry.event.core.exception.EventBrokerException;
+import org.wso2.carbon.registry.event.core.subscription.Subscription;
+import org.wso2.carbon.registry.event.ws.internal.builders.exceptions.InvalidMessageException;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.store.notifications.events.*;
 import org.wso2.carbon.store.notifications.management.Constants;
