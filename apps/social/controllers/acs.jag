@@ -31,7 +31,8 @@
             samlRespObj,
             attr = configs.authentication.methods.sso.attributes;
             // see https://wso2.org/jira/browse/IDENTITY-3454 and fix for STORE-1021
-            relayState = relayState.replace(/&amp;/g, '&');
+            //relayState = relayState.replace(/&amp;/g, '&');
+            relayState = session.get('initUrl');
     var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
     var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Password");
     var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Location");

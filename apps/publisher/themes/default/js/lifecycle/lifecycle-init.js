@@ -369,6 +369,9 @@ $(function() {
         var notifyMessage = constants.MSG_ERROR_STATE_CHANGE;
         if (arguments[0] && arguments[0].error && arguments[0].error.message){
             notifyMessage = arguments[0].error.message;
+            var n = notifyMessage.indexOf(": ");
+            //to remove ": " along with exception type 2 was added to n
+            notifyMessage = notifyMessage.substring(n + 2);
             LifecycleAPI.notify(notifyMessage, {
                 type: 'error'
             });

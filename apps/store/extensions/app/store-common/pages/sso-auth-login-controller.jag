@@ -36,6 +36,7 @@
         referer = null;
     }
     var relayState = (referer ? referer : '/store');
+    session.put('initUrl', relayState);
     //TODO: need to parameterize default value in order to support app renaming
 
             var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(attr.issuer);
