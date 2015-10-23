@@ -145,7 +145,6 @@ var core = {};
         if (!lcMap[tenantId]) {
             log.debug('Creating lcMap for the tenant: ' + tenantId + ' in application context');
             lcMap[tenantId] = {};
-            init(tenantId);
         }
         return lcMap[tenantId];
     };
