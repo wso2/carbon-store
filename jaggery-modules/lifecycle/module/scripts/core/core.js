@@ -145,6 +145,7 @@ var core = {};
         if (!lcMap[tenantId]) {
             log.debug('Creating lcMap for the tenant: ' + tenantId + ' in application context');
             lcMap[tenantId] = {};
+            init(tenantId);
         }
         return lcMap[tenantId];
     };
@@ -184,7 +185,11 @@ var core = {};
             throw 'There is no json lifecycle information for the lifecycle: ' + lifecycleName + ' of tenant: ' + tenantId;
         }
         if (!lcMap.json[lifecycleName]) {
-            throw 'There is no lifecycle information for ' + lifecycleName;
+            core.force(tenantId);
+            lcMap = core.configs(tenantId);
+            if (!lcMap.json[lifecycleName]){
+                throw 'There is no lifecycle information for ' + lifecycleName;
+            }
         }
         return lcMap.json[lifecycleName];
     };
@@ -196,6 +201,7 @@ var core = {};
      * @throws There is no json lifecycle information
      */
     core.getLifecycleList = function(tenantId) {
+        core.force(tenantId);
         var lcMap = core.configs(tenantId);
         if (!lcMap) {
             throw 'There is no lifecycle information for the tenant: ' + tenantId;
