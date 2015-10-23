@@ -61,16 +61,14 @@ validator.validate = function (element, callback) {
         return true;
     }
 };
-
+validator.removeValidationEvents = function(form){
+    var $form = typeof form == "string" ? $('#' + form) : form;
+    $form.off('focus blur keyup change', '**');
+    $('.error').remove();
+};
 validator.initValidationEvents = function (form, submitCallback) {
     var $form = typeof form == "string" ? $('#' + form) : form;
-    $form.on('focus', 'input[type="text"]', function (e) {
-        var element = e.target;
-        validator.validate(element);
-    }).on('blur', 'input[type="text"]', function (e) {
-        var element = e.target;
-        validator.validate(element);
-    }).on('keyup', 'input[type="text"]', function (e) {
+    $form.on('focus blur keyup change', 'input[type="text"],input[type="file"],textarea', function (e) {
         var element = e.target;
         validator.validate(element);
     });
@@ -90,7 +88,7 @@ validator.initValidationEvents = function (form, submitCallback) {
 validator.isValidForm = function (form) {
     var $form = typeof form == "string" ? $('#' + form) : form;
     var formIsValid = true;
-    $('input[type="text"]', $form).each(function () {
+    $('input[type="text"],input[type="file"],textarea', $form).each(function () {
         var fieldValid = validator.validate(this);
         formIsValid = formIsValid && fieldValid;
     });
