@@ -23,22 +23,29 @@
             samlResponse = request.getParameter('SAMLResponse'),
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
-            //see https://wso2.org/jira/browse/IDENTITY-3454
-            //relayState = decodeURIComponent(request.getParameter('RelayState')),
-            relayState = session.get('initUrl'),
+    //see https://wso2.org/jira/browse/IDENTITY-3454
+            relayState = decodeURIComponent(request.getParameter('RelayState')),
+    //relayState = session.get('initUrl'),
             attr = configs.authentication.methods.sso.attributes,
             sso = require('sso'),
+            rxtAPI = require('rxt'),
             samlRespObj;
+    var context = rxtAPI.app.getContext();
+    var maliciousRelayState = (!!/^(ftp|http|https):\/\/[^ "]+$/.test(relayState)) ;
+    if(maliciousRelayState){
+        log.error("Malicious URL redirection detected. Redirecting to home page.");
+        relayState = context;
+    }
     var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
     var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Password");
     var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Location");
     var identityAlias = attr.identityAlias;
     var     keyStoreProps = {
-                KEY_STORE_NAME: keyStoreName,
-                KEY_STORE_PASSWORD: keyStorePassword,
-                IDP_ALIAS: identityAlias,
-                USE_ST_KEY: !attr.useTenantKey
-            };
+        KEY_STORE_NAME: keyStoreName,
+        KEY_STORE_PASSWORD: keyStorePassword,
+        IDP_ALIAS: identityAlias,
+        USE_ST_KEY: !attr.useTenantKey
+    };
     var sso_sessions = application.get('sso_sessions');
 
     var loadTenant = function(username) {
@@ -92,9 +99,9 @@
                                 modifiedUsername);
 
                         if (hasStoreLoginPermission) {
-                             user.emitLogin(username)
-                             log.debug('user is set :::' + username);
-                             response.sendRedirect(relayState);
+                            user.emitLogin(username)
+                            log.debug('user is set :::' + username);
+                            response.sendRedirect(relayState);
                         }
                         else{
                             //session.invalidate();
