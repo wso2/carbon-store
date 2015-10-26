@@ -1658,6 +1658,7 @@ var asset = {};
         } else {
             asset.uniqueColor = [Math.floor(Math.random() * defaultPalette.length)]
         }
+        asset.icon = this.rxtTemplate.meta.ui.icon;
         return asset;
     };
 
