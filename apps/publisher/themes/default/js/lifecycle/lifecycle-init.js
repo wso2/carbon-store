@@ -310,6 +310,7 @@ $(function() {
                 type: constants.NOTIFICATION_WARN,
                 global: true
             });
+            renderChecklistItems();
             return;
         }
         renderLCActions();
@@ -328,6 +329,7 @@ $(function() {
                 type: constants.NOTIFICATION_WARN,
                 global: true
             });
+            renderChecklistItems();
             return;
         }
         renderChecklistItems();
