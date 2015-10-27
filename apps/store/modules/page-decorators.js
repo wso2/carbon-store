@@ -574,13 +574,27 @@ var pageDecorators = {};
         var terms = [];
         var results;
         var map = HashMap();
-        var mediaType = 'application/*';
+        var mediaType;
         var searchPage = '/pages/top-assets';
+        var rxtManager = ctx.rxtManager;
         if (ctx.assetType) {
-            var rxtManager = ctx.rxtManager;
             mediaType = rxtManager.getMediaType(ctx.assetType);
             searchPage =  '/assets/'+ctx.assetType+'/list';
+        } else {
+            var availableTypes = app.getUIActivatedAssets(ctx.tenantId);
+            mediaType = '(';
+            for (var index in availableTypes) {
+                if (availableTypes.hasOwnProperty(index)) {
+                    if (index == 0) {
+                        mediaType = mediaType + rxtManager.getMediaType(availableTypes[index]);
+                    } else {
+                        mediaType = mediaType + ' OR ' + rxtManager.getMediaType(availableTypes[index]);
+                    }
+                }
+            }
+            mediaType = mediaType + ')';
         }
+        log.debug("term search query criteria:facetField " + facetField + " mediaType " + mediaType);
 
         if (facetField) {
             try {
