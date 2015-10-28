@@ -25,6 +25,7 @@ var pageDecorators = {};
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
     var PaginationContext = Packages.org.wso2.carbon.registry.core.pagination.PaginationContext;
     var HashMap = java.util.HashMap;
+    var ArrayList = java.util.ArrayList;
 
     pageDecorators.navigationBar = function(ctx, page, utils) {
         var app = require('rxt').app;
@@ -314,6 +315,7 @@ var pageDecorators = {};
             'paginationLimit': 1000
         };
         page.tags = doTermSearch(ctx,'tags', paging, true);
+        page.selectedTag = selectedTag();
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {
@@ -573,6 +575,11 @@ var pageDecorators = {};
     var doTermSearch = function (ctx, facetField, paging, authRequired) {
         var terms = [];
         var results;
+        var categoryField;
+        if(ctx.assetType) {
+            categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
+        }
+        var selectedTag;
         var map = HashMap();
         var mediaType;
         var searchPage = '/pages/top-assets';
@@ -596,6 +603,21 @@ var pageDecorators = {};
         }
         log.debug("term search query criteria:facetField " + facetField + " mediaType " + mediaType);
 
+        var q = request.getParameter("q");
+        if (q) {
+            var options = parse("{" + q + "}");
+            if (options.category) {
+                var list = new ArrayList();
+                list.add(options.category);
+                if(categoryField) {
+                    map.put(categoryField, list);
+                }
+            }
+            if (options.tags) {
+                selectedTag = options.tags;
+            }
+        }
+
         if (facetField) {
             try {
                 buildPaginationContext(paging);
@@ -607,6 +629,12 @@ var pageDecorators = {};
                     term.value = current.term;
                     term.frequency = current.frequency;
                     term.searchPage = searchPage;
+                    if(selectedTag && selectedTag == current.term){
+                        term.selected=true;
+                    }
+                    else{
+                        term.selected=false;
+                    }
                     terms.push(term);
                 }
             } finally {
@@ -614,6 +642,19 @@ var pageDecorators = {};
             }
         }
         return terms;
+    };
+
+    var selectedTag = function () {
+        var q = request.getParameter("q");
+        var selectedTag = "";
+        if (q) {
+            var options = parse("{" + q + "}");
+
+            if (options.tags) {
+                selectedTag = options.tags;
+            }
+            return selectedTag;
+        }
     };
 
     var generatePaginationContext = function(paging){

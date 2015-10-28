@@ -31,6 +31,7 @@ var createQuery = function (options) {
     var searchUrl = caramel.url('/assets/' + store.asset.type + '/list');
     var q = {};
     var input = $('#search').val();
+    var tag = $('#selectedTag').val();
     var category = options.category || undefined;
     var searchQueryString = '?';
     q = parseUsedDefinedQuery(input);
@@ -39,6 +40,9 @@ var createQuery = function (options) {
             category = "";
         }
         q.category = category;
+    }
+    if(tag){
+        q.tags = tag;
     }
     if (propCount(q) >= 1) {
         searchQueryString += 'q=';
