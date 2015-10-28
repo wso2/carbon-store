@@ -226,7 +226,7 @@ var error = '';
      * @param lcCurrentStatesCheckitems
      * @return A list of check-items ,checked:true/false ,isVisible:true/false
      */
-    var setCurrentCheckItemState = function (checkItems, lcCurrentStatesCheckitems) {
+    var setCurrentCheckItemState = function (checkItems, lcCurrentStatesCheckitems, isLCActionsPermitted) {
         try {
             replaceCheckItems = [];
             var lifeCycleCheckListItemBeans = lcCurrentStatesCheckitems.getLifeCycleCheckListItemBeans();
@@ -237,7 +237,13 @@ var error = '';
 
                     checkItem.name = item.getName();
                     checkItem.checked = item.getValue();
-                    checkItem.isVisible = item.getVisible();
+                    if (isLCActionsPermitted) {
+                        checkItem.isVisible = item.getVisible();
+                    }
+                    else {
+                        checkItem.isVisible = null;
+                    }
+
 
                     replaceCheckItems[item.getOrder()] = checkItem;
             } 
@@ -394,9 +400,9 @@ var error = '';
             state.isDeletable = isDeletable(lcState, state.deletableStates, lcName);
         }
         //Update the state of the check items
-        state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates);
-        state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
         state.isLCActionsPermitted = isLCActionsPermitted(asset, options, req, res, session);
+        state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
+        state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
         return state;
     };
     /**
