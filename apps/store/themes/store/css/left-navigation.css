@@ -284,6 +284,7 @@ a.ctrl-filter-category {
     text-decoration: none;
     width: 193px;
     border: 0px;
+    background-color: whitesmoke;
 }
 .category>.dropdown-menu{
     background-color: #f5f5f5;
@@ -402,6 +403,28 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     color: #3B579D;
     padding-right: 10px;
     cursor: pointer;
+}
+
+.text-muted {
+    background-color: #E4E3E3;
+    color: #ABA9A9;
+}
+
+.tags-breadcrumb {
+    float: left;
+    margin-left: 10px;
+}
+
+.tag-label {
+    width: auto;
+    float: left;
+    padding: 2px 7px 3px;
+    border-radius: 0px;
+    margin-top: -3px;
+    border: 1px solid #E8E8E8;
+    margin-right: 7px;
+    font-size: 12px;
+    color: #000
 }
 
 .wr-filter-sort > .dropdown-menu {
