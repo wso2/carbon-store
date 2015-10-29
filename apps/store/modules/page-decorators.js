@@ -315,7 +315,7 @@ var pageDecorators = {};
             'paginationLimit': 1000
         };
         page.tags = doTermSearch(ctx,'tags', paging, true);
-        page.selectedTag = selectedTag();
+        page.selectedTag = selectedTag(ctx);
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {
@@ -644,15 +644,25 @@ var pageDecorators = {};
         return terms;
     };
 
-    var selectedTag = function () {
+    var selectedTag = function (ctx) {
+
+        var searchPage = '/pages/top-assets';
+        if (ctx.assetType) {
+            var rxtManager = ctx.rxtManager;
+            mediaType = rxtManager.getMediaType(ctx.assetType);
+            searchPage =  '/assets/'+ctx.assetType+'/list';
+        }
         var q = request.getParameter("q");
-        var selectedTag = "";
+        var queryTag = "";
         if (q) {
             var options = parse("{" + q + "}");
 
             if (options.tags) {
-                selectedTag = options.tags;
+                queryTag = options.tags;
             }
+            var selectedTag = {};
+            selectedTag.value = queryTag;
+            selectedTag.url = searchPage;
             return selectedTag;
         }
     };
