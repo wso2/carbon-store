@@ -94,9 +94,18 @@ $(function () {
     $('#form-asset-create input[type="text"]').each(initDatePicker);
 
 
-    var removeUnboundRow = function (link) {
+    var removeUnboundRow = function(link){
         var table = link.closest('table');
-        if ($('tr', table).length == 2) {
+        var requiredOneRow = false;
+        var numberOfRows = $('tr',table).length;
+        if(table.attr('data-required-row')){
+            requiredOneRow = true;
+        }
+        if(requiredOneRow && numberOfRows == 2){
+            messages.alertError('Required to have at-least one row.');
+            return false;
+        }
+        if(numberOfRows == 2){
             table.hide();
         }
         link.closest('tr').remove();
@@ -135,5 +144,21 @@ $(function () {
     $('.tmp_refernceTableForOptionText').each(function () {
         $(this).detach().attr('class', 'refernceTableForUnbounded').appendTo('body');
     });
+
+    $('#form-asset-create a.collapsing-h2').off('click', '**').on('click', function (e) {
+        e.preventDefault();
+        var $panel = $(this).parent().next();
+        if($panel.is(":visible")){
+            $panel.hide('fast');
+        }else{
+            $panel.show('fast');
+        }
+    });
+    $('#form-asset-create .responsive-form-container').each(function(){
+        if($(this).attr('id') != 'collapseoverview'){
+            $(this).hide();
+        }
+    });
+
 
 });
