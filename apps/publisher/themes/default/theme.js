@@ -475,6 +475,7 @@ var engine = caramel.engine('handlebars', (function() {
                 //Check if the table is option-text unbounded
                 var unboundedOptionText = false;
                 var withValues = false;
+                var requiredOneRow = false;
                 for(var index in table.fields){
                     if(table.fields.hasOwnProperty(index)){
                         var field = table.fields[index];
@@ -484,9 +485,14 @@ var engine = caramel.engine('handlebars', (function() {
                         if(field.value){
                             withValues = true;
                         }
+
+                        if(field.required){
+                            requiredOneRow = true;
+                        }
                     }
                 }
                 table.withValues = withValues;
+                table.requiredOneRow = requiredOneRow;
 
                 if ( unboundedOptionText) {
                     table.optionText = true;
