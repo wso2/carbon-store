@@ -33,7 +33,7 @@
     var context = rxtAPI.app.getContext();
     var maliciousRelayState = (!!/^(ftp|http|https):\/\/[^ "]+$/.test(relayState)) ;
     if(maliciousRelayState){
-        log.error("Malicious URL redirection detected. Redirecting to home page.");
+        log.debug("Malicious URL redirection detected. Redirecting to home page.");
         relayState = context;
     }
     var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
