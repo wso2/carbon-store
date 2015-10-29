@@ -215,6 +215,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" '+
                          ' id="' + (name?name:field.name.tableQualifiedName) + '" ';
                 var className = " input-large form-control ";
+                if(field.type == "checkbox"){
+                    className = "";
+                }
 
                 var isUpdatable = true;
 
@@ -242,8 +245,8 @@ var engine = caramel.engine('handlebars', (function() {
                 }
 //                var isRequired=(field.required == 'true' || ( field.required && field.required != "false"))? true : false; //field.required is not boolean
                 if(field.validate){
-                    className += ' validate-regexp validate-required';
-                    meta += ' data-regexp="' + field.validate + '" ';
+                    className += ' validate-regexp';
+                    meta += ' data-regexp=\'' + field.validate + '\' ';
                 }
                 if(isRequired && field.type != 'file'){
                     className += ' validate-required';
