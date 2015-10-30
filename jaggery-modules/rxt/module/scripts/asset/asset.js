@@ -877,7 +877,12 @@ var asset = {};
         }
         var paging = constants.DEFAULT_RECENT_ASSET_PAGIN;
         paging.count = count || paging.count;
-        paging.sortBy = timeStampField;
+        //setting the sorted field to createdDate, since this is common to all rxt types.
+        //possible values : lastUpdatedDate, createdDate
+        //paging.sortBy = timeStampField;
+        paging.sortBy = 'createdDate';
+        //possible values : DES, ASC
+        paging.sortOrder= 'DES';
         var items = this.search(q, paging);
         //addAssetsMetaData(items, this);
         return items;
