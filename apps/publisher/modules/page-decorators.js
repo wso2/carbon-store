@@ -172,10 +172,10 @@ var pageDecorators = {};
             {field:"overview_name",label:"Name"},
             {field:"overview_version",label:"Version"},
             {field:"overview_provider",label:"Provider"},
-            {field:"overview_createdtime",label:"Date/Time"}];
+            {field:"createdDate",label:"Date/Time"}];
         var sortingList = [];
         var sortingListSelected = {};
-        var sortBy = "overview_createdtime";
+        var sortBy = "createdDate";
         var sort = "-";
         if(queryString){
             var sortCombined = "";
