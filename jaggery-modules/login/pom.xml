@@ -19,7 +19,7 @@
     <parent>
         <groupId>org.wso2.carbon.store</groupId>
         <artifactId>jaggery-modules</artifactId>
-        <version>2.3.9-SNAPSHOT</version>
+        <version>2.3.9</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <!--<groupId>org.wso2.store.modules</groupId>-->
