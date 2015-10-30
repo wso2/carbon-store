@@ -265,7 +265,7 @@ var result;
             value = resources[fieldName];
         }
         var reg = new RegExp(regex);
-        if (!reg.test(value)){
+        if (value != null && !reg.test(value)){
             var msg = fieldName + ' value is invalid. Please provide correct value for ' + fieldName ;
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
         }
