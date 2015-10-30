@@ -58,7 +58,7 @@
             </a>
             <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="ul-sort-assets">
                 {{#each sorting.list}}
-                    <li role="presentation" class="{{#if active}}active{{/if}}"><a class="filter-item" href="?sort={{sortNext}}{{sortBy.field}}"><span class="pull-left">{{sortBy.label}}</span><i class="fa {{sortIcon}} pull-right"></i> </a></li>
+                    <li role="presentation" class="{{#if active}}active{{/if}} {{sortBy.label}}"><a class="filter-item" href="?sort={{sortNext}}{{sortBy.field}}"><span class="pull-left">{{sortBy.label}}</span><i class="fa {{sortIcon}} pull-right"></i> </a></li>
                 {{/each}}
             </ul>
         </div>
