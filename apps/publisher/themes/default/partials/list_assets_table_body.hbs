@@ -20,11 +20,24 @@
             {{#if showType}}<div class="ast-type-display">{{type}}</div>{{/if}}
             <div class="ast-desc">
                 <a href='{{url ""}}/assets/{{type}}/details/{{this.id}}'>
+                    {{#if this.attributes.overview_name}}
                     <h3 class="ast-name" title="{{this.attributes.overview_name}}">{{this.attributes.overview_name}}</h3>
+                    {{else}}
+                    <h3 class="ast-name" title="{{this.name}}">{{this.name}}</h3>
+                    {{/if}}
                 </a>
-                <span class="ast-ver">V{{this.attributes.overview_version}}, </span><span class="ast-auth" title="{{this.attributes.overview_provider}}">{{this.attributes.overview_provider}}</span>
+                {{#if this.attributes.overview_version}}
+                <span class="ast-ver">V{{this.attributes.overview_version}}{{#if this.attributes.overview_provider}}, {{/if}}</span>
+                {{/if}}
+                {{#if this.attributes.overview_provider}}
+                <span class="ast-auth" title="{{this.attributes.overview_provider}}">{{this.attributes.overview_provider}}</span>
+                {{/if}}
+                {{#if this.attributes.overview_createdtime}}
                 <span class="ast-published">{{this.attributes.overview_createdtime}}</span>
+                {{/if}}
+                {{#if this.lifecycleState}}
                 <span class="lifecycle-state"><small><i class="icon-circle lc-state-{{this.lifecycleState}}"></i> {{this.lifecycleState}}</small></span>
+                {{/if}}
             </div>
             <br class="c-both" />
         </div><br class="c-both" />

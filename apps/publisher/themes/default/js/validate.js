@@ -15,7 +15,7 @@ validator.addDefaultMethods = function () {
     validator.addMethod('regexp', function (element) {
         var regexpStr = $(element).attr('data-regexp') || '';
         var regexp = new RegExp(regexpStr);
-        if (regexp.test($(element).val())) {
+        if ($(element).val() == "" || regexp.test($(element).val())) {
             return "";
         } else {
             return $(element).attr('data-validate-regexp') ||
