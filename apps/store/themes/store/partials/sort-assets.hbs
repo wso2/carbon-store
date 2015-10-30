@@ -17,7 +17,7 @@
                         <a href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sortBy=overview_name&sort={{sorting.nameNextSort}}' title='{{t "Sort by Alphabetical Order"}}'><span class="pull-left">Name</span> <i class="fa {{sorting.nameIcon}} pull-right"></i></a>
                     </li>
                     <li role="presentation" class="{{#if sorting.dateTimeActive}}active{{/if}}">
-                        <a href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sortBy=overview_createdtime&sort={{sorting.dateTimeNextSort}}' data-toggle="tooltip" data-sort="overview_createdtime" title='{{t "Sort by Created Date"}}'><span class="pull-left">Date/Time Created</span> <i class="fa {{sorting.dateTimeIcon}} pull-right"></i></a>
+                        <a href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sortBy=createdDate&sort={{sorting.dateTimeNextSort}}' data-toggle="tooltip" data-sort="createdDate" title='{{t "Sort by Created Date"}}'><span class="pull-left">Date/Time Created</span> <i class="fa {{sorting.dateTimeIcon}} pull-right"></i></a>
                     </li>
                 </ul>
             </div>

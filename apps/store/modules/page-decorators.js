@@ -437,10 +437,10 @@ var pageDecorators = {};
         var popularActive = false;
         var nameActive = false;
         var nameIcon = "fa-arrow-down";
-        var nameNextSort = "DESC";
+        var nameNextSort = "DES";
         var dateTimeActive = false;
         var dateTimeIcon = "fa-arrow-down";
-        var dateTimeNextSort = "DESC";
+        var dateTimeNextSort = "DES";
 
         var queryString = request.getQueryString();
         if(queryString){
@@ -456,12 +456,12 @@ var pageDecorators = {};
                 }
             }
         }else{
-            sortBy = "overview_createdtime";
-            sort = "DESC";
+            sortBy = "createdDate";
+            sort = "DES";
             sortHelp = 'Date/Time Created';
         }
 
-        if(sortBy == "overview_name" && sort == "DESC"){
+        if(sortBy == "overview_name" && sort == "DES"){
             sortHelp = 'Name';
             sortHelpIcon = "fa-arrow-down";
             nameActive = true;
@@ -472,13 +472,13 @@ var pageDecorators = {};
             sortHelpIcon = "fa-arrow-up";
             nameActive = true;
             nameIcon = "fa-arrow-up";
-        }else if(sortBy == "overview_createdtime" && sort == "DESC"){
+        }else if(sortBy == "createdDate" && sort == "DES"){
             sortHelp = 'Date/Time Created';
             sortHelpIcon = "fa-arrow-down";
             dateTimeActive = true;
             dateTimeIcon = "fa-arrow-down";
             dateTimeNextSort = "ASC";
-        }else if(sortBy == "overview_createdtime" && sort == "ASC"){
+        }else if(sortBy == "createdDate" && sort == "ASC"){
             sortHelp = 'Date/Time Created';
             sortHelpIcon = "fa-arrow-up";
             dateTimeActive = true;
