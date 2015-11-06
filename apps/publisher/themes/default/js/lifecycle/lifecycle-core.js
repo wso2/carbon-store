@@ -454,14 +454,14 @@ var LifecycleUtils = {};
         var baseURL = LifecycleAPI.configs(constants.API_LC_DEFINITION);
         return caramel.context + baseURL + '/' + this.lifecycleName;
     };
-    LifecycleImpl.prototype.urlChangeState = function() {
+    LifecycleImpl.prototype.urlChangeState = function(data) {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
         var apiChangeState = LifecycleUtils.config(constants.API_CHANGE_STATE);
         var asset = LifecycleUtils.currentAsset();
         if ((!asset) || (!asset.id)) {
             throw 'Unable to locate details about asset';
         }
-        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName);
+        return caramel.url(apiBase + '/' + asset.id + apiChangeState + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName + '&nextAction=' + data.nextAction);
     };
     LifecycleImpl.prototype.urlFetchState = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
@@ -580,11 +580,14 @@ var LifecycleUtils = {};
         if (optionalArguments) {
             data.arguments = optionalArguments;
         }
+        if (arguments[0]){
+            data.nextAction = arguments[0];
+        }
         //Determine the next state
         LifecycleAPI.event(constants.EVENT_ACTION_START);
         var that = this;
         $.ajax({
-            url: this.urlChangeState(),
+            url: this.urlChangeState(data),
             type: 'POST',
             data: JSON.stringify(data),
             contentType: 'application/json',
