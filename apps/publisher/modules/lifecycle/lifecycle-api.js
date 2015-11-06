@@ -105,13 +105,22 @@ var error = '';
         var server = storeModule.server;
         var assetM = rxtModule.asset;
         var user = server.current(session); //get current user
+        var tenantId = user.tenantId; //get tenant
         var am = assetM.createUserAssetManager(session, options.type); //get asset manager
         var asset = getAsset(options, am); //get asset
         var lcName = resolveLifecycle(options, asset);
         var nextAction = req.getParameter("nextAction");
         validateAsset(asset, options); //validate asset
         //Obtain the lifecycle
-        var action = nextAction;
+        var lcApi = lifecycleModule.api;
+        var lcState = am.getLifecycleState(asset, lcName);
+        var lifecycle = lcApi.getLifecycle(lcName, tenantId); //get lifecycle bind with asset
+        var action;
+        if(nextAction){
+            action = nextAction;
+        } else{
+            action = lifecycle.transitionAction(lcState, options.nextState);
+        }
         //check whether a transition action available from asset.lifecycleState to options.nextState
         if (!action) {
             error = 'It is not possible to reach ' + options.nextState + ' from ' + lcName;
