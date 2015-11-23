@@ -168,8 +168,7 @@ var asset = {};
             value = resources[fieldName];
         }
         var reg = new RegExp(regex);
-//        if (value != null && !reg.test(value)){
-        if (!reg.test(value)){
+        if (value != null && !reg.test(value)){
             var msg = fieldName + ' value does not match regex'+ regex+'. Please provide a correct value for ' + fieldName ;
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
         }
