@@ -169,7 +169,7 @@ var asset = {};
         }
         var reg = new RegExp(regex);
         if (value != null && !reg.test(value)){
-            var msg = fieldName + ' value does not match '+ regex+'. Please provide correct value for ' + fieldName ;
+            var msg = fieldName + ' value does not match regex'+ regex+'. Please provide a correct value for ' + fieldName ;
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
         }
     };
