@@ -41,6 +41,9 @@ var asset = {};
         "#34495e", "#2c3e50", "#f1c40f", "#f39c12",
         "#e67e22", "#d35400", "#e74c3c", "#c0392b"
     ];
+    var utils = require('utils');
+    var exceptionModule = utils.exception;
+
     var getField = function(attributes, tableName, fieldName) {
         var expression = tableName + '_' + fieldName;
         var result = attributes[expression];
@@ -128,7 +131,7 @@ var asset = {};
             if (data[attrName] != null && String(data[attrName]).replace(/^\s+|\s+$/g, "") != "") {
                 attributes[attrName] = data[attrName];
                 if(log.isDebugEnabled()){
-                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);                    
+                    log.debug("setting the field " + attrName + ' with value ' + data[attrName]);
                 }
             } else {
                 log.debug(attrName + ' will not be saved.');
@@ -140,6 +143,56 @@ var asset = {};
         for (var key in asset.attributes) {
             if (asset.attributes[key] == '') {
                 delete asset.attributes[key];
+            }
+        }
+    };
+
+    var validateRequiredFeild = function (feildName, assetReq) {
+        var resources = request.getAllFiles();
+        if ((!assetReq.hasOwnProperty(feildName)) && (!assetReq.attributes.hasOwnProperty(feildName)) && !(resources && resources.hasOwnProperty(feildName))){
+            var msg = feildName + ' is not provided. Please provide a value for ' + feildName + ' since it is a required field';
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
+        }
+    };
+
+    var validateRegExField = function (fieldName, assetReq, regex) {
+        var resources = request.getAllFiles();
+        var value;
+        if (assetReq.hasOwnProperty(fieldName)){
+            value = assetReq[fieldName];
+        }
+        if (!value && assetReq.attributes.hasOwnProperty(fieldName)){
+            value = assetReq.attributes[fieldName];
+        }
+        if (!value && resources && resources.hasOwnProperty(fieldName)){
+            value = resources[fieldName];
+        }
+        var reg = new RegExp(regex);
+        if (value != null && !reg.test(value)){
+            var msg = fieldName + ' value does not match '+ regex+'. Please provide correct value for ' + fieldName ;
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
+        }
+    };
+
+    var validateRequiredFeilds = function (type, assetReq, rxtManager) {
+        var name = rxtManager.getNameAttribute(type);
+        if (name && name.length > 1) {
+            validateRequiredFeild(name, assetReq);
+        }
+        var version = rxtManager.getVersionAttribute(type);
+        if (version && version.length > 1) {
+            validateRequiredFeild(version, assetReq);
+        }
+        var fields = rxtManager.listRxtFields(type);
+        for (var key in fields) {
+            if (fields.hasOwnProperty(key)) {
+                var field = fields[key];
+                if (field && field.name && field.required == "true" && field.name.fullName) {
+                    validateRequiredFeild(field.name.fullName, assetReq);
+                }
+                if (field && field.name && field.validate && field.name.fullName) {
+                    validateRegExField(field.name.fullName, assetReq, field.validate);
+                }
             }
         }
     };
@@ -206,6 +259,7 @@ var asset = {};
      * @lends AssetManager.prototype
      */
     AssetManager.prototype.create = function(options) {
+        validateRequiredFeilds(this.type, options , this.rxtManager);
         var isDefault = false;
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             delete options[constants.Q_PROP_DEFAULT];
@@ -467,7 +521,7 @@ var asset = {};
     };
     var buildQueryString = function(query,options) {
         var queryString = [];
-        var value;  
+        var value;
         options = options || {};
         var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
         for(var key in query) {
@@ -482,7 +536,7 @@ var asset = {};
                 key = key.replace('_',':');
                 //Check if wildcard search is enabled
                 if(wildcard && key != 'tags'){
-                    value = '*'+value+'*'; 
+                    value = '*'+value+'*';
                 }
                 queryString.push(key+'='+value);
             }
@@ -539,7 +593,7 @@ var asset = {};
                 try{
                     //This is wrapped in a try catch as
                     //some generic artifacts do no have the getMediaType method
-                    mediaType = current.getMediaType(); 
+                    mediaType = current.getMediaType();
                 } catch (e){
                     log.error('Unable to resolve the media type of an asset returned from a cross type search.This asset will be dropped from the result set');
                 }
@@ -573,7 +627,7 @@ var asset = {};
                     assetManager = asset.createUserAssetManager(session,item.type);
                 } else {
                     assetManager = asset.createAnonAssetManager(session,item.type, tenantId);
-                }          
+                }
                 assetManagers[item.type] = assetManager;
             } else {
                 assetManager = assetManagers[item.type];
@@ -610,12 +664,12 @@ var asset = {};
         var options = {};
         options.wildcard = true; //Assume that wildcard is enabled
         //Check if grouping is enabled
-         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
+        if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             options.wildcard = false;//query[constants.Q_PROP_GROUP];
             delete query[constants.Q_PROP_GROUP];
-         } 
-         q  = buildQueryString(query, options);
-         return q;
+        }
+        q  = buildQueryString(query, options);
+        return q;
     };
     var doAdvanceSearch = function(type,query,paging,registry,rxtManager) {
         var assets = null;
@@ -640,7 +694,7 @@ var asset = {};
             if(q.length>0){
                 governanceRegistry = GovernanceUtils.getGovernanceUserRegistry(registry, registry.getUserName());
                 assets = GovernanceUtils.findGovernanceArtifacts(q,governanceRegistry,mediaType);
-            }      
+            }
         } catch (e) {
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters',e);
         } finally {
@@ -649,21 +703,21 @@ var asset = {};
         return assets;
     };
     AssetManager.prototype.advanceSearch = function(query,paging) {
-      var assets = [];
-      var type = query.type;
-      var mediaType = '';
-      var registry = this.registry.registry;
-      var rm = this.rxtManager;
-      //Note: This will restrict the search to this asset type
-      type = this.type;
-      query = query || {};
-      paging = paging || null;
-      assets =  doAdvanceSearch(type,query,paging,registry,rm);
-      //assets is a set that must be converted to a JSON array
-      assets  = processAssets(type,assets,rm);
-      //Add additional meta data
-      addAssetsMetaData(assets,this);
-      return assets;
+        var assets = [];
+        var type = query.type;
+        var mediaType = '';
+        var registry = this.registry.registry;
+        var rm = this.rxtManager;
+        //Note: This will restrict the search to this asset type
+        type = this.type;
+        query = query || {};
+        paging = paging || null;
+        assets =  doAdvanceSearch(type,query,paging,registry,rm);
+        //assets is a set that must be converted to a JSON array
+        assets  = processAssets(type,assets,rm);
+        //Add additional meta data
+        addAssetsMetaData(assets,this);
+        return assets;
     };
     asset.advanceSearch = function(query,paging,session,tenantId) {
         var storeAPI = require('store');
@@ -677,7 +731,7 @@ var asset = {};
         if((!user)&&(!tenantId)) {
             log.error('Unable to create registry instance without a tenantId when there is no logged in user');
             throw 'Unable to create registry instance without a tenantId when there is no logged in user';
-        } 
+        }
         //Determine if a user exists
         if(user){
             userRegistry = storeAPI.user.userRegistry(session);
@@ -1208,7 +1262,7 @@ var asset = {};
         var subscriptions = [];
         if (!userSpace) {
             if(log.isDebugEnabled()){
-                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');                
+                log.debug('Unable to retrieve subscriptions to type: ' + this.type + ' as the  subscription path could not be obtained');
             }
             return subscriptions;
         }
@@ -1484,9 +1538,9 @@ var asset = {};
                 }
             }
         }
-/*        if(this.registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId)){
-            this.registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId,'/_system/governance/store/asset_resources/'+ options.type + '/' + existingAttributes.id);
-        }*/
+        /*        if(this.registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId)){
+         this.registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + oldId,'/_system/governance/store/asset_resources/'+ options.type + '/' + existingAttributes.id);
+         }*/
         return existingAttributes.id;
 
     };
@@ -2060,7 +2114,7 @@ var asset = {};
         for (var index in otherEndpoints) {
             var found = false; //Assume the endpoint will not be located
             for (var endpointIndex = 0;
-                ((endpointIndex < endpoints.length) && (!found)); endpointIndex++) {
+                 ((endpointIndex < endpoints.length) && (!found)); endpointIndex++) {
                 //Check if there is a similar endpoint and override the title and path
                 if (otherEndpoints[index].url == endpoints[endpointIndex].url) {
                     endpoints[endpointIndex].url = otherEndpoints[index].url;
