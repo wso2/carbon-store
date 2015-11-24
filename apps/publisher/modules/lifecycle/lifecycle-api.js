@@ -302,7 +302,7 @@ var error = '';
         //Check if the index provided is valid
         var msg;
         if ((checkItemIndex < 0) || (checkItemIndex > state.checkItems.length - 1)) {
-            msg = 'Unable to change the state of the check item as the index does not point to' + ' a valid check item.The check item index must be between 0 and ' + state.checkItems.length + '.';
+            msg = 'Unable to change the state of the check item as the index does not point to' + ' a valid check item.The check item index must be between 0 and ' + (state.checkItems.length - 1)  + '.';
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
         }
         //Check if the check item state is the same as the next state
@@ -464,6 +464,10 @@ var error = '';
         var assetApi = rxtModule.asset;
         var am = assetApi.createUserAssetManager(session, options.type);
         var asset = getAsset(options, am);
+        if(!isLCActionsPermitted(asset, options, req, res, session)){
+            var error = 'User not permmited to update checkList of asset of id: ' + options.id;
+            throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.UNAUTHORIZED);
+        }
         validateAsset(asset, options);
         var state = this.getState(options, req, res, session);
         isSuccess = updateCheckItemStates(options, asset, am, state);

@@ -133,10 +133,19 @@ var api = {};
     api.updateCheckList = function(req, res, session, options) {
         var success;
         var body;
-        if (!req.getContentType() === 'application/json') {
-            throw 'Checklist items must be sent in the body of the request and content type should be set to application/json';
+        if (!req.getContent() || !req.getContentType() === 'application/json') {
+            var message = 'Checklist items must be sent in the body of the request and content type should be set to application/json';
+            throw exceptionModule.buildExceptionObject(message, constants.STATUS_CODES.BAD_REQUEST);
         }
         body = req.getContent();
+        if((typeof body) == 'string'){
+            try {
+                body = parse(body);
+            } catch (e) {
+                var message = 'Error while parsing the message payload, please send correct content';
+                throw exceptionModule.buildExceptionObject(message, constants.STATUS_CODES.BAD_REQUEST);
+            }
+        }
         options.checkItems = body.checklist || [];
         success = lifecycleAPI.checkItems(options, req, res, session);
         if (success) {
