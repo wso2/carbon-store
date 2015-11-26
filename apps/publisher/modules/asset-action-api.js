@@ -62,6 +62,17 @@ var api = {};
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.BAD_REQUEST);
         }
     };
+
+    function validatePayload(str) {
+        try {
+            JSON.parse(str);
+        } catch (e) {
+            var message = 'Error while parsing the message payload, please send correct content';
+            throw exceptionModule.buildExceptionObject(message, constants.STATUS_CODES.BAD_REQUEST);
+        }
+        return true;
+    }
+
     var parseContentType = function(contentTypString) {
         var comps = contentTypString.split(';');
         return comps[0];
@@ -223,8 +234,10 @@ var api = {};
         if(req.getMethod() !== 'POST'){
             return errorMsg(msg(405, 'Create version should be done using a POST'));
         }
+        var content = req.getContent();
+        validatePayload(content);
         try {
-            data = parse(req.getContent());
+            data = parse(content);
             asset = am.createVersion(options, data.attributes);
             if(asset){
                  tenantId = es.current(session).tenantId;
@@ -233,11 +246,13 @@ var api = {};
                 if(registry.registry.resourceExists('/_system/governance/store/asset_resources/'+ options.type + '/' + options.id)){
                     registry.registry.copy('/_system/governance/store/asset_resources/'+ options.type + '/' + options.id,'/_system/governance/store/asset_resources/'+ options.type + '/' + asset);
                 }
+                return successMsg(msg(200, 'New version created successfully.', asset));
             }
-            return successMsg(msg(200, 'New version created successfully.', asset));
+            return errorMsg(msg(500, 'New version of asset of id:'+ options.id + ' could not be created.'));
+
         } catch (e) {
             log.error('Asset of type: ' + options.type + ' was not created due to ' ,e);
-            return null;
+            return errorMsg(msg(500, 'New version of asset of id :'+ options.id + ' could not be created.'));
         }
     };
     api.resolve = function(req, res, session, options) {
