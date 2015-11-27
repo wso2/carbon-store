@@ -99,7 +99,13 @@ var api = {};
             result = lifecycleAPI.getState(options, req, res, session);
         } catch (e) {
             if (e == "Unauthorized Action - does not have permissions to view lifecycle state") {
-                return successMsg(msg(401, 'User does not have permission to view lifecycle state', e));
+                var errorResponse = msg(401, 'User does not have permission to view lifecycle state', e);
+                errorResponse.errorContent = {};
+
+                errorResponse.errorContent.message = 'User does not have permission to view lifecycle state';
+                errorResponse.errorContent.exception = e;
+
+                return errorMsg(errorResponse);
             } else {
                 throw e;
             }
