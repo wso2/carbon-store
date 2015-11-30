@@ -373,14 +373,19 @@ var error = '';
      */
     api.getState = function (options, req, res, session) {
         var state;
-        validateOptions(options);
         var assetApi = rxtModule.asset;
-        var coreApi = rxtModule.core;
         var am = assetApi.createUserAssetManager(session, options.type); //get asset manager
+        var asset = getAsset(options, am); //get asset
+
+        if (!isLCPermitted(asset, session)){
+            throw "Unauthorized Action - does not have permissions to view lifecycle state";
+        }
+
+        validateOptions(options);
+        var coreApi = rxtModule.core;
         var server = storeModule.server; //get current server instance
         var user = server.current(session); //get current user
         var tenantId = user.tenantId; //get tenantID
-        var asset = getAsset(options, am); //get asset
         var lcName = resolveLifecycle(options, asset);
         validateAsset(asset, options); //validate asset
         var lcApi = lifecycleModule.api; //load lifecycle module
@@ -597,5 +602,10 @@ var error = '';
     var isLCActionsPermitted = function (asset, options, req, res, session) {
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
         return permissions.isLCActionsPermitted( asset.path, session);
+    };
+    var isLCPermitted = function (asset, session) {
+        var permissions = require('/modules/lifecycle/permissions.js').permissions;
+        log.info("asset = " + stringify(asset));
+        return permissions.isLCActionsPermitted(asset.type, session);
     };
 }(api));

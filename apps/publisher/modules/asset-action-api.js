@@ -105,7 +105,22 @@ var api = {};
             return error(msg(405, 'State must be retrieved using a GET'));
         }
         validateOptions(options);
-        var result = lifecycleAPI.getState(options, req, res, session);
+        var result;
+        try {
+            result = lifecycleAPI.getState(options, req, res, session);
+        } catch (e) {
+            if (e == "Unauthorized Action - does not have permissions to view lifecycle state") {
+                var errorResponse = msg(401, 'User does not have permission to view lifecycle state', e);
+                errorResponse.errorContent = {};
+
+                errorResponse.errorContent.message = 'User does not have permission to view lifecycle state';
+                errorResponse.errorContent.exception = e;
+
+                return errorMsg(errorResponse);
+            } else {
+                throw e;
+            }
+        }
         return successMsg(msg(200, 'Asset state information returned', result));
     };
     api.changeState = function(req, res, session, options) {
