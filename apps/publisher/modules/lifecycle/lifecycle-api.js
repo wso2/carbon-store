@@ -601,7 +601,6 @@ var error = '';
     };
     var isLCPermitted = function (asset, session) {
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
-        log.info("asset = " + stringify(asset));
-        return permissions.isLCActionsPermitted(asset.type, session);
+        return permissions.isLCPermitted(asset.type, session);
     };
 }(api));
