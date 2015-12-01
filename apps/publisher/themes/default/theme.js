@@ -233,9 +233,9 @@ var engine = caramel.engine('handlebars', (function() {
                     isReadOnly = (field.auto)?field.auto:false;
                 }
                 if(isReadOnly){
-                    meta+=' readonly';
+                    meta+=' readonly disabled=\'disabled\'';
                 } else if(!isUpdatable && mode == 'edit'){
-                    meta+=' readonly';
+                    meta+=' readonly disabled=\'disabled\'';
                 }
 
                 //File required checking
