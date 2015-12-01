@@ -139,7 +139,7 @@ var themeModule = require('/modules/theme.js');
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <span class="margin-top padding-top-double font-large">Already have an account? </span>
-                                    <a href="../store/login?ignoreReferer=true" id="signInLink" class="font-large">Sign in</a>
+                                    <a href="<%=signInUrl%>" id="signInLink" class="font-large">Sign in</a>
                                 </div>
                                 <div class="clearfix"></div>
                                 </div>
@@ -166,13 +166,10 @@ var themeModule = require('/modules/theme.js');
                 if (JSON.parse(data).error == 'false') {
                     regFormError.hide();
                     regFromSuccess.show();
-                    regFromSuccess.text(JSON.parse(data).msg);
-
-                    //submitting the login form
-                    $('#username').val($('#reg-username').val());
-                    $('#password').val($('#reg-password').val());
-                    $('#loginForm').submit();
-
+                    regFromSuccess.text(JSON.parse(data).msg + ". You will be redirected to login page.");
+                    setTimeout(function () {
+                        window.location = "<%=signInUrl%>";
+                    }, 2000);
                 } else {
                     regFromSuccess.hide();
                     regFormError.show();

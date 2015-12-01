@@ -28,4 +28,5 @@ var permissions={};
     };
 
     permissions.isLCActionsPermitted = isLCActionsPermitted;
+    permissions.isLCPermitted = isLCPermitted;
 }());
