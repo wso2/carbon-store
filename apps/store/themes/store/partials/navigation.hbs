@@ -44,7 +44,11 @@
         </div>
         <div class="search">
             <div class="input-group input-wrap">
-                <input  id="search"  type="text" class="form-control" placeholder="Search for...">
+            {{#if rxt.pluralLabel}}
+                <input  id="search"  type="text" class="form-control" placeholder="Search in {{rxt.pluralLabel}}">
+            {{else}}
+                <input  id="search"  type="text" class="form-control" placeholder="Search in all asset types">
+            {{/if}}
                 <div class="input-group-btn">
                     <button class="btn btn-default wrap-input-right" id="search-button" type="button" title="Search">
                         <i class="fw fw-search" aria-hidden="true"></i>
