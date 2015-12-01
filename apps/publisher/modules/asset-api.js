@@ -215,15 +215,26 @@ var result;
             var fieldName = key;
             var field = rxtManager.getRxtField(type, fieldName);
             if (field && (field.readonly || field.auto)) {
+                var errMsg = fieldName + ' is not an editable field. Hence, ' + fieldName + ' cannot be updated with the provided value : ' + assetReq[fieldName];
                 if(log.isDebugEnabled()){
-                    log.debug(fieldName + ' is not an editable field. Hence, ' + fieldName + ' will not be updated with the provided value : ' + assetReq[fieldName]);
+                    log.debug(errMsg);
                 }
-                delete assetReq[fieldName];
+                throw exceptionModule.buildExceptionObject(errMsg, constants.STATUS_CODES.BAD_REQUEST);
+                //delete assetReq[fieldName];
             }
         }
         return assetReq;
     };
 
+    var validateProvider = function (type, assetReq) {
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        var provider = rxtManager.getProviderAttribute(type);
+        if(provider && provider.length >1 && assetReq.hasOwnProperty('attributes')){
+            assetReq.attributes[provider] = user.username;
+        }
+    };
+
+    //moved this logic to rxt.asset module
     var validateRequiredFeilds = function (type, assetReq) {
         var rxtManager = rxtModule.core.rxtManager(user.tenantId);
         /*var name = rxtManager.getNameAttribute(type);
@@ -242,10 +253,11 @@ var result;
         for (var key in fields) {
             if (fields.hasOwnProperty(key)) {
                 var field =  fields[key];
+                log.info(field);
                 if (field && field.name && field.required == "true" && field.name.fullName) {
                     validateRequiredFeild(field.name.fullName, assetReq);
                 }
-                if (field && field.name && field.validate && field.name.fullName && field.value) {
+                if (field && field.name && field.validate && field.name.fullName) {
                     validateRegExField(field.name.fullName,assetReq, field.validate);
                 }
             }
@@ -316,7 +328,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
-            validateRequiredFeilds(options.type, asset);
+            validateProvider(options.type, asset);
+//            validateRequiredFeilds(options.type, asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
