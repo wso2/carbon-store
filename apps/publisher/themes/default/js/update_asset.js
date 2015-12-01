@@ -29,7 +29,7 @@ $(function() {
             var editButton = $('#editAssetButton');
             editButton.attr('disabled', 'disabled');
             editButton.next().attr('disabled', 'disabled');
-            caramel.render('loading', 'Creating asset. Please wait..', function (info, content) {
+            caramel.render('loading', 'Updating asset. Please wait..', function (info, content) {
                 var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
                 editButton.parent().append($content);
             });
