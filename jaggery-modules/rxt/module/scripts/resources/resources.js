@@ -42,7 +42,7 @@ var resources = {};
         return '/extensions/assets/' + type + '/asset.js';
     };
     var getCustomAssetTypeScriptPath = function(options, type) {
-        return '/extensions/assets/' + type + '_extended/asset.js';
+        return '/extensions/assets/' + type + '-customized/asset.js';
     };
     var getAssetExtensionPath = function(type) {
         return constants.ASSET_EXTENSION_ROOT + '/' + type;

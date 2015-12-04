@@ -2393,7 +2393,7 @@ var asset = {};
         //If the type is not metioned then return the path
         if (!pathOptions.type) {
             //Determine if the paths occur within the extended extensions directory
-            var extensionResPath = '/extensions/assets/' + uriOptions.type + '_extended/themes/' + themeName + '/' + resPath;
+            var extensionResPath = '/extensions/assets/' + uriOptions.type + '-customized/themes/' + themeName + '/' + resPath;
             var resFile = new File(extensionResPath);
             if (resFile.isExists()) {
                 return extensionResPath;
@@ -2410,7 +2410,7 @@ var asset = {};
             return basePath; //themeResolver.call(themeObj, path);
         }
         //Check if type has a similar path in its extended extension directory
-        var extensionPath = '/extensions/assets/' + uriOptions.type + '_extended/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;
+        var extensionPath = '/extensions/assets/' + uriOptions.type + '-customized/themes/' + themeName + '/' + pathOptions.root + '/' + pathOptions.suffix;
         var file = new File(extensionPath);
         if (file.isExists()) {
             return extensionPath;

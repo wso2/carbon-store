@@ -59,7 +59,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var p,
                             store = require('/modules/store.js');
                         if (asset) {
-                            p = store.ASSETS_EXT_PATH + asset + '_extended' + '/themes/' + theme.name + '/' + path;
+                            p = store.ASSETS_EXT_PATH + asset + '-customized/themes/' + theme.name + '/' + path;
                             if (!new File(p).isExists()){
                                 p = store.ASSETS_EXT_PATH + asset + '/themes/' + theme.name + '/' + path;
                                 if (new File(p).isExists()) {
