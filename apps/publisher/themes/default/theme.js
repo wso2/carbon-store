@@ -60,9 +60,12 @@ var engine = caramel.engine('handlebars', (function() {
                         var p,
                             publisher = require('/modules/publisher.js');
                         if (asset) {
-                            p = publisher.ASSETS_EXT_PATH + asset + '/themes/' + theme.name + '/' + path;
-                            if (new File(p).isExists()) {
-                                return p;
+                            p = publisher.ASSETS_EXT_PATH + asset + '_extended/themes/' + theme.name + '/' + path;
+                            if (!new File(p).isExists()) {
+                                p = publisher.ASSETS_EXT_PATH + asset + '/themes/' + theme.name + '/' + path;
+                                if (new File(p).isExists()) {
+                                    return p;
+                                }
                             }
                         }
                         return theme.__proto__.resolve.call(theme, path);
