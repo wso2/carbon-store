@@ -49,7 +49,9 @@ var engine = caramel.engine('handlebars', (function() {
             var appExtensionMediator = rxtAPI.core.defaultAppExtensionMediator();
             if(appExtensionMediator){
                 var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme,'partials'));
-                log.info('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+               if(log.isDebugEnabled()) {
+                   log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+               }
                 partials(new File(defaultExtensionPartialsPath));
             }
             partials(new File(theme.resolve('partials')));
