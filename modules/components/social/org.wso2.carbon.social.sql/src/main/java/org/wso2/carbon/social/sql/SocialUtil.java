@@ -31,6 +31,7 @@ import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.social.core.SocialActivityException;
 import org.wso2.carbon.utils.CarbonUtils;
 
@@ -42,6 +43,13 @@ public class SocialUtil {
 				.getTenantDomain();
 		return tenantDomainName;
 
+	}
+
+	public static String getTenantDomainFromTenantId(int tenantId) {
+		PrivilegedCarbonContext.startTenantFlow();
+		PrivilegedCarbonContext threadLocalCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+		threadLocalCarbonContext.setTenantId(tenantId);
+		return threadLocalCarbonContext.getTenantDomain(true);
 	}
 
 	public static int getActivityLimit(int limit) {

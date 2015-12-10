@@ -520,9 +520,9 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		ResultSet resultSet;
 		JsonArray assets = new JsonArray();
 		JsonObject jsonObj = new JsonObject();
-		String tenantDomain = SocialUtil.getTenantDomain();
 
 		try {
+			String tenantDomain = SocialUtil.getTenantDomainFromTenantId(Integer.parseInt(tenantId));
 			if (log.isDebugEnabled()) {
 				log.debug("Executing: " + POPULAR_ASSETS_SELECT_SQL);
 			}
@@ -549,6 +549,10 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				assets.add(parser.parse(gson.toJson(targetId)));
 			}
 			resultSet.close();
+		} catch (NumberFormatException e){
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
 		} catch (SQLException e) {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
