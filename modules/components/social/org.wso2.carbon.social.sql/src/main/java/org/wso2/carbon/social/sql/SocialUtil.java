@@ -49,7 +49,9 @@ public class SocialUtil {
 		PrivilegedCarbonContext.startTenantFlow();
 		PrivilegedCarbonContext threadLocalCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
 		threadLocalCarbonContext.setTenantId(tenantId);
-		return threadLocalCarbonContext.getTenantDomain(true);
+		String tenantDomainName = threadLocalCarbonContext.getTenantDomain(true);
+		PrivilegedCarbonContext.endTenantFlow();
+		return tenantDomainName;
 	}
 
 	public static int getActivityLimit(int limit) {
