@@ -46,12 +46,15 @@ public class SocialUtil {
 	}
 
 	public static String getTenantDomainFromTenantId(int tenantId) {
-		PrivilegedCarbonContext.startTenantFlow();
-		PrivilegedCarbonContext threadLocalCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-		threadLocalCarbonContext.setTenantId(tenantId);
-		String tenantDomainName = threadLocalCarbonContext.getTenantDomain(true);
-		PrivilegedCarbonContext.endTenantFlow();
-		return tenantDomainName;
+		try {
+			PrivilegedCarbonContext.startTenantFlow();
+			PrivilegedCarbonContext threadLocalCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+			threadLocalCarbonContext.setTenantId(tenantId);
+			String tenantDomainName = threadLocalCarbonContext.getTenantDomain(true);
+			return tenantDomainName;
+		} finally {
+			PrivilegedCarbonContext.endTenantFlow();
+		}
 	}
 
 	public static int getActivityLimit(int limit) {
