@@ -28,6 +28,7 @@ var last_to = 0;
 var items_per_row = 0;
 var doPagination = true;
 var partialsLoaded = false;
+var firstRun = true;
 store.infiniteScroll = {};
 store.infiniteScroll.recalculateRowsAdded = function () {
     return (last_to - last_to % items_per_row) / items_per_row;
@@ -77,12 +78,17 @@ store.infiniteScroll.getItems = function (from, to) {
     var param = '&&paginationLimit=' + to + '&&start=' + from + '&&count=' + count + setSortingParams(path) + setQueryParams(path);
     var assetType = store.publisher.type; //load type from store global object
     var url = '/publisher/apis/assets?type=' + assetType + param; // build url for the endpoint call
-    caramel.render('loading','Loading assets from ' + from + ' to ' + to + '.', function( info , content ){
-        $('.loading-animation-big').remove();
-        $('#list_assets_content').prepend($(content));
-        var loadingAnimationTop = $(document).height() - 320;
-        $('.loading-animation-big').css('top',loadingAnimationTop+'px');
-    });
+    if(!firstRun){
+        caramel.render('loading','Loading assets', function( info , content ){
+            $('.loading-animation-big').remove();
+            $('#list_assets_content').prepend($(content));
+            var loadingAnimationTop = $(document).height() - 320;
+            $('.loading-animation-big').css('top',loadingAnimationTop+'px');
+        });
+    } else {
+        firstRun = false;
+    }
+
     //console.info('loading','Loading assets from ' + from + ' to ' + to + '.');
     //var url = caramel.tenantedUrl(store.asset.paging.url+"&start="+from+"&count="+count);     //TODO enable tenanted url thing..
     var loadAssets = function () {
@@ -138,7 +144,7 @@ store.infiniteScroll.getItems = function (from, to) {
  * This method binds scroll and resize events to addItemsToPage callback
  */
 store.infiniteScroll.showAll = function () {
-    $('#list_assets_content').empty();
+    $('#list_assets_content .ctrl-wr-asset').remove();
     store.infiniteScroll.addItemsToPage();
     $(window).scroll(function () {
         store.infiniteScroll.addItemsToPage();

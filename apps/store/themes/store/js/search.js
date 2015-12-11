@@ -264,7 +264,7 @@ var parseUsedDefinedQuery = function(input) {
     });
     $('#advanced-search').find('select').each(function(){
         $(this).val('ignore-value');
-    })
+    });
 
-
+    $('.loading-animation-big').remove();
 });

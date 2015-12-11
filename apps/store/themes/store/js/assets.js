@@ -23,6 +23,7 @@ var rows_added = 0;
 var last_to = 0;
 var items_per_row = 0;
 var doPagination = true;
+var firstRun = true;
 store.infiniteScroll ={};
 store.infiniteScroll.recalculateRowsAdded = function(){
     return (last_to - last_to%items_per_row)/items_per_row;
@@ -71,10 +72,15 @@ store.infiniteScroll.getItems = function(from,to){
     // Returns the jQuery ajax method
     var url = caramel.tenantedUrl(store.asset.paging.url+"&paginationLimit=" + to + "&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
 
-    caramel.render('loading','Loading assets from ' + from + ' to ' + to + '.', function( info , content ){
-        $('.loading-animation-big').remove();
-        $('body').append($(content));
-    });
+    if(!firstRun) {
+        caramel.render('loading', 'Loading assets.', function (info, content) {
+            $('.loading-animation-big').remove();
+            $('body').append($(content));
+            $('.loading-animation-big').css('bottom','48px').css('left','0');
+        });
+    } else {
+        firstRun = false;
+    }
 
         caramel.data({
              title : null,
@@ -153,7 +159,7 @@ $(function() {
     /*
     * Pagination for listing page
     * */
-     $('.assets-container section').empty();
+    $('.assets-container section .ctrl-wr-asset').remove();
      store.infiniteScroll.showAll();
 	caramel.loaded('js', 'assets');
 	caramel.loaded('js', 'sort-assets');
