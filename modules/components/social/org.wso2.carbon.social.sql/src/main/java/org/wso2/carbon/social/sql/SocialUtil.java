@@ -31,7 +31,10 @@ import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.social.core.SocialActivityException;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserRealmService;
 import org.wso2.carbon.utils.CarbonUtils;
 
 public class SocialUtil {
@@ -42,6 +45,20 @@ public class SocialUtil {
 				.getTenantDomain();
 		return tenantDomainName;
 
+	}
+
+	public static String getTenantDomainFromTenantId(int tenantId) throws SocialActivityException{
+		String tenantDomainName = null;
+		try {
+			UserRealmService realmService = (UserRealmService) PrivilegedCarbonContext.getThreadLocalCarbonContext().
+					getOSGiService(UserRealmService.class);
+			org.wso2.carbon.user.api.TenantManager tenantManager = realmService.getTenantManager();
+			tenantDomainName = tenantManager.getTenant(tenantId).getDomain();
+		} catch (UserStoreException e) {
+			log.error("Error occurred while retrieving the tenant from tenant id : " + tenantId);
+			throw new SocialActivityException(e.getMessage(), e);
+		}
+		return tenantDomainName;
 	}
 
 	public static int getActivityLimit(int limit) {
