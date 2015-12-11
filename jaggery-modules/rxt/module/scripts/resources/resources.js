@@ -262,6 +262,11 @@ var resources = {};
         this.assetExtension = {};
         this.init();
     }
+
+    function DefaultAppExtensionPath(name) {
+       return '/extensions/app/'+name+'/';
+
+    }
     DefaultAppExtensionMediatorImpl.prototype.init = function() {
         var extensionDir = new File(this.path);
         var scriptFile = new File(assetExtensionPath(extensionDir));
@@ -285,11 +290,28 @@ var resources = {};
     };
     DefaultAppExtensionMediatorImpl.prototype.resolveCaramelResources = function(resourcePath, theme, caramelThemeResolver) {
         var file;
-        var fullPath = this.path + '/' + resourcePath;
-        file = new File(fullPath);
-        if (file.isExists()) {
-            return fullPath;
+        var dependencyList = application.get(constants.DEFAULT_APP_EXTENSION_DEPENDENCY_ORDER);
+        if(dependencyList && dependencyList.length > 1){
+
+            for (var i = 0; i < dependencyList.length; i++) {
+                var extension = dependencyList[i];
+                var fullPath = DefaultAppExtensionPath(extension) + '/' + resourcePath;
+                file = new File(fullPath);
+                if (file.isExists()) {
+                    if(log.isDebugEnabled()){
+                        log.debug("Default asset extension found in path : " + fullPath);
+                    }
+                    return fullPath;
+                }
+            }
+        } else{
+            var fullPath = this.path + '/' + resourcePath;
+            file = new File(fullPath);
+            if (file.isExists()) {
+                return fullPath;
+            }
         }
+
         return caramelThemeResolver(theme, resourcePath);
     };
 
@@ -347,6 +369,7 @@ var resources = {};
         }
         extensionDirs = dir.listFiles() || [];
         extensionDir;
+
         for (var index = 0; index < extensionDirs.length; index++) {
             extensionDir = extensionDirs[index];
             if (log.isDebugEnabled()) {
