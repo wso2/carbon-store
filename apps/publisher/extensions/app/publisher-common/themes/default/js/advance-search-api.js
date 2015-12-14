@@ -145,7 +145,7 @@ $(function(){
         return obj;
     };
     var createQueryString = function(key,value){
-        return '"'+key+'":"'+value+'"';
+        return '"'+key+'":"'+encodeURIComponent(value)+'"';
     };
     var buildQuery = function(){
         var fields = getInputFields();
