@@ -267,5 +267,4 @@ var parseUsedDefinedQuery = function(input) {
         $(this).val('ignore-value');
     });
 
-    $('.loading-animation-big').remove();
 });

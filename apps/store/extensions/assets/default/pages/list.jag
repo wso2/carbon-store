@@ -40,6 +40,8 @@ require('/modules/store.js').exec(function(ctx) {
     var sortOrder = ctx.request.getParameter('sort');
     var start = ctx.request.getParameter('start');
     var count = ctx.request.getParameter('count');
+    var paginationLimit = ctx.request.getParameter("paginationLimit");
+
     //var sortOrder = ctx.request.getParameter('sortOrder');
     var page = ui.buildPage(ctx.session, ctx.request);
     var output = {};
@@ -52,6 +54,8 @@ require('/modules/store.js').exec(function(ctx) {
     PAGING.sortOrder = (sortOrder || constants.DEFAULT_ASSET_PAGIN.sortOrder);
     PAGING.start = (start || constants.DEFAULT_ASSET_PAGIN.start);
     PAGING.count = (count || constants.DEFAULT_ASSET_PAGIN.count);
+    PAGING.paginationLimit = (paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit);
+
     var carbon = require('carbon');
     var URLTenantId = carbon.server.tenantId({
         domain: options.domain || constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME
