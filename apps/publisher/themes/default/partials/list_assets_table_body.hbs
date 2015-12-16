@@ -36,7 +36,9 @@
                 <span class="ast-published">{{this.attributes.overview_createdtime}}</span>
                 {{/if}}
                 {{#if this.lifecycleState}}
-                <span class="lifecycle-state"><small><i class="icon-circle lc-state-{{this.lifecycleState}}"></i> {{this.lifecycleState}}</small></span>
+                <span class="lifecycle-state"><small><i class="icon-circle lc-state-{{this.lifecycleState}}"></i>
+                    {{>lifecycle-state-duration .}}
+                    {{this.lifecycleState}}</small></span>
                 {{/if}}
             </div>
             <br class="c-both" />

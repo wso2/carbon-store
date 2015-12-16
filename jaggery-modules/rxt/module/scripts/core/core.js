@@ -939,6 +939,22 @@ var core = {};
         }
         return values;
     };
+    /**
+     * Returns Current lifecycle State Duration Configuration State
+     * @param  type Rxt type
+     * @return boolean The value read from the configuration file (default/asset.js)
+     */
+    RxtManager.prototype.isLCStateDurationEnabled = function(type) {
+        var rxtDefinition = this.rxtMap[type];
+        var returnValue=false;
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to getting color bar enable';
+        }else {
+            returnValue = rxtDefinition.meta.lifecycle.isLCStateDurationEnabled;
+        }
+        return returnValue;
+    };
     var getFieldNameParts = function(fieldName) {
         //Break the field by the _
         var components = fieldName.split('_');

@@ -307,6 +307,13 @@ a.ctrl-filter-category:hover {
 
 }
 
+.colorbar{
+    height: 13px;
+    margin-top: 3px;
+    margin-right: 2px;
+    width: 15px;
+    float:left;
+}
 
 /* ============================================================ */
 
