@@ -63,7 +63,7 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.social.core:${crbon.social.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.social.core:${carbon.social.version}</bundleDef>
                             </bundles>
 
                             <importFeatures>

@@ -59,7 +59,7 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <bundleDef>org.wso2.carbon:org.wso2.carbon.social.db.adapter:${crbon.social.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon:org.wso2.carbon.social.db.adapter:${carbon.social.version}</bundleDef>
                             </bundles>
 
                             <importFeatures>
