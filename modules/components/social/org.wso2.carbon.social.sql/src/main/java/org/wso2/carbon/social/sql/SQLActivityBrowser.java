@@ -522,7 +522,13 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		JsonObject jsonObj = new JsonObject();
 
 		try {
-			String tenantDomain = SocialUtil.getTenantDomainFromTenantId(Integer.parseInt(tenantId));
+			String tenantDomain = null;
+			int tenantIdInt = Integer.parseInt(tenantId);
+			if (Constants.SUPER_TENANT_ID == tenantIdInt) {
+				tenantDomain = Constants.SUPER_TENANT_DOMAIN;
+			} else {
+				tenantDomain = SocialUtil.getTenantDomainFromTenantId(tenantIdInt);
+			}
 			if (log.isDebugEnabled()) {
 				log.debug("Executing: " + POPULAR_ASSETS_SELECT_SQL);
 			}
