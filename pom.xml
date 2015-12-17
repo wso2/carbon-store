@@ -20,9 +20,8 @@
     </licenses>
 
     <scm>
-        <connection>scm:svn:http://svn.wso2.org/repos/wso2/trunk/carbon/products/UserEngagementServer</connection>
-        <developerConnection>scm:svn:https://svn.wso2.org/repos/wso2/trunk/carbon/products/ues
-        </developerConnection>
+        <connection>scm:git:https://github.com/wso2/carbon-store.git</connection>
+        <developerConnection>scm:git:https://github.com/wso2/carbon-store.git</developerConnection>
     </scm>
     <repositories>
         <repository>
