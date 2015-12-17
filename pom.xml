@@ -64,6 +64,14 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <dependencyManagement>
+        <dependency>
+            <groupId>org.wso2.carbon.store</groupId>
+            <artifactId>org.wso2.carbon.social.core</artifactId>
+            <version>${carbon.social.version}</version>
+        </dependency>
+    </dependencyManagement>
+
     <build>
         <extensions>
             <extension>
