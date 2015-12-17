@@ -12,6 +12,12 @@
     <url>http://wso2.org/projects/appserver/java</url>
     <description>WSO2 Enterprise Store</description>
 
+    <parent>
+        <groupId>org.wso2</groupId>
+        <artifactId>wso2</artifactId>
+        <version>1</version>
+    </parent>
+
     <licenses>
         <license>
             <name>Apache License Version 2.0</name>
@@ -137,16 +143,4 @@
         <carbon.social.version>1.2.1</carbon.social.version>
     </properties>
 
-    <distributionManagement>
-        <repository>
-            <id>wso2-maven2-repository</id>
-            <name>WSO2 Maven2 Repository</name>
-            <url>scp://dist.wso2.org/home/httpd/dist.wso2.org/maven2/</url>
-        </repository>
-        <snapshotRepository>
-            <id>wso2-maven2-snapshot-repository</id>
-            <name>WSO2 Maven2 Snapshot Repository</name>
-            <url>scp://dist.wso2.org/home/httpd/dist.wso2.org/snapshots/maven2/</url>
-        </snapshotRepository>
-    </distributionManagement>
 </project>
