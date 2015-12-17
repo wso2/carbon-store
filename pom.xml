@@ -67,7 +67,7 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.wso2.carbon.store</groupId>
+                <groupId>org.wso2.carbon</groupId>
                 <artifactId>org.wso2.carbon.social.core</artifactId>
                 <version>${carbon.social.version}</version>
             </dependency>
