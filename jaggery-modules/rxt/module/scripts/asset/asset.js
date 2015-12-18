@@ -1691,7 +1691,7 @@ var asset = {};
                 }
                 asset.nameToChar = firstChar + secondChar;
                 asset.uniqueColor = getColorCode(asset.type, asset.nameToChar);
-                var isLCStateDurationEnabled = this.rxtManager.isLCStateDurationEnabled(this.type);
+                var isLCStateDurationEnabled = this.rxtManager.isLCStateDurationStateEnabled(this.type);
                 if (isLCStateDurationEnabled && asset.lifecycleState) {
                     var details = this.getLCStateDurationDetails(asset);
                     if (details.lifecycleStateDurationColor) {

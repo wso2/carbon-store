@@ -944,7 +944,7 @@ var core = {};
      * @param  type Rxt type
      * @return boolean The value read from the configuration file (default/asset.js)
      */
-    RxtManager.prototype.isLCStateDurationEnabled = function(type) {
+    RxtManager.prototype.isLCStateDurationStateEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         var returnValue=false;
         if (!rxtDefinition) {
