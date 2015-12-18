@@ -649,7 +649,7 @@ var LifecycleUtils = {};
                 that.isLCActionsPermitted = data.isLCActionsPermitted;
                 that.isDeletable = data.isDeletable;
                 that.lifecycleStateDurationMetaData = data.lifecycleStateDurationMetaData;
-                that.isLCStateDuraionEnabled = data.isLCStateDuraionEnabled;
+                that.isLCStateDurationEnabled = data.isLCStateDurationEnabled;
                 for (var index = 0; index < data.checkItems.length; index++) {
                     data.checkItems[index].index = index;
                 }

@@ -1656,13 +1656,11 @@ var asset = {};
         if (days == 0 && hours == 0 && minutes == 0) {
             timeDuration = pad(seconds, 2) + 's';
         } else if (days == 0 && hours == 0) {
-            timeDuration = minutes + 'm:' + pad(seconds, 2) + 's'
+            timeDuration = pad(minutes, 2) + 'm:' + pad(seconds, 2) + 's';
         } else if (days == 0) {
-            timeDuration = hours + 'h:' + pad(minutes, 2) + "m:" +
-                pad(seconds, 2) + 's';
+            timeDuration = pad(hours, 2) + 'h:' + pad(minutes, 2) + "m:" + pad(seconds, 2) + 's';
         } else {
-            timeDuration = pad(days,2) + 'd:' + pad(hours, 2) + 'h:' +
-                pad(minutes, 2) + 'm:' + pad(seconds, 2) + 's';
+            timeDuration = pad(days, 2) + 'd:' + pad(hours, 2) + 'h:' + pad(minutes, 2) + 'm:' + pad(seconds, 2) + 's';
         }
 
         return timeDuration;

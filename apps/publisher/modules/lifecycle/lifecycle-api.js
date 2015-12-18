@@ -412,10 +412,9 @@ var error = '';
         var isStateDurationEnable = rxtManager.isLCStateDurationEnabled(options.type);
         if (isStateDurationEnable && lcState) {
             state.lifecycleStateDurationMetaData = am.getLCStateDurationDetails(options);
-            state.isLCStateDuraionEnabled = true;
+            state.isLCStateDurationEnabled = true;
         } else {
-            state.isLCStateDuraionEnabled = false;
-            //use consistent variable name  , lifecycleStateDuration
+            state.isLCStateDurationEnabled = false;
         }
         return state;
     };
