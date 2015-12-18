@@ -20,10 +20,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <parent>
-        <groupId>org.wso2.store</groupId>
-        <artifactId>wso2store-features</artifactId>
+        <groupId>org.wso2.carbon.store</groupId>
+        <artifactId>carbon-store</artifactId>
         <version>1.1.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -39,14 +39,14 @@
             <version>${sso.hostobjects.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.wso2.store</groupId>
+            <groupId>org.wso2.carbon.store</groupId>
             <artifactId>org.wso2.store.admin.styles</artifactId>
-            <version>${ues.version}</version>
+            <version>${carbon.store.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.wso2.store</groupId>
+            <groupId>org.wso2.carbon.store</groupId>
             <artifactId>org.wso2.store.sso.common</artifactId>
-            <version>${ues.version}</version>
+            <version>${carbon.store.version}</version>
         </dependency>
        <!-- <dependency>
             <groupId>org.wso2.carbon</groupId>
@@ -82,11 +82,11 @@
                             <bundles>
                                 <bundleDef>slf4j.wso2:slf4j:1.5.10.wso2v1</bundleDef>
                                 <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.hostobjects.sso</bundleDef>-->
-                                <bundleDef>org.wso2.store:org.wso2.store.sso.common:${project.version}</bundleDef>
-                                <bundleDef>org.wso2.store:org.wso2.store.admin.styles</bundleDef>
+                                <bundleDef>org.wso2.carbon.store:org.wso2.store.sso.common:${project.version}</bundleDef>
+                                <bundleDef>org.wso2.carbon.store:org.wso2.store.admin.styles</bundleDef>
                                 <!--<bundleDef>org.wso2.store:org.wso2.carbon.social:1.0.0</bundleDef>-->
                                 <!--<bundleDef>org.wso2.carbon:org.wso2.carbon.databridge.datasink.cassandra</bundleDef>-->
-                                <bundleDef>org.wso2.store:jaggery-scxml-executors:1.1.0</bundleDef>
+                                <bundleDef>org.wso2.carbon.store:jaggery-scxml-executors:${carbon.store.version}</bundleDef>
                             </bundles>
                             <importBundles/>
                             <importFeatures>
