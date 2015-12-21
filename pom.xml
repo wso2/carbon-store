@@ -98,6 +98,7 @@
     </modules>
 
     <properties>
+        <project.scm.id>github-scm</project.scm.id>
         <ues.version>1.0.0</ues.version>
         <carbon.kernal.version>4.2.0</carbon.kernal.version>
         <carbon.platform.version>4.2.0</carbon.platform.version>
