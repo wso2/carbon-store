@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.wso2.carbon.store</groupId>
     <artifactId>carbon-store</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2-SNAPSHOT</version>
     <packaging>pom</packaging>
 	<name>WSO2 Enterprise Store - Parent</name>
     <url>http://wso2.org/projects/appserver/java</url>
@@ -26,7 +26,7 @@
     <scm>
         <connection>scm:git:https://github.com/wso2/carbon-store.git</connection>
         <developerConnection>scm:git:https://github.com/wso2/carbon-store.git</developerConnection>
-      <tag>v1.1.1</tag>
+      <tag>HEAD</tag>
   </scm>
     <repositories>
         <repository>
@@ -140,7 +140,7 @@
         <opensaml2.wso2.version>2.4.1.wso2v1</opensaml2.wso2.version>
         <commons-logging.version>1.1.1</commons-logging.version>
         <cep.component.version>1.0.0</cep.component.version>
-        <carbon.social.version>1.2.2</carbon.social.version>
+        <carbon.social.version>1.2.3-SNAPSHOT</carbon.social.version>
         <carbon.store.version>1.1.1</carbon.store.version>
     </properties>
 
