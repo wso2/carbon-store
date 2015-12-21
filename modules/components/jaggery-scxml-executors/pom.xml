@@ -1,17 +1,16 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   
     <parent>
         <groupId>org.wso2.carbon.store</groupId>
         <artifactId>carbon-store</artifactId>
-        <version>1.1.1-SNAPSHOT</version>
+        <version>1.1.1</version>
         <relativePath>../../../pom.xml</relativePath>
     </parent>
   
   <modelVersion>4.0.0</modelVersion>
   <artifactId>jaggery-scxml-executors</artifactId>
   <packaging>bundle</packaging>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.1</version>
   <name>jaggery-scxml-executors</name>
   <url>http://maven.apache.org</url>
   <properties>
