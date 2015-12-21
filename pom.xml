@@ -140,8 +140,8 @@
         <opensaml2.wso2.version>2.4.1.wso2v1</opensaml2.wso2.version>
         <commons-logging.version>1.1.1</commons-logging.version>
         <cep.component.version>1.0.0</cep.component.version>
-        <carbon.social.version>1.2.2-SNAPSHOT</carbon.social.version>
-        <carbon.store.version>1.1.1-SNAPSHOT</carbon.store.version>
+        <carbon.social.version>1.2.2</carbon.social.version>
+        <carbon.store.version>1.1.1</carbon.store.version>
     </properties>
 
 </project>
