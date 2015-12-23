@@ -19,7 +19,7 @@
 var render = function(theme, data, meta, require) {
 
     theme('single-col-fluid', {
-        title: 'Asset',
+        title: 'Asset list',
         header: [{
             partial: 'header',
             context: data
