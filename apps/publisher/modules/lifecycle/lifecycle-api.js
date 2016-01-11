@@ -192,6 +192,9 @@ var error = '';
         return msg;
     };
     var isDeletable = function (assetState, deletableStates) {
+        if ('*' == deletableStates) {
+            return true;
+        }
         var astState = assetState ? assetState.toLowerCase() : assetState;
         for (var index in deletableStates) {
             if (deletableStates[index].toLowerCase() == astState) {
