@@ -1,2 +1,7 @@
 <h1>Current lifecycle: <span class="text-muted">{{currentLifecycle}}</span> </h1>
 <h4>State: <span class="text-muted">{{currentState}}</span></h4>
+{{#if isLCStateDurationEnabled}}
+    <h4>Current State Duration: <span class="text-muted"
+                                      style="color:{{lifecycleStateDurationMetaData.lifecycleStateDurationColor}}">
+        {{lifecycleStateDurationMetaData.lifecycleStateDuration}}</span></h4>
+{{/if}}

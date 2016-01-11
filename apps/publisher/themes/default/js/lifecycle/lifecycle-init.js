@@ -140,6 +140,8 @@ $(function() {
         if (impl) {
             data.currentLifecycle = LifecycleAPI.currentLifecycle();
             data.currentState = impl.state(impl.currentState).label;
+            data.lifecycleStateDurationMetaData = impl.lifecycleStateDurationMetaData;
+            data.isLCStateDurationEnabled = impl.isLCStateDurationEnabled;
             renderPartial(constants.CONTAINER_INFORMATION_AREA, constants.CONTAINER_INFORMATION_AREA, data);
         }
     };

@@ -417,6 +417,13 @@ var error = '';
         state.isLCActionsPermitted = isLCActionsPermitted(asset, options, req, res, session);
         state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
         state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
+        var isStateDurationEnable = rxtManager.isLCStateDurationStateEnabled(options.type);
+        if (isStateDurationEnable && lcState) {
+            state.lifecycleStateDurationMetaData = am.getLCStateDurationDetails(options);
+            state.isLCStateDurationEnabled = true;
+        } else {
+            state.isLCStateDurationEnabled = false;
+        }
         return state;
     };
     /**

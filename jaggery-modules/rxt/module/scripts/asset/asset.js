@@ -1687,6 +1687,38 @@ var asset = {};
         }
         return modAsset;
     };
+    /**
+     * This method is used to format a timestamp to 'd:h:m:s'.
+     *
+     * @param duration  timestamp duration in milliseconds.
+     * @return String   formatted time duration to 'd:h:m:s'.
+     */
+    AssetManager.prototype.formatLCStateTimeDuration = function (duration) {
+        var mil = duration;
+        var timeDuration;
+        var seconds = (mil / 1000) | 0;
+
+        var minutes = (seconds / 60) | 0;
+        seconds -= minutes * 60;
+
+        var hours = (minutes / 60) | 0;
+        minutes -= hours * 60;
+
+        var days = (hours / 24) | 0;
+        hours -= days * 24;
+
+        if (days == 0 && hours == 0 && minutes == 0) {
+            timeDuration = pad(seconds, 2) + 's';
+        } else if (days == 0 && hours == 0) {
+            timeDuration = pad(minutes, 2) + 'm:' + pad(seconds, 2) + 's';
+        } else if (days == 0) {
+            timeDuration = pad(hours, 2) + 'h:' + pad(minutes, 2) + "m:" + pad(seconds, 2) + 's';
+        } else {
+            timeDuration = pad(days, 2) + 'd:' + pad(hours, 2) + 'h:' + pad(minutes, 2) + 'm:' + pad(seconds, 2) + 's';
+        }
+
+        return timeDuration;
+    };
 
     AssetManager.prototype.setUIMetaData = function (asset) {
         if ((!asset) || (!asset.name)) {
@@ -1704,8 +1736,8 @@ var asset = {};
                     var secondChar = str[1].charAt(0).toLowerCase();
                 } catch (err) {
                     if (typeof secondChar === 'undefined') {
-                        if (str.length > 2){
-                            secondChar =str[0].charAt(1);
+                        if (str.length > 2) {
+                            secondChar = str[0].charAt(1);
                         } else {
                             secondChar = "";
                         }
@@ -1713,12 +1745,67 @@ var asset = {};
                 }
                 asset.nameToChar = firstChar + secondChar;
                 asset.uniqueColor = getColorCode(asset.type, asset.nameToChar);
+                var isLCStateDurationEnabled = this.rxtManager.isLCStateDurationStateEnabled(this.type);
+                if (isLCStateDurationEnabled && asset.lifecycleState) {
+                    var details = this.getLCStateDurationDetails(asset);
+                    if (details.lifecycleStateDurationColor) {
+                        asset.isLCStateDurationEnabled = true;
+                        asset.lifecycleStateDurationMetaData = details;
+                    } else {
+                        asset.isLCStateDurationEnabled = false;
+                    }
+                } else {
+                    asset.isLCStateDurationEnabled = false;
+                }
             }
         } else {
             asset.uniqueColor = [Math.floor(Math.random() * defaultPalette.length)]
         }
         asset.icon = this.rxtTemplate.meta.ui.icon;
         return asset;
+    };
+
+    /***
+     * This method is used get the Current Lifecycle State Duration Meta Data.
+     * @param asset
+     * @returns {{}} json object that contains required metadata
+     */
+    AssetManager.prototype.getLCStateDurationDetails = function (asset) {
+        var details = {};
+        if (asset.id && asset.lifecycle) {
+            try {
+                var durationBean = LifeCycleService.getLifecycleCurrentStateDuration(asset.id, asset.lifecycle);
+                if (durationBean) {
+                    details.lifecycleStateDuration = this.formatLCStateTimeDuration(durationBean.getDuration());
+                    var checkpointBean = durationBean.getCheckpoint();
+                    if (checkpointBean) {
+                        //getDurationColour() will return null  even checkpoint is not null
+                        details.lifecycleStateDurationColor = checkpointBean.getDurationColour();
+                    }
+                } else {
+                    details.lifecycleStateDuration = "time not available";
+                }
+            } catch (e) {
+                log.error('an error occurred during retrieving lifecycle state duration :' + asset.lifecycle +
+                    ' for asset : ' + asset.id, e);
+            }
+        } else {
+            //An asset without any lifecycle is not an error.
+            if (!asset.id) {
+                log.error('Asset Id : ' + asset.id + ' is not set correct ');
+            }
+        }
+        return details;
+    };
+    /**
+     * This method is used to append a '0' to one character number.
+     * @param str  input number as string.
+     * @param max  maximum length for input string with 0.
+     * @return String 6 return as 06 when input (6,2).
+     */
+    var pad = function (str, max) {
+        str = str.toString();
+        return str.length < max ? pad("0" + str, max) : str;
     };
 
     var getColorCode = function (type, nameToChar) {

@@ -192,7 +192,8 @@ asset.configure = function() {
                 defaultAction: 'Promote',
                 deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
-                lifecycleEnabled: true
+                lifecycleEnabled: true,
+                isLCStateDurationEnabled:false
             },
             ui: {
                 icon: 'fw fw-resource'
