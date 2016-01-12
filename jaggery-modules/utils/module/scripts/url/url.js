@@ -38,6 +38,10 @@ var url = {};
                     value=value.replace('%https.carbon.local.ip%', 'https://' + carbonLocalIP + ':' + httpsPort);
                 } else if ((typeof value === 'string') && value.indexOf('%http.carbon.local.ip%') > -1) {
                     value=value.replace('%http.carbon.local.ip%', 'http://' + carbonLocalIP + ':' + httpPort);
+                } else if((typeof value === 'string') && value.indexOf('%http.local') > -1 ){
+                    value=value.replace('%http.local%', 'http://localhost:' + httpPort);
+                } else if((typeof value === 'string') && value.indexOf('%https.local') > -1){
+                    value=value.replace('%https.local%', 'https://localhost:' + httpsPort);
                 }
                 obj[key] = value;
             }
