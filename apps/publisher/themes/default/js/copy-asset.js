@@ -33,4 +33,16 @@ $(document).ready(function() {
 			}
 	});
 
+    $('#btn-cancel-version').on('click', function(e) {
+        var assetId = $('#asset-id').val();
+        var assetType = $('#asset-type').val();
+        var path = caramel.url('/assets/'+assetType + '/details/' + assetId);
+
+        $.ajax({
+            success : function(response) {
+                window.location = path;
+            }
+        });
+    });
+
 });
