@@ -335,6 +335,7 @@ var pageDecorators = {};
     pageDecorators.socialFeature = function(ctx, page) {
         var app = require('rxt').app;
         var constants = require('rxt').constants;
+        var utils = require('utils');
         if (!app.isFeatureEnabled(ctx.tenantId, constants.SOCIAL_FEATURE)) {
             log.debug('social feature has been disabled.');
             return page;
@@ -347,6 +348,7 @@ var pageDecorators = {};
             tenantId: ctx.tenantId
         });
         socialFeatureDetails.keys.urlDomain = domain; //getDomainFromURL(request);
+        utils.url.popServerDetails(socialFeatureDetails.keys);
         page.features[constants.SOCIAL_FEATURE] = socialFeatureDetails;
         return page;
     };
