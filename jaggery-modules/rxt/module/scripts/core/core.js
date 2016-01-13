@@ -939,6 +939,20 @@ var core = {};
         }
         return values;
     };
+    RxtManager.prototype.isNotificationsEnabled = function(type,name){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if default lifecycles are enabled';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.notifications)) {
+            return rxtDefinition.meta.notifications.enabled || false;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether default lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        }
+        return false;
+    };
     var getFieldNameParts = function(fieldName) {
         //Break the field by the _
         var components = fieldName.split('_');
