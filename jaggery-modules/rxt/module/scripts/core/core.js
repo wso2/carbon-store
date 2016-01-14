@@ -939,7 +939,7 @@ var core = {};
         }
         return values;
     };
-    RxtManager.prototype.isNotificationsEnabled = function(type,name){
+    RxtManager.prototype.isNotificationsEnabled = function(type){
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);

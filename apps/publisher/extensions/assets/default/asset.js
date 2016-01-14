@@ -52,7 +52,7 @@ asset.manager = function(ctx) {
             }
             provider = provider.replace(':', '@');
             //Subscribe the asset author for LC update event and asset update event
-            if(this.rxtManager.isNotificationsEnabled()){
+            if(this.rxtManager.isNotificationsEnabled(this.type)){
                 notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
                 notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
             }
