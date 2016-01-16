@@ -344,6 +344,8 @@ var app = {};
         var appExtension;
         var extensionsCb;
         var stack;
+        var appDependencyMap = {};
+        var appDependencyOrderedList = [];
         var endpoints;
         var app = new App();
         if(log.isDebugEnabled()){
@@ -361,7 +363,7 @@ var app = {};
             } else {
                 //Determine the load order
                 stack = [];
-                stack = recursiveProcess(key, appExtensions, stack);
+                stack = recursiveProcess(key, appExtensions, stack, appDependencyMap);
                 if(log.isDebugEnabled()){
                     log.debug('Loading dependencies: ' + stack);
                 }
@@ -370,12 +372,22 @@ var app = {};
                 }
             }
         }
+
+        application.put(constants.APP_EXTENSION_DEPENDENCY_MAP, appDependencyMap);
+        //creating default app Extension dependency order
+        createDefaultAppExtDependencyOrderList(appDependencyMap, appDependencyOrderedList);
+        application.put(constants.DEFAULT_APP_EXTENSION_DEPENDENCY_ORDER, appDependencyOrderedList);
+
         if(log.isDebugEnabled()){
+            log.debug("Default asset/app extension dependency order : " + application.get(constants.DEFAULT_APP_EXTENSION_DEPENDENCY_ORDER));
             log.debug('Finished processing the app extensions');
         }
         return app;
     };
-    var recursiveProcess = function(extName, map, stack) {
+    var recursiveProcess = function(extName, map, stack, appDependencyMap, current) {
+        if(extName == 'default'){
+            addToAppDependencyMap(appDependencyMap, extName, current);
+        }
         if (!map[extName]) {
             if(log.isDebugEnabled()){
                 log.debug('Extension: ' + extName + ' does not exist');
@@ -385,15 +397,64 @@ var app = {};
         var dependencies = map[extName].dependencies;
         if (!dependencies) {
             stack.push(extName);
+            addToAppDependencyMap(appDependencyMap, extName, current);
             return stack;
         } else {
             for (var index in dependencies) {
-                var temp = recursiveProcess(dependencies[index], map, stack);
+                var temp = recursiveProcess(dependencies[index], map, stack, appDependencyMap, extName);
             }
             stack.push(extName);
+            addToAppDependencyMap(appDependencyMap, extName, current);
         }
         return stack;
     };
+
+    var recursiveCreateDefaultAppExtDependencyOrder = function(extName, map, appDependencyList) {
+        if (!map[extName]) {
+            if(log.isDebugEnabled()){
+                log.debug('Extension: ' + extName + ' does not exist');
+            }
+            return;
+        }
+        var dependencies = map[extName];
+        if (!dependencies) {
+            addToAppDependencyOrderedList(appDependencyList, extName);
+        } else {
+            for (var index in dependencies) {
+                var temp = recursiveCreateDefaultAppExtDependencyOrder(dependencies[index], map, appDependencyList);
+            }
+            addToAppDependencyOrderedList(appDependencyList, extName);
+        }
+    };
+
+    var addToAppDependencyMap = function (appDependencyList, extName, current) {
+        if(!appDependencyList.hasOwnProperty(extName)){
+            appDependencyList[extName] = [];
+        }
+        if(current && !(appDependencyList[extName].indexOf(current) > -1)){
+            appDependencyList[extName].push(current);
+        }
+    };
+
+    var createDefaultAppExtDependencyOrderList = function (appExtensions, appDependencyOrderedList) {
+        if(appExtensions.hasOwnProperty('default')){
+            var key = 'default';
+            var dependencies = appExtensions[key];
+            if (dependencies) {
+                for (var index in dependencies) {
+                    recursiveCreateDefaultAppExtDependencyOrder(dependencies[index], appExtensions, appDependencyOrderedList);
+                }
+            }
+
+        }
+    };
+
+    var addToAppDependencyOrderedList = function (appDependencyList, extName) {
+        if (!((appDependencyList.indexOf(extName) > -1))){
+            appDependencyList.push(extName);
+        }
+    };
+
     var getScriptContent = function(scriptFile, appExtensionFilePath) {
         var content = null;
         try {
