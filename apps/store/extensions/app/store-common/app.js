@@ -20,11 +20,11 @@ app.server = function(ctx) {
     return {
         endpoints: {
             pages: [{
-                title: 'Store | Top Assets',
+                title: 'Top Assets',
                 url: 'top-assets',
                 path: 'top_assets.jag'
             },{
-                title:'Store | My Items',
+                title:'My Items',
                 url:'my-items',
                 path:'my_items.jag',
                 secured:true,
@@ -45,7 +45,7 @@ app.server = function(ctx) {
                 url:'basic-authenticator',
                 path:'basic-authenticator.jag'
             },{
-                title:'Store | Advance Search',
+                title:'Advance Search',
                 url:'advanced-search',
                 path:'advanced-search.jag',
                 secured:true
@@ -53,7 +53,8 @@ app.server = function(ctx) {
         },
         configs: {
             disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint','swagger','restservice','comments','soapservice'],
-            uiDisabledAssets: []
+            uiDisabledAssets: [],
+            title : "WSO2 Enterprise Store"
         }
     }
 };

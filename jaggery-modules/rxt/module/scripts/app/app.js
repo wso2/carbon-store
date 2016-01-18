@@ -295,6 +295,14 @@ var app = {};
             //configs.disabledAssets = disabledAssets.concat(serverConfigs.disabledAssets);
             log.info('Disabled assets: ' + stringify(configs.disabledAssets));
         }
+
+        if ((serverConfigs.title) && (serverConfigs.title.length > 0)) {
+            //Overriding extensions will completely replace the application title
+            configs.applicationTitle = serverConfigs.title;
+            if(log.isDebugEnabled()){
+                log.debug('Application Title: ' + stringify(configs.title));
+            }
+        }
         //Invoke the server configs loaded
         if(serverCb.onLoadedServerConfigs){
             serverCb.onLoadedServerConfigs(configs);
@@ -653,6 +661,22 @@ var app = {};
             landingPage = configs.application.landingPage;
         }
         return landingPage;
+    };
+
+    app.getApplicationTitle = function(tenantId) {
+        var applicationTitle = ''; //Assume the application title property has not been defined
+        var userMod = require('store').user; //Obtain the configurations for the tenant
+        var configs = userMod.configs(tenantId);
+        if (!configs) {
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate applicationTitle of tenant: ' + tenantId);
+            }
+            return applicationTitle;
+        }
+        if (configs.applicationTitle) {
+              applicationTitle = configs.applicationTitle;
+        }
+        return applicationTitle;
     };
     /**
      * Executes the provided page handler.If the page cannot be located or if the handler cannot be located then
