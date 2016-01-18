@@ -193,6 +193,8 @@ var isAuthorized = function (user, permission, action) {
  */
 var userSpace = function (username) {
     try {
+        var userModule = require('store').user;
+        username = userModule.cleanUsername(username);
         return require('/modules/server.js').options().userSpace.store + '/' + username;
     } catch (e) {
         return null;
