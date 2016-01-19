@@ -62,8 +62,11 @@ asset.server = function(ctx) {
     var type = ctx.assetType;
     var typeDetails = ctx.rxtManager.listRxtTypeDetails(type);
     var typeSingularLabel = type; //Assume the type details are not returned
+    var pluralLabel = type; //Assume the type details are not returned
     if (typeDetails) {
         typeSingularLabel = typeDetails.singularLabel;
+        pluralLabel = typeDetails.pluralLabel;
+
     }
     return {
         onUserLoggedIn: function() {},
@@ -79,17 +82,17 @@ asset.server = function(ctx) {
                 path: 'rate.jag'
             }],
             pages: [{
-                title: 'Store |  ' + typeSingularLabel,
+                title: typeSingularLabel,
                 url: 'details',
                 path: 'details.jag',
                 permission:'ASSET_DETAILS'
             }, {
-                title: 'Store | ' + typeSingularLabel,
+                title: pluralLabel,
                 url: 'list',
                 path: 'list.jag',
                 permission:'ASSET_LIST'
             }, {
-                title: 'Store | ' + typeSingularLabel,
+                title: typeSingularLabel,
                 url: 'subscriptions',
                 path: 'subscriptions.jag'
             }]
