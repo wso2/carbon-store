@@ -52,8 +52,10 @@ asset.manager = function(ctx) {
             }
             provider = provider.replace(':', '@');
             //Subscribe the asset author for LC update event and asset update event
-            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
-            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
+            if(this.rxtManager.isNotificationsEnabled(this.type)){
+                notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
+                notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
+            }
         },
         update: function(options) {
             this._super.update.call(this, options);
@@ -206,6 +208,9 @@ asset.configure = function() {
             },
             categories: {
                 categoryField: 'overview_category'
+            },
+            notifications:{
+                enabled:true
             },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',

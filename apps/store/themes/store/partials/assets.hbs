@@ -23,8 +23,11 @@
             {{>assets-thumbnails .}}
         </section>
     {{else}}
-        <div class="clear-both"></div>
-        <div class="top-assets-empty-assert">{{t "We couldn't find anything for you."}}</div>
+        {{#if cuser.isAnon}}
+            <div class="top-assets-empty-assert">{{t "There are no publicly available assets available. Please login to see more"}}</div>
+        {{else}}
+            <div class="top-assets-empty-assert">{{t "There are no assets available."}}</div>
+        {{/if}}
     {{/if}}
 </div>
 
