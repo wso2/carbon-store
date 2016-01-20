@@ -61,6 +61,10 @@ app.renderer = function(ctx) {
         pageDecorators: {
             navigationBar: function(page) {
                 return decoratorApi.navigationBar(ctx, page, this);
+            },
+            getStoreUrl: function (page) {
+                page.storeUrl = require('/config/publisher.js').config().storeUrl;
+                return page;
             }
         }
     }
