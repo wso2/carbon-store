@@ -76,6 +76,9 @@
                                            value="Internal/publisher:-get,-add,-delete,-authorize"/>
                             </execution>
                         </data>
+                        <data name="transitionPermission">
+                            <permission forEvent="Promote" roles="Internal/reviewer,admin"/>
+                        </data>
                     </datamodel>
                     <transition event="Promote" target="Published"/>
                 </state>
