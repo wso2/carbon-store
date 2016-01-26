@@ -32,7 +32,7 @@ var user = {};
          * "/" will be replaced.
          */
 
-        return username.replace('@', ':').replace('/', ':');
+        return username.replace('@', '-AT-').replace('/', '-AT-');
     };
 
     user.cleanUsername=function(username){
