@@ -18,7 +18,8 @@
  */
 var render = function(theme, data, meta, require) {
     theme('single-col-fluid', {
-        title: 'Publisher Login',
+        title: 'Login',
+        applicationTitle: data.meta.applicationTitle,
          header: [{
             partial: 'basic-login-header',
             context: data

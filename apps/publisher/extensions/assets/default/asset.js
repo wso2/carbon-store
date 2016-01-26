@@ -86,7 +86,14 @@ asset.manager = function(ctx) {
     };
 };
 asset.server = function(ctx) {
-    var type = ctx.type;
+    var type = ctx.assetType;
+    var typeDetails = ctx.rxtManager.listRxtTypeDetails(type);
+    var typeSingularLabel = type; //Assume the type details are not returned
+    var pluralLabel = type; //Assume the type details are not returned
+    if (typeDetails) {
+        typeSingularLabel = typeDetails.singularLabel;
+        pluralLabel = typeDetails.pluralLabel;
+    }
     return {
         onUserLoggedIn: function() {},
         endpoints: {
@@ -101,29 +108,29 @@ asset.server = function(ctx) {
                 path: 'statistics.jag'
             }],
             pages: [{
-                title: 'Asset: ' + type,
+                title: 'Asset: ' + typeSingularLabel,
                 url: 'asset',
                 path: 'asset.jag'
             }, {
-                title: 'Assets ' + type,
+                title: 'Assets ' + typeSingularLabel,
                 url: 'assets',
                 path: 'assets.jag'
             }, {
-                title: 'Create ' + type,
+                title: 'Create ' + typeSingularLabel,
                 url: 'create',
                 path: 'create.jag',
                 permission: 'ASSET_CREATE'
             }, {
-                title: 'Update ' + type,
+                title: 'Update ' + typeSingularLabel,
                 url: 'update',
                 path: 'update.jag',
                 permission: 'ASSET_UPDATE'
             }, {
-                title: 'Details ' + type,
+                title: 'Details ' + typeSingularLabel,
                 url: 'details',
                 path: 'details.jag'
             }, {
-                title: 'List ' + type,
+                title: 'List ' + pluralLabel,
                 url: 'list',
                 path: 'list.jag',
                 permission: 'ASSET_LIST'
@@ -141,12 +148,12 @@ asset.server = function(ctx) {
                 url: 'statistics',
                 path: 'statistics.jag'
             }, {
-                title: 'Copy ' + type,
+                title: 'Copy ' + typeSingularLabel,
                 url: 'copy',
                 path: 'copy.jag',
                 permission: 'ASSET_CREATE'
             }, {
-                title: 'Delete ' + type,
+                title: 'Delete ' + typeSingularLabel,
                 url: 'delete',
                 path: 'delete.jag'
             }]

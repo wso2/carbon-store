@@ -51,7 +51,8 @@ var ui = {};
                 pageName: options.pageName,
                 currentPage: options.currentPage,
                 title: options.title,
-                landingPage: options.landingPage
+                landingPage: options.landingPage,
+                applicationTitle: options.applicationTitle
             }
         };
     };
@@ -160,6 +161,7 @@ var ui = {};
         var configs = userMod.configs(tenantId);
         var pageDetails = getPageName(request, session);
         var landingPage = app.getLandingPage(tenantId);
+        var applicationTitle = app.getApplicationTitle(tenantId);
         var page = genericPage({
             username: user.username,
             pageName: pageDetails.pageName,
@@ -167,7 +169,8 @@ var ui = {};
             currentPage: pageDetails.currentPage,
             landingPage: landingPage,
             title: pageDetails.title,
-            tenantId:tenantId
+            tenantId:tenantId,
+            applicationTitle: applicationTitle
         });
         return page;
     };
@@ -177,6 +180,7 @@ var ui = {};
         var configs = userMod.configs(tenantId);
         var pageDetails = getPageName(request, session);
         var landingPage = app.getLandingPage(tenantId);
+        var applicationTitle = app.getApplicationTitle(tenantId);
         var page = genericPage({
             username: null,
             pageName: pageDetails.pageName,
@@ -184,7 +188,8 @@ var ui = {};
             currentPage: pageDetails.currentPage,
             landingPage: landingPage,
             title: pageDetails.title,
-            tenantId:tenantId
+            tenantId:tenantId,
+            applicationTitle: applicationTitle
         });
         return page;
     };

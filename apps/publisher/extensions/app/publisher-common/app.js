@@ -47,7 +47,8 @@ app.server = function(ctx) {
         configs: {
             landingPage: '/assets/gadget/list',
             disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint','swagger','restservice','comments','soapservice'],
-            uiDisabledAssets: []
+            uiDisabledAssets: [],
+            title : "WSO2 Enterprise Store - Publisher"
         },
         onLoadedServerConfigs:function(configs){
         }
@@ -60,6 +61,10 @@ app.renderer = function(ctx) {
         pageDecorators: {
             navigationBar: function(page) {
                 return decoratorApi.navigationBar(ctx, page, this);
+            },
+            getStoreUrl: function (page) {
+                page.storeUrl = require('/config/publisher.js').config().storeUrl;
+                return page;
             }
         }
     }
