@@ -154,8 +154,6 @@ describe('Assets POST - Publisher API', function () {
 
         //First try to obtain the asset
         var original = get(url,{},header,'json');
-        log.info('original asset ');
-        log.info(original);
         var asset = original.data.attributes;
         asset.overview_description = 'Test rest api testing update';
         asset.overview_category = 'Template';
