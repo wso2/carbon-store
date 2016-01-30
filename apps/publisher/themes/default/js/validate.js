@@ -88,7 +88,7 @@ validator.initValidationEvents = function (form, submitCallback) {
 validator.isValidForm = function (form) {
     var $form = typeof form == "string" ? $('#' + form) : form;
     var formIsValid = true;
-    $('input[type="text"],input[type="file"],input[type="password"],textarea', $form).each(function () {
+    $('input[type="text"],input[type="file"],input[type="password"],textarea,select', $form).each(function () {
         var fieldValid = validator.validate(this);
         formIsValid = formIsValid && fieldValid;
     });
