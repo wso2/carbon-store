@@ -102,7 +102,7 @@ var api = {};
     };
     api.state = function(req, res, session, options) {
         if (req.getMethod() !== 'GET') {
-            return error(msg(405, 'State must be retrieved using a GET'));
+            return errorMsg(msg(405, 'State must be retrieved using a GET'));
         }
         validateOptions(options);
         var result;

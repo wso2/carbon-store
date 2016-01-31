@@ -1504,8 +1504,8 @@ span.advanced-search-icons{
     border-top: 1px solid #efefef;
     position: absolute;
     width: 100%;
-    left: 0;
-    bottom: 55px;
+    left: 21px;
+    bottom: -90px;
 }
 .loading-animation-big i{
     font-size: 50px;

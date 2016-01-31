@@ -146,12 +146,19 @@ describe('Assets POST - Publisher API', function () {
      * test: check for a return-asset
      */
     it('Test update assets by id', function () {
+        var log = new Log();
         assetID = getAssetID();
         var url = server_url + '/assets/' + assetId + '?type=gadget';
         url = encodeURI(url);
         var header = obtainAuthorizedHeaderForAPICall();
-        var asset = {   'overview_description': 'Test rest api testing update',
-            'overview_category': 'Template'};
+
+        //First try to obtain the asset
+        var original = get(url,{},header,'json');
+        var asset = original.data.attributes;
+        asset.overview_description = 'Test rest api testing update';
+        asset.overview_category = 'Template';
+        /*var asset = {   'overview_description': '',
+            'overview_category': 'Template'};*/
         try {
             var response = post(url, asset, header, 'json');
         } catch (e) {

@@ -52,8 +52,10 @@ asset.manager = function(ctx) {
             }
             provider = provider.replace(':', '@');
             //Subscribe the asset author for LC update event and asset update event
-            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
-            notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
+            if(this.rxtManager.isNotificationsEnabled(this.type)){
+                notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.LC_STATE_CHANGE);
+                notifier.subscribeToEvent(provider, assetPath, endpoint, storeConstants.ASSET_UPDATE);
+            }
         },
         update: function(options) {
             this._super.update.call(this, options);
@@ -84,7 +86,14 @@ asset.manager = function(ctx) {
     };
 };
 asset.server = function(ctx) {
-    var type = ctx.type;
+    var type = ctx.assetType;
+    var typeDetails = ctx.rxtManager.listRxtTypeDetails(type);
+    var typeSingularLabel = type; //Assume the type details are not returned
+    var pluralLabel = type; //Assume the type details are not returned
+    if (typeDetails) {
+        typeSingularLabel = typeDetails.singularLabel;
+        pluralLabel = typeDetails.pluralLabel;
+    }
     return {
         onUserLoggedIn: function() {},
         endpoints: {
@@ -99,29 +108,29 @@ asset.server = function(ctx) {
                 path: 'statistics.jag'
             }],
             pages: [{
-                title: 'Asset: ' + type,
+                title: 'Asset: ' + typeSingularLabel,
                 url: 'asset',
                 path: 'asset.jag'
             }, {
-                title: 'Assets ' + type,
+                title: 'Assets ' + typeSingularLabel,
                 url: 'assets',
                 path: 'assets.jag'
             }, {
-                title: 'Create ' + type,
+                title: 'Create ' + typeSingularLabel,
                 url: 'create',
                 path: 'create.jag',
                 permission: 'ASSET_CREATE'
             }, {
-                title: 'Update ' + type,
+                title: 'Update ' + typeSingularLabel,
                 url: 'update',
                 path: 'update.jag',
                 permission: 'ASSET_UPDATE'
             }, {
-                title: 'Details ' + type,
+                title: 'Details ' + typeSingularLabel,
                 url: 'details',
                 path: 'details.jag'
             }, {
-                title: 'List ' + type,
+                title: 'List ' + pluralLabel,
                 url: 'list',
                 path: 'list.jag',
                 permission: 'ASSET_LIST'
@@ -139,12 +148,12 @@ asset.server = function(ctx) {
                 url: 'statistics',
                 path: 'statistics.jag'
             }, {
-                title: 'Copy ' + type,
+                title: 'Copy ' + typeSingularLabel,
                 url: 'copy',
                 path: 'copy.jag',
                 permission: 'ASSET_CREATE'
             }, {
-                title: 'Delete ' + type,
+                title: 'Delete ' + typeSingularLabel,
                 url: 'delete',
                 path: 'delete.jag'
             }]
@@ -200,6 +209,9 @@ asset.configure = function() {
             categories: {
                 categoryField: 'overview_category'
             },
+            notifications:{
+                enabled:true
+            },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
             nameAttribute: 'overview_name',
@@ -232,7 +244,7 @@ asset.renderer = function(ctx) {
     var buildListLeftNav = function(page, util) {
         var navList = util.navList();
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
-            navList.push('Add ' + type, 'btn-add-new', util.buildUrl('create'));
+            navList.push('Add ', 'btn-add-new', util.buildUrl('create'));
             navList.push('Statistics', 'btn-stats', '/assets/' + type + '/statistics');
         }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));

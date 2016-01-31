@@ -64,6 +64,9 @@ require('/modules/store.js').exec(function (ctx) {
             recentAssets[i].thumbnail = null;
         }
     }
+    var qtemp = ctx.request.getParameter('q') || '';
+    var qjson = parse('{'+qtemp+'}');
+    output.searchQuery = qjson.name||'';
     caramel.render(output);
     //print(page);
 }, request, response, session);

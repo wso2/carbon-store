@@ -147,24 +147,34 @@ var result;
         return (data[key]) || (data[key] == '');
     };
     /**
-     * keep unchanged values as they are
+     * Alters the user provided resource to keep unchangable values as they are.
+     * Performs the following alterations
+     * 1. Required values are populated with original values if the user has not provided a value
+     * 2. Replaces any user provided values with original valus for readonly and auto fields
+     * (This prevents users from changing non updateable fields)
      * @param  original old asset
      * @param  asset    asset
      * @param  sentData to change
      * @return The updated-asset
      */
-    var putInUnchangedValues = function (original, asset, sentData) {
+    var putInUnchangedValues = function (original, asset, sentData,rxtManager,type) {
+        var definition;
         for (var key in original.attributes) {
-            //We need to add the original values if the attribute was not present in the data object
-            // sent from the client
-            //and it was not deleted by the user (the sent data has an empty value)
-            if (original.attributes.hasOwnProperty(key)) {
-                if (((!asset.attributes[key]) || (asset.attributes[key].length == 0)) && (!isPresent(key, sentData))) {
-                    if (log.isDebugEnabled()) {
-                        log.debug('Copying old attribute value for ' + key);
-                    }
+            definition =  rxtManager.getRxtField(type,key);
+            if(definition){
+                
+                if(definition.required){
+                    //Check if the user has provided a value for the required value if
+                    //not use the original value
+                    asset.attributes[key] = (asset.attributes.hasOwnProperty(key))? asset.attributes[key] : original.attributes[key];
+                }
+
+                //Determine if the field is readonly or auto.if yes then ignore
+                //the user provided value and use the original value
+                if((definition.readonly)||(definition.auto)){
                     asset.attributes[key] = original.attributes[key];
                 }
+
             }
         }
     };
@@ -219,6 +229,7 @@ var result;
                 if(log.isDebugEnabled()){
                     log.debug(errMsg);
                 }
+
                 throw exceptionModule.buildExceptionObject(errMsg, constants.STATUS_CODES.BAD_REQUEST);
                 //delete assetReq[fieldName];
             }
@@ -379,6 +390,7 @@ var result;
     api.update = function (options, req, res, session) {
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
+        var rxtManager = getRxtManager(session,options.type);
         var server = require('store').server;
         var user = server.current(session);
         var result;
@@ -388,7 +400,8 @@ var result;
         if(req.getContentType() === "application/json"){
             assetReq = processRequestBody(req, assetReq);
         }
-        assetReq = validateEditableFeilds(options.type, assetReq);
+        
+        //assetReq = validateEditableFeilds(options.type, assetReq);
 
         var asset = null;
         var meta;
@@ -415,7 +428,7 @@ var result;
         if (original) {
             putInStorage(asset, am, user.tenantId);
             putInOldResources(original, asset, am); //load current asset values
-            putInUnchangedValues(original, asset, assetReq);
+            putInUnchangedValues(original, asset, assetReq,rxtManager,options.type);
             //If the user has not uploaded any new resources then use the old resources
             if (!asset.name) {
                 asset.name = am.getName(asset);

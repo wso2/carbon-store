@@ -135,7 +135,7 @@ var parseUsedDefinedQuery = function(input) {
     var previous;
     //Use case #1 : The user has only entered a name
     if((!isTokenizedTerm(input)) &&(!isEmpty(input))){
-        q.name = input;
+        q.name = encodeURIComponent(input);
         return q;
     }
     //Remove trailing whitespaces if any
@@ -235,10 +235,8 @@ var  initAssetCreationChecker = function(){
     var newAssetType = newAsset.split(":")[1].trim();
     var newAssetName = newAsset.split(":")[2].trim();
 
-    var urlApi = caramel.url('/apis/assets'+'?type='+newAssetType + '&q="name":"'+newAssetName+'"');
+    var urlApi = caramel.url('/apis/assets'+'?type='+newAssetType + '&q="name":"'+encodeURIComponent(newAssetName)+'"');
     var url = caramel.url('/assets/'+newAssetType + '/details/' + newAssetId);
-
-
     $.ajax({
         url:urlApi,
         type:'GET',

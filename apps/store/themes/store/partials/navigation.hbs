@@ -35,7 +35,19 @@
                         <div class="tag-title"> Tags </div>
                         <div class="tag-content">
                             {{#each tags}}
-                                <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><label>{{this.value}}</label></a>
+                                    {{#if this.selected}}
+                                        {{#if ../../assetCategoryDetails.hasCategories}}
+                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><label class = "text-muted" >{{this.value}}</label></a>
+                                        {{else}}
+                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><label class = "text-muted" >{{this.value}}</label></a>
+                                        {{/if}}
+                                    {{else}}
+                                        {{#if ../../assetCategoryDetails.hasCategories}}
+                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><label>{{this.value}}</label></a>
+                                        {{else}}
+                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><label>{{this.value}}</label></a>
+                                        {{/if}}
+                                    {{/if}}
                             {{/each}}
                         </div>
                     </div>
@@ -45,9 +57,9 @@
         <div class="search">
             <div class="input-group input-wrap">
             {{#if rxt.pluralLabel}}
-                <input  id="search"  type="text" class="form-control" placeholder="Search in {{rxt.pluralLabel}}">
+                <input  id="search"  type="text" class="form-control" placeholder="Search in {{rxt.pluralLabel}}" value="{{searchQuery}}">
             {{else}}
-                <input  id="search"  type="text" class="form-control" placeholder="Search in all asset types">
+                <input  id="search"  type="text" class="form-control" placeholder="Search in all asset types" value="{{searchQuery}}">
             {{/if}}
                 <div class="input-group-btn">
                     <button class="btn btn-default wrap-input-right" id="search-button" type="button" title="Search">
@@ -85,6 +97,7 @@
                         {{/if}}
                     </a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                        <input type="hidden" name="selectedTag" id="selectedTag" value="{{selectedTag.value}}">
                         {{#if assetCategoryDetails.selectedCategory}}
                             <li><a tabindex="-1" href="#">All Categories</a></li>
                         {{/if}}
@@ -92,6 +105,14 @@
                             <li><a tabindex="-1" href="#">{{this}}</a></li>
                         {{/each}}
                     </ul>
+                    {{#if selectedTag.value}}
+                        <div class="tags-breadcrumb">
+                            <a class="tag-label"
+                               href=' {{tenantedUrl ""}}{{selectedTag.url}}?q="category":"{{../assetCategoryDetails.selectedCategory}}"'>
+                                {{selectedTag.value}} <span>&times;</span>
+                            </a>
+                        </div>
+                    {{/if}}
                 </div>
             </div>
         {{/if}}

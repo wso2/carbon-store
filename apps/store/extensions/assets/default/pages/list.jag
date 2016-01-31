@@ -152,5 +152,8 @@ require('/modules/store.js').exec(function(ctx) {
     ratingApi.addRatings(assets, am, context.tenantId, context.username);
     var output = am.render(assets, page).list();
     output.paging = assetApi.assetsPaging(assets, type, ctx.request);
+    var qtemp = ctx.request.getParameter('q') || '';
+    var qjson = parse('{'+qtemp+'}');
+    output.searchQuery = qjson.name||'';
     caramel.render(output);
 }, request, response, session); %>

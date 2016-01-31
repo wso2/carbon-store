@@ -19,10 +19,10 @@
     </h3> -->
     {{#if assets}}
         <section>
+            {{> loading ../../../.}}
             {{>assets-thumbnails .}}
         </section>
     {{else}}
-        <div class="clear-both"></div>
         {{#if cuser.isAnon}}
             <div class="top-assets-empty-assert">{{t "There are no publicly available assets available. Please login to see more"}}</div>
         {{else}}

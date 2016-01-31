@@ -1172,6 +1172,7 @@ div.notifyjs-happyblue-base {
     position: absolute;
     width: 100%;
     left: 0;
+    z-index: 1;
 }
 .loading-animation-big i{
     font-size: 50px;

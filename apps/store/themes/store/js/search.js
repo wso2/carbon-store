@@ -57,9 +57,10 @@ var parseUsedDefinedQuery = function(input) {
     var previous;
     //Use case #1 : The user has only entered a name
     if(isTokenizedTerm(input)){
-        q.name = input;
+        q.name = encodeURIComponent(input);
         return q;
     }
+
     //Remove trailing whitespaces if any
     input = input.trim();
     //Use case #2: The user has entered a complex query
@@ -264,7 +265,6 @@ var parseUsedDefinedQuery = function(input) {
     });
     $('#advanced-search').find('select').each(function(){
         $(this).val('ignore-value');
-    })
-
+    });
 
 });
