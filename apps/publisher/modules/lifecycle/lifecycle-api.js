@@ -282,6 +282,7 @@ var error = '';
                     replaceApprovedActions[approvedLCActions[i]] = true;
                 }
             }
+
             approvedActions = replaceApprovedActions;
         } catch (e) {
             var msg = 'No approved acions are available for this asset state';
@@ -413,9 +414,9 @@ var error = '';
             state.isDeletable = isDeletable(lcState, state.deletableStates, lcName);
         }
         //Update the state of the check items
-        state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
-        state.isLCActionsPermitted = isLCActionsPermitted(state.approvedActions); //(state.approvedActions.length > 0 ) ? true : false;//isLCActionsPermitted(asset, options, req, res, session);
+        state.isLCActionsPermitted = isLCActionsPermitted(asset, options, req, res, session);
         state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
+        state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
         return state;
     };
     /**
@@ -601,15 +602,9 @@ var error = '';
         });
         return lifecycleComments;
     };
-    var isLCActionsPermitted = function (actions) {
-        for(var key in actions){
-            if(actions.hasOwnProperty(key)){
-                return true;
-            }
-        }
-        //var permissions = require('/modules/lifecycle/permissions.js').permissions;
-        //return permissions.isLCActionsPermitted( asset.path, session);
-        return false;
+    var isLCActionsPermitted = function (asset, options, req, res, session) {
+        var permissions = require('/modules/lifecycle/permissions.js').permissions;
+        return permissions.isLCActionsPermitted( asset.path, session);
     };
     var isLCPermitted = function (asset, session) {
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
