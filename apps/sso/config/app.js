@@ -12,20 +12,21 @@ var event = require('event');
 var STORE_CONFIG_PATH = '/_system/config/sso/configs/sso.json';
 
 var server = require('/modules/server.js');
+var ssoTenantConfig = require('/config/sso-tenant.json');
 server.init(configs);
-
 var user = require('/modules/user.js');
+var storeModule = require('store');
 user.init(configs);
 
 var log = new Log();
 
+storeModule.server.init(configs);
+storeModule.user.init(configs);
 event.on('tenantCreate', function (tenantId) {
     var carbon = require('carbon'),
         system = server.systemRegistry(tenantId);
     system.put(STORE_CONFIG_PATH, {
-        content: JSON.stringify({
-            "permissions": configs.permissions
-        }),
+        content: JSON.stringify(ssoTenantConfig),
         mediaType: 'application/json'
     });
 });
@@ -45,3 +46,7 @@ event.on('tenantLoad', function (tenantId) {
         "permissions": configs.permissions
     };
 });
+
+//Cause the super tenant to be load
+var SUPER_TENANT = -1234;
+event.emit('tenantLoad', SUPER_TENANT);
