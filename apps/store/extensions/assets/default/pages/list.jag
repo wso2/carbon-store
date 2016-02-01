@@ -41,6 +41,7 @@ require('/modules/store.js').exec(function(ctx) {
     var start = ctx.request.getParameter('start');
     var count = ctx.request.getParameter('count');
     var paginationLimit = ctx.request.getParameter("paginationLimit");
+    var DEFAULT_LIST_PAGIN_COUNT = 1; //Move to constants next minor release
 
     //var sortOrder = ctx.request.getParameter('sortOrder');
     var page = ui.buildPage(ctx.session, ctx.request);
@@ -53,7 +54,7 @@ require('/modules/store.js').exec(function(ctx) {
     PAGING.sortBy = (sortBy || constants.DEFAULT_ASSET_PAGIN.sortBy);
     PAGING.sortOrder = (sortOrder || constants.DEFAULT_ASSET_PAGIN.sortOrder);
     PAGING.start = (start || constants.DEFAULT_ASSET_PAGIN.start);
-    PAGING.count = (count || constants.DEFAULT_ASSET_PAGIN.count);
+    PAGING.count = (count || DEFAULT_LIST_PAGIN_COUNT);
     PAGING.paginationLimit = (paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit);
 
     var carbon = require('carbon');
