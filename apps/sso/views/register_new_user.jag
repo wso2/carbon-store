@@ -89,8 +89,39 @@ var themeModule = require('/modules/theme.js');
                                     </div>
 
                                 <%
+                                    function getSsoConfig(tenantId) {
+                                        var server = require('store').server,
+                                                registry = server.systemRegistry(tenantId);
+                                        return JSON.parse(registry.content(SSO_TENANT_CONFIG_PATH));
+                                    }
+
+                                    function getTenantId(referrerURI) {
+                                        var constants = require('rxt').constants;
+                                        var urlTenantId = constants.DEFAULT_TENANT;
+
+                                        if (!referrerURI) {
+                                            <!-- If directly copy registration URL to the browser or in similar kind of event TODO: Use  tenanted URL pattern for registration as well -->
+                                            return urlTenantId;
+                                        }
+
+                                        var host = referrerURI.split('/')[2];
+                                        referrerURI = referrerURI.split(host)[1];
+                                        var uriMater = new URIMatcher(referrerURI);
+                                        var elements = uriMater.match(constants.TENANT_URL_PATTERN) || uriMater.match(constants.DEFAULT_SUPER_TENANT_URL_PATTERN);
+                                        var domain = elements.domain;
+                                        var carbon = require('carbon');
+                                        urlTenantId = carbon.server.tenantId({domain: domain}); //TODO: change this logic once tenanted URLs are introduced to publisher as well
+                                        return urlTenantId;
+                                    }
+                                    var SSO_TENANT_CONFIG_PATH = '/_system/config/sso/configs/sso.json';
+
+                                    var referrerURI = request.getHeader("referer");
+                                    var tenantId = getTenantId(referrerURI);
+
+                                    var ssoConfig = getSsoConfig(tenantId);
+
                                     var claimsModule = require('account-management');
-                                    var claims = claimsModule.getDefaultClaims();
+                                    var claims = claimsModule.getClaims(ssoConfig.claimDialectUri);
                                     var renderedClaims = {};
 
                                     var claimUriOverrides = {
