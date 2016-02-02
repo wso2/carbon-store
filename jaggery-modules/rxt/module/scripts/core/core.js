@@ -615,6 +615,20 @@ var core = {};
         }
         return false;
     };
+    RxtManager.prototype.isDownloadable = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if the asset can be downloaded';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.downloadable)) {
+            return rxtDefinition.meta.downloadable || false;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether asset downloading is enabled for ' + type + '.Make sure the meta property is present in the configuration callback of the asset.js');
+        }
+        return false;
+    };
     RxtManager.prototype.isLifecycleEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
