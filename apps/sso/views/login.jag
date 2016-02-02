@@ -74,11 +74,11 @@ if(RelayState){
 
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <label>Username</label>
-                                    <input id="username" name="username" type="text" class="form-control" tabindex="0">
+                                    <input id="username" name="username" type="text" class="form-control" tabindex="0" autocomplete="off">
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <label>Password</label>
-                                    <input id="password" name="password" type="password" class="form-control">
+                                    <input id="password" name="password" type="password" class="form-control" autocomplete="off">
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <br/><br/>
