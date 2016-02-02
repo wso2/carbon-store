@@ -19,8 +19,6 @@
  */
 var caramel;
 require('/modules/store.js').exec(function (ctx) {
-
-
     caramel = require('caramel');
     var app = require('rxt').app;
     var constants = require('rxt').constants;
@@ -60,7 +58,6 @@ require('/modules/store.js').exec(function (ctx) {
         appManager = app.createAnonAppManager(ctx.session, tenantId);
     }*/
     page.assetMeta.q = q;
-
     var output = appManager.render([], page);
     var recentAssets = output.recentAssets;
     for (var i in recentAssets) {
