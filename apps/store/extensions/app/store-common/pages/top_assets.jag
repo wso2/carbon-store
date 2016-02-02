@@ -19,6 +19,8 @@
  */
 var caramel;
 require('/modules/store.js').exec(function (ctx) {
+
+
     caramel = require('caramel');
     var app = require('rxt').app;
     var constants = require('rxt').constants;
@@ -26,6 +28,7 @@ require('/modules/store.js').exec(function (ctx) {
     var user = server.current(ctx.session);
     var ui = require('rxt').ui;
     var tenantApi = require('/modules/tenant-api.js').api;
+    var assetApi = require('/modules/asset-api.js').api;
     var page = ui.buildPage(ctx.session, ctx.request);
     var appManager;
     var log = new Log();
@@ -57,6 +60,7 @@ require('/modules/store.js').exec(function (ctx) {
         appManager = app.createAnonAppManager(ctx.session, tenantId);
     }*/
     page.assetMeta.q = q;
+
     var output = appManager.render([], page);
     var recentAssets = output.recentAssets;
     for (var i in recentAssets) {
@@ -65,8 +69,9 @@ require('/modules/store.js').exec(function (ctx) {
         }
     }
     var qtemp = ctx.request.getParameter('q') || '';
-    var qjson = parse('{'+qtemp+'}');
-    output.searchQuery = qjson.name||'';
+    var searchQuery = assetApi.formatSearchQuery(qtemp);
+    output.searchQuery = searchQuery||'';
+
     caramel.render(output);
     //print(page);
 }, request, response, session);
