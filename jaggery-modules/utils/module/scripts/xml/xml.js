@@ -35,14 +35,22 @@ var xml = {};
 
         //Extract all attributes
         var attributes = xmlElement.@*;
-
         //Fill the pseudo object with the attributes of the element
         for (var attributeKey in attributes) {
             var attribute = attributes[attributeKey];
-            pseudo[attribute.localName()] = attribute.toString();
+            pseudo[attribute.localName()] = parseAttributeString(attribute.toString());
         }
-
         return pseudo;
+    };
+
+    var parseAttributeString = function (value) {
+        if (value == "true") {
+            return true;
+        }
+        if (value == "false") {
+            return false;
+        }
+        return value;
     };
 
     /*
