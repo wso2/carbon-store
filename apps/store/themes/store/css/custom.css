@@ -201,12 +201,12 @@ h2.app-title {
 .assets-container{
     margin-top:20px;
 }
-.nav > li.advanced-search-link{
+.es-nav > li.advanced-search-link{
     position: absolute;
     right: 0;
     float:right;
 }
-.nav > li.advanced-search-link span{
+.es-nav > li.advanced-search-link span{
     font-weight: 100;
 }
 div.asset-well div.advanced-search-form-container{
@@ -991,7 +991,7 @@ a.more:focus {
 .btn-collapsed {
     background:url('../img/icons/wso2-logo-small.png') no-repeat;
 }
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+.es-nav-tabs > li.active > a, .es-nav-tabs > li.active > a:hover, .es-nav-tabs > li.active > a:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -1004,13 +1004,13 @@ a.more:focus {
     cursor: default;
     padding: 15px;
 }
-.nav-tabs > li > a {
+.es-nav-tabs > li > a {
     border: 1px solid transparent;
     border-radius: 0;
     line-height: 1.42857;
     margin-right: 2px;
 }
-.nav-tabs > li > a {
+.es-nav-tabs > li > a {
     background: #ccc none repeat scroll 0 0;
     border: 1px solid transparent;
     border-radius: 0;
@@ -1416,7 +1416,7 @@ span.advanced-search-icons{
     .bookmark-link-text{
         display: none;
     }
-    .navbar-nav{
+    .es-navbar-nav{
         margin: 0;
     }
     .asset-details-wrapper{
