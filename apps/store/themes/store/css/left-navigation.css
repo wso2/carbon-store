@@ -255,12 +255,12 @@ nav.navigation .second_level > .left-menu-item {
     padding-top: 10px;
 }
 
-.dropdown-menu-ovr> li a:hover {
+.es-dropdown-menu> li a:hover {
     background: #1a78d8;
     cursor: pointer;
     color: #fff;
 }
-.dropdown-menu-ovr>li>a {
+.es-dropdown-menu>li>a {
     display: block;
     padding: 3px 20px;
     clear: both;
@@ -302,7 +302,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:active   {
     text-decoration: none;
     width: 193px;
 }
-.dropdown-menu-ovr>li>a {
+.es-dropdown-menu>li>a {
     display: block;
     padding: 3px 20px;
     clear: both;
@@ -311,11 +311,11 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:active   {
     color: #333;
     white-space: nowrap;
 }
-.dropdown-menu-ovr> li {
+.es-dropdown-menu> li {
     line-height: 20px;
 
 }
-.dropdown-menu-ovr> li a:hover {
+.es-dropdown-menu> li a:hover {
     background: #1a78d8;
     cursor: pointer;
     color: #fff;
@@ -432,7 +432,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     margin: 5px 15px 0;
 }
 
-.dropdown-menu-ovr > .dropdown-menu-content {
+.es-dropdown-menu > .dropdown-menu-content {
     background-color: #F5F5F5;
 }
 
@@ -456,7 +456,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 }
 
 
-.input-group-ovr .form-control-ovr {
+.es-input-group .form-control {
     position: relative;
     z-index: 2;
     float: left;
@@ -466,39 +466,39 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     height: 35px !important;
     margin-top: 3px;
 }
-.input-group-ovr {
+.es-input-group{
     position: relative;
     display: block;
     border-collapse: separate;
 }
-.input-group-btn-ovr:last-child>.btn, .input-group-btn-ovr:last-child>.btn-group {
+.es-input-group-btn:last-child>.btn, .es-input-group-btn:last-child>.btn-group {
     margin-top: 3px;
     height: 35px;
     border-radius: 0px;
     height: 35px;
     border: 0px;
 }
-.form-control-ovr::-webkit-input-placeholder {
+.es-form-control::-webkit-input-placeholder {
     font-size: 15px;
     font-weight: 100;
 }
 
-.form-control-ovr:-moz-placeholder { /* Firefox 18- */
+.es-form-control:-moz-placeholder { /* Firefox 18- */
     font-size: 15px;
     font-weight: 100;
 }
 
-.form-control-ovr::-moz-placeholder {  /* Firefox 19+ */
+.es-form-control::-moz-placeholder {  /* Firefox 19+ */
     font-size: 15px;
     font-weight: 100;
 }
 
-.form-control-ovr:-ms-input-placeholder {
+.es-form-control:-ms-input-placeholder {
     font-size: 15px;
     font-weight: 100;
 }
 /* input */
-.form-control-ovr {
+.es-form-control {
     display: block;
     width: 100%;
     height: 34px;
@@ -517,7 +517,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
 }
 
-.form-control-ovr:focus {
+.es-form-control:focus {
     border-color: #555;
     outline: 0;
     -webkit-box-shadow: inset 0 0 0 rgba(0,0,0,.075), 0 0 0 rgba(102, 175, 233, .6);
@@ -667,7 +667,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         width: 21.6%;
         margin-bottom: 2%;
     }
-    .row-ovr > .col-lg-12 {
+    .es-row > .col-lg-12 {
         padding: 0px;
     }
 }
@@ -691,7 +691,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         margin: 2px;
     }
 
-    .input-group-ovr .form-control-ovr {
+    .es-input-group .es-form-control {
         margin-left: 90px;
     }
 
@@ -699,7 +699,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         display: none;
     }
 
-    .col-lg-12-ovr {
+    .es-col-lg-12 {
         padding: 0 15px;
     }
     .ctrl-wr-asset {
@@ -746,7 +746,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         display: none;
     }
 
-    .row-ovr {
+    .es-row {
         clear: both;
     }
 
@@ -782,7 +782,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         margin-top: 0px;
     }
 
-    .col-lg-12-ovr {
+    .es-col-lg-12 {
         padding: 0px;
     }
 
