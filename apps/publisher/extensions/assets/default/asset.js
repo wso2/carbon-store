@@ -257,20 +257,23 @@ asset.renderer = function(ctx) {
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
         var user = require('store').server.current(session);
         var username = user? user.username : null;
+        navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session) && permissionAPI.hasAssetPagePermission(type,'update',user.tenantId,username)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
-            navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
-        navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
+        if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
+                    navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);
+        }
         //Only render the view if the asset has a 
         if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
             if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE, ctx.assetType, ctx.session)) {
                 navList.push('Life Cycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
-        if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
-            navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);
+        if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session) && permissionAPI.hasAssetPagePermission(type,'update',user.tenantId,username)) {
+           navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
+
         return navList.list();
     };
     var buildAddLeftNav = function(page, util) {
