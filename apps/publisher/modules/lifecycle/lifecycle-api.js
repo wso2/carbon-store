@@ -407,12 +407,12 @@ var error = '';
         state.isDeletable = false;
         //We can only populate delete meta data if the default lifecycle
         //and the active lifecycle for the operation is the same
-        if (defaultLifecycle === lcName) {
+        //if (defaultLifecycle === lcName) {
             //Obtain the deletable states
             state.deletableStates = rxtManager.getDeletableStates(options.type);
             //Determine if the current state is a deletable state
             state.isDeletable = isDeletable(lcState, state.deletableStates, lcName);
-        }
+        //}
         //Update the state of the check items
         state.isLCActionsPermitted = isLCActionsPermitted(asset, options, req, res, session);
         state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
