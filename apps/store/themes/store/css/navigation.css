@@ -74,13 +74,13 @@ hr.emboss {
     z-index: 10000;
 }
 
-.nav .dropdown-toggle .caret {
+.nav-ovr .dropdown-toggle .caret {
     border-bottom-color: #CCCCCC;
     border-top-color: #CCCCCC;
     margin-top: 0px;
 }
 
-.nav .dropdown-toggle:hover .caret {
+.nav-ovr .dropdown-toggle:hover .caret {
     border-bottom-color: #FFFFFF;
     border-top-color: #FFFFFF;
 }
@@ -97,7 +97,7 @@ hr.emboss {
     padding-bottom: 10px;
 }
 
-.navbar .brand {
+.navbar-ovr .brand {
     background: url("../img/logo.png") no-repeat top left;
     color: #FFFFFF;
     height: 27px;
@@ -106,39 +106,39 @@ hr.emboss {
     width: 171px;
 }
 
-.navbar .nav > li > a {
+.navbar-ovr .nav > li > a {
     text-shadow: none;
     font-weight: bold;
     color: #34495E;
 }
-.navbar .nav > li > a.btn {
+.navbar-ovr .nav > li > a.btn {
     padding: 5px 10px;
     color: #FFFFFF;
     margin-top: 7px;
 }
-.navbar .nav > li > a.btn:hover {
+.navbar-ovr .nav > li > a.btn:hover {
     background: #27ae60;
     color: #fff;
 }
-.navbar .nav > li > a.selected {
+.navbar-ovr .nav > li > a.selected {
     color: #ffffff;
 }
-.navbar .nav > li > a:hover, .navbar .nav > li > a:focus {
+.navbar-ovr .nav > li > a:hover, .navbar .nav > li > a:focus {
     color: #647E9A;
 }
 /*
  .navbar .nav > li > a.dropdown-toggle{
  padding-top:8px;
  }*/
-.navbar .nav li.dropdown.open > .dropdown-toggle .caret, .navbar .nav li.dropdown.active > .dropdown-toggle .caret, .navbar .nav li.dropdown.open.active > .dropdown-toggle .caret {
+.navbar-ovr .nav li.dropdown.open > .dropdown-toggle .caret, .navbar .nav li.dropdown.active > .dropdown-toggle .caret, .navbar-ovr .nav li.dropdown.open.active > .dropdown-toggle .caret {
     border-bottom-color: #FFFFFF;
     border-top-color: #FFFFFF;
 }
-.navbar .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
+.navbar-ovr .nav li.dropdown.open > .dropdown-toggle, .navbar .nav li.dropdown.active > .dropdown-toggle, .navbar .nav li.dropdown.open.active > .dropdown-toggle {
     background-color: #505050;
     color: #FFFFFF;
 }
-.navbar .nav-separator {
+.navbar-ovr .nav-separator {
     border-right: 1px solid #ccc;
 }
 .navbar-inverse .navbar-inner {
@@ -195,7 +195,7 @@ hr.emboss {
     /*filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#0016a085,endColorstr=#0016a085);*/
 /*}*/
 
-.navbar .nav > li > .dropdown-menu:after, .navbar .nav > li > .dropdown-menu:before {
+.navbar-ovr .nav > li > .dropdown-menu:after, .navbar .nav > li > .dropdown-menu:before {
     border: none;
 }
 .nav.store-menu {
@@ -232,11 +232,11 @@ hr.emboss {
     /*background: #229a55;*/
 }
 
-.navbar .nav > li {
+.navbar-ovr .nav > li {
     line-height: 26px;
 }
 
-.dropdown-menu {
+.dropdown-menu-ovr {
     background-color: #333;
     color: #ccc;
     left: 265px;
@@ -255,7 +255,7 @@ hr.emboss {
 .store-menu .dropdown-menu li a:hover {
     color: #FFFFFF;
 }
-.dropdown-menu .sub-menu {
+.dropdown-menu-ovr .sub-menu {
     left: 100%;
     position: absolute;
     top: 0;
@@ -263,7 +263,7 @@ hr.emboss {
     margin-top: -1px;
 }
 
-.dropdown-menu li:hover .sub-menu {
+.dropdown-menu-ovr li:hover .sub-menu {
     visibility: visible;
 }
 
@@ -271,11 +271,11 @@ hr.emboss {
     display: block;
 }
 
-.nav-tabs .dropdown-menu, .nav-pills .dropdown-menu, .navbar .dropdown-menu {
+.nav-tabs-ovr .dropdown-menu, .nav-pills .dropdown-menu, .navbar .dropdown-menu {
     margin-top: 0;
 }
 
-.navbar .sub-menu:before {
+.navbar-ovr .sub-menu:before {
     border-bottom: 7px solid transparent;
     border-left: none;
     border-right: 7px solid rgba(0, 0, 0, 0.2);
@@ -283,7 +283,7 @@ hr.emboss {
     left: -7px;
     top: 10px;
 }
-.navbar .sub-menu:after {
+.navbar-ovr .sub-menu:after {
     border-top: 6px solid transparent;
     border-left: none;
     border-right: 6px solid #fff;
@@ -291,7 +291,7 @@ hr.emboss {
     left: 10px;
     top: 11px;
 }
-.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
+.nav-ovr .open > a, .nav .open > a:focus, .nav .open > a:hover {
     background-color: #333;
     border-color: #337ab7;
 }
@@ -303,4 +303,4 @@ hr.emboss {
 .action-title {
     padding: 8px 2px 2px 5px;
     color: #ddd;}
-.nav > li > a:focus, .nav > li > a:hover{ background-color:#3e3e3e; color: #fff; }
+.nav-ovr > li > a:focus, .nav-ovr > li > a:hover{ background-color:#3e3e3e; color: #fff; }
