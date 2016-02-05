@@ -422,6 +422,12 @@ asset.renderer = function(ctx) {
             },
             sorting: function(page){
                 require('/modules/page-decorators.js').pageDecorators.sorting(ctx,page);
+            },
+            hideEmptyTables:function(page){
+                if(page.meta.pageName !=='details'){
+                    return;
+                }
+                require('/modules/page-decorators.js').pageDecorators.hideEmptyTables(ctx,page,this);
             }
         }
     };

@@ -149,6 +149,10 @@ var engine = caramel.engine('handlebars', (function() {
                 var columns = table.columns;
                 var index = 0;
                 var out = '<tr>';
+                //The table should only be drawn if it is not empty
+                if(table.renderingMetaData.empty){
+                    return;
+                }
                 for (var key in fields) {
                     if ((index % 3) == 0) {
                         index = 0;
