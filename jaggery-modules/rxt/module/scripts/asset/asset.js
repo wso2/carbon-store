@@ -671,13 +671,27 @@ var asset = {};
         q  = buildQueryString(query, options);
         return q;
     };
-    var doAdvanceSearch = function(type,query,paging,registry,rxtManager) {
+    var doAdvanceSearch = function(type,query,paging,registry,rxtManager,tenantId) {
+        var app = require('rxt').app;
         var assets = null;
         var q;
         var governanceRegistry;
         var mediaType = '';
         if(type){
             mediaType = rxtManager.getMediaType(type);
+        } else if(tenantId) {
+            var availableTypes = app.getUIActivatedAssets(tenantId);
+            mediaType = '(';
+            for (var index in availableTypes) {
+                if (availableTypes.hasOwnProperty(index)) {
+                    if (index == 0) {
+                        mediaType = mediaType + rxtManager.getMediaType(availableTypes[index]);
+                    } else {
+                        mediaType = mediaType + ' OR ' + rxtManager.getMediaType(availableTypes[index]);
+                    }
+                }
+            }
+            mediaType = mediaType + ')';
         }
         try {
             if (log.isDebugEnabled()) {
@@ -744,7 +758,7 @@ var asset = {};
         }
         rxtManager = core.rxtManager(tenantId);
         registry = userRegistry.registry;
-        assets = doAdvanceSearch(type, query, paging, registry, rxtManager);
+        assets = doAdvanceSearch(type, query, paging, registry, rxtManager, tenantId);
         //assets is a set that must be converted to a JSON array
         if (log.isDebugEnabled()) {
             log.debug('[advance search] about to process result set');
