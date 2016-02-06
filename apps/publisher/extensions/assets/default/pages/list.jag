@@ -16,6 +16,7 @@
  */
 var caramel;
 var constant = require("rxt").constants;
+var utilsRequest = require('utils').request;
 var PAGING = constant.DEFAULT_ASSET_PAGIN;
 require('/modules/publisher.js').exec(function(ctx) {
     caramel = require('caramel');
@@ -40,5 +41,8 @@ require('/modules/publisher.js').exec(function(ctx) {
     //Do an advanced search
     assets  = assetApi.advanceSearch(options,ctx.request,ctx.response,ctx.session)||[];
     var output = am.render(assets, page).list();
+    var qtemp = ctx.request.getParameter('q') || '';
+    var searchQuery = utilsRequest.formatSearchQuery(qtemp);
+    output.searchQuery = searchQuery||'';
     caramel.render(output);
 }, request, response, session); %>
