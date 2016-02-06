@@ -150,8 +150,8 @@ var engine = caramel.engine('handlebars', (function() {
                 var index = 0;
                 var out = '<tr>';
                 //The table should only be drawn if it is not empty
-                if(table.renderingMetaData.empty){
-                    return;
+                if(table.renderingMetaData.emptyTable){
+                    return '';
                 }
                 for (var key in fields) {
                     if ((index % 3) == 0) {
@@ -160,8 +160,10 @@ var engine = caramel.engine('handlebars', (function() {
                     }
                     if (fields[key].url == 'true' && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
                         out += '<td><a href="'+fields[key].value+'">' + (fields[key].value || ' ') + '</a></td>';
-                    } else {
+                    } else if(fields[key].value) {
                         out += '<td>' + (fields[key].value || ' ') + '</td>';
+                    } else {
+                        out+='';
                     }
                     index++;
                 }
