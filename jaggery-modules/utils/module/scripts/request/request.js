@@ -68,4 +68,24 @@ var log = new Log('request_module');
         });
         return obj;
     };
+    /*
+     * Format the encoded  query string and return user friendly search query
+     * */
+    request.formatSearchQuery = function (queryString) {
+        var searchQuery = "";
+        var qjson = parse('{' + queryString + '}');
+        var searchKeys = Object.keys(qjson);
+        if ((searchKeys.length === 1) && (searchKeys.indexOf("name") >= 0)) {
+            searchQuery += qjson[searchKeys.pop()];
+        }
+        else {
+            for (var keyIndex in searchKeys) {
+                var key = searchKeys[keyIndex];
+                var value = qjson[key];
+                searchQuery += key + ":" + value + " ";
+            }
+        }
+        searchQuery = searchQuery.trim();
+        return searchQuery;
+    }
 }(request))
