@@ -222,6 +222,28 @@ var pageDecorators = {};
         page.sorting = {selected:sortingListSelected,list:sortingList};
         return page;
     };
+    pageDecorators.hideEmptyTables = function(ctx,page,type){
+        var table;
+        var tables = page.assets.tables||[];
+        for(var tableIndex=0; tableIndex < tables.length; tableIndex++){
+            table = tables[tableIndex];
+            table.renderingMetaData = {};
+            if(isEmptyTable(table)){
+                table.renderingMetaData.emptyTable = true;
+            }
+        }
+    };
+    var isEmptyTable = function(table){
+        var field;
+        var fields = table.fields;
+        for(var fieldKey in fields){
+            field = fields[fieldKey];
+            if(field.hasOwnProperty('value')){
+                return false;
+            }
+        }
+        return true;
+    };
     var assetManager = function(ctx) {
         var rxt = require('rxt');
         var type = ctx.assetType;
