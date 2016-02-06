@@ -65,7 +65,7 @@ generateBreadcrumbJson = function(data) {
         } else if(data.op === "view"){
         	breadcrumbJson.breadCrumbStaticText = "Overview";
         } else if(data.op === "lifecycle"){
-        	breadcrumbJson.breadCrumbStaticText = "Life cycle";
+        	breadcrumbJson.breadCrumbStaticText = "Lifecycle";
         }
         
     }  else if(data.op === "create"){
