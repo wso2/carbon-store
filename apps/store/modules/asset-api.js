@@ -540,24 +540,5 @@ var responseProcessor = require('utils').response;
         paging.url = url;
         return paging;
     };
-    
-    api.formatSearchQuery = function (queryString) {
-        var searchQuery = "";
-        var qjson = parse('{' + queryString + '}');
-
-        var searchKeys = Object.keys(qjson);
-        if ((searchKeys.length === 1) && (searchKeys.indexOf("name") >= 0)) {
-            searchQuery += qjson[searchKeys.pop()];
-        }
-        else {
-            for (var keyIndex in searchKeys) {
-                var key = searchKeys[keyIndex];
-                var value = qjson[key];
-                searchQuery += key + ":" + value + " ";
-            }
-        }
-        searchQuery = searchQuery.trim();
-        return searchQuery;
-    };
 
 }(api))
