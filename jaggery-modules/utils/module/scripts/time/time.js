@@ -32,4 +32,56 @@ var time = {};
         }
         return onsetVal + now;
     };
+
+    /***
+     * This method is used to get the difference between two timestamps
+     *
+     * @param date
+     * @returns {string}
+     */
+    time.formatTimeAsTimeSince = function(date) {
+        var secs = Math.floor((new Date() - date) / 1000);
+        var minutes = secs / 60;
+        secs = Math.floor(secs % 60);
+        if (minutes < 1) {
+            return new FormattedTimeText(secs,(secs > 1 ? ' seconds ago' : ' second ago'));
+        }
+        var hours = minutes / 60;
+        minutes = Math.floor(minutes % 60);
+        if (hours < 1) {
+            return new FormattedTimeText(minutes,(minutes > 1 ? ' minutes ago' : ' minute ago'));
+        }
+        var days = hours / 24;
+        hours = Math.floor(hours % 24);
+        if (days < 1) {
+            return new FormattedTimeText(hours,(hours > 1 ? ' hours ago' : ' hour ago'));
+        }
+        var weeks = days / 7;
+        days = Math.floor(days % 7);
+        if (weeks < 1) {
+            return new FormattedTimeText(days,(days > 1 ? ' days ago' : ' day ago'));
+        }
+        var months = weeks / 4.35;
+        weeks = Math.floor(weeks % 4.35);
+        if (months < 1) {
+            return new FormattedTimeText(weeks,(weeks > 1 ? ' weeks ago' : ' week ago'));
+        }
+        var years = months / 12;
+        months = Math.floor(months % 12);
+        if (years < 1) {
+            return new FormattedTimeText(months,(months > 1 ? ' months ago' : ' month ago'));
+        }
+        years = Math.floor(years);
+        return new FormattedTimeText(years,(years > 1 ? ' years ago' : ' year ago'));
+    };
+
+    function FormattedTimeText(timeUnit,timeMessage) {
+        this.timeUnit = timeUnit;
+        this.timeMessage = timeMessage;
+    }
+
+    FormattedTimeText.prototype.toString = function FormattedTimeTextString() {
+        return this.timeUnit + this.timeMessage;
+    }
+
 }(time));
