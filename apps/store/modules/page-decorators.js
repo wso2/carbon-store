@@ -163,58 +163,39 @@ var pageDecorators = {};
             return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
         };
         var bookmarkPerms = {};
-        if (query) {
-            items = asset.advanceSearch(query, null, session, ctx.tenantId)||[];
-            ratingApi.addRatings(items, am, ctx.tenantId, ctx.username);
-            assetMap = {};
-            var template;
-            //Sort the results by type
-            items.forEach(function(item){
-                var type = item.type;
-                if(!assetMap[type]){
-                    assetMap[type] = [];
-                }
-                bookmarkable = bookmarkPerms[type];
-                if (bookmarkable === undefined) {
-                    bookmarkable = (bookmarkPerms[type] = canBookmark(type));
-                }
-                item.bookmarkable = bookmarkable;
-                assetMap[type].push(item);
+        for (var index in types) {
+            typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
+            type = typeDetails.shortName;
+            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                type: type
             });
-            //Collect the asset result set along with the rxt definition
-            for(var key in assetMap){
-                template = ctx.rxtManager.getRxtTypeDetails(key);
-                assetsByType.push({
-                    assets:assetMap[key],
-                    rxt:template
-                });
+            bookmarkable = bookmarkPerms[type];
+            if(bookmarkable === undefined) {
+                bookmarkable = (bookmarkPerms[type] = canBookmark(type));
             }
-        } else {
-            for (var index in types) {
-                typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
-                type = typeDetails.shortName;
-                tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
-                    type: type
-                });
-                bookmarkable = bookmarkPerms[type];
-                if(bookmarkable === undefined) {
-                    bookmarkable = (bookmarkPerms[type] = canBookmark(type));
-                }
-                am = tenantAssetResources.am;
-                if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+            am = tenantAssetResources.am;
+            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                if (query) {
+                    var paging = {'start': 0,
+                                'count': 7,
+                                'sortOrder': 'desc',
+                                'sortBy': 'createdDate',
+                                'paginationLimit': 7 };
+                    assets = am.advanceSearch(query, paging);
+                } else {
                     assets = am.recentAssets();
-                    if (assets.length > 0) {
-                        //Add subscription details if this is not an anon context
-                        if (!ctx.isAnonContext) {
-                            addSubscriptionDetails(assets, am, ctx.session, bookmarkable);
-                        }
-                        ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
-                        items = items.concat(assets);
-                        assetsByType.push({
-                            assets: assets,
-                            rxt: typeDetails
-                        });
+                }
+                if (assets.length > 0) {
+                    //Add subscription details if this is not an anon context
+                    if (!ctx.isAnonContext) {
+                        addSubscriptionDetails(assets, am, ctx.session, bookmarkable);
                     }
+                    ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                    items = items.concat(assets);
+                    assetsByType.push({
+                        assets: assets,
+                        rxt: typeDetails
+                    });
                 }
             }
         }
