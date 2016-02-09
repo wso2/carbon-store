@@ -18,7 +18,7 @@
             <div class="container-fluid ">
                 <div class="title">
                     {{#if ../assetMeta.q}}
-                        <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?{{../../assetMeta.q}}">
+                        <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?q={{../../assetMeta.q}}">
                             {{rxt.pluralLabel}}
                         </a>
                     {{else}}
@@ -29,7 +29,7 @@
                     {{/if}}
                 </div><!--title-->
                 {{#if ../assetMeta.q}}
-                    <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?{{../../assetMeta.q}}" class="more">
+                    <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?q={{../../assetMeta.q}}" class="more">
                         <span class="asset-more-in-listing">See More</span></a></div>
                 {{else}}
                     <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list" class="more">
