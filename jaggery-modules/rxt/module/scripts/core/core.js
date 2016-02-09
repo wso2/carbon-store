@@ -237,6 +237,30 @@ var core = {};
         }
         return pathItem;
     };
+    /**
+     * Returns the namespace attribute as defined in the RXT definition
+     * @param  {String} rxtType RXT type
+     * @return {String|NULL} Returns the namespace attribute if it is defined,else NULL
+     */
+    RxtManager.prototype.getNamespaceAttribute = function(rxtType) {
+        var def = this.rxtMap[rxtType];
+        if(!def){
+            log.debug('Unable to locate rxt definition for ' + rxtType);
+            return null;         
+        }
+        if(!def.hasNamespace) {
+            return null;
+        }
+        var hasNamespace = Boolean(def.hasNamespace);
+        if(!hasNamespace){
+            return null;
+        }
+        if(!def.hasOwnProperty('namespaceAttribute')){
+            return null;
+        }
+        var namespaceAttribute = def.namespaceAttribute[0] || {};
+        return namespaceAttribute.namespaceAttribute;
+    };
     RxtManager.prototype.getStaticRxtStoragePath = function(rxtType) {
         var storagePath = this.getRxtStoragePath(rxtType);
         var components;
