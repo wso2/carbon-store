@@ -48,6 +48,7 @@ require('/modules/store.js').exec(function(ctx) {
     var output = {};
     var tag = ctx.request.getParameter('tag');
     var assetApi = require('/modules/asset-api.js').api;
+    var utilsRequest = require('utils').request;
     var subscriptionApi = require('/modules/subscriptions-api.js').api;
     var tenantApi = require('/modules/tenant-api.js').api;
     var ratingApi = require('/modules/rating-api.js').api;
@@ -153,7 +154,7 @@ require('/modules/store.js').exec(function(ctx) {
     var output = am.render(assets, page).list();
     output.paging = assetApi.assetsPaging(assets, type, ctx.request);
     var qtemp = ctx.request.getParameter('q') || '';
-    var searchQuery = assetApi.formatSearchQuery(qtemp);
+    var searchQuery = utilsRequest.formatSearchQuery(qtemp);
     output.searchQuery = searchQuery||'';
     caramel.render(output);
 }, request, response, session); %>

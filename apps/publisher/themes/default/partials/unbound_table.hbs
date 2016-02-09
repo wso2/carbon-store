@@ -1,9 +1,9 @@
 <h2 class="field-title">
-    <a class="collapsing-h2" aria-expanded="true" href="#{{name}}" data-toggle="collapse">
+    <a class="collapsing-h2 {{#if renderingMetaData.emptyTable}} collapsed {{/if}}" aria-expanded="true" href="#{{name}}" data-toggle="collapse">
         <i class="cu-btn-exp-col btn-collapsed">{{label}}</i>
     </a>
 </h2>
-<div id="{{name}}" class="responsive-form-container collapse in" aria-expanded="true" style="">
+<div id="{{name}}" class="responsive-form-container {{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" aria-expanded="true" style="">
     {{#if subheading}}
     <table class='table table-bordered'>
         <thead class="decorated-table-heading">

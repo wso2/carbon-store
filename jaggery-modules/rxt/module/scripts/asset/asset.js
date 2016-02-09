@@ -176,13 +176,14 @@ var asset = {};
 
     var validateRequiredFeilds = function (type, assetReq, rxtManager) {
         var name = rxtManager.getNameAttribute(type);
+        /*
         if (name && name.length > 1) {
             validateRequiredFeild(name, assetReq);
         }
         var version = rxtManager.getVersionAttribute(type);
         if (version && version.length > 1) {
             validateRequiredFeild(version, assetReq);
-        }
+        }*/
         var fields = rxtManager.listRxtFields(type);
         for (var key in fields) {
             if (fields.hasOwnProperty(key)) {
