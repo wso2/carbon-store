@@ -269,6 +269,13 @@ var asset = {};
         if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
             options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
         }
+        
+        var namespaceAttribute = this.rxtManager.getNamespaceAttribute(this.type);
+
+        if (namespaceAttribute) {
+            options.namespaceAttribute = namespaceAttribute;
+        }
+
         var id = this.am.add(options);
         var asset;
         options.id = id;
