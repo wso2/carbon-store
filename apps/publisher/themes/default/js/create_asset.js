@@ -150,13 +150,27 @@ $(function () {
         var $panel = $(this).parent().next();
         if($panel.is(":visible")){
             $panel.hide('fast');
+            $(this).parent().addClass('collapsed');
         }else{
             $panel.show('fast');
+            $(this).parent().removeClass('collapsed');
         }
     });
-    $('#form-asset-create .responsive-form-container').each(function(){
-        if($(this).attr('id') != 'collapseoverview'){
+    /**
+     * Hides all the tables except the first table in order to improve 
+     * readability
+     */
+    $('#form-asset-create .responsive-form-container').each(function(index){
+        if(index!=0){
             $(this).hide();
+        }
+    });
+    /**
+     * Changes the field icon to collapsed state
+     */
+    $('.field-title').each(function(index){
+        if(index!=0){
+            $(this).addClass("collapsed");
         }
     });
 
