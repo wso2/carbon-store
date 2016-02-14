@@ -203,31 +203,34 @@ $stream.on('click', '.icon-thumbs-up', function (e) {
 $more.on('click', '.load-more', function (e) {
     e.preventDefault();
     var offset = parseInt($('.load-more').attr("value"));
-        $.get('apis/object.jag', {
+        var url = caramel.url('/apis/user-reviews');
+        $.get({
+            url:url,
             target: target,
             sortBy : $('.com-sort .selected').attr('id'),
             offset: offset,
-            limit: 10
-        }, function (obj) {
-            var reviews = obj || [];
+            limit: 10,
+            success:function (obj) {
+                var reviews = obj || [];
 
-            if(jQuery.isEmptyObject(reviews) || reviews.length < 10){
-                $more.hide();
-                $empty_list.text("No more activities to retrieve.");
-            }
-
-            usingTemplate(function (template) {
-                var str = "";
-                for (var i = 0; i < reviews.length; i++) {
-                    var review = reviews[i];
-                    str += template(review);
+                if(jQuery.isEmptyObject(reviews) || reviews.length < 10){
+                    $more.hide();
+                    $empty_list.text("No more activities to retrieve.");
                 }
-                $stream.append(str);
-                //callback && callback();
-                adjustHeight();
-                $('.load-more').attr("value", parseInt(offset) + 10);
-            });
-        })
+
+                usingTemplate(function (template) {
+                    var str = "";
+                    for (var i = 0; i < reviews.length; i++) {
+                        var review = reviews[i];
+                        str += template(review);
+                    }
+                    $stream.append(str);
+                    //callback && callback();
+                    adjustHeight();
+                    $('.load-more').attr("value", parseInt(offset) + 10);
+                });
+            }
+        });
 
 });
 
