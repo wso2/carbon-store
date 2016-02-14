@@ -49,7 +49,9 @@ var ReviewUtils={};
     };
     ReviewUtils.createUserReview = function(review) {
         var socialSvc = getSocialSvc();
-        var id = socialSvc.publish(review);
+        var reviewJSON = JSON.stringify(review);
+        log.info('Review JSON '+reviewJSON);
+        var id = socialSvc.publish(reviewJSON);
         var result = {};
         result.id = id;
         result.success = result.id ?  true : false;

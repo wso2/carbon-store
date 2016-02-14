@@ -35,9 +35,19 @@ var publish = function (activity, onSuccess) {
     } else {
         activity.target = {"id": target};
     }
-    $.post('apis/comments.jag', {
+    debugger;
+    var url = caramel.url('/apis/user-reviews');
+
+    $.ajax({
+        url:url,
+        type:'POST',
+        contentType:'application/json',
+        data:JSON.stringify(activity),
+        success:onSuccess
+    });
+    /*$.post(url, {
         activity: JSON.stringify(activity)
-    }, onSuccess)
+    }, onSuccess)*/
 };
 
 

@@ -21,14 +21,15 @@ var $more = $('#more');
 var $empty_list = $('#empty_list');
 
 var usingTemplate = function (callback) {
-    caramel.partials({activity: 'themes/' + caramel.themer + '/partials/activity.hbs'}, function () {
+    caramel.partials({activity: '/extensions/app/social-reviews/themes/' + caramel.themer + '/partials/activity.hbs'}, function () {
         callback(Handlebars.partials['activity']);
     });
 };
 
 var redrawReviews = function (sortBy, callback) {
     $('.com-sort .selected').removeClass('selected');
-    $.get('apis/object.jag', {
+    var url = caramel.url('/apis/user-reviews');
+    $.get(url, {
         target: target,
         sortBy: sortBy,
         offset: 0,
