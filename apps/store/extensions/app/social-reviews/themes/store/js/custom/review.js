@@ -236,12 +236,21 @@ $stream.on('click', '.com-delete', function (e) {
     var $deleteBtn = $(e.target);
     var $review = $deleteBtn.parents('.com-review');
     var id = $review.attr('data-target-id');
-
-    $.get('apis/comments.jag',{
-        id:id
-    }, function(obj){
-        if(obj.success){
-        $review.remove();
+    var url = caramel.url('/apis/user-review/'+id);
+    $.ajax({
+        url:url,
+        type:'DELETE',
+        success:function(obj){
+            if(obj.success){
+                $review.remove();
+            }     
         }
     });
+    // $.get('apis/comments.jag',{
+    //     id:id
+    // }, function(obj){
+    //     if(obj.success){
+    //     $review.remove();
+    //     }
+    // });
 });

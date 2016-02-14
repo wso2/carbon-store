@@ -57,7 +57,13 @@ var ReviewUtils={};
         result.success = result.id ?  true : false;
         return result;
     };
-    ReviewUtils.deleteUserReview = function(assetId) {};
+    ReviewUtils.removeUserReview = function(reviewId,username) {
+        var socialSvc = getSocialSvc();
+        var removed = socialSvc.removeActivity(reviewId,username);
+        var result = {};
+        result.success = removed;
+        return result;
+    };
     /**
      * Creates the target string which is used to retrieve social resources
      */

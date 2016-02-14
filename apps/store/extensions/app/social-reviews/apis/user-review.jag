@@ -1,3 +1,7 @@
 <%
-	//print('User Review');
+	require('/modules/store.js').exec(function(ctx){
+		var httpMethod = ctx.request.getMethod();
+		var api = require('/extensions/app/social-reviews/modules/review-api.js').api;
+		api.resolve(ctx);
+	},request,response,session);
 %>
