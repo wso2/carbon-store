@@ -1,3 +1,14 @@
 <%
-	print('User Reviews');
+	/*var ReviewUtils = require('/extensions/app/social-reviews/modules/reviews-utils.js').ReviewUtils;
+	var id = request.getParameter('id');
+	var type = request.getParameter('type');
+	var server = require('store').server;
+	var user = server.current(session);
+	var target = ReviewUtils.createTargetFromAssetId(id,type);
+	var reviews = ReviewUtils.getUserReviews(target,user,{});*/
+	require('/modules/store.js').exec(function(ctx){
+		var httpMethod = ctx.request.getMethod();
+		var api = require('/extensions/app/social-reviews/modules/reviews-api.js').api;
+		api.resolve(ctx);
+	},request,response,session);
 %>
