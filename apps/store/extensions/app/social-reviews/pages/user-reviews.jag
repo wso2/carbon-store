@@ -40,7 +40,6 @@ require('//modules/store.js').exec(function(ctx){
                 sortBy:'POPULAR'
             });
             more = ReviewUtils.hasMoreReviews(reviews);
-            log.info('has more reviews '+more);
         } catch (e) {
             log.error(e);
         }

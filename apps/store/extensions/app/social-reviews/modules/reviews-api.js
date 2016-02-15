@@ -1,3 +1,21 @@
+/*
+ *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ *
+ */
 var api = {};
 (function(api) {
     var rxtModule = require('rxt');
@@ -15,8 +33,6 @@ var api = {};
         var errors = [];
         var server = store.server;
         var user = server.current(session);
-        log.info('### RETRIEVE REVIEWS CALLED ###');
-        log.info(opts);
         if (!opts.target) {
             errors.push('traget of the reviews must be provided');
         }
@@ -30,7 +46,6 @@ var api = {};
         print(reviews);
     };
     var resolvePOST = function(req, res, session) {
-        log.info('### CREATE REVIEW ###');
         var review;
         var tenantApi = require('/modules/tenant-api.js').api;
         var tenantContext = tenantApi.tenantContext(session);
@@ -52,9 +67,6 @@ var api = {};
         var actor = review.actor = {};
         actor.id = ReviewUtils.formatUsername(user);
         actor.objectType = 'person';
-        log.info('## USING REVIEW OBJECT ##');
-        log.info(review);
-        log.info('### DONE ###');
         var result = ReviewUtils.createUserReview(review);
         res.addHeader("Content-Type", "application/json");
         print(result);
@@ -66,7 +78,6 @@ var api = {};
         var req = ctx.request;
         var res = ctx.response;
         var session = ctx.session;
-        log.info('Resolving api ');
         switch (request.getMethod()) {
             case HTTP_GET_METHOD:
                 resolveGET(req, res, session);
