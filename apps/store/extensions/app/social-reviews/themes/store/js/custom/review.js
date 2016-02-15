@@ -204,13 +204,12 @@ $more.on('click', '.load-more', function (e) {
     e.preventDefault();
     var offset = parseInt($('.load-more').attr("value"));
         var url = caramel.url('/apis/user-reviews');
-        $.get({
-            url:url,
+        $.get(url,{
             target: target,
             sortBy : $('.com-sort .selected').attr('id'),
             offset: offset,
-            limit: 10,
-            success:function (obj) {
+            limit: 10
+        },function (obj) {
                 var reviews = obj || [];
 
                 if(jQuery.isEmptyObject(reviews) || reviews.length < 10){
@@ -229,7 +228,6 @@ $more.on('click', '.load-more', function (e) {
                     adjustHeight();
                     $('.load-more').attr("value", parseInt(offset) + 10);
                 });
-            }
         });
 
 });

@@ -36,8 +36,11 @@ require('//modules/store.js').exec(function(ctx){
 
     if (target) {
         try {
-        	reviews = ReviewUtils.listReviews(target,user);
-        	more = ReviewUtils.hasMoreReviews(reviews);
+            reviews = ReviewUtils.listReviews(target,user,{
+                sortBy:'POPULAR'
+            });
+            more = ReviewUtils.hasMoreReviews(reviews);
+            log.info('has more reviews '+more);
         } catch (e) {
             log.error(e);
         }

@@ -25,7 +25,7 @@ var api = {};
             return;
         }
         var target =  opts.target; //ReviewUtils.createTargetFromAssetId(opts.id, opts.type);
-        var reviews = ReviewUtils.listReviews(target, user);
+        var reviews = ReviewUtils.listReviews(target, user,opts);
         res.addHeader("Content-Type", "application/json");
         print(reviews);
     };

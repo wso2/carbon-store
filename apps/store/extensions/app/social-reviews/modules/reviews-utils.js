@@ -50,7 +50,6 @@ var ReviewUtils={};
     ReviewUtils.createUserReview = function(review) {
         var socialSvc = getSocialSvc();
         var reviewJSON = JSON.stringify(review);
-        log.info('Review JSON '+reviewJSON);
         var id = socialSvc.publish(reviewJSON);
         var result = {};
         result.id = id;
@@ -72,7 +71,7 @@ var ReviewUtils={};
     };
     ReviewUtils.hasMoreReviews = function(reviews){
         reviews = reviews || [];
-        return reviews.length > REVIEW_PAGE_LIMIT;
+        return (reviews.length === REVIEW_PAGE_LIMIT);
     };
     ReviewUtils.formatUsername = function(user){
         return formatUsername(user);
