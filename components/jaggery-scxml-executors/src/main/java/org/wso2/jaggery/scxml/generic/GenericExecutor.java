@@ -75,8 +75,9 @@ public class GenericExecutor implements Execution
 
         DynamicValueInjector dynamicValueInjector=new DynamicValueInjector();
 
+        String assetAuthor =  requestContext.getResource().getAuthorUserName();
         //Set the asset author key
-        dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY,requestContext.getResource().getAuthorUserName());
+        dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY,cleanUsername(assetAuthor));
 
         //Execute all permissions for the current state
         //this.stateExecutor.executePermissions(this.userRealm,dynamicValueInjector,path,s2);
@@ -93,6 +94,9 @@ public class GenericExecutor implements Execution
         return true;
     }
 
+    private String cleanUsername(String username){
+        return username.replace("@","-AT-").replace("/","-AT-");
+    }
     /*
     The method obtains the tenant id from a string tenant id
      */
