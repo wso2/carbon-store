@@ -40,8 +40,8 @@ var api = {};
             print(errors);
             return;
         }
-        var target =  opts.target; //ReviewUtils.createTargetFromAssetId(opts.id, opts.type);
-        var reviews = ReviewUtils.listReviews(target, user,opts);
+        var target = opts.target; //ReviewUtils.createTargetFromAssetId(opts.id, opts.type);
+        var reviews = ReviewUtils.listReviews(target, user, opts);
         res.addHeader("Content-Type", "application/json");
         print(reviews);
     };

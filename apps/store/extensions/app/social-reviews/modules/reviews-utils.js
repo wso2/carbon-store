@@ -16,7 +16,7 @@
  *  under the License.
  *
  */
-var ReviewUtils={};
+var ReviewUtils = {};
 (function(ReviewUtils) {
     var SOCIAL_OSGI_SERVICE = 'org.wso2.carbon.social.core.service.SocialActivityService';
     var REVIEW_PAGE_LIMIT = 10;
@@ -31,7 +31,9 @@ var ReviewUtils={};
         return username.replace("@carbon.super", "");
     }
     var formatUsername = function(user) {
-        var domain = user ? carbon.server.tenantDomain({tenantId:user.tenantId}) : null;
+        var domain = user ? carbon.server.tenantDomain({
+            tenantId: user.tenantId
+        }) : null;
         return (user && domain) ? (String(user.username) + '@' + domain) : 'anonymous';
     };
     var buildPagination = function(paging) {
@@ -63,7 +65,7 @@ var ReviewUtils={};
         var socialSvc = getSocialSvc();
         var paging = buildPagination(userPagination || {});
         var obj = JSON.parse(String(socialSvc.getSocialObjectJson(target, paging.sortBy, paging.offset, paging.limit)));
-        return processUserReviews(socialSvc,user,obj.attachments || []);
+        return processUserReviews(socialSvc, user, obj.attachments || []);
     };
     ReviewUtils.createUserReview = function(review) {
         var socialSvc = getSocialSvc();
@@ -71,12 +73,12 @@ var ReviewUtils={};
         var id = socialSvc.publish(reviewJSON);
         var result = {};
         result.id = id;
-        result.success = result.id ?  true : false;
+        result.success = result.id ? true : false;
         return result;
     };
-    ReviewUtils.removeUserReview = function(reviewId,username) {
+    ReviewUtils.removeUserReview = function(reviewId, username) {
         var socialSvc = getSocialSvc();
-        var removed = socialSvc.removeActivity(reviewId,username);
+        var removed = socialSvc.removeActivity(reviewId, username);
         var result = {};
         result.success = removed;
         return result;
@@ -84,14 +86,14 @@ var ReviewUtils={};
     /**
      * Creates the target string which is used to retrieve social resources
      */
-    ReviewUtils.createTargetFromAssetId = function(id,type){
-        return type+':'+id;
+    ReviewUtils.createTargetFromAssetId = function(id, type) {
+        return type + ':' + id;
     };
-    ReviewUtils.hasMoreReviews = function(reviews){
+    ReviewUtils.hasMoreReviews = function(reviews) {
         reviews = reviews || [];
         return (reviews.length === REVIEW_PAGE_LIMIT);
     };
-    ReviewUtils.formatUsername = function(user){
+    ReviewUtils.formatUsername = function(user) {
         return formatUsername(user);
     };
 }(ReviewUtils));

@@ -27,52 +27,46 @@ var $lastReview = $('.load-more');
 var $more = $('#more');
 var $empty_list = $('#empty_list');
 var windowProxy;
-
-
-var publish = function (activity, onSuccess) {
+var publish = function(activity, onSuccess) {
     if (activity.target) {
-        activity.context = {"id": target};
+        activity.context = {
+            "id": target
+        };
     } else {
-        activity.target = {"id": target};
+        activity.target = {
+            "id": target
+        };
     }
     debugger;
     var url = caramel.url('/apis/user-reviews');
-
     $.ajax({
-        url:url,
-        type:'POST',
-        contentType:'application/json',
-        data:JSON.stringify(activity),
-        success:onSuccess
+        url: url,
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(activity),
+        success: onSuccess
     });
     /*$.post(url, {
         activity: JSON.stringify(activity)
     }, onSuccess)*/
 };
-
-
-var showAlert = function (msg) {
+var showAlert = function(msg) {
     $alert.html(msg).fadeIn("fast").css('display', 'inline-block');
 };
-
-var showLoading = function (status) {
+var showLoading = function(status) {
     if (status) {
         $alert.html('').css('display', 'inline-block').addClass('com-alert-wait');
     } else {
         $alert.hide().removeClass('com-alert-wait');
     }
 };
-
 $radio.rating({
-    callback: function (value) {
-    }
+    callback: function(value) {}
 });
-
-$btn.click(function (e) {
+$btn.click(function(e) {
     e.preventDefault();
     var rating = Number($('input.star-rating-applied:checked').val());
     var review = $textArea.val();
-
     if (!review && !rating) {
         showAlert("Please add your Review and Rating");
     } else if (!review) {
@@ -80,178 +74,182 @@ $btn.click(function (e) {
     } else if (!rating) {
         showAlert("Please add your Rating");
     } else {
-        var activity = {"verb": "post",
-            "object": {"objectType": "review", "content": review, rating: rating, "likes" : {"totalItems": 0}, "dislikes" : {"totalItems": 0}}
+        var activity = {
+            "verb": "post",
+            "object": {
+                "objectType": "review",
+                "content": review,
+                rating: rating,
+                "likes": {
+                    "totalItems": 0
+                },
+                "dislikes": {
+                    "totalItems": 0
+                }
+            }
         };
-
         $btn.attr('disabled', 'disabled');
         showLoading(true);
-
         var pos = target.indexOf(':');
         var aid = target.substring(pos + 1);
         var type = target.substring(0, pos);
-
-
-        var addAndRenderNew = function (successCallback) {
+        var addAndRenderNew = function(successCallback) {
             $('#newest').addClass('selected');
-                publish(activity, function (published) {
-                    if ($firstReview.length) {
-                        $firstReview.hide();
-                        $sort.removeClass('com-sort-hidden');
+            publish(activity, function(published) {
+                if ($firstReview.length) {
+                    $firstReview.hide();
+                    $sort.removeClass('com-sort-hidden');
+                }
+                $btn.removeAttr('disabled');
+                if (published.success) {
+                    showLoading(false);
+                    $radio.rating('select', null);
+                    $textArea.val('');
+                    activity.id = published.id;
+                    //Remove carbon.super tenant domain from username
+                    var pieces = user.split(/[\s@]+/);
+                    if (pieces[pieces.length - 1] == 'carbon.super') {
+                        user = pieces[pieces.length - 2];
                     }
-                    $btn.removeAttr('disabled');
-
-
-                    if (published.success) {
-                        showLoading(false);
-                        $radio.rating('select', null);
-                        $textArea.val('');
-
-                        activity.id = published.id;
-                      //Remove carbon.super tenant domain from username
-                        var pieces = user.split(/[\s@]+/);
-                        if(pieces[pieces.length-1] == 'carbon.super'){
-                            user= pieces[pieces.length-2];
-                        }
-                        activity.actor = {id: user};
-                        usingTemplate(function (template) {
-                            var newComment = template(activity);
-                            $stream.prepend(newComment);
-                            successCallback && successCallback();
-                        });
-                    }
-                });
+                    activity.actor = {
+                        id: user
+                    };
+                    usingTemplate(function(template) {
+                        var newComment = template(activity);
+                        $stream.prepend(newComment);
+                        successCallback && successCallback();
+                    });
+                }
+            });
         };
-
-        addAndRenderNew(function(){
+        addAndRenderNew(function() {
             redrawReviews();
         });
     }
 });
-
-$stream.on('click', '.icon-thumbs-down', function (e) {
+$stream.on('click', '.icon-thumbs-down', function(e) {
     e.preventDefault();
     var $tDownBtn = $(e.target);
     var $review = $tDownBtn.parents('.com-review');
     var id = $review.attr('data-target-id');
     var $tDownCount = $review.find('.com-dislike-count');
-
-    var activity = { target: {id: id}, object : {} };
-
+    var activity = {
+        target: {
+            id: id
+        },
+        object: {}
+    };
     var $opposite = $review.find('.icon-thumbs-up');
-    if($opposite.hasClass('selected')){
-        var ulikeActivity = { target: {id: id}, object : {} };
+    if ($opposite.hasClass('selected')) {
+        var ulikeActivity = {
+            target: {
+                id: id
+            },
+            object: {}
+        };
         var $likeCount = $review.find('.com-like-count');
         ulikeActivity.verb = 'unlike';
-        publish(ulikeActivity, function () {
+        publish(ulikeActivity, function() {
             $likeCount.text((Number($likeCount.text()) - 1) || '');
         });
         $opposite.removeClass('selected');
     }
-
     if ($tDownBtn.hasClass('selected')) {
         activity.verb = 'undislike';
-        publish(activity, function () {
+        publish(activity, function() {
             $tDownCount.text((Number($tDownCount.text()) - 1) || '');
         });
         $tDownBtn.removeClass('selected');
     } else {
         activity.verb = 'dislike';
-        publish(activity, function () {
+        publish(activity, function() {
             $tDownCount.text(Number($tDownCount.text()) + 1);
         });
         $tDownBtn.addClass('selected');
     }
 });
-
-$stream.on('click', '.icon-thumbs-up', function (e) {
+$stream.on('click', '.icon-thumbs-up', function(e) {
     e.preventDefault();
     var $tUpBtn = $(e.target);
     var $review = $tUpBtn.parents('.com-review');
     var id = $review.attr('data-target-id');
     var $likeCount = $review.find('.com-like-count');
-
-    var activity = { target: {id: id}, object :{}};
-
+    var activity = {
+        target: {
+            id: id
+        },
+        object: {}
+    };
     var $opposite = $review.find('.icon-thumbs-down');
-    if($opposite.hasClass('selected')){
-        var uDislikeActivity = { target: {id: id}, object : {} };
+    if ($opposite.hasClass('selected')) {
+        var uDislikeActivity = {
+            target: {
+                id: id
+            },
+            object: {}
+        };
         var $uDislikeCount = $review.find('.com-dislike-count');
         uDislikeActivity.verb = 'undislike';
-        publish(uDislikeActivity, function () {
+        publish(uDislikeActivity, function() {
             $uDislikeCount.text((Number($uDislikeCount.text()) - 1) || '');
         });
         $opposite.removeClass('selected');
     }
-
     if ($tUpBtn.hasClass('selected')) {
         activity.verb = 'unlike';
-        publish(activity, function () {
+        publish(activity, function() {
             $likeCount.text((Number($likeCount.text()) - 1) || '');
         });
         $tUpBtn.removeClass('selected');
     } else {
         activity.verb = 'like';
-        publish(activity, function () {
+        publish(activity, function() {
             $likeCount.text(Number($likeCount.text()) + 1);
         });
         $tUpBtn.addClass('selected');
     }
-
 });
-
-$more.on('click', '.load-more', function (e) {
+$more.on('click', '.load-more', function(e) {
     e.preventDefault();
     var offset = parseInt($('.load-more').attr("value"));
-        var url = caramel.url('/apis/user-reviews');
-        $.get(url,{
-            target: target,
-            sortBy : $('.com-sort .selected').attr('id'),
-            offset: offset,
-            limit: 10
-        },function (obj) {
-                var reviews = obj || [];
-
-                if(jQuery.isEmptyObject(reviews) || reviews.length < 10){
-                    $more.hide();
-                    $empty_list.text("No more activities to retrieve.");
-                }
-
-                usingTemplate(function (template) {
-                    var str = "";
-                    for (var i = 0; i < reviews.length; i++) {
-                        var review = reviews[i];
-                        str += template(review);
-                    }
-                    $stream.append(str);
-                    //callback && callback();
-                    adjustHeight();
-                    $('.load-more').attr("value", parseInt(offset) + 10);
-                });
+    var url = caramel.url('/apis/user-reviews');
+    $.get(url, {
+        target: target,
+        sortBy: $('.com-sort .selected').attr('id'),
+        offset: offset,
+        limit: 10
+    }, function(obj) {
+        var reviews = obj || [];
+        if (jQuery.isEmptyObject(reviews) || reviews.length < 10) {
+            $more.hide();
+            $empty_list.text("No more activities to retrieve.");
+        }
+        usingTemplate(function(template) {
+            var str = "";
+            for (var i = 0; i < reviews.length; i++) {
+                var review = reviews[i];
+                str += template(review);
+            }
+            $stream.append(str);
+            //callback && callback();
+            adjustHeight();
+            $('.load-more').attr("value", parseInt(offset) + 10);
         });
-
+    });
 });
-
-$stream.on('click', '.com-delete', function (e) {
+$stream.on('click', '.com-delete', function(e) {
     e.preventDefault();
     var $deleteBtn = $(e.target);
     var $review = $deleteBtn.parents('.com-review');
     var id = $review.attr('data-target-id');
-    var url = caramel.url('/apis/user-review/'+id);
+    var url = caramel.url('/apis/user-review/' + id);
     $.ajax({
-        url:url,
-        type:'DELETE',
-        success:function(obj){
-            if(obj.success){
+        url: url,
+        type: 'DELETE',
+        success: function(obj) {
+            if (obj.success) {
                 $review.remove();
-            }     
+            }
         }
     });
-    // $.get('apis/comments.jag',{
-    //     id:id
-    // }, function(obj){
-    //     if(obj.success){
-    //     $review.remove();
-    //     }
-    // });
 });

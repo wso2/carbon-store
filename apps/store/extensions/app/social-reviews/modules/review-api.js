@@ -32,21 +32,21 @@ var api = {};
     var resolveDefaultCase = function(req, res, session) {
         req.sendError(405); //Method Not Allowed
     };
-    var resolveDELETE = function(req,res,session){
+    var resolveDELETE = function(req, res, session) {
         var user = store.server.current(session);
         var uriMatcher = new URIMatcher(req.getRequestURI());
         var uriParams = uriMatcher.match(REMOVE_URL_PATTERN);
-        if(!user){
+        if (!user) {
             //TODO: send back error
             print('Cannot delete without logging in');
             return;
         }
-        if(!uriParams.id){
+        if (!uriParams.id) {
             print('review Id must be provided');
             return;
         }
         username = ReviewUtils.formatUsername(user);
-        var result = ReviewUtils.removeUserReview(uriParams.id,username);
+        var result = ReviewUtils.removeUserReview(uriParams.id, username);
         res.addHeader("Content-Type", "application/json");
         print(result);
     };

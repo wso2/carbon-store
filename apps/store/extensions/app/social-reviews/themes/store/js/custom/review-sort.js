@@ -19,14 +19,14 @@
 var $stream = $stream || $('#stream');
 var $more = $('#more');
 var $empty_list = $('#empty_list');
-
-var usingTemplate = function (callback) {
-    caramel.partials({activity: '/extensions/app/social-reviews/themes/' + caramel.themer + '/partials/activity.hbs'}, function () {
+var usingTemplate = function(callback) {
+    caramel.partials({
+        activity: '/extensions/app/social-reviews/themes/' + caramel.themer + '/partials/activity.hbs'
+    }, function() {
         callback(Handlebars.partials['activity']);
     });
 };
-
-var redrawReviews = function (sortBy, callback) {
+var redrawReviews = function(sortBy, callback) {
     $('.com-sort .selected').removeClass('selected');
     var url = caramel.url('/apis/user-reviews');
     $.get(url, {
@@ -34,9 +34,9 @@ var redrawReviews = function (sortBy, callback) {
         sortBy: sortBy,
         offset: 0,
         limit: 10
-    }, function (obj) {
+    }, function(obj) {
         var reviews = obj || [];
-        usingTemplate(function (template) {
+        usingTemplate(function(template) {
             var str = "";
             for (var i = 0; i < reviews.length; i++) {
                 var review = reviews[i];
@@ -51,12 +51,10 @@ var redrawReviews = function (sortBy, callback) {
         });
     })
 };
-
-$(document).on('click', '.com-sort a', function (e) {
+$(document).on('click', '.com-sort a', function(e) {
     var $target = $(e.target);
     if (!$target.hasClass('selected')) {
         redrawReviews($target.text().toUpperCase());
         $target.addClass('selected');
     }
 });
-
