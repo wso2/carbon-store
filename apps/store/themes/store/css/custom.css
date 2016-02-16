@@ -939,6 +939,9 @@ a.more:focus {
 #ul-sort-assets li a  i{
     line-height:2;
 }
+.sort-asset-container.open>.dropdown-menu {
+    width: 200px;
+}
 
 .action-wrapper{
     border-radius: 2px;
