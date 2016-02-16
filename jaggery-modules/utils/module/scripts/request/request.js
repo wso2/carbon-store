@@ -87,5 +87,10 @@ var log = new Log('request_module');
         }
         searchQuery = searchQuery.trim();
         return searchQuery;
-    }
+    };
+    // Fix for REGISTRY-3245
+    request.parseContentType = function(contentTypString) {
+        var comps = contentTypString.split(';');
+        return comps[0];
+    };
 }(request))

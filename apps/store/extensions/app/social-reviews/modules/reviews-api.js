@@ -49,7 +49,8 @@ var api = {};
         var review;
         var tenantApi = require('/modules/tenant-api.js').api;
         var tenantContext = tenantApi.tenantContext(session);
-        if (req.getHeader('Content-Type') === 'application/json') {
+        var contentType = req.getHeader('Content-Type');
+        if (ReqUtils.parseContentType(contentType) === 'application/json') {
             review = req.getContent();
         }
         if (!review) {
