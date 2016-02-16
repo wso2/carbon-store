@@ -15,10 +15,28 @@
  *  specific language governing permissions and limitations
  *  under the License.
  *
- */	
+ */
+var config = require('/test/conf.json');
+var publisherAPIURL = config.baseAPIUrls.publisher;
+var storeAPIURL = config.baseAPIUrls.store;
+var TestUtils = require('/moduldes/test/test-utils.js');
 describe('User Review POST - Store API', function() {
     it('Test add user review', function() {
-    	
-    });
-});
+        var username = 'admin';
+        var password = 'admin';
+        //Authenticate
+        var publisherHeader = util.obtainAuthorizedHeaderForAPICall(publisherAPIURL, username, password);
+        var storeHeader = util.obtainAuthorizedHeaderForAPICall(storeAPIURL, username, password);
 
+        log.info('## STORE HEADER ##');
+        log.info(storeHeader);
+        log.info('## PUBLISHER HEADER ##');
+        log.info(publisherHeader);
+        //Create a new asset
+        expect(true).toBe(false);
+    });
+    it('Test delete user review', function() {});
+    it('Test liking a user review', function() {});
+    it('Test unliking a user review', function() {});
+    it('Test adding a user review without a rating', function() {});
+});
