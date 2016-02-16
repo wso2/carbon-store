@@ -1,12 +1,13 @@
-<ul class="auth-links">
-<li>
-    <a href="{{url "/login"}}">
-    <i class="fw fw-key fw-1-5x"></i>
-    <span class="ro-text padding-left">{{t " Sign in"}}</span>
-    </a>
-</li>
-<li>
-    <a href="{{url "/login"}}" id="btn-register" >
-    <i class="fw fw-register fw-1-5x"></i>
-    <span class="ro-text  padding-left">{{t " Register"}}</span></a>
-</li></ul>
+<ul class="signup-actions">
+    <li class="padding-right-md">
+        <a href="{{url "/login"}}" id="btn-signin" >
+        <i class="fw fw-lock fw-1-5x"></i>
+        <span class="ro-text">{{t " Sign in"}}</span>
+        </a>
+    </li>
+    <li>
+        <a href="{{url "/../sso/register_new_user?relyingParty=store"}}" id="btn-register" >
+        <i class="fw fw-sign-up fw-1-5x"></i>
+        <span class="ro-text">{{t " Register"}}</span></a>
+    </li>
+</ul>
