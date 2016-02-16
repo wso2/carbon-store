@@ -56,7 +56,9 @@ $(function() {
             window.location = options.redirectUrl + data.id;
         },
         error: function() {
+            messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
             $('#editAssetButton').removeAttr('disabled');
+            $('.fa-spinner').parent().remove();
         }
     });
 
