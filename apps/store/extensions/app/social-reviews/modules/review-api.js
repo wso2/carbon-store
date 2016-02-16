@@ -29,27 +29,39 @@ var api = {};
     var HTTP_POST_METHOD = 'POST';
     var HTTP_DELETE_METHOD = 'DELETE';
     var REMOVE_URL_PATTERN = '/{context}/apis/user-review/{id}';
+
     var resolveDefaultCase = function(req, res, session) {
-        req.sendError(405); //Method Not Allowed
+        res = ResponseProcessor.buildErrorResponse(res, 501, 'Unable to locate endpoint.Supported verbs are GET and POST');
     };
+
     var resolveDELETE = function(req, res, session) {
         var user = store.server.current(session);
         var uriMatcher = new URIMatcher(req.getRequestURI());
         var uriParams = uriMatcher.match(REMOVE_URL_PATTERN);
+        //There can be only one logged in user at any given time
+        //TODO: Consider anon tenant browsing
         if (!user) {
-            //TODO: send back error
-            print('Cannot delete without logging in');
+            log.error('[user-review-api] Attempt to delete without a logged in user');
+            log.error('[user-review-api] Client IP');
+            log.error(req.getRemoteAddr());
+            log.error('[user-review-api] Review ID');
+            log.error(uriParams.id);
+            res = ResponseProcessor.buildErrorResponse(res, 401, 'Must be logged into create reviews');
             return;
         }
+
         if (!uriParams.id) {
-            print('review Id must be provided');
+            log.error('[user-review-api] Attempt to delete a review without providing review id');
+            res = ResponseProcessor.buildErrorResponse(res, 501, 'Endpoint not implemented');
             return;
         }
+
         username = ReviewUtils.formatUsername(user);
         var result = ReviewUtils.removeUserReview(uriParams.id, username);
         res.addHeader("Content-Type", "application/json");
         print(result);
     };
+    
     api.resolve = function(ctx) {
         var req = ctx.request;
         var res = ctx.response;
@@ -58,6 +70,7 @@ var api = {};
             case HTTP_DELETE_METHOD:
                 resolveDELETE(req, res, session);
             default:
+                resolveDefaultCase(req, res, session);
                 break;
         }
     };
