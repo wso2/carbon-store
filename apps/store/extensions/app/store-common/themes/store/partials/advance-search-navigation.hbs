@@ -25,12 +25,12 @@
                 <div class="arrow left"></div>
                 <div class="popover-content">
                     <ul class="tiles clearfix">
-                        {{#with navigationBar}}
+                        {{#with navigationBar}}e
                             {{#each types}}
                                 <li>
                                     <a target="_self" href='{{tenantedUrl ""}}{{this.listingUrl}}'>
                                         <i class="icon {{ui.icon}}"></i>
-                                        <span class="name">{{singularLabel}}</span>
+                                        <span class="name">{{pluralLabel}}</span>
                                     </a>
                                 </li>
                             {{/each}}
