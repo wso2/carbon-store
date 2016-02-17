@@ -28,6 +28,7 @@ app.server = function(ctx) {
                 path:'sso-auth-login-controller.jag'
             },{
                 url:'basic-auth-login',
+                title:'Login',
                 path:'basic-auth-login-controller.jag'
             },{
                 url:'sso-logout',
@@ -60,6 +61,9 @@ app.renderer = function(ctx) {
     return {
         pageDecorators: {
             navigationBar: function(page) {
+                if (page.meta.pageName === 'basic-auth-login') {
+                    return;
+                }
                 return decoratorApi.navigationBar(ctx, page, this);
             },
             getStoreUrl: function (page) {
