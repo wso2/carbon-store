@@ -47,7 +47,7 @@ var pageDecorators = {};
                 assetTypes.push({
                     url: utils.buildAssetPageUrl(assetType.shortName, '/list'),
                     assetIcon: assetType.ui.icon || DEFAULT_ICON,
-                    assetTitle: assetType.singularLabel
+                    assetTitle: assetType.pluralLabel
                 });
             }
         }

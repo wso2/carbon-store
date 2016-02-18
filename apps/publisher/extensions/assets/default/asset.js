@@ -386,7 +386,7 @@ asset.renderer = function(ctx) {
                         assetTypes.push({
                             url: this.buildBaseUrl(assetType.shortName) + '/list',
                             assetIcon: assetType.ui.icon || DEFAULT_ICON,
-                            assetTitle: assetType.singularLabel
+                            assetTitle: assetType.pluralLabel
                         });
                     }
                 }

@@ -18,5 +18,11 @@
  *
  */
 var caramel = require('caramel');
-caramel.render({});
+var log = new Log('/publisher/extensions/app/publisher-common/pages/basic-auth-login-controller.jag');
+var appManager;
+var ui = require('rxt').ui;
+var page = ui.buildPage(session,request);
+appManager = app.createUserAppManager(session);
+var output = appManager.render([], page);
+caramel.render(output);
 %>
