@@ -21,7 +21,7 @@ var publisherAPIURL = config.baseAPIUrls.publisher;
 var storeAPIURL = config.baseAPIUrls.store;
 var TestUtils = require('/modules/test/test-utils.js').util;
 var ASSET_TYPE = 'gadget';
-var REVIEW_CONTENT = ['Review 1', 'Review 2'];
+var REVIEW_CONTENT = ['Review 1', 'Review 2', 'Review 3', 'Review 4', 'Review 5'];
 describe('User Review POST - Store API', function() {
     it('Test adding a user review', function() {
         var context = createContext(config);
@@ -125,7 +125,6 @@ describe('User Review POST - Store API', function() {
         }
     });
     it('Test disliking a user review', function() {
-        log.info('Running dislike review');
         var context = createContext(config);
         var reviews;
         var createdReviews;
@@ -147,9 +146,78 @@ describe('User Review POST - Store API', function() {
             tearDown(context);
         }
     });
-    it('Test retrieving newest reviews', function() {});
-    it('Test retrieving oldest reviews', function() {});
-    it('Test retrieving popular reviews', function() {});
+    it('Test retrieving newest reviews', function() {
+        var context = createContext(config);
+        var reviews;
+        var templates;
+        var createdReviews;
+        var retrievedReviews;
+        try {
+            setup(context);
+            reviews = generateReviews(context, bulkReviews());
+            createdReviews = createReviews(context, reviews);
+            retrievedReviews = retrieveNewestReviews(context);
+            expect(retrievedReviews.length === createdReviews.length).toBe(true);
+            //The retrieved reviews need to be in the reverse order
+            createdReviews.forEach(function(createdReview, index) {
+                index++;
+                var adjacent = retrievedReviews.length - index;
+                expect(retrievedReviews[adjacent].object.content).toBe(createdReview.object.content);
+            })
+        } catch (e) {
+            log.error(e);
+            failTest();
+        } finally {
+            tearDown(context);
+        }
+    });
+    it('Test retrieving oldest reviews', function() {
+        var context = createContext(config);
+        var reviews;
+        var templates;
+        var createdReviews;
+        var retrievedReviews;
+        try {
+            setup(context);
+            reviews = generateReviews(context, bulkReviews());
+            createdReviews = createReviews(context, reviews);
+            retrievedReviews = retrieveOldestReviews(context);
+            expect(retrievedReviews.length === createdReviews.length).toBe(true);
+            //The retrieved reviews need to be in the same order as the review list
+            createdReviews.forEach(function(createdReview, index) {
+                expect(retrievedReviews[index].object.content).toBe(createdReview.object.content);
+            })
+        } catch (e) {
+            log.error(e);
+            failTest();
+        } finally {
+            tearDown(context);
+        }
+    });
+    it('Test retrieving popular reviews', function() {
+        var context = createContext(config);
+        var reviews;
+        var templates;
+        var createdReviews;
+        var retrievedReviews;
+        var retrievedPopularReviews;
+        try {
+            setup(context);
+            reviews = generateReviews(context, bulkReviews());
+            createdReviews = createReviews(context, reviews);
+            retrievedReviews = retrieveOldestReviews(context);
+            expect(retrievedReviews.length === createdReviews.length).toBe(true);
+            likeReview(context,retrievedReviews[1]);
+            retrievedPopularReviews = retrievePopularReviews(context);
+            expect(retrievedPopularReviews[0].object.content).toBe(retrievedReviews[1].object.content);
+            expect(retrievedPopularReviews[0].object.id).toBe(retrievedReviews[1].object.id);            
+        } catch (e) {
+            log.error(e);
+            failTest();
+        } finally {
+            tearDown(context);
+        }
+    });
 });
 /**
  * Creates a context with configuration
@@ -249,13 +317,29 @@ var generateReviews = function(context, templates) {
     }
     return reviews;
 };
-var retrieveReviews = function(context) {
+var retrieveReviews = function(context, paging) {
     var storeAPIURL = context.storeAPIURL;
     var storeHeader = context.storeHeader;
     var target = context.type + ':' + context.assetId;
-    var reviews = TestUtils.listReviews(target, storeHeader, storeAPIURL);
+    paging = paging || {};
+    var reviews = TestUtils.listReviews(target, storeHeader, storeAPIURL, paging);
     expect(reviews).toBeDefined();
     return parse(reviews);
+};
+var retrieveNewestReviews = function(context) {
+    return retrieveReviews(context, {
+        sortBy: 'newest'
+    });
+};
+var retrieveOldestReviews = function(context) {
+    return retrieveReviews(context, {
+        sortBy: 'oldest'
+    });
+};
+var retrievePopularReviews = function(context) {
+    return retrieveReviews(context, {
+        sortBy: 'popular'
+    });
 };
 var sortReviewsById = function(reviews) {
     reviews.sort(function(a, b) {
@@ -295,7 +379,7 @@ var likeReview = function(context, review) {
     var target = context.type + ':' + context.assetId;
     var response = TestUtils.likeReview(target, context.storeHeader, context.storeAPIURL, review);
 };
-var dislikeReview = function(context,review) {
+var dislikeReview = function(context, review) {
     var target = context.type + ':' + context.assetId;
     var response = TestUtils.dislikeReview(target, context.storeHeader, context.storeAPIURL, review);
 };
@@ -303,7 +387,16 @@ var isLiked = function(review, count) {
     count = count || 1;
     return review.object.likes.totalItems === count;
 };
-var isDisliked = function(review,count) {
+var isDisliked = function(review, count) {
     count = count || 1;
     return review.object.dislikes.totalItems === count;
+};
+var bulkReviews = function() {
+    var list = [];
+    list.push(reviewContent(1));
+    list.push(reviewContent(2));
+    list.push(reviewContent(3));
+    list.push(reviewContent(4));
+    list.push(reviewContent(5));
+    return list;
 };
