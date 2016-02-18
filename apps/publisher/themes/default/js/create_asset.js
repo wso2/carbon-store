@@ -165,8 +165,6 @@ $(function () {
         if ($(this).find('.required-field').length == 0) {
             $(this).hide();
             $('.field-title').eq(index).addClass("collapsed");
-        } else {
-
         }
     });
 
