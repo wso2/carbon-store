@@ -157,12 +157,12 @@ $(function () {
         }
     });
     /**
-     * Hides tables which dose not contain required fields
+     * Hides tables which dose not contain required fields.
      * count the number of required fields in one table, if count equals to zero
-     * Then hide that table
+     * then hide that table. First table will expand always
      */
     $('#form-asset-create .responsive-form-container').each(function (index) {
-        if ($(this).find('.required-field').length == 0) {
+        if ($(this).find('.required-field').length == 0 && index != 0) {
             $(this).hide();
             $('.field-title').eq(index).addClass("collapsed");
         }
