@@ -82,12 +82,12 @@ describe('User Review POST - Store API', function() {
         try {
             setup(context);
             reviews = generateReviews(context, [reviewContent(1), reviewContent(2)]);
-            createdReviews = createdReviews(context, reviews);
+            createdReviews = createReviews(context, reviews);
             retrievedReviews = retrieveReviews(context);
             sortReviewsById(createdReviews);
             sortReviewsById(retrievedReviews);
             //Delete the first review
-            deletedReviews = deleteReviews(context, reviews[0]);
+            deletedReviews = deleteReviews(context, [retrievedReviews[0]]);
             retrievedReviewsAfterDelete = retrieveReviews(context);
             //Check if the review count  as been reduced
             var isReviewCountOneLess = (retrievedReviewsAfterDelete.length < retrievedReviews.length);
@@ -96,7 +96,7 @@ describe('User Review POST - Store API', function() {
             var isReviewDeleted = matchReviewsById(deletedReviews, retrievedReviewsAfterDelete);
             expect(isReviewDeleted).toBe(true);
         } catch (e) {
-            log.error('Failed to test deleting a single user review',e);
+            log.error('Failed to test deleting a single user review', e);
             failTest();
         } finally {
             tearDown(context);
@@ -189,8 +189,9 @@ var createReviews = function(context, reviews) {
         expect(result.success).toBe(true);
         isNumber = (typeof result.id === 'number') ? true : false;
         expect(isNumber).toBe(true);
-        result.pushedContent = review.object.content;
-        results.push(result);
+        review.object.id = result.id;
+        review.success = result.success;
+        results.push(review);
     }
     return results;
 };
@@ -199,13 +200,14 @@ var deleteReviews = function(context, reviews) {
     var result;
     var id;
     reviews.forEach(function(review) {
-        id = review.id;
+        id = review.object.id;
         if (!id) {
-            log.error('Unable to locate review to delete review');
-            failTest();
+            throw 'Unable to locate review to delete review';
         }
-        result = TestUtils.deleteReview(id, context.header, context.storeAPIURL);
-        results.push(result.id);
+        result = TestUtils.deleteReview(id, context.storeHeader, context.storeAPIURL);
+        if (result.success) {
+            results.push(review.id);
+        }
     });
     return results;
 };
@@ -235,7 +237,8 @@ var retrieveReviews = function(context) {
 };
 var sortReviewsById = function(reviews) {
     reviews.sort(function(a, b) {
-        return (a.id > b.id);
+        //log.info('sorting '+a.object.id+' < '+b.id);
+        return (a.object.id < b.object.id);
     });
 };
 var matchReviewsByContent = function(setA, setB) {

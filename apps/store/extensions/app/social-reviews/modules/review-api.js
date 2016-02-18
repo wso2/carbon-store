@@ -21,6 +21,7 @@ var api = {};
     var rxtModule = require('rxt');
     var utilsModule = require('utils');
     var ReviewUtils = require('/extensions/app/social-reviews/modules/reviews-utils.js').ReviewUtils;
+    var ResponseProcessor = require('utils').response;
     var ReqUtils = utilsModule.request;
     var constants = rxtModule.constants;
     var store = require('store');
@@ -69,6 +70,7 @@ var api = {};
         switch (request.getMethod()) {
             case HTTP_DELETE_METHOD:
                 resolveDELETE(req, res, session);
+                break;
             default:
                 resolveDefaultCase(req, res, session);
                 break;

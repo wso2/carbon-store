@@ -99,14 +99,16 @@ var util = {};
         return response.data;
     };
     util.deleteReview = function(reviewId, header, server_url) {
-        var url = server_url + '/user-reviews/' + reviewId;
+        var url = server_url + '/user-review/' + reviewId;
+        var response = {};
         try {
-            response = del(url, {}, 'application/json', header);
+            response = del(url, {}, header);
         } catch (e) {
             log.error(e);
         } finally {
             expect(response.xhr.status).toEqual(200);
         }
+        return response.data;
     };
     util.listReviews = function(target, header, server_url, paging) {
         var url = server_url + '/user-reviews';
