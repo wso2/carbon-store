@@ -73,7 +73,7 @@ var ReviewUtils = {};
         var id = socialSvc.publish(reviewJSON);
         var result = {};
         result.id = id;
-        result.success = result.id ? true : false;
+        result.success = (id > -1) ? true : false;
         return result;
     };
     ReviewUtils.removeUserReview = function(reviewId, username) {

@@ -143,17 +143,17 @@ var util = {};
     }
     util.likeReview = function(target,header,server_url,review) {
         action = this.generateActionMessage({
-            id:review.id,
+            id:review.object.id,
             target:target,
             verb:'like'
         });
         return this.createReview(action,header,server_url);
     };
-    util.unlikeReview = function(target,header,server_url,review) {
+    util.dislikeReview = function(target,header,server_url,review) {
         action = this.generateActionMessage({
-            id:review.id,
+            id:review.object.id,
             target:target,
-            verb:'unlike'
+            verb:'dislike'
         });
         return this.createReview(action,header,server_url); 
     };
@@ -185,7 +185,7 @@ var util = {};
     util.generateActionMessage = function(opts) {
         return {
             "target": {
-                "id": opts.reviewId
+                "id": opts.id
             },
             "object": {},
             "verb": opts.verb,

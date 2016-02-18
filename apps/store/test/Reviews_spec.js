@@ -113,7 +113,7 @@ describe('User Review POST - Store API', function() {
             reviews = generateReviews(context, [reviewContent(1)]);
             createdReviews = createReviews(context, reviews);
             retrievedReviews = retrieveReviews(context);
-            likeReview(retrievedReviews[0]);
+            likeReview(context, retrievedReviews[0]);
             retrievedReviewsAfterLiking = retrieveReviews(context);
             var hasReviewBeenLiked = isLiked(retrievedReviewsAfterLiking[0]);
             expect(hasReviewBeenLiked).toBe(true);
@@ -124,7 +124,29 @@ describe('User Review POST - Store API', function() {
             tearDown(context);
         }
     });
-    it('Test unliking a user review', function() {});
+    it('Test disliking a user review', function() {
+        log.info('Running dislike review');
+        var context = createContext(config);
+        var reviews;
+        var createdReviews;
+        var retrievedReviews;
+        var retrievedReviewsAfterDisliking;
+        try {
+            setup(context);
+            reviews = generateReviews(context, [reviewContent(1)]);
+            createdReviews = createReviews(context, reviews);
+            retrievedReviews = retrieveReviews(context);
+            dislikeReview(context, retrievedReviews[0]);
+            retrievedReviewsAfterDisliking = retrieveReviews(context);
+            var hasReviewBeenDisliked = isDisliked(retrievedReviewsAfterDisliking[0]);
+            expect(hasReviewBeenDisliked).toBe(true);
+        } catch (e) {
+            log.error(e);
+            failTest();
+        } finally {
+            tearDown(context);
+        }
+    });
     it('Test retrieving newest reviews', function() {});
     it('Test retrieving oldest reviews', function() {});
     it('Test retrieving popular reviews', function() {});
@@ -269,7 +291,19 @@ var reviewContent = function(index) {
     log.error('Failing test as test review content could not be found');
     failTest();
 };
-var likeReview = function(review) {};
-var unlikeReview = function(review) {};
-var isLiked = function(review) {};
-var isUnliked = function(review) {};
+var likeReview = function(context, review) {
+    var target = context.type + ':' + context.assetId;
+    var response = TestUtils.likeReview(target, context.storeHeader, context.storeAPIURL, review);
+};
+var dislikeReview = function(context,review) {
+    var target = context.type + ':' + context.assetId;
+    var response = TestUtils.dislikeReview(target, context.storeHeader, context.storeAPIURL, review);
+};
+var isLiked = function(review, count) {
+    count = count || 1;
+    return review.object.likes.totalItems === count;
+};
+var isDisliked = function(review,count) {
+    count = count || 1;
+    return review.object.dislikes.totalItems === count;
+};
