@@ -1213,8 +1213,8 @@ var core = {};
             return updated;
         }
         //Case 2: Look for removed RXTs
-        for(var types in timeMap){
-            if(!currentTimeMap.hasOwnProperty(type)){
+        for(var shortName in timeMap){
+            if(!currentTimeMap.hasOwnProperty(shortName)){
                 updated = true;
             }
         }
