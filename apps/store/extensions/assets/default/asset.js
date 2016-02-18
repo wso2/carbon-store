@@ -198,8 +198,8 @@ asset.renderer = function(ctx) {
             sorting: function(page,meta){
                 return decoratorApi.sorting(ctx,page,this);
             },
-            searchHistory:function(page,meta){
-                return decoratorApi.searchHistory(ctx,page,this);
+            searchHistory: function (page, meta) {
+                return decoratorApi.searchHistory(ctx, page, this);
             },
             populateActionBar: function(page,meta){
                 page.actionBar = {};

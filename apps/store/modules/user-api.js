@@ -17,31 +17,31 @@
  *
  */
 var api = {};
-(function(api) {
+(function (api) {
     var log = new Log('user-api');
     var server = require('store').server;
-    api.getSearchHistory = function(session, type) {
-    	var history = [];
+    api.getSearchHistory = function (session, type) {
+        var history = [];
         var historyObject = [];
-    	var sessionHistory = {};
-    	var user = server.current(session);
-        if((!user)) {
+        var sessionHistory = {};
+        var user = server.current(session);
+        if ((!user)) {
             return history;
         }
-        if(session.get('USER_SEARCH_HISTORY')) {
-		sessionHistory = session.get('USER_SEARCH_HISTORY');
-    	} else {
-                var tenantId = server.current(session).tenantId;
-                var cleanUsername = require('store').user.cleanUsername(user.username);
-                var system = server.systemRegistry(tenantId);
-                var resourcePath = "/_system/config/users/searchhistory/user-" + cleanUsername;
-                log.debug('search history from registry resource::: '+resourcePath);
-                resource = system.get(resourcePath);
-    	    if (resource) {
+        if (session.get('USER_SEARCH_HISTORY')) {
+            sessionHistory = session.get('USER_SEARCH_HISTORY');
+        } else {
+            var tenantId = server.current(session).tenantId;
+            var cleanUsername = require('store').user.cleanUsername(user.username);
+            var system = server.systemRegistry(tenantId);
+            var resourcePath = "/_system/config/users/searchhistory/user-" + cleanUsername;
+            log.debug('search history from registry resource::: ' + resourcePath);
+            resource = system.get(resourcePath);
+            if (resource) {
                 sessionHistory = JSON.parse(resource.content);
-    	    	log.debug("search history object: "+stringify(sessionHistory));
-    	    	session.put('USER_SEARCH_HISTORY', sessionHistory);
-    	    }
+                log.debug("search history object: " + stringify(sessionHistory));
+                session.put('USER_SEARCH_HISTORY', sessionHistory);
+            }
         }
         if (type) {
             historyObject = sessionHistory[type];
@@ -51,15 +51,16 @@ var api = {};
         if (historyObject) {
             for (index = 0; index < historyObject.length; index++) {
                 history.push(historyObject[index].query);
-            };
+            }
+            ;
         }
 
-        log.info(history);
-    	return history;
+        log.debug("page search history content::: " + history);
+        return history;
     };
 
-    api.updateSearchHistory = function(ctx, searchQuery, type) {
-        log.debug('page type:: ' +type+ ' search query:: '+searchQuery);
+    api.updateSearchHistory = function (ctx, searchQuery, type) {
+        log.debug('page type:: ' + type + ' search query:: ' + searchQuery);
         var assetType;
         if (type) {
             assetType = type;
@@ -70,7 +71,7 @@ var api = {};
         var searchHistory = ctx.session.get('USER_SEARCH_HISTORY');
         if (!searchHistory) {
             searchHistory = {}
-        } 
+        }
 
         if (!searchHistory[assetType]) {
             searchHistory[assetType] = [];
@@ -82,22 +83,24 @@ var api = {};
                 exists = true;
                 break;
             }
-        };
+        }
+        ;
 
         if (exists === false) {
             var d = new Date();
             var n = d.getTime();
             var queryObject = {
-                "timeStamp" : n,
-                "query" : searchQuery
+                "timeStamp": n,
+                "query": searchQuery
             };
             searchHistory[assetType].push(queryObject);
-        };
+        }
+        ;
 
         if (searchHistory[assetType].length > 5) {
             searchHistory[assetType].shift();
         }
-        log.debug('search history: '+stringify(searchHistory));
+        log.debug('search history: ' + stringify(searchHistory));
         ctx.session.put('USER_SEARCH_HISTORY', searchHistory);
     };
 

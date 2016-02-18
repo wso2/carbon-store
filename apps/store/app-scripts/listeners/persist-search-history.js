@@ -16,30 +16,30 @@
  *  under the License.
  *
  */
-(function() {
-    var l = new Log();
-    var SEARCH_HISTORY_PATH = "/_system/config/users/searchhistory/user-";
-    var server = require('store').server;
-    if(server.current(session)) {
-    	var username = server.current(session).username;
-    	var tenantId = server.current(session).tenantId;
+(function () {
+	var l = new Log();
+	var SEARCH_HISTORY_PATH = "/_system/config/users/searchhistory/user-";
+	var server = require('store').server;
+	if (server.current(session)) {
+		var username = server.current(session).username;
+		var tenantId = server.current(session).tenantId;
 		if (session.get('USER_SEARCH_HISTORY')) {
-			server.sandbox({tenantId:tenantId, username:username}, function() {
+			server.sandbox({tenantId: tenantId, username: username}, function () {
 				var server = require('store').server;
 				var cleanUsername = require('store').user.cleanUsername(username);
 				var system = server.systemRegistry(tenantId);
 				var resourcePath = SEARCH_HISTORY_PATH + cleanUsername;
-				l.debug("search history resource path: "+resourcePath);
+				l.debug("search history resource path: " + resourcePath);
 				var resource = system.get(resourcePath);
 				var resourceContent;
 				if (resource) {
-	                resourceContent = JSON.parse(resource.content);
-	    	    }
-	    	    var sessionContent = session.get('USER_SEARCH_HISTORY');
-	    	    l.debug('session content ::: ' + stringify(sessionContent));
-	    	    l.debug('resource content ::: ' + stringify(resourceContent));
-	    	    var writeContent = {};
-	    	    if (resourceContent) {
+					resourceContent = JSON.parse(resource.content);
+				}
+				var sessionContent = session.get('USER_SEARCH_HISTORY');
+				l.debug('session content ::: ' + stringify(sessionContent));
+				l.debug('resource content ::: ' + stringify(resourceContent));
+				var writeContent = {};
+				if (resourceContent) {
 					for (var key in sessionContent) {
 						if (sessionContent.hasOwnProperty(key)) {
 							var sessionContentByKey = sessionContent[key].reverse();
@@ -65,12 +65,14 @@
 					}
 					l.debug('write content ::: ' + stringify(writeContent));
 					system.put(resourcePath, {
-				    		content: stringify(writeContent)});
+						content: stringify(writeContent)
+					});
 				} else {
 					system.put(resourcePath, {
-				    		content: stringify(session.get('USER_SEARCH_HISTORY'))});
+						content: stringify(session.get('USER_SEARCH_HISTORY'))
+					});
 				}
-				
+
 			});
 		}
 	}

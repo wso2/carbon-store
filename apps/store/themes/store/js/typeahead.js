@@ -16,51 +16,53 @@
  *  under the License.
  *
  */
-$(document).ready(function(){
-	var substringMatcher = function(strs) {
-	  return function findMatches(q, cb) {
-	    var matches, substringRegex;
+$(document).ready(function () {
+	var substringMatcher = function (strs) {
+		return function findMatches(q, cb) {
+			var matches, substringRegex;
 
-	    // an array that will be populated with substring matches
-	    matches = [];
+			// an array that will be populated with substring matches
+			matches = [];
 
-	    // regex used to determine if a string contains the substring `q`
-	    substrRegex = new RegExp(q, 'i');
+			// regex used to determine if a string contains the substring `q`
+			substrRegex = new RegExp(q, 'i');
 
-	    // iterate through the pool of strings and for any string that
-	    // contains the substring `q`, add it to the `matches` array
-	    $.each(strs, function(i, str) {
-	      if (substrRegex.test(str)) {
-	        matches.push(str);
-	      }
-	    });
+			// iterate through the pool of strings and for any string that
+			// contains the substring `q`, add it to the `matches` array
+			$.each(strs, function (i, str) {
+				if (substrRegex.test(str)) {
+					matches.push(str);
+				}
+			});
 
-	    cb(matches);
-	  };
+			cb(matches);
+		};
 	};
 
 	var history = [];
 
-	if((store)&&(store.store)){
+	if ((store) && (store.store)) {
 		var stringHistory = store.store.searchHistory || "";
 		history = stringHistory.split(',');
 		$('#the-basics .typeahead').typeahead({
-		  hint: true,
-		  highlight: true,
-		  minLength: 1
-		},
-		{
-		  name: 'states',
-    	  	  display: function(data) { return data; },
-		  source: substringMatcher(history),
-		  templates: {
-			header: function (data) {
-                		return '<div class="text-info" style="padding-left:20px;border-bottom:1px solid #eee;margin-bottom:5px;padding-bottom:5px;padding-top:5px;">Search History</div>';
-              		},
-		  	suggestion: function(data) {
-				return '<p>' + data + '</p>';
-			}
-          	  }
-		});
+				hint: true,
+				highlight: true,
+				minLength: 1
+			},
+			{
+				name: 'history',
+				display: function (data) {
+					return data;
+				},
+				source: substringMatcher(history),
+				templates: {
+					header: function (data) {
+						return '<div class="text-info" style="padding-left:20px;border-bottom:1px solid #eee;margin-bottom:5px;padding-bottom:5px;padding-top:5px;">Search History</div>';
+					},
+					suggestion: function (data) {
+						return '<p>' + data + '</p>';
+					}
+				}
+			});
 	}
 });
