@@ -22,7 +22,7 @@ var storeAPIURL = config.baseAPIUrls.store;
 var TestUtils = require('/modules/test/test-utils.js').util;
 var ASSET_TYPE = 'gadget';
 var REVIEW_CONTENT = ['Review 1', 'Review 2', 'Review 3', 'Review 4', 'Review 5'];
-describe('User Review POST - Store API', function() {
+describe('User Review - Store API', function() {
     it('Test adding a user review', function() {
         var context = createContext(config);
         var reviews;
