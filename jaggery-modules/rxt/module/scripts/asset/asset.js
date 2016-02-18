@@ -1521,7 +1521,6 @@ var asset = {};
         var existingAsset = this.get(options.id);
         var ctx = rxtModule.core.createUserAssetContext(session,options.type);
         var context = rxtModule.core.createUserAssetContext(session, options.type);
-        //var nameAttribute = this.getName(existingAsset);
         var oldId = existingAsset.id;
         delete existingAsset.id;
 
@@ -1530,8 +1529,16 @@ var asset = {};
         }
 
         existingAttributes.attributes = existingAsset.attributes;
-        //TODO remove hardcoded attributename
-        existingAttributes.name = existingAsset.attributes['overview_name'];
+        var nameAttribute = this.getName(existingAsset);
+
+        if(nameAttribute != 'undefined'){
+            existingAttributes.name = nameAttribute;
+        } else if(existingAsset.attributes['overview_name'] != 'undefined'){
+            existingAttributes.name = existingAsset.attributes['overview_name'];
+        } else {
+            log.error('Unable to derive the name attribute');
+            return false;
+        }
 
         var tags = this.registry.tags(existingAsset.path);
 
