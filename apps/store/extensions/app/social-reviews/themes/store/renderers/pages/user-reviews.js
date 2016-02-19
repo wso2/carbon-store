@@ -20,6 +20,7 @@ var render = function (theme, data, meta, require) {
     data.stream.isLogged = data.isLogged;
     data.stream.isAuthorized = data.isAuthorized;
     data.stream.urlDomain = data.urlDomain;
+    data.stream.message = data.message;
     if (data.isLogged && data.isAuthorized) {
         theme('simple', {
             body: [
