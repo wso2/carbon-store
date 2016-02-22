@@ -124,7 +124,7 @@
 	};
 
 	if(!user){
-		response.sendRedirect(context + '/login');//TODO:Remove this
+		require('utils').response.redirectWithReferer(context+'/login',request.getRequestURI(),response);
 	}
  	else{
  		//Check if options have been provided
