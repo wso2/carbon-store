@@ -13,7 +13,13 @@
         },
         "assetTypesHotDelploy": {
             "enabled": false
-        }
+        },
+	"searchHistory": { 
+	    "enabled": true,
+	    "keys": {
+		"maxCount": 10
+	    }
+	}
     },
     "assets": ["gadget", "site"],
     "disabledAssets":[],

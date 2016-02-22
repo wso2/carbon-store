@@ -20,9 +20,16 @@
 	var l = new Log();
 	var SEARCH_HISTORY_PATH = "/_system/config/users/searchhistory/user-";
 	var server = require('store').server;
+	var app = require('rxt').app;
 	if (server.current(session)) {
 		var username = server.current(session).username;
 		var tenantId = server.current(session).tenantId;
+
+		if (!app.isFeatureEnabled(tenantId, 'searchHistory')) {
+			l.debug("search history feature is disabled, search history is not persisted in the registry");
+			return;
+		}
+
 		if (session.get('USER_SEARCH_HISTORY')) {
 			server.sandbox({tenantId: tenantId, username: username}, function () {
 				var server = require('store').server;

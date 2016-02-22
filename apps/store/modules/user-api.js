@@ -20,6 +20,7 @@ var api = {};
 (function (api) {
     var log = new Log('user-api');
     var server = require('store').server;
+    var app = require('rxt').app;
     api.getSearchHistory = function (session, type) {
         var history = [];
         var historyObject = [];
@@ -28,6 +29,11 @@ var api = {};
         if ((!user)) {
             return history;
         }
+        if (!app.isFeatureEnabled(user.tenantId, 'searchHistory')) {
+            log.debug("search history feature is disabled, search history will not shown in dropdown");
+            return history;
+        }
+
         if (session.get('USER_SEARCH_HISTORY')) {
             sessionHistory = session.get('USER_SEARCH_HISTORY');
         } else {
@@ -62,10 +68,16 @@ var api = {};
     api.updateSearchHistory = function (ctx, searchQuery, type) {
         log.debug('page type:: ' + type + ' search query:: ' + searchQuery);
         var assetType;
+        var user = server.current(session);
         if (type) {
             assetType = type;
         } else {
             assetType = 'top-assets';
+        }
+
+        if (!(user && app.isFeatureEnabled(user.tenantId, 'searchHistory'))) {
+            log.debug("search history feature is disabled, search history will not shown in dropdown");
+            return;
         }
 
         var searchHistory = ctx.session.get('USER_SEARCH_HISTORY');
@@ -97,7 +109,13 @@ var api = {};
         }
         ;
 
-        if (searchHistory[assetType].length > 5) {
+        var maxCount = 5;
+        var details = app.getFeatureDetails(user.tenantId, 'searchHistory');
+        if (details && details.keys.maxCount) {
+            maxCount = details.keys.maxCount;
+        }
+
+        if (searchHistory[assetType].length > maxCount) {
             searchHistory[assetType].shift();
         }
         log.debug('search history: ' + stringify(searchHistory));
