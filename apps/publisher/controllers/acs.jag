@@ -25,7 +25,7 @@
             samlResponse = request.getParameter('SAMLResponse'),
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
-            relayState = request.getParameter('RelayState'),
+            relayState = decodeURIComponent(request.getParameter('RelayState')),
             sso = require('sso'),
             samlRespObj,
             attr = configs.authentication.methods.sso.attributes;
@@ -104,7 +104,7 @@
                         if (hasPublisherLoginPermission) {
                             user.emitLogin(username)
                             log.debug('user is set :::' + username);
-                            response.sendRedirect(context);
+                            response.sendRedirect(relayState ? relayState : context);
                         }
                         else{
                             //session.invalidate();

@@ -39,6 +39,10 @@
         session.put("LOGGED_IN_USER", params.username);
         session.put("Loged", "true");
     	response.code = 200;
+        var result = {};
+        result.success = true;
+        result.referer = params.referer;
+        print(result);
     } else {
     	response.sendError(401);
     }
