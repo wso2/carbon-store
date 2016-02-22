@@ -22,7 +22,7 @@
     var sso = require("sso");
     var sessionId = session.getId();
     var requestedPage = request.getParameter("requestedPage");
-    var referer=request.getHeader('referer');
+    var referer=require('utils').request.getReferer(request);//request.getHeader('referer');
     var ignoreReferer = request.getParameter("ignoreReferer");
     var attr = config.authentication.methods.sso.attributes;
     var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(attr.issuer);
@@ -35,7 +35,6 @@
         referer = null;
     }
     var relayState = (referer? referer:'/publisher');
-
     if (!session.get("Loged")) {
     %>
         <div>
