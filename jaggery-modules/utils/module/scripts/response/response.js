@@ -132,4 +132,16 @@ var log = new Log("response");
         resp.content = sucessObj;
         return resp;
     };
+
+    /**
+     * Performs a redirect with referer details
+     */
+    response.redirectWithReferer = function(redirectUrl,referer,resp) {
+        if(redirectUrl.indexOf('?') > -1 ) {
+            resp.rsendRedirect(redirectUrl+'&referer='+referer);
+        } else {
+            resp.sendRedirect(redirectUrl+'?referer='+referer);
+        }
+    };
+
 }(response))
