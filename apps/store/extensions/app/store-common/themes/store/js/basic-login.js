@@ -18,9 +18,10 @@
  */
 $(function(){
 	$('#basic-login-form').ajaxForm({
-        success:function(){
-        	//alert('You have been logged in!'+caramel.url(''));
-        	window.location = caramel.url('');
+        success:function(data){
+        	data = JSON.parse(data);
+        	var url = data.referer || caramel.url('');
+        	window.location = url;
         },
         error:function(){
         	alert('Failed to log in!');
