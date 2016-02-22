@@ -58,7 +58,6 @@ var api = {};
             for (index = 0; index < historyObject.length; index++) {
                 history.push(historyObject[index].query);
             }
-            ;
         }
 
         log.debug("page search history content::: " + history);
@@ -96,8 +95,6 @@ var api = {};
                 break;
             }
         }
-        ;
-
         if (exists === false) {
             var d = new Date();
             var n = d.getTime();
@@ -107,8 +104,6 @@ var api = {};
             };
             searchHistory[assetType].push(queryObject);
         }
-        ;
-
         var maxCount = 5;
         var details = app.getFeatureDetails(user.tenantId, 'searchHistory');
         if (details && details.keys.maxCount) {

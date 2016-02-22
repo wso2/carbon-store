@@ -38,6 +38,18 @@ require('/modules/store.js').exec(function (ctx) {
                 print(queries);
             }
             break;
+        case 'POST':
+            if (uriMatcher.match(GET_SEARCH_HISTORY_PATTERN)) {
+                var query = options.q;
+                if (query) {
+                    var searchQuery = utils.request.formatSearchQuery(query);
+                    userApi.updateSearchHistory(ctx, searchQuery, options.type);
+                    response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, ctx.response, searchQuery);
+                } else {
+                    response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.BAD_REQUEST, 'query parameter is not defined');
+                }
+            }
+            break;
         default:
             response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.NOT_IMPLEMENTED, 'Unable to locate this endpoint for ' + method)
     }

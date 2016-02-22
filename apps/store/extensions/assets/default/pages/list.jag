@@ -63,8 +63,7 @@ require('/modules/store.js').exec(function(ctx) {
     if (count && q) {
         var searchQuery = utilsRequest.formatSearchQuery(q);
         userApi.updateSearchHistory(ctx, searchQuery, type);
-    };
-
+    }
     var carbon = require('carbon');
     var URLTenantId = carbon.server.tenantId({
         domain: options.domain || constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME
