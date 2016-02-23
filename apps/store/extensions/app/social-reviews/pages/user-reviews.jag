@@ -36,7 +36,11 @@ require('//modules/store.js').exec(function(ctx){
     var permissionApi = require('rxt').permissions;
 
     if (target) {
-        var hasUserReviewPermission = permissionApi.hasAssetPermission('ASSET_REVIEWS', target.split(':')[0], tenantId, user.username);
+        var hasUserReviewPermission  = false;
+
+        if (Boolean(user)){
+            hasUserReviewPermission = permissionApi.hasAssetPermission('ASSET_REVIEWS', target.split(':')[0], tenantId, user.username);
+        }
         var isAuthorized =  Boolean(user && (urlDomain == userTenantDomain) && hasUserReviewPermission);
         var message = '';
         if (!Boolean(user)) {
@@ -56,7 +60,7 @@ require('//modules/store.js').exec(function(ctx){
         }
         caramel.render({
             isLogged: Boolean(user),
-            isAuthorized: Boolean(user && (urlDomain == userTenantDomain)),
+            isAuthorized: isAuthorized,
             urlDomain: urlDomain,
             message: message,
             input_param: {
