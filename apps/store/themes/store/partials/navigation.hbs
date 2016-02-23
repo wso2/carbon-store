@@ -54,13 +54,13 @@
                 </div>
             </div>
         </div>
-        <div class="search">
-            <div class="es-input-group input-group input-wrap">
-            {{#if rxt.pluralLabel}}
-                <input  id="search"  type="text" class="es-form-control form-control" placeholder="Search in {{rxt.pluralLabel}}" value="{{searchQuery}}">
-            {{else}}
-                <input  id="search"  type="text" class="es-form-control form-control" placeholder="Search in all asset types" value="{{searchQuery}}">
-            {{/if}}
+        <div id="the-basics" class="es-input-group input-group input-wrap">
+            <div class="search-wrapper" style="float:left;width:80%;position:relative;left:0px;margin-left:-10px;">
+                {{#if rxt.pluralLabel}}
+                    <input  id="search"  type="text" class="typeahead es-form-control form-control" placeholder="Search in {{rxt.pluralLabel}}" value="{{searchQuery}}">
+                {{else}}
+                    <input  id="search"  type="text" class="typeahead es-form-control form-control" placeholder="Search in all asset types" value="{{searchQuery}}">
+                {{/if}}
                 <div class="es-input-group-btn input-group-btn">
                     <button class="btn btn-default wrap-input-right" id="search-button" type="button" title="Search">
                         <i class="fw fw-search" aria-hidden="true"></i>
