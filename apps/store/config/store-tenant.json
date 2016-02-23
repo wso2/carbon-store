@@ -17,7 +17,7 @@
 	"searchHistory": { 
 	    "enabled": true,
 	    "keys": {
-		"maxCount": 10
+		"maxCount": 5
 	    }
 	}
     },
