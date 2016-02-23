@@ -251,8 +251,19 @@ var api = {};
         }
         var content = req.getContent();
         validatePayload(content);
+        var data = parse(content);
+        var existingAsset = assetAPI.get(options,req,res,session);
+        var newVersion = data.attributes.overview_version;
+        var resources = am.getAssetGroup(existingAsset);
+        for (var index in resources) {
+            if (resources.hasOwnProperty(index)) {
+                var resource = resources[index];
+                if(resource.version === newVersion){
+                    return errorMsg(msg(409, 'Conflict in versions: '+ newVersion + ' already exist!')); /* REST POST request "409 Conflict" since the resource pointed exists.*/
+                }
+            }
+        }
         try {
-            data = parse(content);
             asset = am.createVersion(options, data.attributes);
             if(asset){
                  tenantId = es.current(session).tenantId;
