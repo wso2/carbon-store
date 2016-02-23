@@ -59,8 +59,9 @@ $(function () {
         },
         success: function (data) {
             var options = obtainFormMeta('#form-asset-create');
+            var type = PublisherUtils.resolveCurrentPageAssetType();
             $('#btn-create-asset').removeAttr('disabled');
-            $.cookie("new-asset-" + data.type, data.id + ":" + data.type + ":" + data.name);
+            $.cookie("new-asset-" + type, data.id + ":" + type + ":" + data.name);
             window.location = options.redirectUrl;
         },
         error: function () {
