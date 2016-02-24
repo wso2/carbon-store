@@ -102,4 +102,11 @@ var log = new Log('request_module');
         return queryString.referer || '';
     };
 
+    /**
+     * Extracts the URL path from a URI
+     */
+    request.getURLPath = function(url) {
+        return  '/'+url.split('/').slice(3).join('/');
+    };
+
 }(request))

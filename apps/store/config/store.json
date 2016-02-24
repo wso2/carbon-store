@@ -37,7 +37,9 @@
                 }
             },
             "basic": {
-                "attributes": {}
+                "attributes": {
+                    "loginURL":"%https.host%/store/pages/basic-auth-login"
+                }
             }
         }
     }
