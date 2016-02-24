@@ -654,7 +654,9 @@ var result;
         var result = [];
         try {
             var assets;
-            if (q) { //if search-query parameters are provided
+            if (!q) { //if search-query parameters are not provided
+                q = '"name":""';
+            }
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
                 if (log.isDebugEnabled) {
@@ -665,10 +667,7 @@ var result;
                 //TODO: The generic advance search does not honour grouping
                 //as grouping can be enabled/disabled per asset type
                 assets = assetAPI.advanceSearch(query, paging, session); // asset manager back-end call with search-query
-            } else {
-                log.error('Unable to perform a bulk asset retrieval without a type been specified');
-                throw 'Unable to perform a bulk asset retrieval without a type been specified';
-            }
+
             var expansionFieldsParam = (request.getParameter('fields') || '');
             if (expansionFieldsParam) { //if field expansion is requested
                 options.fields = getExpansionFileds(expansionFieldsParam); //set fields
