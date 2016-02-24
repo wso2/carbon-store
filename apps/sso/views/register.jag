@@ -24,6 +24,7 @@ var action = request.getParameter('action'),
         question = request.getParameter('secret-question'),
         answer = request.getParameter('secret-answer'),
         relyingParty = request.getParameter('relyingParty'),
+        carbon = require('carbon'),
         res = {},
         log = new Log('register');
 
@@ -46,9 +47,16 @@ var QUESTION_SET_ID = "http://wso2.org/claims/challengeQuestion1";
         return claimValues;
     };
 
-    var registerUser = function(username, password, claims) {
+    var registerUser = function (username, password, claims) {
         var userMod = require('/modules/user.js');
         try {
+            var usr = carbon.server.tenantUser(username);
+            if (usr.tenantId == -1) {
+                res.error = 'true';
+                res.msg = "User name : " + username + " is not valid.";
+                print(res);
+                return;
+            }
             userMod.register(username, password, claims);
             userMod.assignRolesOnRegister(username, relyingParty);
             res.error = 'false';
