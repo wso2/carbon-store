@@ -21,10 +21,10 @@
             <field type="text" required="true">
                 <name>Provider</name>
             </field>
-            <field type="text" required="true">
+            <field type="text" required="true" readonly="true">
                 <name>Name</name>
             </field>
-            <field type="text" required="true">
+            <field type="text" required="true" readonly="true">
                 <name>Version</name>
             </field>
             <field type="text">
