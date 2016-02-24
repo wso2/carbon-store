@@ -60,7 +60,9 @@
                 }
             },
             "basic": {
-                "attributes": {}
+                "attributes": {
+                    "loginURL":"%https.host%/publisher/pages/basic-auth-login"
+                }
             }
         }
     },

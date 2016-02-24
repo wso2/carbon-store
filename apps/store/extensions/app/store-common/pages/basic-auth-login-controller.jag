@@ -24,7 +24,7 @@ require('/modules/store.js').exec(function(ctx){
 	var ui = require('rxt').ui;
 	var refererHeader = ctx.request.getHeader('referer');
 	var page = ui.buildPage(ctx.session,ctx.request);
-	page.meta.referer = refererHeader;
+	page.meta.referer = require('utils').request.getURLPath(refererHeader);
 	caramel.render(page);
 },request,response,session);
 %>
