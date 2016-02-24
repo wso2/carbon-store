@@ -37,24 +37,34 @@
     var resolveAuthMethod = function() {
         return config.authentication.activeMethod;
     };
-    var getRedirectURL = function(authMethod, context) {
+    var getBasicAuthLoginURL = function(method,config) {
+        var authDetails = config.authentication || {};
+        var details = authDetails.methods ? authDetails.methods[method] : null;
+        if(!details) {
+            log.error('Basic authentication details have not been specified.Please configure the basic authentication details in the publisher.json file.');
+            throw 'Basic authentication login URL has not been specified'
+        }
+        var attributes = details.attributes || {};
+        return attributes.loginURL;
+    };
+    var getRedirectURL = function(authMethod,context,config) {
         var url;
         var endpoint = '/pages/basic-auth-login';
         switch (authMethod) {
             case constants.AUTH_METHOD_BASIC:
-                endpoint = '/pages/basic-auth-login';
+                endpoint = getBasicAuthLoginURL (authMethod,config);
                 break;
             case constants.AUTH_METHOD_SSO:
-                endpoint = '/pages/sso-login';
+                endpoint = context + '/pages/sso-login';
                 break;
             case constants.AUTH_METHOD_OTHER:
-                endpoint = '/pages/other-login';
+                endpoint = context + '/pages/other-login';
                 break;
             default:
                 break;
         }
-        url = context + endpoint;
-        return url;
+        //url = endpoint;//context + endpoint;
+        return endpoint;
     };
     authMethod = resolveAuthMethod();
     if (!authMethod) {
@@ -64,7 +74,7 @@
         response.sendError(500);
         return;
     }
-    redirectURL = getRedirectURL(authMethod, context);
+    redirectURL = getRedirectURL(authMethod, context,config);
     if(queryString){
         redirectURL = redirectURL + "?" +  queryString;
     }
