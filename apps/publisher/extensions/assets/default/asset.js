@@ -168,15 +168,6 @@ asset.configure = function() {
                     provider: {
                         auto: true
                     },
-                    name: {
-                        readonly: true,
-                        required:true,
-                        validation: function() {}
-                    },
-                    version: {
-                        readonly: true,
-                        required:true
-                    },
                     createdtime: {
                         hidden: true
                     }
