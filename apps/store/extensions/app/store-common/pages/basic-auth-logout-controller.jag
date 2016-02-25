@@ -29,6 +29,7 @@
     }
     try {
         storeAPI.user.logout();
+        session.invalidate();
     } catch (e) {
         log.error('Unable to logout the user', e);
     }
