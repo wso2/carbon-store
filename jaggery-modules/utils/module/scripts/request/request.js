@@ -106,6 +106,7 @@ var log = new Log('request_module');
      * Extracts the URL path from a URI
      */
     request.getURLPath = function(url) {
+        url = url || '';
         return  '/'+url.split('/').slice(3).join('/');
     };
 
