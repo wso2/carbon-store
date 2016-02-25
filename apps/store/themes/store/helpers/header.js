@@ -19,6 +19,7 @@
 var resources = function (page, meta) {
     return {
         template: 'header.hbs',
-        css:['left-navigation.css', 'font-wso2.css']
+        css: ['left-navigation.css', 'font-wso2.css', 'typeahead.css'],
+        js: ['typeahead.bundle.min.js', 'typeahead.js']
     };
 };

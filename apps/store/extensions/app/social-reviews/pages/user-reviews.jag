@@ -33,8 +33,23 @@ require('//modules/store.js').exec(function(ctx){
     var urlDomain =request.getParameter('url-domain') || 'carbon.super';
     var target = request.getParameter('target');
     var userTenantDomain = user ? carbon.server.tenantDomain({tenantId: user.tenantId}) : null;
+    var permissionApi = require('rxt').permissions;
 
     if (target) {
+        var hasUserReviewPermission  = false;
+
+        if (Boolean(user)){
+            hasUserReviewPermission = permissionApi.hasAssetPermission('ASSET_REVIEWS', target.split(':')[0], tenantId, user.username);
+        }
+        var isAuthorized =  Boolean(user && (urlDomain == userTenantDomain) && hasUserReviewPermission);
+        var message = '';
+        if (!Boolean(user)) {
+            message = 'Please Sign in to add a Review';
+        } else if ((Boolean(user) && Boolean(urlDomain != userTenantDomain))) {
+            message = ' Please Register in '+ urlDomain + ' domain to add a Review';
+        } else if (!hasUserReviewPermission){
+            message = 'You don\'t have permission to add a Review';
+        }
         try {
             reviews = ReviewUtils.listReviews(target,user,{
                 sortBy:'POPULAR'
@@ -45,8 +60,9 @@ require('//modules/store.js').exec(function(ctx){
         }
         caramel.render({
             isLogged: Boolean(user),
-            isAuthorized: Boolean(user && (urlDomain == userTenantDomain)),
+            isAuthorized: isAuthorized,
             urlDomain: urlDomain,
+            message: message,
             input_param: {
                 user: username
             },

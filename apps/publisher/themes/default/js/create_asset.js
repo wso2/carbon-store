@@ -59,8 +59,9 @@ $(function () {
         },
         success: function (data) {
             var options = obtainFormMeta('#form-asset-create');
+            var type = PublisherUtils.resolveCurrentPageAssetType();
             $('#btn-create-asset').removeAttr('disabled');
-            $.cookie("new-asset-" + data.type, data.id + ":" + data.type + ":" + data.name);
+            $.cookie("new-asset-" + type, data.id + ":" + type + ":" + data.name);
             window.location = options.redirectUrl;
         },
         error: function () {
@@ -157,20 +158,14 @@ $(function () {
         }
     });
     /**
-     * Hides all the tables except the first table in order to improve 
-     * readability
+     * Hides tables which dose not contain required fields.
+     * count the number of required fields in one table, if count equals to zero
+     * then hide that table. First table will expand always
      */
-    $('#form-asset-create .responsive-form-container').each(function(index){
-        if(index!=0){
+    $('#form-asset-create .responsive-form-container').each(function (index) {
+        if ($(this).find('.required-field').length == 0 && index != 0) {
             $(this).hide();
-        }
-    });
-    /**
-     * Changes the field icon to collapsed state
-     */
-    $('.field-title').each(function(index){
-        if(index!=0){
-            $(this).addClass("collapsed");
+            $('.field-title').eq(index).addClass("collapsed");
         }
     });
 

@@ -90,6 +90,9 @@ app.renderer = function(ctx) {
             },
             popularAssets:function(page){
                 return decoratorApi.popularAssets(ctx,page,this);
+            },
+            searchHistory: function (page, meta) {
+                return decoratorApi.searchHistory(ctx, page, this);
             }
         }
     }

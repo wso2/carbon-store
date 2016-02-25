@@ -488,6 +488,11 @@ var pageDecorators = {};
         };
         return page;
     };
+    pageDecorators.searchHistory = function (ctx, page, utils) {
+        var userApi = require('/modules/user-api.js').api;
+        page.searchHistory = {};
+        page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
+    };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;
         var am;

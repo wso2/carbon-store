@@ -16,12 +16,7 @@
 <!-- header -->
 <header>
     <div class="row wr-global-header">
-        <div class="col-xs-7 col-sm-7 col-lg-8 app-logo">
-            <a href="{{tenantedUrl ""}}{{meta.landingPage}}">
-                <img src="{{url "/themes/store/img/logo.png"}}" />
-                <h2 class="app-title">Enterprise Store</h2>
-            </a>
-        </div>
+        {{> basic-auth-header-title .}}
         <div class="col-xs-5 col-sm-5 col-lg-4  top-menu-right-custom">
             <ul class="nav navbar-nav navbar-right">
                 {{#if cuser.username}}
@@ -39,7 +34,6 @@
                 {{else}}
                 {{authentication .}}
                 {{/if}}
-
             </ul>
         </div>
     </div>

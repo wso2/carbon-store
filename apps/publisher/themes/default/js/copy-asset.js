@@ -10,6 +10,7 @@ $(document).ready(function() {
 			var assetPath = caramel.url('/assets/' + assetType + '/details/');
 			$('#btn-create-version').addClass('disabled');
 			$('#new-version-loading').removeClass('hide');
+			var alertMessage = $("#alertSection");
 
 			$.ajax({
 				url : path,
@@ -17,14 +18,19 @@ $(document).ready(function() {
 				data : JSON.stringify({"attributes":{"overview_version": newVersion }}),
 				type : 'POST',
 				success : function(response) {
-					$('.alert-success').html('Asset version created successfully! <a href="'+assetPath+response.data+'"> View </a>');
-					$('.alert-success').removeClass('hide');
+					alertMessage.addClass('alert-success');
+					alertMessage.removeClass('alert-warning hide');
+					alertMessage.html('Asset version created successfully! <a href="'+assetPath+response.data+'"> View </a>');
 					$('#btn-create-version').removeClass('disabled');
 					$('#new-version-loading').addClass('hide');
 				},
-				error : function() {
-					$('.alert-success').text('Error while creating the version!');
-					$('.alert-success').removeClass('hide');
+				error : function(error) {
+					console.log(error);
+					var errorText = JSON.parse(error.responseText).error;
+					alertMessage.text(errorText);
+					alertMessage.removeClass('alert-success hide');
+					alertMessage.addClass('alert-warning');
+
 					$('#btn-create-version').removeClass('disabled');
 					$('#new-version-loading').addClass('hide');
 				}

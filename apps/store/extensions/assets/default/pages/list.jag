@@ -52,12 +52,18 @@ require('/modules/store.js').exec(function(ctx) {
     var subscriptionApi = require('/modules/subscriptions-api.js').api;
     var tenantApi = require('/modules/tenant-api.js').api;
     var ratingApi = require('/modules/rating-api.js').api;
+    var userApi = require('/modules/user-api.js').api;
     PAGING.sortBy = (sortBy || constants.DEFAULT_ASSET_PAGIN.sortBy);
     PAGING.sortOrder = (sortOrder || constants.DEFAULT_ASSET_PAGIN.sortOrder);
     PAGING.start = (start || constants.DEFAULT_ASSET_PAGIN.start);
     PAGING.count = (count || DEFAULT_LIST_PAGIN_COUNT);
     PAGING.paginationLimit = (paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit);
 
+    //search history dropdown updates
+    if (count && q) {
+        var searchQuery = utilsRequest.formatSearchQuery(q);
+        userApi.updateSearchHistory(ctx, searchQuery, type);
+    }
     var carbon = require('carbon');
     var URLTenantId = carbon.server.tenantId({
         domain: options.domain || constants.MultitenantConstants.SUPER_TENANT_DOMAIN_NAME

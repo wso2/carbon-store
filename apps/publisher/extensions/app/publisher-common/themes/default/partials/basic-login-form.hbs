@@ -14,12 +14,13 @@
                         <div style="clear: both"></div>
                         <input  type="text" class="input-block-level" placeholder="Username" tabindex="0" id="username" name="username" autocomplete="off"/>
                         <br><br>
-                        <input  type="password"  class="input-block-level" placeholder="Password"  name="password" autocomplete="off"/>
+                        <input  type="password"  class="input-block-level" placeholder="Password" id="password"  name="password" autocomplete="off"/>
                         <br><br>
                         <button type="submit" class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"> {{t "SIGN IN"}} </button>
                         <br><br><br>
                     </div>
                 </div>
+                <input type='hidden' name='referer' value='{{meta.referer}}'/>
             </form>
         </div>
     </div>
