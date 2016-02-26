@@ -20,101 +20,155 @@ var api = {};
 (function (api) {
     var log = new Log('user-api');
     var server = require('store').server;
+    var userObject = require('store').user;
     var app = require('rxt').app;
+    var SEARCH_HISTORY_FEATURE = 'searchHistory';
+    var USER_SEARCH_HISTORY_SESSION_KEY = 'USER_SEARCH_HISTORY';
+    var TOP_ASSETS_KEY = 'top-assets';
+    var DEFAULT_MAX_COUNT = 5;
+
+    /**
+     *
+     * @param session
+     * @param type
+     * @returns {Array}
+     */
     api.getSearchHistory = function (session, type) {
         var history = [];
-        var historyObject = [];
         var sessionHistory = {};
         var user = server.current(session);
+        type = type || TOP_ASSETS_KEY;
         if ((!user)) {
             return history;
         }
-        if (!app.isFeatureEnabled(user.tenantId, 'searchHistory')) {
-            log.debug("search history feature is disabled, search history will not shown in dropdown");
+        if (!app.isFeatureEnabled(user.tenantId, SEARCH_HISTORY_FEATURE)) {
+            if (log.isDebugEnabled()) {
+                log.debug("search history feature is disabled, search history will not shown in dropdown");
+            }
             return history;
         }
 
-        if (session.get('USER_SEARCH_HISTORY')) {
-            sessionHistory = session.get('USER_SEARCH_HISTORY');
+        var userSearchHistoryData = api.userSearchHistoryData(session);
+        if (userSearchHistoryData) {
+            sessionHistory = userSearchHistoryData;
         } else {
-            var tenantId = server.current(session).tenantId;
-            var cleanUsername = require('store').user.cleanUsername(user.username);
-            var system = server.systemRegistry(tenantId);
-            var resourcePath = "/_system/config/users/searchhistory/user-" + cleanUsername;
-            log.debug('search history from registry resource::: ' + resourcePath);
-            resource = system.get(resourcePath);
+            var tenantId = user.tenantId;
+            var cleanUsername = userObject.cleanUsername(user.username);
+            var systemRegistry = server.systemRegistry(tenantId);
+            var resourcePath = api.searchHistoryResourcePath(cleanUsername);
+            if (log.isDebugEnabled()) {
+                log.debug('search history from registry resource::: ' + resourcePath);
+            }
+            var resource = systemRegistry.get(resourcePath);
             if (resource) {
-                sessionHistory = JSON.parse(resource.content);
-                log.debug("search history object: " + stringify(sessionHistory));
-                session.put('USER_SEARCH_HISTORY', sessionHistory);
+                sessionHistory = parse(resource.content);
+                if (log.isDebugEnabled()) {
+                    log.debug("search history object: " + stringify(sessionHistory));
+                }
+                api.userSearchHistoryData(session, sessionHistory);
             }
         }
-        if (type) {
-            historyObject = sessionHistory[type];
-        } else {
-            historyObject = sessionHistory['top-assets'];
-        }
+        var historyObject = sessionHistory[type];
         if (historyObject) {
             for (index = 0; index < historyObject.length; index++) {
                 history.push(historyObject[index].query);
             }
         }
-
-        log.debug("page search history content::: " + history);
+        if (log.isDebugEnabled()) {
+            log.debug("page search history content::: " + stringify(history));
+        }
         return history;
     };
 
-    api.updateSearchHistory = function (ctx, searchQuery, type) {
-        log.debug('page type:: ' + type + ' search query:: ' + searchQuery);
-        var assetType;
+    /**
+     *
+     * @param session
+     * @param searchQuery
+     * @param type
+     * @returns {boolean}
+     */
+    api.updateSearchHistory = function (session, searchQuery, type) {
+        if (log.isDebugEnabled()) {
+            log.debug('page type:: ' + type + ' search query:: ' + searchQuery);
+        }
         var user = server.current(session);
-        if (type) {
-            assetType = type;
-        } else {
-            assetType = 'top-assets';
+        type = type || TOP_ASSETS_KEY;
+
+        if (!(user && app.isFeatureEnabled(user.tenantId, SEARCH_HISTORY_FEATURE))) {
+            if (log.isDebugEnabled()) {
+                log.debug("search history feature is disabled, search history will not shown in dropdown");
+            }
+            return false;
         }
 
-        if (!(user && app.isFeatureEnabled(user.tenantId, 'searchHistory'))) {
-            log.debug("search history feature is disabled, search history will not shown in dropdown");
-            return;
-        }
-
-        var searchHistory = ctx.session.get('USER_SEARCH_HISTORY');
-        if (!searchHistory) {
-            searchHistory = {}
-        }
-
-        if (!searchHistory[assetType]) {
-            searchHistory[assetType] = [];
+        var searchHistory = api.userSearchHistoryData(session) || {};
+        if (!searchHistory[type]) {
+            searchHistory[type] = [];
         }
 
         var exists = false;
-        for (index = 0; index < searchHistory[assetType].length; index++) {
-            if (searchHistory[assetType][index].query === searchQuery) {
+        for (var index = 0; index < searchHistory[type].length; index++) {
+            if (searchHistory[type][index].query === searchQuery) {
                 exists = true;
                 break;
             }
         }
         if (exists === false) {
-            var d = new Date();
-            var n = d.getTime();
+            var date = new Date();
+            var currentTimestamp = date.getTime();
             var queryObject = {
-                "timeStamp": n,
+                "timestamp": currentTimestamp,
                 "query": searchQuery
             };
-            searchHistory[assetType].push(queryObject);
+            searchHistory[type].push(queryObject);
         }
-        var maxCount = 5;
-        var details = app.getFeatureDetails(user.tenantId, 'searchHistory');
+        var maxCount = api.getSearchHistoryMaxCount(user);
+
+        if (searchHistory[type].length > maxCount) {
+            searchHistory[type].shift();
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('user search history: ' + stringify(searchHistory));
+        }
+        api.userSearchHistoryData(session, searchHistory);
+        return true;
+    };
+
+    /**
+     *
+     * @param session
+     * @param sessionHistory
+     * @returns {String}
+     */
+    api.userSearchHistoryData = function (session,sessionHistory) {
+        if (sessionHistory) {
+            session.put(USER_SEARCH_HISTORY_SESSION_KEY,sessionHistory);
+            return;
+        }
+        return session.get(USER_SEARCH_HISTORY_SESSION_KEY);
+    };
+
+    /**
+     *
+     * @param username
+     * @returns {string}
+     */
+    api.searchHistoryResourcePath = function (username) {
+        var REGISTRY_PATH_PREFIX = "/_system/config/users/searchhistory/user-";
+        return REGISTRY_PATH_PREFIX + username;
+    };
+
+    /**
+     *
+     * @param user
+     * @returns {number}
+     */
+    api.getSearchHistoryMaxCount = function (user) {
+        var maxCount = DEFAULT_MAX_COUNT;
+        var details = app.getFeatureDetails(user.tenantId, SEARCH_HISTORY_FEATURE);
         if (details && details.keys.maxCount) {
             maxCount = details.keys.maxCount;
         }
-
-        if (searchHistory[assetType].length > maxCount) {
-            searchHistory[assetType].shift();
-        }
-        log.debug('search history: ' + stringify(searchHistory));
-        ctx.session.put('USER_SEARCH_HISTORY', searchHistory);
+        return maxCount;
     };
-
 }(api));

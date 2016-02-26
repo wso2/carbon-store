@@ -17,68 +17,84 @@
  *
  */
 (function () {
-	var l = new Log();
-	var SEARCH_HISTORY_PATH = "/_system/config/users/searchhistory/user-";
+	var log = new Log('persist-search-history');
 	var server = require('store').server;
+	var userObject = require('store').user;
 	var app = require('rxt').app;
-	if (server.current(session)) {
-		var username = server.current(session).username;
-		var tenantId = server.current(session).tenantId;
+	var userApi = require('/modules/user-api.js').api;
+	var user = server.current(session);
+	var SEARCH_HISTORY_FEATURE = 'searchHistory';
+	if (user) {
+		var username = user.username;
+		var tenantId = user.tenantId;
 
-		if (!app.isFeatureEnabled(tenantId, 'searchHistory')) {
-			l.debug("search history feature is disabled, search history is not persisted in the registry");
+		if (!app.isFeatureEnabled(tenantId, SEARCH_HISTORY_FEATURE)) {
+			if (log.isDebugEnabled()) {
+				log.debug("search history feature is disabled, search history is not persisted in the registry");
+			}
 			return;
 		}
 
-		if (session.get('USER_SEARCH_HISTORY')) {
+		var searchHistory = userApi.userSearchHistoryData(session);
+		if (searchHistory) {
 			server.sandbox({tenantId: tenantId, username: username}, function () {
-				var server = require('store').server;
-				var cleanUsername = require('store').user.cleanUsername(username);
-				var system = server.systemRegistry(tenantId);
-				var resourcePath = SEARCH_HISTORY_PATH + cleanUsername;
-				l.debug("search history resource path: " + resourcePath);
-				var resource = system.get(resourcePath);
+				var cleanUsername = userObject.cleanUsername(username);
+				var systemRegistry = server.systemRegistry(tenantId);
+				var resourcePath = userApi.searchHistoryResourcePath(cleanUsername);
+				if (log.isDebugEnabled()) {
+					log.debug("search history resource path: " + resourcePath);
+				}
+				var resource = systemRegistry.get(resourcePath);
 				var resourceContent;
 				if (resource) {
-					resourceContent = JSON.parse(resource.content);
+					resourceContent = parse(resource.content);
 				}
-				var sessionContent = session.get('USER_SEARCH_HISTORY');
-				l.debug('session content ::: ' + stringify(sessionContent));
-				l.debug('resource content ::: ' + stringify(resourceContent));
+				var sessionContent = searchHistory;
+				if (log.isDebugEnabled()) {
+					log.debug('session content ::: ' + stringify(sessionContent));
+					log.debug('resource content ::: ' + stringify(resourceContent));
+				}
 				var writeContent = {};
-				if (resourceContent) {
-					for (var key in sessionContent) {
-						if (sessionContent.hasOwnProperty(key)) {
-							var sessionContentByKey = sessionContent[key].reverse();
-							if (resourceContent.hasOwnProperty(key)) {
-								var resourceContentByKey = resourceContent[key].reverse();
-								var writeContentByKey = [];
-								var resourceIndex = 0, sessionIndex = 0, writeIndex = 0;
-								while (writeIndex < sessionContent[key].length) {
-									if (resourceContentByKey[resourceIndex] && sessionContentByKey[sessionIndex].timestamp < resourceContentByKey[resourceIndex].timestamp) {
-										writeContentByKey.push(resourceContentByKey[resourceIndex]);
-										resourceIndex++;
-									} else {
-										writeContentByKey.push(sessionContentByKey[sessionIndex]);
-										sessionIndex++;
-									}
-									writeIndex++;
+
+				if (!resourceContent) {
+					systemRegistry.put(resourcePath, {
+						content: stringify(searchHistory)
+					});
+					return;
+				}
+
+				for (var key in sessionContent) {
+					if (sessionContent.hasOwnProperty(key)) {
+						var sessionContentByKey = sessionContent[key].reverse();
+						if (resourceContent.hasOwnProperty(key)) {
+							var resourceContentByKey = resourceContent[key].reverse();
+							var writeContentByKey = [];
+							var resourceIndex = 0, sessionIndex = 0, writeIndex = 0;
+							while (writeIndex < sessionContent[key].length) {
+								var sessionContentByIndex = sessionContentByKey[sessionIndex];
+								var resourceContentByIndex = resourceContentByKey[resourceIndex];
+								if (resourceContentByIndex &&
+									sessionContentByIndex.timestamp < resourceContentByIndex.timestamp) {
+									writeContentByKey.push(resourceContentByIndex);
+									resourceIndex++;
+								} else {
+									writeContentByKey.push(sessionContentByIndex);
+									sessionIndex++;
 								}
-								writeContent[key] = writeContentByKey.reverse();
-							} else {
-								writeContent[key] = sessionContentByKey.reverse();
+								writeIndex++;
 							}
+							writeContent[key] = writeContentByKey.reverse();
+						} else {
+							writeContent[key] = sessionContentByKey.reverse();
 						}
 					}
-					l.debug('write content ::: ' + stringify(writeContent));
-					system.put(resourcePath, {
-						content: stringify(writeContent)
-					});
-				} else {
-					system.put(resourcePath, {
-						content: stringify(session.get('USER_SEARCH_HISTORY'))
-					});
 				}
+				if (log.isDebugEnabled()) {
+					log.debug('write content ::: ' + stringify(writeContent));
+				}
+				systemRegistry.put(resourcePath, {
+					content: stringify(writeContent)
+				});
 
 			});
 		}

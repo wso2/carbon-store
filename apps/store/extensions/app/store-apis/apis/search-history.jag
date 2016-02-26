@@ -41,9 +41,11 @@ require('/modules/store.js').exec(function (ctx) {
         case 'POST':
             if (uriMatcher.match(GET_SEARCH_HISTORY_PATTERN)) {
                 var query = options.q;
+                //TODO::
+                //req.getContent();
                 if (query) {
                     var searchQuery = utils.request.formatSearchQuery(query);
-                    userApi.updateSearchHistory(ctx, searchQuery, options.type);
+                    userApi.updateSearchHistory(ctx.session, searchQuery, options.type);
                     response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, ctx.response, searchQuery);
                 } else {
                     response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.BAD_REQUEST, 'query parameter is not defined');
