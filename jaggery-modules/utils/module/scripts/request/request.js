@@ -95,7 +95,7 @@ var log = new Log('request_module');
     };
 
     /**
-     * Returns the referer in a request if one is present
+     * Returns the referrer in a request if one is present
      */
     request.getReferer = function(req,context) {
         var queryString = this.getQueryOptions(req.getQueryString());
@@ -106,6 +106,7 @@ var log = new Log('request_module');
      * Extracts the URL path from a URI
      */
     request.getURLPath = function(url) {
+        url = url || '';
         return  '/'+url.split('/').slice(3).join('/');
     };
 

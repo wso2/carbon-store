@@ -47,6 +47,7 @@
                             org.wso2.store.bamclient.*;
                         </Export-Package>
                         <Import-Package>
+                            javax.xml.parsers;version=0.0.0,
                             org.wso2.store.util.*;version="${carbon.store.version}",*
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
