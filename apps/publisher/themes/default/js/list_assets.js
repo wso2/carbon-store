@@ -53,17 +53,21 @@ function convertTimeToUTC(assets) {
  * @param {string} path  : string
  */
 var setSortingParams = function(path) {
+    // if there is no sort parameter, then set default parameter.
+    if (path.indexOf("?sort") < 0) {
+        path += "?sort=-createdDate";
+    }
     var sorting = '';
     var obj = path.split('?');
-    if(obj[1]){
+    if (obj[1]) {
         var params = obj[1].split("&");
-        for(var j=0; j<params.length;j++){
+        for (var j = 0; j < params.length; j++) {
             var paramsPart = params[j];
-            if(paramsPart.indexOf("sort=") != -1){
+            if (paramsPart.indexOf("sort=") != -1) {
                 sorting = '&&' + paramsPart;
             }
         }
-    }else{
+    } else {
         sorting = '';
     }
     return sorting;
