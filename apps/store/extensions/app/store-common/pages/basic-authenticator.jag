@@ -17,35 +17,37 @@
  *  under the License.
  *
  */
-(function(session, request, response) {
+(function (session, request, response) {
     var storeAPI = require('store');
     var params = request.getAllParameters();
     var hasUsernamePassword = params.username && params.password;
     var authenticated; //Assume that the authentication will fail
     if (!hasUsernamePassword) {
-    	response.sendError(400,'Please provide the username and password to login');
-    	if(log.isDebugEnabled) {
-    		log.debug('Attempt to login without username and password');
-    	}
-    	return;
+        //response.sendError(400,'Please provide the username and password to login');
+        response.buildErrorResponse(response, 400, "Please provide the username and password to login");
+        if (log.isDebugEnabled) {
+            log.debug('Attempt to login without username and password');
+        }
+        return;
     }
     try {
-    	authenticated = storeAPI.user.login(params.username,params.password,session);
+        authenticated = storeAPI.user.login(params.username, params.password, session);
     } catch (e) {
-    	log.error("Unable to authenticate user : "+username,e);
+        response.buildErrorResponse(response, 409, "Unable to authenticate user : " + params.username);
+        log.error("Unable to authenticate user : " + username, e);
     }
 
-    if(authenticated){
+    if (authenticated) {
         session.put("LOGGED_IN_USER", params.username);
         session.put("Loged", "true");
-    	response.code = 200;
+        response.code = 200;
         var result = {};
         result.success = true;
         result.referer = params.referer;
         print(result);
     } else {
-    	response.sendError(401);
+        response.buildErrorResponse(response, 401, "The username and password you entered don't match.");
     }
-    
-}(session, request, response)); 
+
+}(session, request, response));
 %>

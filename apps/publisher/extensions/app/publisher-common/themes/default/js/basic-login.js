@@ -16,15 +16,19 @@
  *  under the License.
  *
  */
-$(function(){
-	$('#basic-login-form').ajaxForm({
-        success:function(data){
-        	data = JSON.parse(data);
-        	var url = data.referer || caramel.url('');
-        	window.location = url;
+$(function () {
+    $('#basic-login-form').ajaxForm({
+        success: function (data) {
+            data = JSON.parse(data);
+            var url = data.referer || caramel.url('');
+            window.location = url;
         },
-        error:function(){
-        	alert('Failed to log in!');
+        error: function (data) {
+            var regFormError = $('#regFormError');
+            regFormError.show();
+            regFormError.text(data.responseJSON.error);
+            $('#password').val('');
+            $('#username').val('').focus();
         }
     });
 });
