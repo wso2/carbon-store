@@ -61,7 +61,7 @@ var api = {};
             }
             var resource = systemRegistry.get(resourcePath);
             if (resource) {
-                sessionHistory = parse(resource.content);
+                sessionHistory = JSON.parse(resource.content);
                 if (log.isDebugEnabled()) {
                     log.debug("search history object: " + stringify(sessionHistory));
                 }
@@ -70,7 +70,7 @@ var api = {};
         }
         var historyObject = sessionHistory[type];
         if (historyObject) {
-            for (index = 0; index < historyObject.length; index++) {
+            for (var index = 0; index < historyObject.length; index++) {
                 history.push(historyObject[index].query);
             }
         }

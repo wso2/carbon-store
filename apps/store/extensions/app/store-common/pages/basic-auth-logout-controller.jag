@@ -28,8 +28,8 @@
         return;
     }
     try {
-        storeAPI.user.logout();
         session.invalidate();
+        //storeAPI.user.logout();
     } catch (e) {
         log.error('Unable to logout the user', e);
     }

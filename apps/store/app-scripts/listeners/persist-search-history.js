@@ -47,7 +47,7 @@
 				var resource = systemRegistry.get(resourcePath);
 				var resourceContent;
 				if (resource) {
-					resourceContent = parse(resource.content);
+					resourceContent = JSON.parse(resource.content);
 				}
 				var sessionContent = searchHistory;
 				if (log.isDebugEnabled()) {
