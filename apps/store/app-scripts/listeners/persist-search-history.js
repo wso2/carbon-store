@@ -63,6 +63,11 @@
 					return;
 				}
 
+				/*
+				* Merging two sorted arrays to one sorted array
+				* sorted arrays : session content and resource content
+				* result array : write content.
+				* */
 				for (var key in sessionContent) {
 					if (sessionContent.hasOwnProperty(key)) {
 						var sessionContentByKey = sessionContent[key].reverse();

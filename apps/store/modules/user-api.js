@@ -28,10 +28,10 @@ var api = {};
     var DEFAULT_MAX_COUNT = 5;
 
     /**
-     *
-     * @param session
-     * @param type
-     * @returns {Array}
+     * Returns user specific search history per asset type. if asset type is not defined, returns the top-assets page history
+     * @param session user session
+     * @param type asset type
+     * @returns {Array} search history results (default max 05)
      */
     api.getSearchHistory = function (session, type) {
         var history = [];
@@ -81,11 +81,12 @@ var api = {};
     };
 
     /**
-     *
+     * update user specific search results with the searchQuery against the asset type, if asset type not defined,
+     * considered as top-asset page search query
      * @param session
      * @param searchQuery
      * @param type
-     * @returns {boolean}
+     * @returns {boolean} ture, if updated successfully
      */
     api.updateSearchHistory = function (session, searchQuery, type) {
         if (log.isDebugEnabled()) {
@@ -135,7 +136,7 @@ var api = {};
     };
 
     /**
-     *
+     * Returns search history from the user session.
      * @param session
      * @param sessionHistory
      * @returns {String}
@@ -149,9 +150,9 @@ var api = {};
     };
 
     /**
-     *
+     * Returns search history registry resource path
      * @param username
-     * @returns {string}
+     * @returns {string} registry resource path
      */
     api.searchHistoryResourcePath = function (username) {
         var REGISTRY_PATH_PREFIX = "/_system/config/users/searchhistory/user-";
@@ -159,7 +160,7 @@ var api = {};
     };
 
     /**
-     *
+     * Returns max history count defined in configuration file. default is 05
      * @param user
      * @returns {number}
      */
