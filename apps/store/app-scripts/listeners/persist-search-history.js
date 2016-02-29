@@ -82,6 +82,13 @@
 									sessionContentByIndex.timestamp < resourceContentByIndex.timestamp) {
 									writeContentByKey.push(resourceContentByIndex);
 									resourceIndex++;
+								} else if (resourceContentByIndex &&
+									sessionContentByIndex.timestamp == resourceContentByIndex.timestamp) {
+									writeContentByKey.push(sessionContentByIndex);
+									sessionIndex++;
+									if (sessionContentByIndex.query == resourceContentByIndex.query) {
+										resourceIndex++;
+									}
 								} else {
 									writeContentByKey.push(sessionContentByIndex);
 									sessionIndex++;
