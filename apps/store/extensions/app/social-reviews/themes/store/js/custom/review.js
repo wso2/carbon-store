@@ -237,7 +237,7 @@ $more.on('click', '.load-more', function(e) {
         });
     });
 });
-$stream.on('click', '.com-delete', function(e) {
+$stream.on('click', '#btn-delete', function(e) {
     e.preventDefault();
     var $deleteBtn = $(e.target);
     var $review = $deleteBtn.parents('.com-review');
