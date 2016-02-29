@@ -34,16 +34,20 @@ require('/modules/store.js').exec(function (ctx) {
         case 'GET':
             if (uriMatcher.match(GET_SEARCH_HISTORY_PATTERN)) {
                 var queries = userApi.getSearchHistory(ctx.session, options.type);
-                log.debug('search-history for ' + options.type + ' ::: ' + stringify(queries));
                 print(queries);
             }
             break;
         case 'POST':
             if (uriMatcher.match(GET_SEARCH_HISTORY_PATTERN)) {
-                var query = options.q;
+                var content = req.getContent();
+                var query, type;
+                if (content) {
+                    query = content.query;
+                    type = content.type;
+                }
                 if (query) {
                     var searchQuery = utils.request.formatSearchQuery(query);
-                    userApi.updateSearchHistory(ctx, searchQuery, options.type);
+                    userApi.updateSearchHistory(ctx.session, searchQuery, type);
                     response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, ctx.response, searchQuery);
                 } else {
                     response = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.BAD_REQUEST, 'query parameter is not defined');
