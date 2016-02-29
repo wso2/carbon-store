@@ -39,7 +39,7 @@ require('/modules/store.js').exec(function (ctx) {
             break;
         case 'POST':
             if (uriMatcher.match(GET_SEARCH_HISTORY_PATTERN)) {
-                var content = parse(req.getContent());
+                var content = req.getContent();
                 var query, type;
                 if (content) {
                     query = content.query;
