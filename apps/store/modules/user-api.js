@@ -166,9 +166,10 @@ var api = {};
      */
     api.getSearchHistoryMaxCount = function (user) {
         var maxCount = DEFAULT_MAX_COUNT;
-        var details = app.getFeatureDetails(user.tenantId, SEARCH_HISTORY_FEATURE);
-        if (details && details.keys.maxCount) {
-            maxCount = details.keys.maxCount;
+        var details = app.getFeatureDetails(user.tenantId, SEARCH_HISTORY_FEATURE) || {};
+        var keys = details.keys ? details.keys : {};
+        if (keys.maxCount) {
+            maxCount = keys.maxCount;
         }
         return maxCount;
     };
