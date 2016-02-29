@@ -252,3 +252,13 @@ input[type="text"].error, input[type="password"].error{
     -moz-box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
     box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
 }
+
+.alert-error {
+    color: #fff;
+    background-color: #e74c3c;
+    border: none;
+    border-left: 5px solid #942F25;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+}

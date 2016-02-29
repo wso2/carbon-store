@@ -14,12 +14,12 @@
         "assetTypesHotDelploy": {
             "enabled": false
         },
-	"searchHistory": { 
-	    "enabled": true,
-	    "keys": {
-		"maxCount": 5
-	    }
-	}
+        "searchHistory": {
+            "enabled": true,
+            "keys": {
+                "maxCount": 5
+            }
+        }
     },
     "assets": ["gadget", "site"],
     "disabledAssets":[],
