@@ -62,7 +62,7 @@ require('/modules/store.js').exec(function(ctx) {
     //search history dropdown updates
     if (count && q) {
         var searchQuery = utilsRequest.formatSearchQuery(q);
-        userApi.updateSearchHistory(ctx, searchQuery, type);
+        userApi.updateSearchHistory(ctx.session, searchQuery, type);
     }
     var carbon = require('carbon');
     var URLTenantId = carbon.server.tenantId({
