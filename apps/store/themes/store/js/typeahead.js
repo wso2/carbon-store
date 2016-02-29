@@ -57,7 +57,7 @@ $(document).ready(function () {
 				source: substringMatcher(history),
 				templates: {
 					header: function (data) {
-						return '<div class="text-info" style="padding-left:20px;border-bottom:1px solid #eee;margin-bottom:5px;padding-bottom:5px;padding-top:5px;">Search History</div>';
+						return '<div class="text-muted" style="padding-left:20px;border-bottom:1px solid #eee;margin-bottom:5px;padding-bottom:5px;padding-top:5px;">Search History</div>';
 					},
 					suggestion: function (data) {
 						return '<p>' + data + '</p>';
