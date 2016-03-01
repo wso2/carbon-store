@@ -27,6 +27,7 @@ $(document).ready(function() {
         var landingPageUrl = caramel.url(landingPage);
         $('#btn-delete-con').addClass('disabled');
         $('#delete-loading').removeClass('hide');
+        $('.nav li>a:not(:first):not(:last)').css("display", "none");
 
         $.ajax({
             url : path,
@@ -44,7 +45,7 @@ $(document).ready(function() {
                 $('.alert-success').removeClass('hide');
                 $('#delete-loading').removeClass('hide');
                 $('#delete-loading').addClass('hide');
-
+                $('.nav li>a:not(:first):not(:last)').css("display", "inherit");
             }
         });
     });
