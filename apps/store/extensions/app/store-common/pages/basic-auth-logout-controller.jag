@@ -33,4 +33,4 @@
         log.error('Unable to logout the user', e);
     }
     response.sendRedirect(context);
-}(request, response, session)) %>
+}(request, response, session)); %>
