@@ -156,6 +156,13 @@ text {
 .lifecycle-dropdown-menu {
 }
 
+.lifecycle-selection-area {
+    padding-top: 20px;
+}
+
+.lifecycle-information-area{
+    padding-left: 20px;
+}
 .wr-lifecycle-selection .dropdown-menu {
     border: 0px solid #237bd5;
     background: #237bd5;

@@ -163,6 +163,7 @@ $(function() {
             data.currentState = impl.state(impl.currentState).label;
             renderPartial(constants.CONTAINER_INFORMATION_AREA, constants.CONTAINER_INFORMATION_AREA, data);
         }
+        $("#current-selected-lifecycle span:first-child").text(data.currentLifecycle);
     };
     var renderHistory = function() {
         var container = config(constants.CONTAINER_HISTORY_AREA);
