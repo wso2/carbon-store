@@ -23,6 +23,8 @@ $(function() {
         cache: false
     });
     var constants = LifecycleAPI.constants;
+    var historyStart =0;
+    var historyEnd = constants.LIFECYCLE_HISTORY_PAGING_SIZE;
     var id = function(name) {
         return '#' + name;
     };
@@ -50,6 +52,25 @@ $(function() {
         caramel.partials(obj, function() {
             var template = Handlebars.partials[partialName](data);
             $(id(containerName)).html(template);
+            fn(containerName);
+        });
+    };
+
+    var appendPartial = function(partialKey, containerKey, data, fn) {
+        fn = fn || function() {};
+        var partialName = config(partialKey);
+        var containerName = config(containerKey);
+        if (!partialName) {
+            throw 'A template name has not been specified for template key ' + partialKey;
+        }
+        if (!containerName) {
+            throw 'A container name has not been specified for container key ' + containerKey;
+        }
+        var obj = {};
+        obj[partialName] = partial(partialName);
+        caramel.partials(obj, function() {
+            var template = Handlebars.partials[partialName](data);
+            $(id(containerName)).append(template);
             fn(containerName);
         });
     };
@@ -151,10 +172,41 @@ $(function() {
         var modifiedHistory;
         if (impl) {
             history = impl.history;
-            data.history = history;
+            data.history = history.slice(historyStart, historyEnd);
             renderPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
+            incrementHistoryRenderParams(historyStart, historyEnd, history.length);
         }
     };
+
+    var appendHistory = function(start, end) {
+        var impl = LifecycleAPI.lifecycle();
+        var data = {};
+        var history;
+        if (impl) {
+            history = impl.history;
+            data.history = history.slice(start, end);
+            appendPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
+            incrementHistoryRenderParams(start, end, history.length);
+        }
+    };
+
+    var incrementHistoryRenderParams = function(start, end, historyLength){
+        historyStart = start + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
+        historyEnd = end + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
+        if(historyStart => historyLength){
+            $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).hide();
+        }
+        if(historyStart < historyLength){
+            $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).show();
+        }
+
+    };
+
+    var clearHistoryRenderParams = function(){
+        historyStart = 0;
+        historyEnd = constants.LIFECYCLE_HISTORY_PAGING_SIZE;
+    };
+
     var renderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         var impl = LifecycleAPI.lifecycle();
@@ -278,6 +330,7 @@ $(function() {
         var container = config(constants.INPUT_TEXTAREA_LC_COMMENT);
         $(id(container)).val('');
     };
+
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
         options = options || {};
         var lifecycleName = options.lifecycle;
@@ -385,6 +438,7 @@ $(function() {
         }
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
+        clearHistoryRenderParams();
         renderHistory();
     });
     LifecycleAPI.event(constants.EVENT_LC_UNLOAD, function(options) {
@@ -416,6 +470,12 @@ $(function() {
         LifecycleAPI.lifecycle(selectedLC).load();
         LifecycleAPI.lifecycle(selectedLC).fetchHistory();
     });
+
+    $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).click(function(e) {
+        e.preventDefault();
+        appendHistory(historyStart,historyEnd);
+    });
+
     var init = function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();
