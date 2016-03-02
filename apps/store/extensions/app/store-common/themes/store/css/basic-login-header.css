@@ -244,14 +244,24 @@ a.ctrl-filter-category:hover {
 }
 label.error{
     color:#aa2d1e;
-    margin-top:5px;
+    margin-top: 0px;
     font-weight: normal;
 }
 input[type="text"].error, input[type="password"].error{
-    -webkit-box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
-    -moz-box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
-    box-shadow: 2px 2px 5px 0px rgba(255,117,117,1);
+    border-color: #C10F43;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
 }
+
+label.error{
+    line-height: 1.5em;
+    color: #fff;
+    background-color: #e74c3c;
+    width: 100%;
+    padding: 5px 10px;
+    border-left: 5px solid #942F25;
+}
+
 .alert-error{
     color:#fff;
     background-color: #e74c3c;

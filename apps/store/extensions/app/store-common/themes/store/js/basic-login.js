@@ -17,6 +17,26 @@
  *
  */
 $(function () {
+
+    $('#username').keypress(function () {
+        $('#regFormError').hide();
+    });
+
+    $('#password').keypress(function () {
+        $('#regFormError').hide();
+    });
+
+    $("#basic-login-form").validate({
+        rules: {
+            username: "required",
+            password: "required"
+        },
+        messages: {
+            username: "Please provide a username",
+            password: "Please provide a password"
+        }
+    });
+
     $('#basic-login-form').ajaxForm({
         success: function (data) {
             data = JSON.parse(data);

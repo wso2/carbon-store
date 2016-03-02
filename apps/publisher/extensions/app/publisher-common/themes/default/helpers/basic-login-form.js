@@ -19,7 +19,7 @@
 
 var resources = function(){
 	return {
-		js:['libs/jquery.form.min.js','basic-login.js'],
+		js:['libs/jquery.form.min.js','basic-login.js','libs/jquery.validate.min.js'],
         css:['basic-login-header.css']
 	}
 };
