@@ -51,18 +51,20 @@
         <span class="fa fa-cog fa-2x advanced-search-icons"></span>
     </a>
     </div>
+     {{#if assets}}
     <div class="col-lg-2 col-md-2 col-sm-2 col-xs-3 wr-filters">
         <div class="dropdown pull-right">
             <a class="dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
                 <span class="sort-asset-info"><span>( <span class="hidden-xs">{{sorting.selected.help}}</span> <i class="fa {{sorting.selected.helpIcon}}"></i> )</span> <img src="{{url "/themes/default/img/icons/ico-sort.png"}}" />
-            </a>
-            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="ul-sort-assets">
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" id="ul-sort-assets">
                 {{#each sorting.list}}
                     <li role="presentation" class="{{#if active}}active{{/if}} {{sortBy.label}}"><a class="filter-item" href="?sort={{sortNext}}{{sortBy.field}}"><span class="pull-left">{{sortBy.label}}</span><i class="fa {{sortIcon}} pull-right"></i> </a></li>
                 {{/each}}
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
+    {{/if}}
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
         <!-- content -->
         <div class="ast-container" id="list_assets_table_body">
