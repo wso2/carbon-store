@@ -1,10 +1,11 @@
-<div>
+<div class="lifecycle-selection-area">
 {{#if assets.hasMultipleLifecycles}}
-    <label class="float-left"><h3>Available Lifecycles </h3></label>
+    <label class="float-left"><h3>Lifecycle : </h3></label>
 <div>
-	<div class="form-group wr-lifecycle-selection">
-    <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true">Other Lifecycles
-    <span class="fa fa-angle-down pull-right"></span></a>
+	<div id='current-selected-lifecycle-div' class="form-group wr-lifecycle-selection">
+    <a id='current-selected-lifecycle' href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span>Other Lifecycles</span>
+      <span class="fa fa-angle-down pull-right"></span>
+    </a>
     <ul id='lifecycle-selection' class="dropdown-menu lifecycle-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
     	{{#each assets.availableLifecycles}}
         <li><a tabindex="-1" href="#">{{name}}</a></li>
