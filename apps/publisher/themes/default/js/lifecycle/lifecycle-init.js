@@ -161,6 +161,7 @@ $(function() {
         if (impl) {
             data.currentLifecycle = LifecycleAPI.currentLifecycle();
             data.currentState = impl.state(impl.currentState).label;
+            data.hasMultipleLifecycles = LifecycleUtils.currentAsset().hasMultipleLifecycles;
             renderPartial(constants.CONTAINER_INFORMATION_AREA, constants.CONTAINER_INFORMATION_AREA, data);
         }
         $("#current-selected-lifecycle span:first-child").text(data.currentLifecycle);
