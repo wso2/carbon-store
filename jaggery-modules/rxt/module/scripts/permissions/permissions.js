@@ -946,6 +946,36 @@ var permissions = {};
         }
         return authorized;
     };
+
+    permissions.SYSTEM_ANON_ROLE = 'SYSTEM/wso2.anonymous.role';
+    permissions.checkActionPermissionforPath = function(path,action,tenantId,username) {
+        var username = typeof username !== 'undefined' ?  username : null; // Default parameter set to null
+        var server = require('store').server;
+        var isAuthorized = false;
+
+        if ((!tenantId)) {
+            throw 'Unable to resolve permissions without the tenantId';
+        }
+        var userManager = server.userManager(tenantId);
+        var authorizer = userManager.authorizer;
+
+        try {
+            if ((!username) || (username === wso2AnonUsername())) {
+                if(log.isDebugEnabled()){
+                    log.debug('[permissions] username not provided to check ' + permission + '.The anon role will be used to check permissions');
+                }
+                isAuthorized = authorizer.isRoleAuthorized(permissions.SYSTEM_ANON_ROLE, path, action);
+            } else {
+                if(log.isDebugEnabled()) {
+                    log.debug('[permissions] using username: ' + username + ' to check permission');
+                }
+                isAuthorized = authorizer.isUserAuthorized(username, path, action);
+            }
+        } catch (e) {
+            log.error(e);
+        }
+        return isAuthorized;
+    };
     permissions.getAnonRole = getAnonRole;
     permissions.wso2AnonUsername = wso2AnonUsername;
     permissions.denyActionsForRole = denyActionsForRole;

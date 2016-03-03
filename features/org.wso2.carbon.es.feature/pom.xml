@@ -39,10 +39,10 @@
             <artifactId>httpcore</artifactId>
         </dependency>
 
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon.store</groupId>
             <artifactId>org.wso2.store.bamclient</artifactId>
-        </dependency>
+        </dependency-->
 
         <dependency>
             <groupId>org.wso2.carbon.store</groupId>
@@ -67,7 +67,7 @@
                             <propertiesFile>../etc/feature.properties</propertiesFile>
                             <bundles>
                                 <bundleDef>slf4j.wso2:slf4j:${slf4j.wso2.version}</bundleDef>
-                                <bundleDef>org.wso2.carbon.store:org.wso2.store.bamclient</bundleDef>
+                                <!--bundleDef>org.wso2.carbon.store:org.wso2.store.bamclient</bundleDef-->
                                 <bundleDef>org.wso2.carbon.store:jaggery-scxml-executors:${carbon.store.version}
                                 </bundleDef>
                                 <bundleDef>
