@@ -225,7 +225,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" '+
                          ' id="' + (name?name:field.name.tableQualifiedName) + '" ';
-                var className = " input-large form-control ";
+                var className = " form-control ";
                 if(field.type == "checkbox" || field.type == "file"){
                     className = "";
                 }
