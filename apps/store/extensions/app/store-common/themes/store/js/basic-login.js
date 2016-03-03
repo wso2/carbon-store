@@ -47,8 +47,10 @@ $(function () {
             var regFormError = $('#regFormError');
             regFormError.show();
             regFormError.text(data.responseJSON.error);
-            $('#password').val('');
-            $('#username').val('').focus();
+            $("#basic-login-form").resetForm();
+            $('#username').focus();
+            $('#password-error').hide();
+            $('#password').removeClass('error');
         }
     });
 });
