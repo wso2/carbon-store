@@ -17,6 +17,7 @@
  *  under the License.
  *
  */
+(function(request,response,session) {
 var configs = require('/config/sso.js').config();
 var e = request.getParameter('authFailure');
 
@@ -26,7 +27,8 @@ relyingParty = relyingParty.replace(/\W+/g, "");
 
 if(!request.isSecure()){
     response.content = { 'authFailure' : e , 'relyingParty' : relyingParty };
-    response.sendRedirect(configs.server.https + request.getRequestURI());
+    response.sendRedirect(configs.server.https + request.getRequestURI()+'?relyingParty='+relyingParty);
+    return;
 }
 
 //TODO: this should be fixed properly
@@ -200,3 +202,7 @@ var themeModule = require('/modules/theme.js');
 </script>
 </body>
 </html>
+
+<% 
+    }(request,response,session)); 
+%>
