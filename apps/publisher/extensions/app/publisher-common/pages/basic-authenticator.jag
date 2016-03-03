@@ -17,36 +17,102 @@
  *  under the License.
  *
  */
-(function (session, request, response) {
+(function(session, request, response) {
     var storeAPI = require('store');
+    var permissionAPI = require('rxt').permissions;
     var params = request.getAllParameters();
     var hasUsernamePassword = params.username && params.password;
     var authenticated; //Assume that the authentication will fail
+    var utils = require('utils');
+    var log = new Log();
+    var username = params.username;
+    var password = params.password;
+    var failed = false;
+    /**
+     * Triggers carbon level tenant load events
+     */
+    var loadTenant = function(username) {
+        var carbon = require('carbon');
+        var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+        var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
+        var TenantAxisUtils = Packages.org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+        var service;
+        var ctx;
+        var domain = MultitenantUtils.getTenantDomain(username);
+        if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
+            service = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+            ctx = service.getServerConfigContext();
+            TenantAxisUtils.setTenantAccessed(domain, ctx);
+        }
+    };
+    /**
+     * Performs basic authentication
+     * @param  {String} username Accepts an email qualified username (E.g. mgjaye@gmail.com or mgjaye)
+     * @param  {String} password Password provided by the user
+     * @return {[type]}          True if the user is logged in else False
+     */
+    var authenticate = function(username,password) {
+        var carbon = require('carbon');
+        return storeAPI.server.instance().authenticate(username,password);
+    };
     if (!hasUsernamePassword) {
-        response.buildErrorResponse(response, 400, "Please provide the username and password to login");
-        if (log.isDebugEnabled) {
+        utils.response.buildErrorResponse(response, 400, "Please provide the username and password to login");
+        if(log.isDebugEnabled) {
             log.debug('Attempt to login without username and password');
         }
         return;
     }
+
+    //STEP 1 : Authenticate the user 
     try {
-        authenticated = storeAPI.user.login(params.username, params.password, session);
+        authenticated = authenticate(username,password);
     } catch (e) {
-        response.buildErrorResponse(response, 409, "Unable to authenticate user : " + params.username);
-        log.error("Unable to authenticate user : " + params.username, e);
+        log.error('Error occured while authenticating user ',e);
+        failed = true;
     }
 
-    if (authenticated) {
-        session.put("LOGGED_IN_USER", params.username);
+    if(failed){
+        utils.response.buildErrorResponse(response, 500, "Oops the backend seems to be experiencing issues authenticating you.");
+        return;
+    }
+
+    if(!authenticated) {
+        utils.response.buildErrorResponse(response, 401, "The provided username and password combination is incorrect.");
+        return;
+    }
+
+
+    var usr = carbon.server.tenantUser(username);
+    var modifiedUsername = storeAPI.user.removeTenantDomainFromUsername(username);
+    var hasPublisherLoginPermission = false;
+
+    //STEP 2 : Iniate loading of tenant resources
+    var tenantInfo = carbon.server.tenantUser(username);
+    storeAPI.server.sandbox(tenantInfo,function(){
+        session.put("LOGGED_IN_USER", username);
         session.put("Loged", "true");
+        loadTenant(username);
+        storeAPI.user.loadTenant(username);
+        //STEP 3 : Decide if the user has permission to log into the application
+        hasPublisherLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,modifiedUsername);
+
+        //STEP 4 : Emit the login event only if the user is authorized
+        if(hasPublisherLoginPermission) {
+            storeAPI.user.emitLogin(username);
+        }
+    });
+
+    //STEP 5 : Determine the final response emitted to the user depending
+    //         on whether he has login permission
+    if(hasPublisherLoginPermission) {
         response.code = 200;
         var result = {};
         result.success = true;
         result.referer = params.referer;
         print(result);
     } else {
-        response.buildErrorResponse(response, 401, "The username and password you entered don't match.");
+        log.warn('User ' + username + ' does not have permission to access the publisher application.Make sure the user has the publisher role.');
+        utils.response.buildErrorResponse(response, 401, "Insufficient priveleages to access the Publisher application.");
     }
-
-}(session, request, response));
+}(session, request, response)); 
 %>

@@ -28,18 +28,35 @@ var ui = {};
 (function(ui, core, asset, app, constants) {
     var log = new Log('rxt.ui');
     var DEFAULT_TITLE = "Empty";
+
+    var resolveTenantDomain = function(tenantId) {
+        var server = require('carbon').server;
+        var opts = {};
+        opts.tenantId = tenantId ||  server.superTenant.tenantId;
+        return server.tenantDomain(opts);
+    };
+
+    var resolveSuperTenantDomain = function(tenantId){
+        var server = require('carbon').server;
+        tenantId = tenantId || server.superTenant.tenantId;
+        return (tenantId === server.superTenant.tenantId);
+    };
+
     /**
      * Returns a generic page object
      * @param  {Object} options The set of dynamic values a page object can start off with.
      * @return {Object}         A page object
      */
     var genericPage = function(options) {
+        var tenantDomain = resolveTenantDomain(options.tenantId);
         return {
             rxt: {},
             cuser: {
                 username: options.username,
                 isAnon: options.isAnon,
-                tenantId:options.tenantId
+                tenantId:options.tenantId,
+                tenantDomain:resolveTenantDomain(options.tenantId),
+                isSuperTenant:resolveSuperTenantDomain(options.tenantId)
             },
             assets: {},
             leftNav: [],
