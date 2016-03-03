@@ -51,11 +51,13 @@ validator.validate = function (element, callback) {
         if ($(element).next().hasClass('error')) {
             $(element).next().html(errorMessage);
         } else {
+            $(element).addClass("error");
             $(element).after('<div class="error">' + errorMessage + '</div>');
         }
         return false;
     } else {
         if ($(element).next().hasClass('error')) {
+            $(element).removeClass("error");
             $(element).next().remove();
         }
         return true;
