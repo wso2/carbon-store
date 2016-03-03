@@ -97,8 +97,8 @@ a.ctrl-filter-category {
     border:1px solid #237bd5;
     color:#fff;
     text-decoration:none;
-    padding:7px 10px 7px 20px;
-    width:180px;
+    padding:5px 10px 5px 20px;
+    width:auto;
     font-size:18px;
     font-weight:100;
 }

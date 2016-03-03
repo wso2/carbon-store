@@ -81,6 +81,8 @@ var LifecycleUtils = {};
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
     constants.MSG_ERROR_CHECKLIST_UPDATE = 'msgChecklistUpdateError';
     constants.CONTAINER_DELETE_ACTION_AREA = 'deleteActionArea';
+    constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON = "#load-more-btn";
+    constants.LIFECYCLE_HISTORY_PAGING_SIZE = 8;
     var id = function(name) {
         return '#' + name;
     };
