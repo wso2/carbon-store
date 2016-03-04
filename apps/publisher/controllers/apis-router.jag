@@ -52,13 +52,18 @@ if (uriMatcher.match(API_URL)) {
             request.getMappedPath = mapper(path);
             var username = user ? user.username : null;
             var isAuthorized = rxtAPI.permissions.hasAppAPIPermission(page,tenantId,username);
-            if(!isAuthorized){
-                log.error('user '+username+' does not have permission to access the api '+page);
-                response.sendError(401,'You do not have access to this api');
-            } else {          
-                var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
-                if (proceed) {
-                    include(path);
+            if(!username){
+                log.error('user need to authenticate before access the api ' + page);
+                response.sendError(401,'You do not have access to this page');
+            }else {
+                if(!isAuthorized){
+                    log.error('user '+username+' does not have permission to access the api '+page);
+                    response.sendError(401,'You do not have access to this api');
+                } else {          
+                    var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
+                    if (proceed) {
+                        include(path);
+                    }
                 }
             }
         } else {
