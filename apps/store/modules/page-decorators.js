@@ -16,8 +16,8 @@
  *  under the License.
  *
  */
-var pageDecorators = {};
-(function() {
+ var pageDecorators = {};
+ (function() {
     var storeConstants = require('store').storeConstants;
     var tenantApi = require('/modules/tenant-api.js').api;
     var permissionsAPI = require('rxt').permissions;
@@ -67,7 +67,7 @@ var pageDecorators = {};
      * @param  {[type]} page [description]
      * @return {[type]}      [description]
      */
-    pageDecorators.searchBar = function(ctx, page) {
+     pageDecorators.searchBar = function(ctx, page) {
         page.searchBar = {};
         page.searchBar.searchFields = [];
         var searchFields = page.assetMeta.searchFields;
@@ -84,7 +84,7 @@ var pageDecorators = {};
      * @param  {[type]} page [description]
      * @return {[type]}      [description]
      */
-    pageDecorators.categoryBox = function(ctx, page) {
+     pageDecorators.categoryBox = function(ctx, page) {
         page.categoryBox = {};
         page.categoryBox.categories = page.assetMeta.categories;
         page.categoryBox.searchEndpoint = '/apis/assets?type=' + ctx.assetType;
@@ -176,11 +176,28 @@ var pageDecorators = {};
             am = tenantAssetResources.am;
             if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
                 if (query) {
+
                     var paging = {'start': 0,
                                 'count': 7,
                                 'sortOrder': 'desc',
                                 'sortBy': 'createdDate',
                                 'paginationLimit': 7 };
+
+                    // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
+                    if(mediaScoped(query,types)){
+                        tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                            type: query.mediaType
+                        });
+                        assets = tenantAssetResources.am.advanceSearch(query, paging);
+                        page.recentAssets = [];
+                        page.recentAssetsByType = [];
+                        typeDetails = ctx.rxtManager.getRxtTypeDetails(query.mediaType);
+                        page.recentAssetsByType.push({
+                            assets:assets,
+                            rxt:typeDetails
+                        });
+                        return;
+                    }
                     assets = am.advanceSearch(query, paging);
                 } else {
                     assets = am.recentAssets();
@@ -201,6 +218,14 @@ var pageDecorators = {};
         }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
+    };
+    var mediaScoped = function(q,types){
+        if(!q.mediaType){
+            return false;
+        }
+        return types.filter(function(type){
+            return type === q.mediaType;
+        }).length > 0 ;
     };
     var replaceCategoryQuery = function(q, rxtManager, type) {
         //Determine if a category was provided
@@ -560,7 +585,7 @@ var pageDecorators = {};
      * @param authRequired authorization required flag
      * @returns {Array} term results
      */
-    var doTermSearch = function (ctx, facetField, paging, authRequired) {
+     var doTermSearch = function (ctx, facetField, paging, authRequired) {
         var terms = [];
         var results;
         var categoryField;
