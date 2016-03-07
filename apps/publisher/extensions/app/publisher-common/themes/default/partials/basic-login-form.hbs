@@ -1,28 +1,37 @@
-<div class="row">
-    <div class="col-md-12">
-        <div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
-            <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">{{t "SIGN IN"}}</h2>
+<div class="col-xs-1 col-sm-2 col-md-1 col-lg-1 left-col "></div>
+<div class="col-xs-10 col-sm-9 col-md-9 col-lg-10 wr-content padding-none">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container col-xs-10 col-sm-6 col-md-6 col-lg-4 col-centered wr-content wr-login col-centered">
+                <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">{{t "SIGN IN"}}</h2>
 
-            <form id='basic-login-form' class="form-horizontal" action='{{url ""}}/pages/basic-authenticator' method="POST">
-                <div class="boarder-all ">
-                    <div class="clear"></div>
-                    <span class="padding-double float-left font-large">Sign in to continue </span>
-                    <!-- validation -->
-                    <div class="wr-input-control padding-double">
-                        <br>
-                        <br>
-                        <div id="regFormError" class="alert alert-error" style="display:none"></div>
-                        <div style="clear: both"></div>
-                        <input  type="text" class="input-block-level form-control" placeholder="Username" tabindex="0" id="username" name="username" autocomplete="off" autofocus/>
-                        <br><br>
-                        <input  type="password"  class="input-block-level form-control" placeholder="Password" id="password"  name="password" autocomplete="off"/>
-                        <br><br>
-                        <button type="submit" class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"> {{t "SIGN IN"}} </button>
-                        <br><br><br>
+                <form id='basic-login-form' class="form-horizontal" action='{{url ""}}/pages/basic-authenticator'
+                      method="POST">
+                    <div class="boarder-all ">
+                        <div class="clear"></div>
+                        <span class="padding-double float-left font-large">Sign in to continue </span>
+                        <!-- validation -->
+                        <div class="wr-input-control padding-double">
+                            <br>
+                            <br>
+
+                            <div id="regFormError" class="alert alert-error" style="display:none"></div>
+                            <div style="clear: both"></div>
+                            <input type="text" class="input-block-level form-control" placeholder="Username"
+                                   tabindex="0" id="username" name="username" autocomplete="off" autofocus/>
+                            <br><br>
+                            <input type="password" class="input-block-level form-control" placeholder="Password"
+                                   id="password" name="password" autocomplete="off"/>
+                            <br><br>
+                            <button type="submit"
+                                    class="wr-btn grey-bg col-xs-12 col-md-12 col-lg-12 uppercase font-extra-large"> {{t "SIGN IN"}} </button>
+                            <br><br><br>
+                        </div>
                     </div>
-                </div>
-                <input type='hidden' name='referer' value='{{meta.referer}}'/>
-            </form>
+                    <input type='hidden' name='referer' value='{{meta.referer}}'/>
+                </form>
+            </div>
         </div>
     </div>
+</div>
 </div>

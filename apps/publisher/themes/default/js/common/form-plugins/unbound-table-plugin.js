@@ -1,7 +1,7 @@
 $(function () {
 
     var ADD_BUTTON_ID = '-add-row';
-    var addButtonTemplate = "<input class='btn' id='{{id}}-add-row' type='button' value='Add'>";
+    var addButtonTemplate = "<input class='btn es-btn' id='{{id}}-add-row' type='button' value='Add'>";
     var deleteButtonTemplate = "<input class='btn-danger' type='button'  value='Delete'>";
     var compiledButtonTemplate = Handlebars.compile(addButtonTemplate);
 

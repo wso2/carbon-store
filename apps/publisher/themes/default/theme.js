@@ -225,7 +225,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" '+
                          ' id="' + (name?name:field.name.tableQualifiedName) + '" ';
-                var className = " form-control ";
+                var className = " form-control es-form-control ";
                 if(field.type == "checkbox" || field.type == "file"){
                     className = "";
                 }
@@ -425,7 +425,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var output = '';
                 output += '<tr id="table_reference_'+table.name+'">';
                 output += '<td valign="top">' + renderOptionsForOptionsText('', fieldValue, field) + '</td>';
-                output += '<td valign="top"><input type="text" class="form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text',mode) + ' /></td>';
+                output += '<td valign="top"><input type="text" class="form-control es-form-control"' + renderFieldMetaData(field,field.name.tableQualifiedName+'_text',mode) + ' /></td>';
                 output += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                 output += '</tr>';
                 return new Handlebars.SafeString(output);
