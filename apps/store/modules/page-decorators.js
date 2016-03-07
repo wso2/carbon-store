@@ -163,44 +163,84 @@ var pageDecorators = {};
             return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
         };
         var bookmarkPerms = {};
-        for (var index in types) {
-            typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
-            type = typeDetails.shortName;
+        
+        // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
+        // case 1 : Search query provided with mediaType search
+        if(isMediaType(query,types)){
+            var paging = {'start': 0,
+                        'count': 7,
+                        'sortOrder': 'desc',
+                        'sortBy': 'createdDate',
+                        'paginationLimit': 7 };
             tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
-                type: type
+                type: query.mediaType
             });
-            bookmarkable = bookmarkPerms[type];
-            if(bookmarkable === undefined) {
-                bookmarkable = (bookmarkPerms[type] = canBookmark(type));
-            }
-            am = tenantAssetResources.am;
-            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
-                if (query) {
-                    var paging = {'start': 0,
-                                'count': 7,
-                                'sortOrder': 'desc',
-                                'sortBy': 'createdDate',
-                                'paginationLimit': 7 };
-                    assets = am.advanceSearch(query, paging);
-                } else {
-                    assets = am.recentAssets();
-                }
-                if (assets.length > 0) {
-                    //Add subscription details if this is not an anon context
-                    if (!ctx.isAnonContext) {
-                        addSubscriptionDetails(assets, am, ctx.session, bookmarkable);
-                    }
-                    ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
-                    items = items.concat(assets);
-                    assetsByType.push({
-                        assets: assets,
-                        rxt: typeDetails
-                    });
-                }
-            }
+            assets = tenantAssetResources.am.advanceSearch(query, paging);
+            page.recentAssets = [];
+            page.recentAssetsByType = [];
+            typeDetails = ctx.rxtManager.getRxtTypeDetails(query.mediaType);
+            page.recentAssetsByType.push({
+                assets:assets,
+                rxt:typeDetails
+            });
+            return;
         }
+        // case 2 : Search query provided without a mediaType search
+            for (var index in types) {
+                log.info(types);
+                typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
+                type = typeDetails.shortName;
+                tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                    type: type
+                });
+                bookmarkable = bookmarkPerms[type];
+                if(bookmarkable === undefined) {
+                    bookmarkable = (bookmarkPerms[type] = canBookmark(type));
+                }
+                am = tenantAssetResources.am;
+                if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                    if (query) {
+                        var paging = {'start': 0,
+                                    'count': 7,
+                                    'sortOrder': 'desc',
+                                    'sortBy': 'createdDate',
+                                    'paginationLimit': 7 };
+                        assets = am.advanceSearch(query, paging);
+                    } else {
+                        assets = am.recentAssets();
+                    }
+                    if (assets.length > 0) {
+                        //Add subscription details if this is not an anon context
+                        if (!ctx.isAnonContext) {
+                            addSubscriptionDetails(assets, am, ctx.session, bookmarkable);
+                        }
+                        ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                        items = items.concat(assets);
+                        assetsByType.push({
+                            assets: assets,
+                            rxt: typeDetails
+                        });
+                    }
+                }
+            }
+
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
+    };
+
+    /**
+     * Method to check whether a user has entered a mediaType search query.
+     */
+    var isMediaType = function(q,types){
+         var hasMediaType = q ? Boolean(q.mediaType) : false;
+         //if a query is not provided or if media type is not provided we will skip media scoping 
+         if(!hasMediaType) {
+            return hasMediaType;            
+         }
+         var mediaType = q.mediaType;
+        return types.filter(function(type){
+            return type === q.mediaType.toLowerCase();
+        }).length > 0 ;
     };
     var replaceCategoryQuery = function(q, rxtManager, type) {
         //Determine if a category was provided
