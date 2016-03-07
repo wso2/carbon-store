@@ -393,8 +393,10 @@ var error = '';
         var lcApi = lifecycleModule.api; //load lifecycle module
         var lifecycle = lcApi.getLifecycle(lcName, tenantId);
         var rxtManager = coreApi.rxtManager(tenantId);
-        var lcState = am.getLifecycleState(asset, lcName);
+        //var lcState = am.getLifecycleState(asset, lcName);
         var lcCheckedStates = am.getLifecycleCheckedState(asset.id, lcName);
+        //get the state from LifeCycleService instead of GovernanceArtifactImpl
+        var lcState = lcCheckedStates.getLifeCycleState();
         //Obtain the state data
         state = lifecycle.state(lcState);
         if (!state) {
