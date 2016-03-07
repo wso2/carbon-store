@@ -178,10 +178,10 @@
                 if (query) {
 
                     var paging = {'start': 0,
-                    'count': 7,
-                    'sortOrder': 'desc',
-                    'sortBy': 'createdDate',
-                    'paginationLimit': 7 };
+                                'count': 7,
+                                'sortOrder': 'desc',
+                                'sortBy': 'createdDate',
+                                'paginationLimit': 7 };
 
                     // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
                     if(mediaScoped(query,types)){
