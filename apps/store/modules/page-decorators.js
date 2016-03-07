@@ -187,7 +187,6 @@ var pageDecorators = {};
         }
         // case 2 : Search query provided without a mediaType search
             for (var index in types) {
-                log.info(types);
                 typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
                 type = typeDetails.shortName;
                 tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
@@ -223,7 +222,6 @@ var pageDecorators = {};
                     }
                 }
             }
-
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
     };
