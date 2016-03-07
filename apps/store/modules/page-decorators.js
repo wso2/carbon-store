@@ -176,12 +176,15 @@
             am = tenantAssetResources.am;
             if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
                 if (query) {
+
+                    var paging = {'start': 0,
+                    'count': 7,
+                    'sortOrder': 'desc',
+                    'sortBy': 'createdDate',
+                    'paginationLimit': 7 };
+
+                    // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
                     if(mediaScoped(query,types)){
-                        var paging = {'start': 0,
-                        'count': 7,
-                        'sortOrder': 'desc',
-                        'sortBy': 'createdDate',
-                        'paginationLimit': 7 };
                         tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
                             type: query.mediaType
                         });
@@ -192,14 +195,9 @@
                         page.recentAssetsByType.push({
                             assets:assets,
                             rxt:typeDetails
-                        })
+                        });
                         return;
                     }
-                    var paging = {'start': 0,
-                    'count': 7,
-                    'sortOrder': 'desc',
-                    'sortBy': 'createdDate',
-                    'paginationLimit': 7 };
                     assets = am.advanceSearch(query, paging);
                 } else {
                     assets = am.recentAssets();
