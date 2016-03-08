@@ -28,7 +28,7 @@ LifecycleAPI.configs({
 	"apiFetchHistory":"/lifecycle-history",
 	"msgCannotChangeState":"You do not have permission to change states",
 	"msgStateChangedSuccess":"State updated successfully",
-	"msgStateChangeError":"State could not be updated",
+	"msgStateChangeError":"State could not be updated. Please contact your administrator.",
 	"msgChecklistUpdateSuccess":"Checklist updated successfully",
 	"msgChecklistUpdateError":"Checklist was not updated",
     "deleteActionArea":"Delete"

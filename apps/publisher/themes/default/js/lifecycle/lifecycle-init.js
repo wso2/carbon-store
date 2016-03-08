@@ -434,7 +434,7 @@ $(function() {
             });
         }
         else{
-            LifecycleAPI.notify(config(config(constants.MSG_ERROR_STATE_CHANGE)), {
+            LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
                 type: 'error'
             });
         }
