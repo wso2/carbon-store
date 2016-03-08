@@ -48,16 +48,16 @@ validator.validate = function (element, callback) {
     }
 
     if (errorMessage.length > 0) {
-        if ($(element).next().hasClass('error')) {
+        if ($(element).next().hasClass('error-msg')) {
             $(element).next().html(errorMessage);
         } else {
-            $(element).addClass("error");
-            $(element).after('<div class="error">' + errorMessage + '</div>');
+            $(element).addClass("error-msg");
+            $(element).after('<div class="error-msg">' + errorMessage + '</div>');
         }
         return false;
     } else {
-        if ($(element).next().hasClass('error')) {
-            $(element).removeClass("error");
+        if ($(element).next().hasClass('error-msg')) {
+            $(element).removeClass("error-msg");
             $(element).next().remove();
         }
         return true;
@@ -66,7 +66,7 @@ validator.validate = function (element, callback) {
 validator.removeValidationEvents = function(form){
     var $form = typeof form == "string" ? $('#' + form) : form;
     $form.off('focus blur keyup change', '**');
-    $('.error').remove();
+    $('.error-msg').remove();
 };
 validator.initValidationEvents = function (form, submitCallback) {
     var $form = typeof form == "string" ? $('#' + form) : form;

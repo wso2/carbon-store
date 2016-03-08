@@ -144,7 +144,7 @@ $(function() {
         var actionData = {};
         actionData.label = action.toUpperCase();
         actionData.action = action;
-        actionData.style = 'btn-default';
+        actionData.style = 'btn-default es-btn-default';
         var inputs = transitionInputMap.inputs;
         //Hide the lifecycle actions
         $(id(config(constants.CONTAINER_LC_ACTION_AREA))).hide();
@@ -224,7 +224,7 @@ $(function() {
                 action = actions[index];
                 mapping = {};
                 mapping.label = action;
-                mapping.style = 'btn-default';
+                mapping.style = 'btn-default es-btn-default';
                 map.push(mapping);
             }
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
