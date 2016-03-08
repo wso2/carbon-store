@@ -680,7 +680,7 @@ var asset = {};
             options.wildcard = false;//query[constants.Q_PROP_GROUP];
             delete query[constants.Q_PROP_GROUP];
         }
-        options.wildcard = modWildcard(query);
+        options.wildcard = resolveWildcard(query);
         q  = buildQueryString(query, options);
         return q;
     };
@@ -803,11 +803,10 @@ var asset = {};
      * Convert string boolean to boolean according to the query param
      * @param {Object} q Query object
      */
-    var modWildcard = function(q) {
+    var resolveWildcard = function(q) {
         if ((q.hasOwnProperty(constants.Q_PROP_WILDCARD)) && (q[constants.Q_PROP_WILDCARD] === 'false')) {
             return false;
         }
-        log.debug('[search] enabling wildcard search');
         delete q[constants.Q_PROP_WILDCARD];
         return true;
     };
