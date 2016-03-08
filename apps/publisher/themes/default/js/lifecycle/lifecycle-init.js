@@ -195,7 +195,7 @@ $(function() {
     var incrementHistoryRenderParams = function(start, end, historyLength){
         historyStart = start + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
         historyEnd = end + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
-        if(historyStart => historyLength){
+        if(historyStart >= historyLength){
             $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).hide();
         }
         if(historyStart < historyLength){
@@ -434,7 +434,7 @@ $(function() {
             });
         }
         else{
-            LifecycleAPI.notify(config(config(constants.MSG_ERROR_STATE_CHANGE)), {
+            LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
                 type: 'error'
             });
         }

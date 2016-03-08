@@ -55,11 +55,17 @@ var parseUsedDefinedQuery = function(input) {
     var term;
     var arr =[];
     var previous;
-    // clear prefix white spaces and tail white spaces
-    input = input.replace(/^\s+/, '').replace(/\s+$/, '');
+    //Remove trailing whitespaces if any
+    input = input.trim();
+    input = replaceAll(input,"(\\s)*:(\\s)*", ":");
+
     //Use case #1 : The user has only entered a name
     if(isTokenizedTerm(input)){
-        q.name = encodeURIComponent(input);
+        if(input.indexOf('"') > -1){
+            q.name = JSON.stringify(JSON.parse(input));
+        } else {
+            q.name = encodeURIComponent(input);
+        }
         return q;
     }
 
