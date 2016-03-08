@@ -237,11 +237,12 @@ var result;
         return assetReq;
     };
 
-    var validateProvider = function (type, assetReq) {
+    var validateProvider = function (type, assetReq,user) {
         var rxtManager = rxtModule.core.rxtManager(user.tenantId);
         var provider = rxtManager.getProviderAttribute(type);
+        var storeModule = require('store');
         if(provider && provider.length >1 && assetReq.hasOwnProperty('attributes')){
-            assetReq.attributes[provider] = user.username;
+            assetReq.attributes[provider] = storeModule.user.cleanUsername(user.username);
         }
     };
 
@@ -339,7 +340,7 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
-            validateProvider(options.type, asset);
+            validateProvider(options.type, asset,user);
 //            validateRequiredFeilds(options.type, asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
