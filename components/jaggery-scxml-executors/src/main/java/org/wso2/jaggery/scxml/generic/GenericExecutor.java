@@ -95,7 +95,7 @@ public class GenericExecutor implements Execution
     }
 
     private String cleanUsername(String username){
-        return username.replace("@","-AT-").replace("/","-AT-");
+        return username.replace("@","-at-").replace("/","-at-");
     }
     /*
     The method obtains the tenant id from a string tenant id

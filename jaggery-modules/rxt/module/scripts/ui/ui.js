@@ -49,10 +49,12 @@ var ui = {};
      */
     var genericPage = function(options) {
         var tenantDomain = resolveTenantDomain(options.tenantId);
+        var storeModule = require('store');
         return {
             rxt: {},
             cuser: {
                 username: options.username,
+                cleanedUsername: storeModule.user.cleanUsername(options.username||''),
                 isAnon: options.isAnon,
                 tenantId:options.tenantId,
                 tenantDomain:resolveTenantDomain(options.tenantId),
