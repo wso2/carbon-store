@@ -64,8 +64,16 @@ $(function () {
             $.cookie("new-asset-" + type, data.id + ":" + type + ":" + data.name);
             window.location = options.redirectUrl;
         },
-        error: function () {
-            messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
+        error: function (response) {
+            var result;
+            if (response && response.responseText){
+                result = JSON.parse(response.responseText);
+            }
+            if (result != null && result.moreInfomation != null){
+                messages.alertError(result.moreInfomation);
+            } else {
+                messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
+            }
             $('#btn-create-asset').removeAttr('disabled');
             $('.fa-spinner').parent().remove();
         }
