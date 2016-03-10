@@ -69,7 +69,7 @@ $(function () {
             if (response && response.responseText){
                 result = JSON.parse(response.responseText);
             }
-            if (result != null && result.moreInfomation != null){
+            if (result && result.moreInfomation){
                 messages.alertError(result.moreInfomation);
             } else {
                 messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
