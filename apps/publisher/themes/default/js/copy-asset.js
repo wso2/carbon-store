@@ -25,7 +25,7 @@ $(document).ready(function() {
 					$('#new-version-loading').addClass('hide');
 				},
 				error : function(error) {
-					console.log(error);
+					//console.log(error);
 					var errorText = JSON.parse(error.responseText).error;
 					alertMessage.text(errorText);
 					alertMessage.removeClass('alert-success hide');

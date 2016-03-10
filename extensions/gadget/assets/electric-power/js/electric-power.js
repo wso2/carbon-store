@@ -13,7 +13,7 @@ function callback(topic, obj, subscriberData) {
 
 	var init = $('#chart-elec').attr('data-init');
 
-	console.log("data-init" + init);
+	//console.log("data-init" + init);
 
 	var myconfig = {
 		baseUrl : '/portal/js/dojo//'
@@ -23,7 +23,7 @@ function callback(topic, obj, subscriberData) {
 	var tip;
 
 	if (!init) {
-		console.log("create");
+		//console.log("create");
 		require(myconfig, ["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Pie", "dojox/charting/themes/Bahamation", "dojo/ready"], function(Chart, Default, Pie, Bahamation, ready) {
 			ready(function() {
 				chartElec = new Chart("chart-elec");
