@@ -733,11 +733,11 @@ a.cu-ico-button-stats {
 
 /* search */
 .wr-search {
-    margin-left:4px;
+    margin-left:0px;
 }
 .wr-search input {
     background:#444;
-    width:380px;    
+    width:28.2em;    
     border:1px solid #444;
     color:#fff;
     font-size:18px;
