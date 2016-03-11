@@ -98,7 +98,7 @@ a.ctrl-filter-category {
     color:#fff;
     text-decoration:none;
     padding:5px 10px 5px 20px;
-    width:auto;
+    width:160px;
     font-size:18px;
     font-weight:100;
 }
@@ -115,7 +115,7 @@ a.ctrl-filter-category:hover {
     background:#237bd5;
     top:54px;
     left:5px;
-    width:180px;
+    width:160px;
     padding-top:0;
     padding-bottom:0;
     color:#fff;
