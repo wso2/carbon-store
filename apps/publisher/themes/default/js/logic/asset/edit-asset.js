@@ -20,7 +20,7 @@ $(function() {
         var data = formManager.getData();
         var report = formManager.validate();
 
-        console.log(formManager.formMap);
+        //console.log(formManager.formMap);
 
         //Check if there are any validation failures
         if (report.failed) {
@@ -141,7 +141,7 @@ $(function() {
             $('#permissionsTable > tbody').append(permission);
         },
         onDelete: function(role) {
-            console.log()
+            //console.log()
             $('#permissionsTable tr[data-role="' + role.id + '"]').remove();
         }
     });

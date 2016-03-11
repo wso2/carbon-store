@@ -23,7 +23,7 @@ $(function () {
         this.tagUrl = element.meta.tagApi+type;
         this.tagContainer = '#' +element.id;
         if (!this.tagUrl) {
-            console.log('Unable to locate tag api url');
+            //console.log('Unable to locate tag api url');
             return;
         }
         fetchInitTags(this.tagUrl, this.tagContainer);
@@ -71,7 +71,7 @@ $(function () {
 
             },
             error: function () {
-                console.log('unable to fetch tag cloud for ' + type);
+                //console.log('unable to fetch tag cloud for ' + type);
             }
         });
     }

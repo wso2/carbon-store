@@ -12,8 +12,8 @@ $(function () {
     }
 
     UnboundTablePlugin.prototype.init = function (element) {
-        console.log('Activating the UnboundTablePlugin');
-        console.log('*********************************');
+        //console.log('Activating the UnboundTablePlugin');
+        //console.log('*********************************');
 
         //Get a reference to the table
         var table = $(getTableId(element))[0];
@@ -125,7 +125,7 @@ $(function () {
 
         //Check if there are any cells
         if ((!table.rows) && (!table.rows[0].cells)) {
-            console.log('Table is empty');
+            //console.log('Table is empty');
             return 0;
         }
 

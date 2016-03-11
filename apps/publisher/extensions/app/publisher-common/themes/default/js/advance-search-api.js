@@ -179,7 +179,7 @@ $(function(){
         $('#search-results').html('');       
         var query = buildQuery();
         if(isEmptyQuery(query)) {
-            console.log('User has not entered anything');
+            //console.log('User has not entered anything');
             return;
         }
         store.infiniteScroll.showAll(query);

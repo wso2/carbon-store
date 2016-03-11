@@ -81,7 +81,7 @@ $(function() {
                 e.preventDefault();
                 action = $(this).data('action');
                 if(renderTransitionInputs(action)){
-                    console.log('Deferred executing action till transition inputs are provided');
+                    //console.log('Deferred executing action till transition inputs are provided');
                     return;
                 }
                 //Get the comment

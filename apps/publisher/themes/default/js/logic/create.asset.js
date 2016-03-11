@@ -31,7 +31,7 @@ $(function() {
 
 		},
 		error : function() {
-			console.log('unable to fetch tag cloud for ' + type);
+			//console.log('unable to fetch tag cloud for ' + type);
 		}
 	});
 
@@ -170,7 +170,7 @@ $('#form-asset-create').ajaxSubmit(options);
 		if (length > DESC_MAX_CHARS) {
 			temp = self.val();
 			$(this).val(temp.substring(0, DESC_MAX_CHARS));
-			console.log("Max chars reached");
+			//console.log("Max chars reached");
 			return;
 		}
 		$('.' + CHARS_REM).text('Characters left: ' + left);
@@ -204,7 +204,7 @@ $('#form-asset-create').ajaxSubmit(options);
 		var fieldType = field.type;
 
 		if (fieldType == 'file') {
-			console.log('added ' + field.id + ' file.');
+			//console.log('added ' + field.id + ' file.');
 			formData[field.id] = field.files[0];
 		} else {
 			formData[field.id] = field.value;
