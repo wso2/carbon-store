@@ -347,7 +347,7 @@ $(function() {
 
         //Check if the id exists before making a call
         if ((asset == '') || (id == '')) {
-            console.log('omitting');
+            //console.log('omitting');
             return;
         }
 

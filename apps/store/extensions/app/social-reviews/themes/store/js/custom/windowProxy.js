@@ -23,7 +23,7 @@ $(function () {
 });
 
 var onMessage = function (messageEvent) {
-    console.log(messageEvent);
+    //console.log(messageEvent);
 };
 
 var adjustHeight = function () {

@@ -13,7 +13,7 @@ function callback(topic, obj, subscriberData) {
 
 	var init = $('#chart-green').attr('data-init');
 
-	console.log("data-init" + init);
+	//console.log("data-init" + init);
 
 	var myconfig = {
 		baseUrl : '/portal/js/dojo//'
@@ -22,7 +22,7 @@ function callback(topic, obj, subscriberData) {
 	var coords = [];
 
 	if (!init) {
-		console.log("create");
+		//console.log("create");
 		require(myconfig, ["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Bubble", "dojox/charting/themes/IndigoNation", "dojo/ready"], function(Chart, Default, Bubble, IndigoNation, ready) {
 			ready(function() {
 				chartGreen = new Chart("chart-green");

@@ -13,7 +13,7 @@ function callback(topic, obj, subscriberData) {
 
 	var init = $('#chart-agri').attr('data-init');
 
-	console.log("data-init" + init);
+	//console.log("data-init" + init);
 
 	var myconfig = {
 		baseUrl : '/portal/js/dojo//'
@@ -22,7 +22,7 @@ function callback(topic, obj, subscriberData) {
 	var coords = [];
 
 	if (!init) {
-		console.log("create");
+		//console.log("create");
 		require(myconfig, ["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Lines","dojox/charting/plot2d/Markers", "dojox/charting/themes/Bahamation", "dojo/ready"], function(Chart, Default, Lines, Markers, Bahamation, ready) {
 			ready(function() {
 				chartAgri = new Chart("chart-agri");
@@ -50,7 +50,7 @@ function callback(topic, obj, subscriberData) {
 				}
 
 				coords.reverse();
-				console.log(coords);
+				//console.log(coords);
 				chartAgri.addSeries("Series A", coords);
 				//var tip = new Tooltip(chartAgri,"default");
 				chartAgri.render();
@@ -58,7 +58,7 @@ function callback(topic, obj, subscriberData) {
 		});
 		$('#chart-agri').attr('data-init', true);
 	} else {
-		console.log("update");
+		//console.log("update");
 		for (i in obj) {
 			coords.push({
 				x : parseInt(obj[i].date),
@@ -67,7 +67,7 @@ function callback(topic, obj, subscriberData) {
 		}
 
 		coords.reverse();
-		console.log(coords);
+		//console.log(coords);
 		chartAgri.updateSeries("Series A", coords).render();
 
 	}
