@@ -550,7 +550,7 @@ var asset = {};
                 if(wildcard && key != 'tags'){
                     value = '*'+value+'*';
                 }
-                queryString.push(key+'='+value);
+                queryString.push(key + '=' + encodeURIComponent(value));
             }
         }
         return queryString.join('&');
