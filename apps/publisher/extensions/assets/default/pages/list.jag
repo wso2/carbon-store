@@ -43,6 +43,6 @@ require('/modules/publisher.js').exec(function(ctx) {
     var output = am.render(assets, page).list();
     var qtemp = ctx.request.getParameter('q') || '';
     var searchQuery = utilsRequest.formatSearchQuery(qtemp);
-    output.searchQuery = searchQuery||'';
+    output.searchQuery = decodeURIComponent(searchQuery)||'';
     caramel.render(output);
 }, request, response, session); %>

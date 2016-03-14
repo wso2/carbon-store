@@ -547,7 +547,7 @@ var asset = {};
                 //with a underscore (_)
                 key = key.replace('_',':');
                 //Check if wildcard search is enabled
-                if(wildcard && key != 'tags'){
+                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1)) {
                     value = '*'+value+'*';
                 }
                 queryString.push(key + '=' + encodeURIComponent(value));
