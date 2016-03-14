@@ -379,6 +379,14 @@ $(function() {
         unblockChecklist();
         hightlightCurrentStateNode();
         renderStateInformation();
+        if (LifecycleAPI.lifecycle().nextStates().length == 0) {
+            LifecycleAPI.notify(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE), {
+                type: constants.NOTIFICATION_WARN,
+                global: false
+            });
+            renderChecklistItems();
+            return;
+        }
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
             LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
                 type: constants.NOTIFICATION_WARN,
