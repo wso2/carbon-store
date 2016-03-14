@@ -53,17 +53,21 @@ function convertTimeToUTC(assets) {
  * @param {string} path  : string
  */
 var setSortingParams = function(path) {
+    // if there is no sort parameter, then set default parameter.
+    if (path.indexOf("?sort") < 0) {
+        path += "?sort=-createdDate";
+    }
     var sorting = '';
     var obj = path.split('?');
-    if(obj[1]){
+    if (obj[1]) {
         var params = obj[1].split("&");
-        for(var j=0; j<params.length;j++){
+        for (var j = 0; j < params.length; j++) {
             var paramsPart = params[j];
-            if(paramsPart.indexOf("sort=") != -1){
+            if (paramsPart.indexOf("sort=") != -1) {
                 sorting = '&&' + paramsPart;
             }
         }
-    }else{
+    } else {
         sorting = '';
     }
     return sorting;
@@ -133,16 +137,19 @@ var parseUsedDefinedQuery = function(input) {
     var term;
     var arr =[];
     var previous;
-    // clear prefix white spaces and tail white spaces
-    input = input.replace(/^\s+/, '').replace(/\s+$/, '');
-    //Use case #1 : The user has only entered a name
-    if((!isTokenizedTerm(input)) &&(!isEmpty(input))){
-        q.name = encodeURIComponent(input);
-        return q;
-    }
     //Remove trailing whitespaces if any
     input = input.trim();
     input = replaceAll(input,"(\\s)*:(\\s)*", ":");
+
+    //Use case #1 : The user has only entered a name
+    if ((!isTokenizedTerm(input)) && (!isEmpty(input))) {
+        if(input.indexOf('"') > -1){
+            q.name = JSON.stringify(JSON.parse(input));
+        } else {
+            q.name = encodeURIComponent(input);
+        }
+        return q;
+    }
     //Use case #2: The user has entered a complex query
     //and one or more properties in the query could values
     //with spaces

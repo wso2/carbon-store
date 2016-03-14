@@ -188,7 +188,7 @@ var asset = {};
         for (var key in fields) {
             if (fields.hasOwnProperty(key)) {
                 var field = fields[key];
-                if (field && field.name && field.required == "true" && field.name.fullName) {
+                if (field && field.name && field.required && field.name.fullName) {
                     validateRequiredFeild(field.name.fullName, assetReq);
                 }
                 if (field && field.name && field.validate && field.name.fullName) {
@@ -532,6 +532,10 @@ var asset = {};
         var value;
         options = options || {};
         var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
+        // Deleting the _wildcard from the query param
+        if (query.hasOwnProperty('_wildcard')) {
+            delete query['_wildcard'];
+        }
         for(var key in query) {
             //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
@@ -676,6 +680,7 @@ var asset = {};
             options.wildcard = false;//query[constants.Q_PROP_GROUP];
             delete query[constants.Q_PROP_GROUP];
         }
+        options.wildcard = resolveWildcard(query);
         q  = buildQueryString(query, options);
         return q;
     };
@@ -792,6 +797,18 @@ var asset = {};
             q[key] = '*' + q[key] + '*';
         }
         return q;
+    };
+
+    /**
+     * Convert string boolean to boolean according to the query param
+     * @param {Object} q Query object
+     */
+    var resolveWildcard = function(q) {
+        if ((q.hasOwnProperty(constants.Q_PROP_WILDCARD)) && (q[constants.Q_PROP_WILDCARD] === 'false')) {
+            return false;
+        }
+        delete q[constants.Q_PROP_WILDCARD];
+        return true;
     };
     /**
      * Executes a query to retrieve a set of assets bound by a paging object and

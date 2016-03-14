@@ -44,12 +44,12 @@ $(function () {
             success: function (response) {
 
                 var tags = JSON.parse(response);
-                console.log('obtaining tags of type.');
+                //console.log('obtaining tags of type.');
 
                 fetchTagsOfAsset(assetType, assetId, tags);
             },
             error: function () {
-                console.log('unable to retrieve tags for ' + assetTYpe);
+                //console.log('unable to retrieve tags for ' + assetTYpe);
             }
         });
     }

@@ -92,7 +92,7 @@ $(function() {
             return data.text;
         }
 
-    })
+    }).select2('focus');
     $(TAG_SELECTBOX).on(EVENT_TAG_ADDED, tagAdded);
     $(TAG_SELECTBOX).on(EVENT_TAG_REMOVED, tagRemoved);
 });

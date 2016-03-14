@@ -55,9 +55,17 @@ $(function() {
             $('#editAssetButton').removeAttr('disabled');
             window.location = options.redirectUrl + data.id;
         },
-        error: function() {
-            messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
-            $('#editAssetButton').removeAttr('disabled');
+        error: function (response) {
+            var result;
+            if (response && response.responseText){
+                result = JSON.parse(response.responseText);
+            }
+            if (result && result.moreInfomation){
+                messages.alertError(result.moreInfomation);
+            } else {
+                messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
+            }
+            $('#btn-create-asset').removeAttr('disabled');
             $('.fa-spinner').parent().remove();
         }
     });

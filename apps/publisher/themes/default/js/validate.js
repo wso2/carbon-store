@@ -51,11 +51,13 @@ validator.validate = function (element, callback) {
         if ($(element).next().hasClass('error')) {
             $(element).next().html(errorMessage);
         } else {
+            $(element).addClass("error-field");
             $(element).after('<div class="error">' + errorMessage + '</div>');
         }
         return false;
     } else {
         if ($(element).next().hasClass('error')) {
+            $(element).removeClass("error-field");
             $(element).next().remove();
         }
         return true;
@@ -65,6 +67,7 @@ validator.removeValidationEvents = function(form){
     var $form = typeof form == "string" ? $('#' + form) : form;
     $form.off('focus blur keyup change', '**');
     $('.error').remove();
+    $('.error-field').removeClass("error-field");
 };
 validator.initValidationEvents = function (form, submitCallback) {
     var $form = typeof form == "string" ? $('#' + form) : form;

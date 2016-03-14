@@ -14,7 +14,7 @@ $(function() {
 
     $('#btn-create-asset').on('click', function() {
 
-        console.log(formManager.getData());
+        //console.log(formManager.getData());
         //Perform validations
         var report = formManager.validate();
 
@@ -71,7 +71,7 @@ $(function() {
     var postData = function(formData) {
         var type = $('#meta-asset-type').val();
 
-        console.log(JSON.stringify(formData));
+        //console.log(JSON.stringify(formData));
 
         $.ajax({
             url: '/publisher/asset/' + type,
@@ -148,7 +148,7 @@ $(function() {
             $('#permissionsTable > tbody').append(permission);
         },
         onDelete: function(role) {
-            console.log()
+            //console.log()
             $('#permissionsTable tr[data-role="' + role.id + '"]').remove();
         }
     });
