@@ -546,8 +546,9 @@ var asset = {};
                 //Note: This prevents us from searching props
                 //with a underscore (_)
                 key = key.replace('_',':');
+                var queryWithQuots = value.match(/"(.*?)"/g);
                 //Check if wildcard search is enabled
-                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1)) {
+                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots) {
                     value = '*'+value+'*';
                 }
                 queryString.push(key + '=' + encodeURIComponent(value));
