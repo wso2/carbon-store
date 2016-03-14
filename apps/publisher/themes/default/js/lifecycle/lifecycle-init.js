@@ -349,6 +349,7 @@ $(function() {
             renderLCActions();
             renderChecklistItems();
             renderDeleteActions();
+            $(id(config(constants.CONTAINER_LC_NOTIFICATIONS_AREA))).html('');
         }
     });
     //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
