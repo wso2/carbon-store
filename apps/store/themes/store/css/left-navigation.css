@@ -378,7 +378,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     padding-bottom: 15px;
     background-color: #FDFDFD;
     padding-top: 10px;
-
+    float:left;
 }
 
 .tag-content > a > span {
@@ -386,6 +386,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     line-height: 19px;
     font-weight: 100;
     margin-right: 5px;
+    margin-bottom: 5px;
     cursor: pointer;
     border: 1px solid #E4E3E3;
     font-size: 12px;
