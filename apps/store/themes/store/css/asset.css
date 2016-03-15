@@ -325,6 +325,6 @@ a.disabled-button,a.disabled-button:hover {
 .border-bottom{border-bottom: 1px solid #282828;}
 
 a:focus, a:hover {
-    /*color: #fff;*/
+    color: #fff;
     text-decoration: none;
 }
