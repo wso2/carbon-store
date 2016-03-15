@@ -48,7 +48,15 @@ $(function () {
         minimumInputLength: 2,
         templateSelection: function (data) {
             return data.text;
+        },
+        createTag:function(term){
+            //Prevent tags with spaces by replacing it with a dash (-)
+            var modifiedTerm = term.term.trim();
+            var formatted = modifiedTerm.split(' ').join('-');
+            return {
+                id:formatted,
+                text:formatted
+            };
         }
-
     })
 });
