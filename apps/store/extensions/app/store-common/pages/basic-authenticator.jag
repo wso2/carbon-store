@@ -28,6 +28,7 @@
     var username = params.username;
     var password = params.password;
     var failed;
+    var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
     /**
      * Triggers carbon level tenant load events
      */
@@ -83,7 +84,10 @@
 
 
     var usr = carbon.server.tenantUser(username);
-    var modifiedUsername = storeAPI.user.removeTenantDomainFromUsername(username);
+    var modifiedUsername = username;
+    if (usr.tenantId != MultitenantConstants.SUPER_TENANT_ID) {
+        modifiedUsername = storeAPI.user.removeTenantDomainFromUsername(username);
+    }
     var hasPublisherLoginPermission = false;
 
     //STEP 2 : Iniate loading of tenant resources

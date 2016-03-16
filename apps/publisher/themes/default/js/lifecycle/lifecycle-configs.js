@@ -27,6 +27,7 @@ LifecycleAPI.configs({
 	"apiUpdateChecklist":"/update-checklist",
 	"apiFetchHistory":"/lifecycle-history",
 	"msgCannotChangeState":"You do not have permission to change states",
+	"msgNoTraversableStates":"No traversable states for the selected lifecycle",
 	"msgStateChangedSuccess":"State updated successfully",
 	"msgStateChangeError":"State could not be updated. Please contact your administrator.",
 	"msgChecklistUpdateSuccess":"Checklist updated successfully",
