@@ -127,7 +127,6 @@ var ui = {};
      * @return {String}           The title of the provided page
      */
     var getAssetPageTitle = function(session, type, pageName, tenantId) {
-        var tenantId = tenantDetails.tenantId;
         var pages = asset.getAssetPageEndpoints(session, type, tenantId);
         var page;
         for (var index = 0; index < pages.length; index++) {
@@ -171,7 +170,7 @@ var ui = {};
         if (user) {
             return buildUserPage(session, request, user);
         } else {
-            return buildAnonPage(session, request);
+            return buildAnonPage(session, request, tenantId);
         }
     };
     var buildUserPage = function(session, request, user) {
@@ -180,7 +179,7 @@ var ui = {};
         var configs = userMod.configs(tenantId);
         var tenantId = user.tenantId;
         var configs = userMod.configs(tenantId);
-        var pageDetails = getPageName(request, session);
+        var pageDetails = getPageName(request, session, tenantId);
         var landingPage = app.getLandingPage(tenantId);
         var applicationTitle = app.getApplicationTitle(tenantId);
         var page = genericPage({
