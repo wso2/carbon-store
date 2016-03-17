@@ -171,7 +171,8 @@ var pageDecorators = {};
         var sortable = [
             {field:"overview_name",label:"Name"},
             {field:"overview_version",label:"Version"},
-            {field:"overview_provider",label:"Provider"},
+            // fix for REGISTRY-3450
+           // {field:"overview_provider",label:"Provider"},
             {field:"createdDate",label:"Date/Time"}];
         var sortingList = [];
         var sortingListSelected = {};
