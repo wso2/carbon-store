@@ -63,6 +63,7 @@ mod.server.init(configs);
 mod.user.init(configs);
 var rxt=require('rxt');
 var lifecycle=require('lifecycle');
+var metricsAPI = require('carbon-metrics');
 rxt.core.init();
 rxt.resources.init();
 var context=caramel.configs().context;
@@ -74,6 +75,7 @@ store.init(configs);
 rxt.server.init(configs);
 
 rxt.permissions.init();
+metricsAPI.init(configs);
 
 /*
 var url='https://<HOST>:<PORT>/admin',
