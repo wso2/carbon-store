@@ -69,9 +69,6 @@ var parseUsedDefinedQuery = function(input) {
         return q;
     }
 
-    //Remove trailing whitespaces if any
-    input = input.trim();
-    input = replaceAll(input,"(\\s)*:(\\s)*", ":");
     //Use case #2: The user has entered a complex query
     //and one or more properties in the query could values
     //with spaces
@@ -121,6 +118,7 @@ var parseUsedDefinedQuery = function(input) {
                 q = parseUsedDefinedQuery(searchQuery);
                 q = JSON.stringify(q);
                 q = q.replace('{','').replace('}', '');
+                q = encodeURIComponent(q);
                 output =q;
                 //output = '"name":"'+searchQuery+'"';
             }
