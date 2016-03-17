@@ -72,7 +72,7 @@ require('/modules/store.js').exec(function (ctx) {
     }
     var qtemp = ctx.request.getParameter('q') || '';
     var searchQuery = utilsRequest.formatSearchQuery(qtemp);
-    output.searchQuery = searchQuery||'';
+    output.searchQuery = decodeURIComponent(searchQuery)||'';
 
     caramel.render(output);
     //print(page);
