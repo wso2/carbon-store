@@ -17,7 +17,6 @@ var metrics = {};
 (function(metrics) {
     var log = new Log('carbon.metrics');
     var MetricManager = org.wso2.carbon.metrics.manager.MetricManager;
-    var Level = org.wso2.carbon.metrics.manager.Level;
     var WSO2_CONSTANT_METRIC_ENABLED = 'wso2.metrics.enabled';
     var UUID = Packages.java.util.UUID;
     /**
@@ -27,9 +26,8 @@ var metrics = {};
      * @return {Boolean} [description]
      */
     var isEnabled = function() {
-        if (WSO2_METRICS_ENABLED === undefined) {
+        if (typeof WSO2_METRICS_ENABLED === 'undefined') {
             WSO2_METRICS_ENABLED = application.get(WSO2_CONSTANT_METRIC_ENABLED);
-            WSO2_METRICS_ENABLED = WSO2_METRICS_ENABLED === null ? false : WSO2_METRICS_ENABLED;
         }
         return WSO2_METRICS_ENABLED;
     };
@@ -37,24 +35,25 @@ var metrics = {};
         return UUID.randomUUID().toString();
     };
     var getTransactionID = function() {
-        if (WSO2_METRICSID === undefined) {
+        if (typeof WSO2_METRICSID === 'undefined') {
             WSO2_METRICSID = uuid();
         }
         return WSO2_METRICSID;
     };
     metrics.start = function() {
-        if (isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
-        log.info('metrics:start [TID ' + getTransactionID() + ']');
-        arguments.slice(0,0,getTransactionID());
-        this.startTimer.call(this,arguments);
+        //log.info('metrics:start TID ' + getTransactionID() + ']');
+        //log.info('DEBUG: metrics start arguments = ' + stringify(arguments));
+        var args = Array.prototype.slice.call(arguments);
+        this.startTimer.call(this,getTransactionID(),args);
     };
     metrics.stop = function() {
-        if (isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
-        log.info('metrics:stop [TID ' + getTransactionID() + ']');
+        //log.info('metrics:stop [TID ' + getTransactionID() + ']');
         this.stopTimer();
     };
     metrics.init = function(options) {

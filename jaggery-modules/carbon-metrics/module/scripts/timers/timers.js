@@ -15,39 +15,68 @@
  */
 (function(metrics) {
     var MetricManager = org.wso2.carbon.metrics.manager.MetricManager;
+    var Level = org.wso2.carbon.metrics.manager.Level;
+    var context ;
     var pushTimer = function(timer) {
-        if (WSO2_METRICS_TIMERS === undefined) {
+        if (typeof WSO2_METRICS_TIMERS === 'undefined') {
             WSO2_METRICS_TIMERS = [];
         }
         WSO2_METRICS_TIMERS.push(timer);
         return;
     };
     var popTimer = function() {
-        if (WSO2_METRICS_TIMERS === undefined) {
+        if (typeof WSO2_METRICS_TIMERS === 'undefined') {
             return null; //Do nothing since there are no timers
         }
         return WSO2_METRICS_TIMERS.pop();
     };
-    var name = function(args) {
-        return args.join('.');
+    var getlastInvocation = function(){
+       if(typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined'){
+           return '';
+       }
+        return WSO2_METRICS_LAST_INVOCATION.pop();
     };
-    metrics.startTimer = function() {
+    var setLastInvocation = function(name){
+        if(typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined'){
+            WSO2_METRICS_LAST_INVOCATION = [];
+        }
+        WSO2_METRICS_LAST_INVOCATION.push(name);
+    };
+    var lastInvocation = function(name){
+        if(name){
+            setLastInvocation(name);
+        } else{
+            return getlastInvocation();
+        }
+    };
+    var name = function(tid,names) {
+        //log.info("DEBUG: tid = "+stringify(tid));
+        var last = lastInvocation();
+        if(last){
+            return last + '.' + names.join('.');
+        }
+        last = tid+'.'+names.join('.');
+        lastInvocation(last);
+        //log.info("DEBUG: name function in timers: "+last);
+        return last;
+    };
+    metrics.startTimer = function(tid,names) {
         try {
-            var timerName = name(arguments);
-            var timer = MetricManager.timer(timerName);
-            log.info('[wso2 metrics] created timer ' + timerName);
-            timer.start();
-            log.info('[wso2 metrics] started timer ' + timerName);
-            pushTimer(timer);
+            var timerName = name(tid,names);
+            var timer = MetricManager.timer(Level.INFO,timerName);
+            //log.info('[wso2 metrics] created timer ' + timerName);
+            context = timer.start();
+            //log.info('[wso2 metrics] started timer ' + timerName);
+            pushTimer(context);
         } catch (e) {
             log.error('wso2 metrics failed when creating timer ', e);
         }
     };
     metrics.stopTimer = function() {
         try {
-            var timer = popTimer();
-            if (timer) {
-                timer.stop();
+            var context = popTimer();
+            if (context) {
+                context.stop();
             }
         } catch (e) {
             log.error('wso2 metrics framework has failed when stopping timer', e);
