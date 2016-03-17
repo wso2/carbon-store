@@ -546,11 +546,13 @@ var asset = {};
                 //Note: This prevents us from searching props
                 //with a underscore (_)
                 key = key.replace('_',':');
+                var queryWithQuots = value.match(/"(.*?)"/g);
+                value = decodeURIComponent(value);
                 //Check if wildcard search is enabled
-                if(wildcard && key != 'tags'){
+                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots) {
                     value = '*'+value+'*';
                 }
-                queryString.push(key+'='+value);
+                queryString.push(key + '=' + encodeURIComponent(value));
             }
         }
         return queryString.join('&');
