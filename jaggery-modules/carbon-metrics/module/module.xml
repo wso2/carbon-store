@@ -18,6 +18,10 @@
 
 <module name="carbon-metrics" xmlns="http://wso2.org/projects/jaggery/module.xml">
     <script>
+      <name>timers</name>
+      <path>scripts/timers/timers.js</path>
+    </script>
+    <script>
         <name>core</name>
         <path>scripts/core/core.js</path>
     </script>
