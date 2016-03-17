@@ -48,7 +48,9 @@ require('/modules/store.js').exec(function(ctx) {
         //Support for cross tenant views
         context = tenantResources.context;
         am = tenantResources.am;
-        var page = ui.buildPage(ctx.session, ctx.request);
+        var tenantDetails = tenantApi.createTenantDetails(request, session);
+        var tenantId = tenantDetails.tenantId;
+        var page = ui.buildPage(ctx.session, ctx.request, tenantId);
         var assets = null;
         //The asset retrieval may fail when attempting to obtain an asset which is not accessible
         try {

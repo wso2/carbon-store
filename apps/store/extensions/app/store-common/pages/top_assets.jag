@@ -28,7 +28,9 @@ require('/modules/store.js').exec(function (ctx) {
     var tenantApi = require('/modules/tenant-api.js').api;
     var userApi = require('/modules/user-api.js').api;
     var utilsRequest = require('utils').request;
-    var page = ui.buildPage(ctx.session, ctx.request);
+    var tenantDetails = tenantApi.createTenantDetails(request, session);
+    var tenantId = tenantDetails.tenantId;
+    var page = ui.buildPage(ctx.session, ctx.request, tenantId);
     var appManager;
     var log = new Log();
 

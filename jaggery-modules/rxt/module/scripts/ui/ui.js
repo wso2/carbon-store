@@ -123,13 +123,17 @@ var ui = {};
     };
     /**
      * Returns the title of a given asset page
+     * @param  {Object} request  Jaggery request object
      * @param  {Object} session  Jaggery session object
      * @param  {String} type      The asset type
      * @param  {String} pageName  The name of the page
      * @return {String}           The title of the provided page
      */
     var getAssetPageTitle = function(session, type, pageName) {
-        var pages = asset.getAssetPageEndpoints(session, type);
+        // var tenantAPI = require('/modules/tenant-api.js').api;
+        // var tenantDetails = tenantAPI.createTenantDetails(request, session);
+        var tenantId = tenantDetails.tenantId;
+        var pages = asset.getAssetPageEndpoints(session, type, tenantId);
         var page;
         for (var index = 0; index < pages.length; index++) {
             page = pages[index];
