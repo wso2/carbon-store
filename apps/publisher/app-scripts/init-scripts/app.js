@@ -39,6 +39,8 @@ var pubConfig = require('/config/publisher.js').config();
 var mod = require('store');
 var rxt=require('rxt');
 var lifecycle=require('lifecycle');
+var metricsAPI = require('carbon-metrics');
+
 
 caramel.configs({
     context: '/publisher',
@@ -64,7 +66,7 @@ publisher.init(pubConfig);
 rxt.server.init(pubConfig);
 
 rxt.permissions.init();
-
+metricsAPI.init(pubConfig);
 
 
 //var SUPER_TENANT_ID=-1234;
