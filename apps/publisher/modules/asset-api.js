@@ -102,7 +102,7 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('User has not provided any resources such any new images or files when updating the asset with id ' + asset.id);
             }
-            return;
+            return false;
         }
         for (var index in resourceFields) {
             key = resourceFields[index];
@@ -119,6 +119,7 @@ var result;
                 asset.attributes[key] = resourceName;
             }
         }
+        return true;
     };
     /**
      * The function get current asset in the storage
@@ -345,8 +346,9 @@ var result;
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
-            putInStorage(asset, am, user.tenantId); //save to the storage
-            am.update(asset);
+            if (putInStorage(createdAsset, am, user.tenantId)) { //save to the storage
+                am.update(createdAsset);
+            }
         } catch (e) {
             if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
                 throw e;
@@ -401,7 +403,7 @@ var result;
         if(req.getContentType() === "application/json"){
             assetReq = processRequestBody(req, assetReq);
         }
-        
+
         //assetReq = validateEditableFeilds(options.type, assetReq);
 
         var asset = null;

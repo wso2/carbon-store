@@ -76,6 +76,7 @@ var LifecycleUtils = {};
     constants.NOTIFICATION_WARN = 'warn';
     constants.NOTIFICATION_SUCCESS = 'success';
     constants.MSG_WARN_CANNOT_CHANGE_STATE = 'msgCannotChangeState';
+    constants.MSG_WARN_NO_TRAVERSABLE_STATE = 'msgNoTraversableStates';
     constants.MSG_SUCCESS_STATE_CHANGE = 'msgStateChangedSuccess';
     constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
