@@ -43,7 +43,7 @@ var metrics = {};
         return WSO2_METRICSID;
     };
     metrics.start = function() {
-        if (isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
         log.info('metrics:start [TID ' + getTransactionID() + ']');
@@ -51,7 +51,7 @@ var metrics = {};
         this.startTimer.call(this,arguments);
     };
     metrics.stop = function() {
-        if (isEnabled()) {
+        if (!isEnabled()) {
             return;
         }
         log.info('metrics:stop [TID ' + getTransactionID() + ']');
