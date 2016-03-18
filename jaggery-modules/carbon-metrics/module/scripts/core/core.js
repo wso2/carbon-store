@@ -83,7 +83,6 @@ var metrics = {};
         }
         var template = ['[carbon-metrics] [TID: ',getTransactionID(),' ] '].join(' ');
         var userArgs = Array.prototype.slice.call(arguments);
-        template.merge(userArgs);
         log.info(template+userArgs.join(' '));
     };
 }(metrics));
