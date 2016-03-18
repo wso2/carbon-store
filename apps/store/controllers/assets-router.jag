@@ -74,14 +74,15 @@ var handleApiEndpoint = function (request, session, uriParams) {
 
 var handlePageEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
-    if(!validateType(type)){
+    var tenantId = getTenantId(request, session);
+    if (!validateType(type, tenantId)){
         response.sendError(404, 'Unabled to locate a active endpoint for the type: ' + type);
         return;
     }
     var page = getPage(uriParams.suffix);
     var server = require('store').server;
     var user = server.current(session);
-    var endPoints = asset.getAssetPageEndpoints(session, type);
+    var endPoints = asset.getAssetPageEndpoints(session, type, tenantId);
     var endpoint;
     var endpointDetails;
     var found;
@@ -94,8 +95,7 @@ var handlePageEndpoint = function (request, session, uriParams) {
     }
     var username = user? user.username:null;
     var carbon = require('carbon');
-    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
-    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+    
     var isAuthorized = rxt.permissions.hasAssetPagePermission(type,page,tenantId,username);
     if(!isAuthorized){
         log.error('user '+username+' does not have permission to access the page '+page);
@@ -121,17 +121,27 @@ var server = require('store').server;
 var user = server.current(session);
 
 //Check if asset type is enabled
-var validateType = function (type){
-    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
-    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
+var validateType = function (type, tenantId){
     var availableTypes = rxt.app.getUIActivatedAssets(tenantId);
-
-            for (var index in availableTypes) {
-                if(availableTypes[index] === type){
-                    return true;
-                }
-            }
+    for (var index in availableTypes) {
+        if(availableTypes[index] === type){
+            return true;
+        }
+    }
     return false;
+};
+
+/**
+ * Returns the tenantId for the request using tenantApi
+ * @param  {Object} request Request object
+ * @param  {Object} session Session object
+ * @return {[type]}         Tenant id for the request
+ */
+var getTenantId = function(request, session) {
+    var tenantAPI = require('/modules/tenant-api.js').api;
+    var tenantDetails = tenantAPI.createTenantDetails(request, session);
+    var tenantId = tenantDetails.tenantId;
+    return tenantId;
 };
 
 //Check if options have been provided
