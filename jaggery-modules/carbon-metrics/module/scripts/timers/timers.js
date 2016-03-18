@@ -13,57 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-(function(metrics) {
+(function (metrics) {
     var MetricManager = org.wso2.carbon.metrics.manager.MetricManager;
     var Level = org.wso2.carbon.metrics.manager.Level;
-    var context ;
-    var pushTimer = function(timer) {
+    var context;
+    var pushTimer = function (timer) {
         if (typeof WSO2_METRICS_TIMERS === 'undefined') {
             WSO2_METRICS_TIMERS = [];
         }
         WSO2_METRICS_TIMERS.push(timer);
-        return;
     };
-    var popTimer = function() {
+    var popTimer = function () {
         if (typeof WSO2_METRICS_TIMERS === 'undefined') {
             return null; //Do nothing since there are no timers
         }
         return WSO2_METRICS_TIMERS.pop();
     };
-    var getlastInvocation = function(){
-       if(typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined'){
-           return '';
-       }
+    var getlastInvocation = function () {
+        if (typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined') {
+            return '';
+        }
         return WSO2_METRICS_LAST_INVOCATION.pop();
     };
-    var setLastInvocation = function(name){
-        if(typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined'){
+    var setLastInvocation = function (name) {
+        if (typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined') {
             WSO2_METRICS_LAST_INVOCATION = [];
         }
+        log.info("DEBUG: setLastInvocation : WSO2_METRICS_LAST_INVOCATION " + stringify(WSO2_METRICS_LAST_INVOCATION) + " Name :" + name);
         WSO2_METRICS_LAST_INVOCATION.push(name);
     };
-    var lastInvocation = function(name){
-        if(name){
+    var lastInvocation = function (name) {
+        if (name) {
             setLastInvocation(name);
-        } else{
+        } else {
             return getlastInvocation();
         }
     };
-    var name = function(tid,names) {
-        //log.info("DEBUG: tid = "+stringify(tid));
+    var name = function (names) {
+        log.info("DEBUG: name function names: " + names);
         var last = lastInvocation();
-        if(last){
-            return last + '.' + names.join('.');
-        }
-        last = tid+'.'+names.join('.');
+        last = last ? last + '.' + names.join('.') : names.join('.');
+        log.info("DEBUG: name function last: " + last);
         lastInvocation(last);
-        //log.info("DEBUG: name function in timers: "+last);
         return last;
     };
-    metrics.startTimer = function(tid,names) {
+    metrics.startTimer = function (names) {
         try {
-            var timerName = name(tid,names);
-            var timer = MetricManager.timer(Level.INFO,timerName);
+            var timerName = name(names);
+            var timer = MetricManager.timer(Level.INFO, timerName);
             //log.info('[wso2 metrics] created timer ' + timerName);
             context = timer.start();
             //log.info('[wso2 metrics] started timer ' + timerName);
@@ -72,7 +69,7 @@
             log.error('wso2 metrics failed when creating timer ', e);
         }
     };
-    metrics.stopTimer = function() {
+    metrics.stopTimer = function () {
         try {
             var context = popTimer();
             if (context) {
