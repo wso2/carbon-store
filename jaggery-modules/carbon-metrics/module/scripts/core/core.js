@@ -18,11 +18,13 @@ var metrics = {};
     var log = new Log('carbon.metrics');
     var MetricManager = org.wso2.carbon.metrics.manager.MetricManager;
     var WSO2_CONSTANT_METRIC_ENABLED = 'wso2.metrics.enabled';
+    var WSO2_CONSTANT_METRIC_TRACE_LOGS_ENABLED = 'wso2.metrics.trace.logs.enabled';
     var UUID = Packages.java.util.UUID;
 
     metrics.init = function (options) {
         var metricsConfiguration = options.metrics || {};
         application.put(WSO2_CONSTANT_METRIC_ENABLED, metricsConfiguration.enabled || false);
+        application.put(WSO2_CONSTANT_METRIC_TRACE_LOGS_ENABLED, metricsConfiguration.enableTraceLogs || false);
     };
     /**
      * Checks whether metrics has been enabled by first checking for a global
@@ -35,6 +37,12 @@ var metrics = {};
             WSO2_METRICS_ENABLED = application.get(WSO2_CONSTANT_METRIC_ENABLED);
         }
         return WSO2_METRICS_ENABLED;
+    };
+    var isTraceLogsEnabled = function(){
+        if(typeof WSO2_METRIC_TRACE_LOGS_ENABLED === 'undefined'){
+            WSO2_METRIC_TRACE_LOGS_ENABLED = application.get(WSO2_CONSTANT_METRIC_TRACE_LOGS_ENABLED);
+        }
+        return WSO2_METRIC_TRACE_LOGS_ENABLED;
     };
     var uuid = function () {
         return UUID.randomUUID().toString();
@@ -65,5 +73,17 @@ var metrics = {};
         }
         //log.info('metrics:stop');
         this.stopTimer();
+    };
+    metrics.isTraceLogsEnabled = function(){
+        return isTraceLogsEnabled();
+    };
+    metrics.trace = function(){
+        if(!isTraceLogsEnabled()){
+            return;
+        }
+        var template = ['[carbon-metrics] [TID: ',getTransactionID(),' ] '].join(' ');
+        var userArgs = Array.prototype.slice.call(arguments);
+        template.merge(userArgs);
+        log.info(template+userArgs.join(' '));
     };
 }(metrics));
