@@ -39,7 +39,7 @@ var pubConfig = require('/config/publisher.js').config();
 var mod = require('store');
 var rxt=require('rxt');
 var lifecycle=require('lifecycle');
-var metricsAPI = require('carbon-metrics');
+var metricsAPI = require('carbon-metrics').metrics;
 
 
 caramel.configs({

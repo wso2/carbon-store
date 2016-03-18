@@ -23,6 +23,7 @@ var result;
 (function (api) {
     var utils = require('utils');
     var rxtModule = require('rxt');
+    var metrics = require('carbon-metrics').metrics;
     var log = new Log('asset_api');
     var exceptionModule = utils.exception;
     var constants = rxtModule.constants;
@@ -314,6 +315,7 @@ var result;
      * @return The created asset or null if failed to create the asset
      */
     api.create = function (options, req, res, session) {
+        metrics.start("asset-api","create");
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var assetReq = req.getAllParameters('UTF-8'); //get asset attributes from the request
@@ -355,6 +357,8 @@ var result;
             }
             log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
             return null;
+        } finally {
+            metrics.stop();
         }
         //Attempt to apply tags
         if (tags.length > 0) {
@@ -380,6 +384,7 @@ var result;
                 log.warn('Failed to invoke default action as the asset could not be synched.')
             }
         }
+        metrics.stop();
         return asset;
     };
     /**
@@ -391,6 +396,7 @@ var result;
      * @return updated-asset
      */
     api.update = function (options, req, res, session) {
+        metrics.start("asset-api","update");
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var rxtManager = getRxtManager(session,options.type);
@@ -426,6 +432,7 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug(e);
             }
+            metrics.stop();
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.NOT_FOUND);
         }
         if (original) {
@@ -448,9 +455,11 @@ var result;
                 if (log.isDebugEnabled()) {
                     log.debug('Failed to update the asset ' + stringify(asset));
                 }
+                metrics.stop();
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
             }
         }
+        metrics.stop();
         return result || asset;
     };
     /**
@@ -519,6 +528,7 @@ var result;
      * @param session sessionID
      */
     api.search = function (options, req, res, session) {
+        metrics.start("asset-api","search");
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         var sort = (request.getParameter("sort") || '');
@@ -566,6 +576,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while searching assets as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -577,6 +589,7 @@ var result;
      * @param session sessionID
      */
     api.advanceSearch = function (options, req, res, session) {
+        metrics.start("asset-api","advanceSearch");
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         var sort = (request.getParameter("sort") || '');
@@ -631,6 +644,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while searching assets as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -643,6 +658,7 @@ var result;
      * @return {[type]}         [description]
      */
     api.genericAdvanceSearch = function (options, req, res, session) {
+        metrics.start("asset-api","genericAdvanceSearch");
         var assetAPI = rxtModule.asset;
         var sort = (request.getParameter("sort") || '');
         var paging = rxtModule.constants.DEFAULT_ASSET_PAGIN;
@@ -685,6 +701,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while searching assets as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -727,6 +745,7 @@ var result;
      * @return The retrieved asset or null if an asset not found
      */
     api.get = function (options, req, res, session) {
+        metrics.start("asset-api","get");
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         try {
@@ -751,6 +770,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while retrieving asset as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };

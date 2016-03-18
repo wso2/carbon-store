@@ -81,9 +81,8 @@ var metrics = {};
         if(!isTraceLogsEnabled()){
             return;
         }
-        var template = ['[carbon-metrics] [TID: ',getTransactionID(),' ] '].join(' ');
+        var template = ['[TID:',getTransactionID(),']'].join(' ');
         var userArgs = Array.prototype.slice.call(arguments);
-        template.merge(userArgs);
         log.info(template+userArgs.join(' '));
     };
 }(metrics));

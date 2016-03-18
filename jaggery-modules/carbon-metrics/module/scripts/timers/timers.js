@@ -48,10 +48,7 @@
         }
     };
     var name = function(names) {
-        var last = lastInvocation();
-        last = last ? last + '.' + names.join('.') : names.join('.');
-        lastInvocation(last);
-        return last;
+        return names.join('.');
     };
     metrics.startTimer = function(names) {
         try {
@@ -72,7 +69,7 @@
             var time;
             if (entry) {
                 time = entry.context.stop();
-                metrics.trace(entry.name,' time ms:',time);
+                metrics.trace(entry.name,' time ms:',time/1000000.0);
             }
         } catch (e) {
             log.error('carbon-metrics framework has failed when stopping timer', e);
