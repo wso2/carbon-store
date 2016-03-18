@@ -13,70 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-(function (metrics) {
+(function(metrics) {
     var MetricManager = org.wso2.carbon.metrics.manager.MetricManager;
     var Level = org.wso2.carbon.metrics.manager.Level;
-    var context;
-    var pushTimer = function (timer) {
+    var pushContext = function(timer) {
         if (typeof WSO2_METRICS_TIMERS === 'undefined') {
             WSO2_METRICS_TIMERS = [];
         }
         WSO2_METRICS_TIMERS.push(timer);
     };
-    var popTimer = function () {
+    var popContext = function() {
         if (typeof WSO2_METRICS_TIMERS === 'undefined') {
             return null; //Do nothing since there are no timers
         }
         return WSO2_METRICS_TIMERS.pop();
     };
-    var getlastInvocation = function () {
+    var getlastInvocation = function() {
         if (typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined') {
             return '';
         }
         return WSO2_METRICS_LAST_INVOCATION.pop();
     };
-    var setLastInvocation = function (name) {
+    var setLastInvocation = function(name) {
         if (typeof(WSO2_METRICS_LAST_INVOCATION) === 'undefined') {
             WSO2_METRICS_LAST_INVOCATION = [];
         }
-        log.info("DEBUG: setLastInvocation : WSO2_METRICS_LAST_INVOCATION " + stringify(WSO2_METRICS_LAST_INVOCATION) + " Name :" + name);
         WSO2_METRICS_LAST_INVOCATION.push(name);
     };
-    var lastInvocation = function (name) {
+    var lastInvocation = function(name) {
         if (name) {
             setLastInvocation(name);
         } else {
             return getlastInvocation();
         }
     };
-    var name = function (names) {
-        log.info("DEBUG: name function names: " + names);
+    var name = function(names) {
         var last = lastInvocation();
         last = last ? last + '.' + names.join('.') : names.join('.');
-        log.info("DEBUG: name function last: " + last);
         lastInvocation(last);
         return last;
     };
-    metrics.startTimer = function (names) {
+    metrics.startTimer = function(names) {
         try {
             var timerName = name(names);
             var timer = MetricManager.timer(Level.INFO, timerName);
-            //log.info('[wso2 metrics] created timer ' + timerName);
-            context = timer.start();
-            //log.info('[wso2 metrics] started timer ' + timerName);
-            pushTimer(context);
+            var context = timer.start();
+            var entry = {};
+            entry.context = context;
+            entry.name = timerName;
+            pushContext(entry);
         } catch (e) {
-            log.error('wso2 metrics failed when creating timer ', e);
+            log.error('carbon-metrics failed when creating timer ', e);
         }
     };
-    metrics.stopTimer = function () {
+    metrics.stopTimer = function() {
         try {
-            var context = popTimer();
-            if (context) {
-                context.stop();
+            var entry = popContext();
+            var time;
+            if (entry) {
+                time = entry.context.stop();
+                metrics.trace(entry.name,' time ms:',time);
             }
         } catch (e) {
-            log.error('wso2 metrics framework has failed when stopping timer', e);
+            log.error('carbon-metrics framework has failed when stopping timer', e);
         }
     };
 }(metrics));
