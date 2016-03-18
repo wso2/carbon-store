@@ -14,50 +14,56 @@
  * limitations under the License.
  */
 var metrics = {};
-(function(metrics) {
+(function (metrics) {
     var log = new Log('carbon.metrics');
     var MetricManager = org.wso2.carbon.metrics.manager.MetricManager;
     var WSO2_CONSTANT_METRIC_ENABLED = 'wso2.metrics.enabled';
     var UUID = Packages.java.util.UUID;
+
+    metrics.init = function (options) {
+        var metricsConfiguration = options.metrics || {};
+        application.put(WSO2_CONSTANT_METRIC_ENABLED, metricsConfiguration.enabled || false);
+    };
     /**
      * Checks whether metrics has been enabled by first checking for a global
      * variable and if not present tries to obtain the enable state from the application
      * context
      * @return {Boolean} [description]
      */
-    var isEnabled = function() {
+    var isEnabled = function () {
         if (typeof WSO2_METRICS_ENABLED === 'undefined') {
             WSO2_METRICS_ENABLED = application.get(WSO2_CONSTANT_METRIC_ENABLED);
         }
         return WSO2_METRICS_ENABLED;
     };
-    var uuid = function() {
+    var uuid = function () {
         return UUID.randomUUID().toString();
     };
-    var getTransactionID = function() {
+
+    /**
+     * :Depricated No need to add unique ID for every request, since we do not consider taking measurements on
+     * individual request.
+     * @returns {String} WSO2_METRICSID
+     */
+    var getTransactionID = function () {
         if (typeof WSO2_METRICSID === 'undefined') {
             WSO2_METRICSID = uuid();
         }
         return WSO2_METRICSID;
     };
-    metrics.start = function() {
+    metrics.start = function () {
         if (!isEnabled()) {
             return;
         }
-        //log.info('metrics:start TID ' + getTransactionID() + ']');
-        //log.info('DEBUG: metrics start arguments = ' + stringify(arguments));
         var args = Array.prototype.slice.call(arguments);
-        this.startTimer.call(this,getTransactionID(),args);
+        //log.info('metrics:start');
+        this.startTimer.call(this, args);
     };
-    metrics.stop = function() {
+    metrics.stop = function () {
         if (!isEnabled()) {
             return;
         }
-        //log.info('metrics:stop [TID ' + getTransactionID() + ']');
+        //log.info('metrics:stop');
         this.stopTimer();
-    };
-    metrics.init = function(options) {
-        var metricsConfiguration = options.metrics || {};
-        application.put(WSO2_CONSTANT_METRIC_ENABLED, metricsConfiguration.enabled || false);
     };
 }(metrics));
