@@ -129,6 +129,10 @@
                                     org.wso2.store.modules.utils:${carbon.store.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
+                                    org.wso2.store.modules.carbon-metrics:${carbon.store.version}
+                                </importFeatureDef>
+
+                                <importFeatureDef>
                                     org.wso2.carbon.registry.associations.dependencies.server:${carbon.registry.version}
                                 </importFeatureDef>
                                 <importFeatureDef>

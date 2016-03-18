@@ -42,6 +42,7 @@ var asset = {};
         "#e67e22", "#d35400", "#e74c3c", "#c0392b"
     ];
     var utils = require('utils');
+    var metrics = require('carbon-metrics').metrics;
     var exceptionModule = utils.exception;
 
     var getField = function(attributes, tableName, fieldName) {
@@ -260,6 +261,7 @@ var asset = {};
      * @lends AssetManager.prototype
      */
     AssetManager.prototype.create = function(options) {
+        metrics.start(this.constructor.name,'create');
         validateRequiredFeilds(this.type, options , this.rxtManager);
         var isDefault = false;
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
@@ -283,6 +285,7 @@ var asset = {};
             if (log.isDebugEnabled()) {
                 log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
             }
+            metrics.stop();
             return;
         }
         asset = this.get(id);
@@ -294,10 +297,12 @@ var asset = {};
         }
         if (!id) {
             log.error('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
+            metrics.stop();
             return;
         }
     };
     AssetManager.prototype.postCreate = function(asset,ctx){
+        metrics.start(this.constructor.name,'postCreate');
         if (log.isDebugEnabled()) {
             log.debug('Performing post create operations for ' + stringify(asset));
         }
@@ -310,6 +315,7 @@ var asset = {};
         var actions = [];
         if(!path) {
             log.error('Unable to finish post create actions as the asset path was not located.Subsequent CRUD operations may fail for asset '+asset.id);
+            metrics.stop();
             return false;
         }
         //Allow all actions for the user's role
@@ -327,6 +333,7 @@ var asset = {};
         if (log.isDebugEnabled()) {
             log.debug('Finished post create operations for ' + path);
         }
+        metrics.stop();
         return true;
     };
     /**
@@ -362,6 +369,7 @@ var asset = {};
      * @param  {Object} options A JSON object of the asset instance to be updated
      */
     AssetManager.prototype.update = function(options) {
+        metrics.start(this.constructor.name,'update');
         var isDefault = false;
         if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
             isDefault = true;
@@ -373,11 +381,13 @@ var asset = {};
         var asset = this.am.get(options.id);
         if (!this.rxtManager.isGroupingEnabled(this.type)) {
             log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+            metrics.stop();
             return;
         }
         if (isDefault) {
             this.setAsDefaultAsset(asset);
         }
+        metrics.stop();
     };
     /**
      * Removes the asset instance with the provided id
@@ -393,7 +403,9 @@ var asset = {};
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
+        metrics.start(this.constructor.name,'remove');
         this.am.remove(id);
+        metrics.stop();
     };
     /**
      * Updates the provided asset with the latest values in the registry.If the asset is not succsessfully
@@ -463,10 +475,14 @@ var asset = {};
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
         try{
+            metrics.start(this.constructor.name,'list');
             assets = this.am.list(paging);
             addAssetsMetaData(assets, this);
         } catch (e){
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters');
+        }
+        finally {
+            metrics.stop();
         }
         return assets || [];
     };
@@ -482,8 +498,10 @@ var asset = {};
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
+        metrics.start(this.constructor.name,'get');
         var asset = this.am.get(id);
         addAssetsMetaData(asset, this);
+        metrics.stop();
         return asset;
     };
     /**
@@ -508,6 +526,7 @@ var asset = {};
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
+        metrics.start(this.constructor.name,'search');
         //Check if a group by property is present in the query
         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             //Delete the group property as it is not used in the
@@ -515,6 +534,7 @@ var asset = {};
             log.debug('performing a  group search');
             delete query[constants.Q_PROP_GROUP];
             query = addWildcard(query);
+            metrics.stop();
             return this.searchByGroup(query, paging);
         }
         log.debug('performing a non group search');
@@ -524,6 +544,9 @@ var asset = {};
             addAssetsMetaData(assets, this);
         }catch (e){
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters');
+        }
+        finally {
+            metrics.stop();
         }
         return assets;
     };
@@ -732,6 +755,7 @@ var asset = {};
         return assets;
     };
     AssetManager.prototype.advanceSearch = function(query,paging) {
+        metrics.start(this.constructor.name,'advanceSearch');
         var assets = [];
         var type = query.type;
         var mediaType = '';
@@ -746,6 +770,7 @@ var asset = {};
         assets  = processAssets(type,assets,rm);
         //Add additional meta data
         addAssetsMetaData(assets,this);
+        metrics.stop();
         return assets;
     };
     asset.advanceSearch = function(query,paging,session,tenantId) {
@@ -1015,6 +1040,7 @@ var asset = {};
      * @return {Array}     An array of tag name count pairs
      */
     AssetManager.prototype.tags = function(query) {
+        metrics.start(this.constructor.name,'tags');
         var result;
         if (!query) {
             var tagsArr =[];
@@ -1046,6 +1072,7 @@ var asset = {};
             var mediaType = this.rxtManager.getMediaType(this.type);
             result = tagsQuerySearch(mediaType,query)
         }
+        metrics.stop();
         return result;
     };
     var tagsQuerySearch =function(mediaType,query){
@@ -1113,6 +1140,7 @@ var asset = {};
      * @param {String} tag  The name of the tag
      */
     AssetManager.prototype.addTags = function(id, tags) {
+        metrics.start(this.constructor.name,'addTags');
         var asset = this.get(id);
         var tagged; //Assume that the tag will not be applied
         var utilsAPI = require('utils');
@@ -1123,6 +1151,7 @@ var asset = {};
         }
         if (!asset) {
             log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            metrics.stop();
             return tagged;
         }
         if (!asset.path) {
@@ -1133,6 +1162,9 @@ var asset = {};
             tagged = true;
         } catch (e) {
             log.error('Unable to add tags: ' + stringify(tags), e);
+        }
+        finally {
+            metrics.stop();
         }
         return tagged;
     };
@@ -1180,9 +1212,12 @@ var asset = {};
             log.error('Unable to retrieve the tags of the asset : ' + id + ' as the asset path was not located');
         }
         try{
+            metrics.start(this.constructor.name,'getTags');
             tags = this.registry.tags(asset.path)||[];
         } catch(e){
             log.error('Unable to retrieve the tags of the provided asset ',e);
+        } finally {
+            metrics.stop();
         }
         return tags;
     };
@@ -1219,11 +1254,14 @@ var asset = {};
     AssetManager.prototype.rate = function(id, rating) {
         var success = false;
         try {
+            metrics.start(this.constructor.name,'rate');
             this.registry.rate(id, rating);
             success = true;
         } catch (e) {
             log.error('Could not rate the asset: ' + id + ' type: ' + this.type + '.Exception: ' + e);
             throw e;
+        } finally {
+            metrics.stop();
         }
         return success;
     };
@@ -2078,9 +2116,13 @@ var asset = {};
      */
     AssetRenderer.prototype.applyPageDecorators = function(page, decoratorsToUse) {
         var pageDecorators = this.pageDecorators || {};
+        metrics.start(this.constructor.name,'applyPageDecorators');
         for (var key in pageDecorators) {
+            metrics.start(this.constructor.name,'applyPageDecorators',key);
             page = pageDecorators[key].call(this, page) || page;
+            metrics.stop();
         }
+        metrics.stop();
         return page;
     };
     var isSelectedDecorator = function(decorator, decoratorsToUse) {
