@@ -48,7 +48,7 @@ require('/modules/store.js').exec(function(ctx) {
         //Support for cross tenant views
         context = tenantResources.context;
         am = tenantResources.am;
-        var tenantDetails = tenantApi.createTenantDetails(request, session);
+        var tenantDetails = tenantApi.createTenantDetails(ctx.request, ctx.session);
         var tenantId = tenantDetails.tenantId;
         var page = ui.buildPage(ctx.session, ctx.request, tenantId);
         var assets = null;

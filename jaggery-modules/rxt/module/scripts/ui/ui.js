@@ -120,10 +120,11 @@ var ui = {};
     };
     /**
      * Returns the title of a given asset page
-     * @param  {Object} request  Jaggery request object
-     * @param  {Object} session  Jaggery session object
+     * @param  {Object} request   Jaggery request object
+     * @param  {Object} session   Jaggery session object
      * @param  {String} type      The asset type
      * @param  {String} pageName  The name of the page
+     * @param  {Integer} tenantId The tenant id 
      * @return {String}           The title of the provided page
      */
     var getAssetPageTitle = function(session, type, pageName, tenantId) {
@@ -157,13 +158,14 @@ var ui = {};
      * use the session to determine if there is a logged in user.If  a logged in user is located 
      * then the page is constructed based on the user context,else an annoymous context based 
      * on the super tenant is used.
-     * @param  {Object} session Jaggery session object
-     * @param  {Object} request Jaggery request object
-     * @return {Object}         A page object
+     * @param  {Object}  session Jaggery session object
+     * @param  {Object}  request Jaggery request object
+     * @param  {Integer} tenantId The tenantiId from which the request came
+     * @return {Object}  A page object
      */
     ui.buildPage = function(session, request, tenantId) {
         var server = require('store').server;
-        if(tenantId == undefined) {
+        if (tenantId == undefined) {
             tenantId = constants.DEFAULT_TENANT;
         }
         var user = server.current(session);

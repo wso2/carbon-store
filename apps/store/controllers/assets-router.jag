@@ -75,7 +75,7 @@ var handleApiEndpoint = function (request, session, uriParams) {
 var handlePageEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
     var tenantId = getTenantId(request, session);
-    if(!validateType(type, tenantId)){
+    if (!validateType(type, tenantId)){
         response.sendError(404, 'Unabled to locate a active endpoint for the type: ' + type);
         return;
     }
@@ -132,9 +132,10 @@ var validateType = function (type, tenantId){
 };
 
 /**
- * Returns the tenantId for the current session.
- * @param request Jaggery request object
- * @param session Jaggery session ob
+ * Returns the tenantId for the request using tenantApi
+ * @param  {Object} request Request object
+ * @param  {Object} session Session object
+ * @return {[type]}         Tenant id for the request
  */
 var getTenantId = function(request, session) {
     var tenantAPI = require('/modules/tenant-api.js').api;
