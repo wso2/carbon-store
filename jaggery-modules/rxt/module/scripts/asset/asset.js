@@ -2116,9 +2116,13 @@ var asset = {};
      */
     AssetRenderer.prototype.applyPageDecorators = function(page, decoratorsToUse) {
         var pageDecorators = this.pageDecorators || {};
+        metrics.start(this.constructor.name,'applyPageDecorators');
         for (var key in pageDecorators) {
+            metrics.start(this.constructor.name,'applyPageDecorators',key);
             page = pageDecorators[key].call(this, page) || page;
+            metrics.stop();
         }
+        metrics.stop();
         return page;
     };
     var isSelectedDecorator = function(decorator, decoratorsToUse) {
