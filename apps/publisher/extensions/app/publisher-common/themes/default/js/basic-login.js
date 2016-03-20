@@ -37,7 +37,24 @@ $(function () {
         }
     });
 
+    var spinnerURL = function(){
+        return caramel.url('/extensions/app/publisher-common/themes/store/img/sign-in.gif');
+    };
+
+    var showSpinner = function(spinnerLocation,msg){
+        $(spinnerLocation).html('<img src="'+spinnerURL()+'" /> '+msg);
+        $(spinnerLocation).attr('disabled',true);
+    };
+
+    var hideSpinner = function(spinnerLocation,msg){
+       $(spinnerLocation).html(msg); 
+       $(spinnerLocation).attr('disabled',false);
+    };
+
     $('#basic-login-form').ajaxForm({
+        beforeSubmit:function(e){
+            showSpinner('#submitBtn','SIGNING IN');
+        },
         success: function (data) {
             data = JSON.parse(data);
             var url = data.referer || caramel.url('');
@@ -51,6 +68,7 @@ $(function () {
             $('#username').focus();
             $('#password-error').hide();
             $('#password').removeClass('error');
+            hideSpinner('#submitBtn','SIGN IN ');
         }
     });
 });
