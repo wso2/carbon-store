@@ -432,8 +432,9 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug(e);
             }
-            metrics.stop();
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.NOT_FOUND);
+        } finally {
+            metrics.stop();
         }
         if (original) {
             putInStorage(asset, am, user.tenantId);
@@ -455,8 +456,9 @@ var result;
                 if (log.isDebugEnabled()) {
                     log.debug('Failed to update the asset ' + stringify(asset));
                 }
-                metrics.stop();
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
+            } finally {
+                metrics.stop();
             }
         }
         metrics.stop();
@@ -528,7 +530,6 @@ var result;
      * @param session sessionID
      */
     api.search = function (options, req, res, session) {
-        metrics.start("asset-api","search");
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         var sort = (request.getParameter("sort") || '');
@@ -542,6 +543,7 @@ var result;
         paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
         var q = (request.getParameter("q") || '');
         try {
+            metrics.start("asset-api","search");
             var assets;
             if (q) { //if search-query parameters are provided
                 var qString = '{' + q + '}';
@@ -658,7 +660,6 @@ var result;
      * @return {[type]}         [description]
      */
     api.genericAdvanceSearch = function (options, req, res, session) {
-        metrics.start("asset-api","genericAdvanceSearch");
         var assetAPI = rxtModule.asset;
         var sort = (request.getParameter("sort") || '');
         var paging = rxtModule.constants.DEFAULT_ASSET_PAGIN;
@@ -672,6 +673,7 @@ var result;
         var q = (request.getParameter("q") || '');
         var result = [];
         try {
+            metrics.start("asset-api","genericAdvanceSearch");
             var assets;
             if (!q) { //if search-query parameters are not provided
                 q = '"name":""';
