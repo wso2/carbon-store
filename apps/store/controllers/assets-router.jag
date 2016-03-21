@@ -21,6 +21,7 @@
 var log = new Log('assets_router');
 var matcher = new URIMatcher(request.getRequestURI());
 var rxt = require('rxt');
+var metrics = require('carbon-metrics').metrics;
 var constants = rxt.constants;
 var apiEndpoint = constants.ASSET_API_URL_PATTERN;// '/{context}/assets/{type}/api/{+suffix}';
 var pageEndpoint = constants.ASSET_PAGE_URL_PATTERN;// '/{context}/assets/{type}/{+suffix}';
@@ -35,7 +36,7 @@ var mapper = function (path) {
     return function () {
         return path;
     };
-}
+};
 
 var handleApiEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
@@ -144,17 +145,19 @@ var getTenantId = function(request, session) {
     return tenantId;
 };
 
-//Check if options have been provided
-if (matcher.match(apiEndpoint)) {
-    handleApiEndpoint(request, session, matcher.elements());
-}
-else if (matcher.match(pageEndpoint) || matcher.match(tenantedPageEndpoint)) {
-    handlePageEndpoint(request, session, matcher.elements());
-}
-else {
-    response.sendError(404, 'Unable to route the request to an appropriate endpoint');
-}
-// }
-
-
-%>
+try {
+    metrics.start("store-assets-router","route");
+    //Check if options have been provided
+    if (matcher.match(apiEndpoint)) {
+        handleApiEndpoint(request, session, matcher.elements());
+    }
+    else if (matcher.match(pageEndpoint) || matcher.match(tenantedPageEndpoint)) {
+        handlePageEndpoint(request, session, matcher.elements());
+    }
+    else {
+            response.sendError(404, 'Unable to route the request to an appropriate endpoint');
+        }
+    // }
+} finally {
+    metrics.stop();
+}%>
