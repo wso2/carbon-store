@@ -66,7 +66,7 @@ publisher.init(pubConfig);
 rxt.server.init(pubConfig);
 
 rxt.permissions.init();
-metricsAPI.init(pubConfig);
+metricsAPI.init(context,pubConfig);
 
 
 //var SUPER_TENANT_ID=-1234;

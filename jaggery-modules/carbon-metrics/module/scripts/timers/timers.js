@@ -69,7 +69,7 @@
             var time;
             if (entry) {
                 time = entry.context.stop();
-                metrics.trace(entry.name,' time ms:',time/1000000.0);
+                metrics.trace(entry.name,time/1000000.0, 'ms');
             }
         } catch (e) {
             log.error('carbon-metrics framework has failed when stopping timer', e);
