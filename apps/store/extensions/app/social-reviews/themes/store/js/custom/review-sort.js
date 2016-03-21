@@ -33,7 +33,8 @@ var redrawReviews = function(sortBy, callback) {
         target: target,
         sortBy: sortBy,
         offset: 0,
-        limit: 10
+        limit: 10,
+        randomq:generateRandomStr()
     }, function(obj) {
         var reviews = obj || [];
         usingTemplate(function(template) {
@@ -50,6 +51,14 @@ var redrawReviews = function(sortBy, callback) {
             adjustHeight();
         });
     })
+};
+/**
+ * IE 11 caches AJAX requests, in order to by pass this behaviour
+ * the request URIs must be unique.This is achieved by generating 
+ * a random query string
+ */
+var generateRandomStr = function(){
+    return new Date().getTime();
 };
 $(document).on('click', '.com-sort a', function(e) {
     var $target = $(e.target);
