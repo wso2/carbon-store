@@ -147,6 +147,9 @@
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.contentsearch.server:${carbon.registry.version}
                                 </importFeatureDef>
+                                <importFeatureDef>
+                                    org.wso2.store.modules.carbon-metrics:${carbon.store.version}
+                                </importFeatureDef>
                                 <!--importFeatureDef>
                                     org.wso2.carbon.jaxws.webapp.mgt.server:${carbon.platform.version}
                                 </importFeatureDef-->
