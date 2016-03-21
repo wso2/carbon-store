@@ -142,7 +142,7 @@ require('/modules/store.js').exec(function(ctx) {
             metrics.start("org.wso2.es.store.extensions.assets.list.advanceSearch");
             assets = am.advanceSearch(query, PAGING);
         } finally {
-            metrics.stop()
+            metrics.stop();
         }
     } else {
         if (PAGING.sortOrder == 'popular') {
@@ -168,11 +168,15 @@ require('/modules/store.js').exec(function(ctx) {
     });
     //Add subscription details to the assets
     //tenantApi.debug();
-    try {
-        metrics.start("org.wso2.es.store.extensions.assets.list.am.render");
+    //Skip subscription and rating loading for the first call, since it is not required to render the page.
+    //check cameral data in request header to identify the second call.
+    if (ctx.request.getHeader('X-Caramel-Data')) {
         subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);
         ratingApi.addRatings(assets, am, context.tenantId, context.username);
-        var output = am.render(assets, page).list();
+    }
+    try {
+        metrics.start("org.wso2.es.store.extensions.assets.list.am.render");
+        output = am.render(assets, page).list();
     } finally {
         metrics.stop();
     }
