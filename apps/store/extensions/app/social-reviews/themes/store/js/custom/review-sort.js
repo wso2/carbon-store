@@ -34,7 +34,7 @@ var redrawReviews = function(sortBy, callback) {
         sortBy: sortBy,
         offset: 0,
         limit: 10,
-        randomq:generateRandomStr()
+        cacheBuster:generateCacheBuster()
     }, function(obj) {
         var reviews = obj || [];
         usingTemplate(function(template) {
@@ -57,7 +57,7 @@ var redrawReviews = function(sortBy, callback) {
  * the request URIs must be unique.This is achieved by generating 
  * a random query string
  */
-var generateRandomStr = function(){
+var generateCacheBuster = function(){
     return new Date().getTime();
 };
 $(document).on('click', '.com-sort a', function(e) {
