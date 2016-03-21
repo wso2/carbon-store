@@ -66,6 +66,10 @@
             }
         }
     },
+    "metrics":{
+        "enabled":true,
+        "enableTraceLogs":true
+    },
     "constants": {
         "assetCreatedDateLength": 20
     },

@@ -166,9 +166,9 @@ var pageDecorators = {};
             log.debug(page.assetTags);
         }
     };
-    pageDecorators.sorting = function(ctx,page){
+    pageDecorators.sorting = function (ctx, page, fields) {
         var queryString = request.getQueryString();
-        var sortable = [
+        var sortable = fields || [
             {field:"overview_name",label:"Name"},
             {field:"overview_version",label:"Version"},
             {field:"overview_provider",label:"Provider"},

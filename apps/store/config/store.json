@@ -42,5 +42,9 @@
                 }
             }
         }
+    },
+    "metrics":{
+        "enabled":true,
+        "enableTraceLogs":true
     }
 }
