@@ -44,7 +44,7 @@
         }
     },
     "metrics":{
-        "enabled":true,
-        "enableTraceLogs":true
+        "enabled":false,
+        "enableTraceLogs":false
     }
 }
