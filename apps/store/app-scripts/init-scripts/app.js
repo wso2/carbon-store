@@ -75,7 +75,7 @@ store.init(configs);
 rxt.server.init(configs);
 
 rxt.permissions.init();
-metricsAPI.init(configs);
+metricsAPI.init(context,configs);
 
 /*
 var url='https://<HOST>:<PORT>/admin',
