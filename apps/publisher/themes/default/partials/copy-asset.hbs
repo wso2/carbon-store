@@ -1,6 +1,11 @@
 <div class="copy" id="newVersionModal" >
     <div class="modal-dialog modal-sm">
 
+        <h3>{{assets.name}}</h3>
+        <h6>{{assets.mediaType}}</h6>
+        {{#if assets.version}}
+            <h4>{{assets.version}}</h4>
+        {{/if}}
           <h4 class="modal-title">{{t "Create new version"}}</h4>
 
           {{t "Version"}}: <input type="text" class="form-control" name="new-version" id="new-version">
