@@ -38,7 +38,7 @@ $(function () {
     });
 
     var spinnerURL = function(){
-        return caramel.url('/extensions/app/publisher-common/themes/store/img/sign-in.gif');
+        return caramel.url('/extensions/app/publisher-common/themes/default/img/sign-in.gif');
     };
 
     var showSpinner = function(spinnerLocation,msg){
