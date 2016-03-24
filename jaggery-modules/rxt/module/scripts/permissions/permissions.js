@@ -938,7 +938,7 @@ var permissions = {};
         var authorizer = userManager.authorizer;
 
         if(log.isDebugEnabled()){
-            log.debug('[permissions] checking permission ' + action + ' for ' + username + ' tenantId ' + tenantId + ' path ' + path);
+            log.debug('[permissions] checking permission ' + action + ' for ' + username + ' tenantId ' + tenantId);
         }
         authorized = checkPermissionString(username, permission, action, authorizer);
         if(log.isDebugEnabled()){

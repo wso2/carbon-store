@@ -12,6 +12,7 @@
     stroke: #fff;
     fill: #fff;
     stroke-width: 1px;
+    fill-opacity: 0 !important;
 }
 
 .edgePath path {

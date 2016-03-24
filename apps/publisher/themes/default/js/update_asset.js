@@ -50,10 +50,12 @@ $(function() {
             }
         },
         success: function(data) {
+            var editButton = $('#editAssetButton');
             messages.alertSuccess('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
             var options=obtainFormMeta('#form-asset-update');
-            $('#editAssetButton').removeAttr('disabled');
-            window.location = options.redirectUrl + data.id;
+            editButton.removeAttr('disabled');
+            editButton.next().removeAttr('disabled');
+            $('.loading-animation').css('display','none');
         },
         error: function (response) {
             var result;

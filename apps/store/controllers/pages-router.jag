@@ -21,6 +21,7 @@ var uriMatcher = new URIMatcher(request.getRequestURI());
 var server = require('store').server;
 var carbon = require('carbon');
 var rxt = require('rxt');
+var metrics = require('carbon-metrics').metrics;
 var app = rxt.app;
 var constants = rxt.constants;
 var TENANT_PAGE_URL = constants.APP_TENANT_PAGE_URL_PATTERN; //'/{context}/t/{domain}/pages/{+suffix}';
@@ -36,41 +37,46 @@ var mapper = function(path) {
         return path;
     };
 };
-if (uriMatcher.match(PAGE_URL) || uriMatcher.match(TENANT_PAGE_URL)) {
-    var args = uriMatcher.elements();
-    if (user) { //Determine the tenant by the user
-        tenantId = user.tenantId;
-    } else { //Obtain tenantID by domain or assume the tenant will be the super tenant
-        var tenantId = carbon.server.tenantId({
-            domain: args.domain
-        }) || constants.DEFAULT_TENANT;
-    }
-    //Obtain the set of available pages
-    var page = getPage(args.suffix);
-    var path = app.getPageEndpointPath(tenantId, page);
-    if (path) {
-        var file = new File(path);
-        if (file.isExists()) {
-            log.debug('Loading endpoint at path: ' + path);
-            request.getMappedPath = mapper(path);
-            var username = user ? user.username : null;
-            var isAuthorized = rxt.permissions.hasAppPagePermission(page, tenantId, username);
-            if (!isAuthorized) {
-                log.error('user ' + username + ' does not have permission to access the page ' + page);
-                response.sendError(401,'You do not have access to this page');
-            } else {
-                var proceed = app.execPageHandlers('onPageLoad', request, response, session, page);
-                if (proceed) {
-                    include(path);
+try {
+    metrics.start("store-pages-router","route");
+    if (uriMatcher.match(PAGE_URL) || uriMatcher.match(TENANT_PAGE_URL)) {
+        var args = uriMatcher.elements();
+        if (user) { //Determine the tenant by the user
+            tenantId = user.tenantId;
+        } else { //Obtain tenantID by domain or assume the tenant will be the super tenant
+            var tenantId = carbon.server.tenantId({
+                        domain: args.domain
+                    }) || constants.DEFAULT_TENANT;
+        }
+        //Obtain the set of available pages
+        var page = getPage(args.suffix);
+        var path = app.getPageEndpointPath(tenantId, page);
+        if (path) {
+            var file = new File(path);
+            if (file.isExists()) {
+                log.debug('Loading endpoint at path: ' + path);
+                request.getMappedPath = mapper(path);
+                var username = user ? user.username : null;
+                var isAuthorized = rxt.permissions.hasAppPagePermission(page, tenantId, username);
+                if (!isAuthorized) {
+                    log.error('user ' + username + ' does not have permission to access the page ' + page);
+                    response.sendError(401,'You do not have access to this page');
+                } else {
+                    var proceed = app.execPageHandlers('onPageLoad', request, response, session, page);
+                    if (proceed) {
+                        include(path);
+                    }
                 }
+            } else {
+                log.error('Unable to locate mapped endpoint at path: ' + path);
+                response.sendError(404, 'Unable to locate a suitable endpoint for ' + page);
             }
         } else {
-            log.error('Unable to locate mapped endpoint at path: ' + path);
             response.sendError(404, 'Unable to locate a suitable endpoint for ' + page);
         }
     } else {
-        response.sendError(404, 'Unable to locate a suitable endpoint for ' + page);
+        response.sendError(404, 'Unable to locate a suitable endpoint');
     }
-} else {
-    response.sendError(404, 'Unable to locate a suitable endpoint');
-} %>
+} finally {
+    metrics.stop();
+}%>
