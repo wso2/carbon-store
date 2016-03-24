@@ -35,6 +35,7 @@ var mapper = function(path) {
     };
 };
 try {
+    response.addHeader('Cache-Control' ,'no-cache,no-store');
     metrics.start("store-api-router","route");
     if (uriMatcher.match(API_URL)) {
         var args = uriMatcher.elements();
