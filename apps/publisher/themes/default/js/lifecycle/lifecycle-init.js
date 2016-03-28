@@ -81,7 +81,7 @@ $(function() {
                 e.preventDefault();
                 action = $(this).data('action');
                 if(renderTransitionInputs(action)){
-                    console.log('Deferred executing action till transition inputs are provided');
+                    //console.log('Deferred executing action till transition inputs are provided');
                     return;
                 }
                 //Get the comment
@@ -195,7 +195,7 @@ $(function() {
     var incrementHistoryRenderParams = function(start, end, historyLength){
         historyStart = start + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
         historyEnd = end + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
-        if(historyStart => historyLength){
+        if(historyStart >= historyLength){
             $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).hide();
         }
         if(historyStart < historyLength){
@@ -349,6 +349,7 @@ $(function() {
             renderLCActions();
             renderChecklistItems();
             renderDeleteActions();
+            $(id(config(constants.CONTAINER_LC_NOTIFICATIONS_AREA))).html('');
         }
     });
     //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
@@ -379,6 +380,14 @@ $(function() {
         unblockChecklist();
         hightlightCurrentStateNode();
         renderStateInformation();
+        if (LifecycleAPI.lifecycle().nextStates().length == 0) {
+            LifecycleAPI.notify(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE), {
+                type: constants.NOTIFICATION_WARN,
+                global: false
+            });
+            renderChecklistItems();
+            return;
+        }
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
             LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
                 type: constants.NOTIFICATION_WARN,
@@ -434,7 +443,7 @@ $(function() {
             });
         }
         else{
-            LifecycleAPI.notify(config(config(constants.MSG_ERROR_STATE_CHANGE)), {
+            LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
                 type: 'error'
             });
         }

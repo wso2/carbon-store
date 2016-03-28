@@ -26,6 +26,7 @@
 	var apiEndpoint=constants.ASSET_API_URL_PATTERN;//'/{context}/assets/{type}/api/{+suffix}';
 	var pageEndpoint=constants.ASSET_PAGE_URL_PATTERN;//'/{context}/assets/{type}/{+suffix}';
 	var rxtAPI = require('rxt');
+	var metrics = require('carbon-metrics').metrics;
 
 	var getPage=function(uri){
 		var comps=uri.split('/');
@@ -129,10 +130,20 @@
  	else{
  		//Check if options have been provided
 		if(matcher.match(apiEndpoint)){
-			handleApiEndpoint(request,session,matcher.elements());		
+			try {
+				metrics.start('assets-router','apiEndpoint');
+				handleApiEndpoint(request,session,matcher.elements());
+			} finally {
+				metrics.stop();
+			}
 		}
 		else if(matcher.match(pageEndpoint)){
-			handlePageEndpoint(request,session,matcher.elements());
+			try {
+				metrics.start('assets-router','pageEndpoint');
+				handlePageEndpoint(request,session,matcher.elements());
+			} finally {
+				metrics.stop();
+			}
 		}
 		else{
 			response.sendError(404,'Unable to route the request to an appropriate endpoint');

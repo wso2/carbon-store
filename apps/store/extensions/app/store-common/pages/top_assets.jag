@@ -25,10 +25,13 @@ require('/modules/store.js').exec(function (ctx) {
     var server = require('store').server;
     var user = server.current(ctx.session);
     var ui = require('rxt').ui;
+    var metrics = require('carbon-metrics').metrics;
     var tenantApi = require('/modules/tenant-api.js').api;
     var userApi = require('/modules/user-api.js').api;
     var utilsRequest = require('utils').request;
-    var page = ui.buildPage(ctx.session, ctx.request);
+    var tenantDetails = tenantApi.createTenantDetails(request, session);
+    var tenantId = tenantDetails.tenantId;
+    var page = ui.buildPage(ctx.session, ctx.request, tenantId);
     var appManager;
     var log = new Log();
 
@@ -63,7 +66,12 @@ require('/modules/store.js').exec(function (ctx) {
         appManager = app.createAnonAppManager(ctx.session, tenantId);
     }*/
     page.assetMeta.q = q;
-    var output = appManager.render([], page);
+    try {
+        metrics.start("org.wso2.store.store-common.top-assets.app-manager.render");
+        var output = appManager.render([], page);
+    } finally {
+        metrics.stop();
+    }
     var recentAssets = output.recentAssets;
     for (var i in recentAssets) {
         if (recentAssets[i].thumbnail == 'null') {
@@ -72,9 +80,13 @@ require('/modules/store.js').exec(function (ctx) {
     }
     var qtemp = ctx.request.getParameter('q') || '';
     var searchQuery = utilsRequest.formatSearchQuery(qtemp);
-    output.searchQuery = searchQuery||'';
-
-    caramel.render(output);
+    output.searchQuery = decodeURIComponent(searchQuery)||'';
+    try {
+        metrics.start("org.wso2.store.store-common.top-assets.caramel.render");
+        caramel.render(output);
+    } finally {
+        metrics.stop();
+    }
     //print(page);
 }, request, response, session);
 %>

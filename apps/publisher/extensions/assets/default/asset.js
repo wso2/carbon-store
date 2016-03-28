@@ -315,11 +315,11 @@ asset.renderer = function(ctx) {
         },
         create: function(page) {
             var tables = page.assets.tables;
-            var providerAttribute = 'provider';
+            var providerAttribute = 'provider'; //TODO: Provider should be picked up from the provider attribute
             for (var index in tables) {
                 var table = tables[index];
                 if ((table.name == 'overview') && (table.fields.hasOwnProperty(providerAttribute))) {
-                    table.fields[providerAttribute].value = page.cuser.username;
+                    table.fields[providerAttribute].value = page.cuser.cleanedUsername;
                 }
             }
         },

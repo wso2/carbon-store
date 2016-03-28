@@ -378,21 +378,22 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     padding-bottom: 15px;
     background-color: #FDFDFD;
     padding-top: 10px;
-
+    float:left;
 }
 
-.tag-content > a > label {
+.tag-content > a > span {
     padding: 3px 8px;
     line-height: 19px;
     font-weight: 100;
     margin-right: 5px;
+    margin-bottom: 5px;
     cursor: pointer;
     border: 1px solid #E4E3E3;
     font-size: 12px;
     color: #333;
 }
 
-.tag-content > a > label:hover {
+.tag-content > a > span:hover {
     background-color: #C9E4FF;
     border: 1px solid #C9E4FF;
 }

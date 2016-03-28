@@ -16,6 +16,7 @@
  *  under the License.
  *
  */
+
 /**
  * The ui namespace cobtains methods which allow a generic page object to be created.
  * @namespace
@@ -49,10 +50,12 @@ var ui = {};
      */
     var genericPage = function(options) {
         var tenantDomain = resolveTenantDomain(options.tenantId);
+        var storeModule = require('store');
         return {
             rxt: {},
             cuser: {
                 username: options.username,
+                cleanedUsername: storeModule.user.cleanUsername(options.username||''),
                 isAnon: options.isAnon,
                 tenantId:options.tenantId,
                 tenantDomain:resolveTenantDomain(options.tenantId),
@@ -90,13 +93,9 @@ var ui = {};
      * @param  {Object} session Jaggery session object
      * @return {String}         The name of the page
      */
-    var getPageName = function(request, session) {
+    var getPageName = function(request, session, tenantId) {
         var server = require('store').server;
         var user = server.current(session);
-        var tenantId = constants.DEFAULT_TENANT; //Assume the there is no logged in user
-        if (user) {
-            tenantId = user.tenantId;
-        }
         var uriMatcher = new URIMatcher(request.getRequestURI());
         uriMatcher.match(constants.ASSET_PAGE_URL_PATTERN) || uriMatcher.match(constants.ASSET_TENANT_PAGE_URL_PATTERN) || {};
         var options = uriMatcher.elements() || {};
@@ -105,7 +104,7 @@ var ui = {};
         if (options.suffix) {
             pageDetails.currentPage = options.pageName;
             pageDetails.pageName = processPageName(options.suffix);
-            pageDetails.title = getAssetPageTitle(session, options.type, pageDetails.pageName);
+            pageDetails.title = getAssetPageTitle(session, options.type, pageDetails.pageName, tenantId);
             return pageDetails;
         }
         //Check if it is an application extension URL
@@ -121,13 +120,15 @@ var ui = {};
     };
     /**
      * Returns the title of a given asset page
-     * @param  {Object} session  Jaggery session object
+     * @param  {Object} request   Jaggery request object
+     * @param  {Object} session   Jaggery session object
      * @param  {String} type      The asset type
      * @param  {String} pageName  The name of the page
+     * @param  {Integer} tenantId The tenant id 
      * @return {String}           The title of the provided page
      */
-    var getAssetPageTitle = function(session, type, pageName) {
-        var pages = asset.getAssetPageEndpoints(session, type);
+    var getAssetPageTitle = function(session, type, pageName, tenantId) {
+        var pages = asset.getAssetPageEndpoints(session, type, tenantId);
         var page;
         for (var index = 0; index < pages.length; index++) {
             page = pages[index];
@@ -157,17 +158,21 @@ var ui = {};
      * use the session to determine if there is a logged in user.If  a logged in user is located 
      * then the page is constructed based on the user context,else an annoymous context based 
      * on the super tenant is used.
-     * @param  {Object} session Jaggery session object
-     * @param  {Object} request Jaggery request object
-     * @return {Object}         A page object
+     * @param  {Object}  session Jaggery session object
+     * @param  {Object}  request Jaggery request object
+     * @param  {Integer} tenantId The tenantiId from which the request came
+     * @return {Object}  A page object
      */
-    ui.buildPage = function(session, request) {
+    ui.buildPage = function(session, request, tenantId) {
         var server = require('store').server;
+        if (tenantId == undefined) {
+            tenantId = constants.DEFAULT_TENANT;
+        }
         var user = server.current(session);
         if (user) {
             return buildUserPage(session, request, user);
         } else {
-            return buildAnonPage(session, request);
+            return buildAnonPage(session, request, tenantId);
         }
     };
     var buildUserPage = function(session, request, user) {
@@ -176,7 +181,7 @@ var ui = {};
         var configs = userMod.configs(tenantId);
         var tenantId = user.tenantId;
         var configs = userMod.configs(tenantId);
-        var pageDetails = getPageName(request, session);
+        var pageDetails = getPageName(request, session, tenantId);
         var landingPage = app.getLandingPage(tenantId);
         var applicationTitle = app.getApplicationTitle(tenantId);
         var page = genericPage({
@@ -191,11 +196,10 @@ var ui = {};
         });
         return page;
     };
-    var buildAnonPage = function(session, request) {
+    var buildAnonPage = function(session, request, tenantId) {
         var userMod = require('store').user;
-        var tenantId = getTenantIdFromUrl(request);
         var configs = userMod.configs(tenantId);
-        var pageDetails = getPageName(request, session);
+        var pageDetails = getPageName(request, session, tenantId);
         var landingPage = app.getLandingPage(tenantId);
         var applicationTitle = app.getApplicationTitle(tenantId);
         var page = genericPage({
@@ -209,12 +213,5 @@ var ui = {};
             applicationTitle: applicationTitle
         });
         return page;
-    };
-    var getTenantIdFromUrl = function(request) {
-//        var matcher = new URIMatcher(request.getRequestURI());
-//        if(matcher.match('/{context}/t/{domain}/{+any}')){
-//            return matcher.elements().domain;
-//        }
-        return constants.DEFAULT_TENANT;
     };
 }(ui, core, asset, app, constants));

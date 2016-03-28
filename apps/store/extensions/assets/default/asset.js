@@ -181,9 +181,15 @@ asset.renderer = function(ctx) {
                 return decoratorApi.myAssets(ctx, page);
             },
             socialFeature: function(page) {
+                if (page.meta.pageName !== 'details') {
+                    return;
+                }
                 return decoratorApi.socialFeature(ctx, page);
             },
             socialSites: function(page, meta) {
+                if (page.meta.pageName !== 'details') {
+                    return;
+                }
                 return decoratorApi.socialSites(ctx,page, meta, this);
             },
             embedLinks: function(page, meta) {

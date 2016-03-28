@@ -23,6 +23,7 @@ require('/modules/publisher.js').exec(function(ctx) {
     var ui = require('rxt').ui;
     var reqUtil = require('utils').request;
     var asset = require('rxt').asset;
+    var metrics = require('carbon-metrics').metrics;
     var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
     //fixing STORE-818
     ctx.response.addHeader('Pragma' ,'no-cache');
@@ -40,9 +41,19 @@ require('/modules/publisher.js').exec(function(ctx) {
     var assets;
     //Do an advanced search
     assets  = assetApi.advanceSearch(options,ctx.request,ctx.response,ctx.session)||[];
-    var output = am.render(assets, page).list();
+    try {
+        metrics.start("org.wso2.publisher.default.list.app-manager.render");
+        var output = am.render(assets, page).list();
+    } finally {
+        metrics.stop();
+    }
     var qtemp = ctx.request.getParameter('q') || '';
     var searchQuery = utilsRequest.formatSearchQuery(qtemp);
-    output.searchQuery = searchQuery||'';
-    caramel.render(output);
+    output.searchQuery = decodeURIComponent(searchQuery)||'';
+    try {
+        metrics.start("org.wso2.publisher.default.list.caramel.render");
+        caramel.render(output);
+    } finally {
+        metrics.stop();
+    }
 }, request, response, session); %>

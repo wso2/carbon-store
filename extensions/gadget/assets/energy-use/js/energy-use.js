@@ -13,7 +13,7 @@ function callback(topic, obj, subscriberData) {
 
 	var init = $('#chart-energy').attr('data-init');
 
-	console.log("data-init" + init);
+	//console.log("data-init" + init);
 
 	var myconfig = {
 		baseUrl : '/portal/js/dojo//'
@@ -22,7 +22,7 @@ function callback(topic, obj, subscriberData) {
 	var coords = [];
 
 	if (!init) {
-		console.log("create");
+		//console.log("create");
 		require(myconfig, ["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/Columns", "dojox/charting/themes/PurpleRain", "dojo/ready"], function(Chart, Default, Columns, PurpleRain, ready) {
 			ready(function() {
 				chartEnergy = new Chart("chart-energy");

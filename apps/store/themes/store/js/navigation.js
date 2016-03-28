@@ -6,7 +6,7 @@ $(function() {
         $('#btn-signin').text('Sign in').removeClass('disabled');
     };
 
-	var login = function() {
+	/*var login = function() {
 		if (!$("#form-login").valid())
 			return;
 		$('#btn-signin').addClass('disabled').text('Signing in');
@@ -31,7 +31,7 @@ $(function() {
             contentType: 'application/json',
             dataType: 'json'
         });
-	};
+	};*/
 
 	var register = function() {
 		if (!$("#form-register").valid())
@@ -54,13 +54,13 @@ $(function() {
 		}, "json");
 	});
 
-	$('#btn-signin').bind('click', login);
+	//$('#btn-signin').bind('click', login);
 
-	$('#modal-login input').bind('keypress', function(e) {
+	/*$('#modal-login input').bind('keypress', function(e) {
 		if (e.keyCode === 13) {
 			login();
 		}
-	});
+	});*/
 
 	$('#inp-username-register').change(function() {
 		var username = $(this).val();

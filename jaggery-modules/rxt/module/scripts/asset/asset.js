@@ -42,6 +42,7 @@ var asset = {};
         "#e67e22", "#d35400", "#e74c3c", "#c0392b"
     ];
     var utils = require('utils');
+    var metrics = require('carbon-metrics').metrics;
     var exceptionModule = utils.exception;
 
     var getField = function(attributes, tableName, fieldName) {
@@ -188,7 +189,7 @@ var asset = {};
         for (var key in fields) {
             if (fields.hasOwnProperty(key)) {
                 var field = fields[key];
-                if (field && field.name && field.required == "true" && field.name.fullName) {
+                if (field && field.name && field.required && field.name.fullName) {
                     validateRequiredFeild(field.name.fullName, assetReq);
                 }
                 if (field && field.name && field.validate && field.name.fullName) {
@@ -260,44 +261,50 @@ var asset = {};
      * @lends AssetManager.prototype
      */
     AssetManager.prototype.create = function(options) {
-        validateRequiredFeilds(this.type, options , this.rxtManager);
-        var isDefault = false;
-        if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
-            delete options[constants.Q_PROP_DEFAULT];
-            isDefault = true;
-        }
-        if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
-            options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
-        }
-        
-        var namespaceAttribute = this.rxtManager.getNamespaceAttribute(this.type);
-
-        if (namespaceAttribute) {
-            options.namespaceAttribute = namespaceAttribute;
-        }
-
-        var id = this.am.add(options);
-        var asset;
-        options.id = id;
-        if (!this.rxtManager.isGroupingEnabled(this.type)) {
-            if (log.isDebugEnabled()) {
-                log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+        try {
+            metrics.start(this.constructor.name,'create');
+            validateRequiredFeilds(this.type, options , this.rxtManager);
+            var isDefault = false;
+            if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
+                delete options[constants.Q_PROP_DEFAULT];
+                isDefault = true;
             }
-            return;
-        }
-        asset = this.get(id);
-        //If the default flag is true or if there are no other versions of this asset make this
-        //asset the default asset
-        if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
-            log.info('default asset:' + this.getName(asset) + ' ' + this.getVersion(asset));
-            this.setAsDefaultAsset(asset);
-        }
-        if (!id) {
-            log.error('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
-            return;
+            if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+                options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
+            }
+
+            var namespaceAttribute = this.rxtManager.getNamespaceAttribute(this.type);
+
+            if (namespaceAttribute) {
+                options.namespaceAttribute = namespaceAttribute;
+            }
+
+            var id = this.am.add(options);
+            var asset;
+            options.id = id;
+            if (!this.rxtManager.isGroupingEnabled(this.type)) {
+                if (log.isDebugEnabled()) {
+                    log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+                }
+                return;
+            }
+            asset = this.get(id);
+            //If the default flag is true or if there are no other versions of this asset make this
+            //asset the default asset
+            if ((isDefault) || (isOnlyAssetVersion(asset, this))) {
+                log.info('default asset:' + this.getName(asset) + ' ' + this.getVersion(asset));
+                this.setAsDefaultAsset(asset);
+            }
+            if (!id) {
+                log.error('Unable to set the id of the newly created asset.The following asset may not have been created :' + stringify(asset));
+                return;
+            }
+        } finally {
+            metrics.stop();
         }
     };
     AssetManager.prototype.postCreate = function(asset,ctx){
+        metrics.start(this.constructor.name,'postCreate');
         if (log.isDebugEnabled()) {
             log.debug('Performing post create operations for ' + stringify(asset));
         }
@@ -310,6 +317,7 @@ var asset = {};
         var actions = [];
         if(!path) {
             log.error('Unable to finish post create actions as the asset path was not located.Subsequent CRUD operations may fail for asset '+asset.id);
+            metrics.stop();
             return false;
         }
         //Allow all actions for the user's role
@@ -327,6 +335,7 @@ var asset = {};
         if (log.isDebugEnabled()) {
             log.debug('Finished post create operations for ' + path);
         }
+        metrics.stop();
         return true;
     };
     /**
@@ -362,21 +371,26 @@ var asset = {};
      * @param  {Object} options A JSON object of the asset instance to be updated
      */
     AssetManager.prototype.update = function(options) {
-        var isDefault = false;
-        if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
-            isDefault = true;
-        }
-        if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
-            options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
-        }
-        this.am.update(options);
-        var asset = this.am.get(options.id);
-        if (!this.rxtManager.isGroupingEnabled(this.type)) {
-            log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
-            return;
-        }
-        if (isDefault) {
-            this.setAsDefaultAsset(asset);
+        try {
+            metrics.start(this.constructor.name,'update');
+            var isDefault = false;
+            if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
+                isDefault = true;
+            }
+            if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+                options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
+            }
+            this.am.update(options);
+            var asset = this.am.get(options.id);
+            if (!this.rxtManager.isGroupingEnabled(this.type)) {
+                log.debug('Omitting grouping step as the groupingEnabled property in the asset configuration has been disabled');
+                return;
+            }
+            if (isDefault) {
+                this.setAsDefaultAsset(asset);
+            }
+        } finally {
+            metrics.stop();
         }
     };
     /**
@@ -393,7 +407,9 @@ var asset = {};
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
+        metrics.start(this.constructor.name,'remove');
         this.am.remove(id);
+        metrics.stop();
     };
     /**
      * Updates the provided asset with the latest values in the registry.If the asset is not succsessfully
@@ -463,10 +479,14 @@ var asset = {};
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
         try{
+            metrics.start(this.constructor.name,'list');
             assets = this.am.list(paging);
             addAssetsMetaData(assets, this);
         } catch (e){
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters');
+        }
+        finally {
+            metrics.stop();
         }
         return assets || [];
     };
@@ -482,8 +502,13 @@ var asset = {};
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
-        var asset = this.am.get(id);
-        addAssetsMetaData(asset, this);
+        try {
+            metrics.start(this.constructor.name,'get');
+            var asset = this.am.get(id);
+            addAssetsMetaData(asset, this);
+        } finally {
+            metrics.stop();
+        }
         return asset;
     };
     /**
@@ -508,6 +533,7 @@ var asset = {};
         if (!this.am) {
             throw 'An artifact manager instance manager has not been set for this asset manager.Make sure init method is called prior to invoking other operations.';
         }
+        metrics.start(this.constructor.name,'search');
         //Check if a group by property is present in the query
         if ((query.hasOwnProperty(constants.Q_PROP_GROUP)) && (query[constants.Q_PROP_GROUP] === true)) {
             //Delete the group property as it is not used in the
@@ -515,6 +541,7 @@ var asset = {};
             log.debug('performing a  group search');
             delete query[constants.Q_PROP_GROUP];
             query = addWildcard(query);
+            metrics.stop();
             return this.searchByGroup(query, paging);
         }
         log.debug('performing a non group search');
@@ -525,6 +552,9 @@ var asset = {};
         }catch (e){
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters');
         }
+        finally {
+            metrics.stop();
+        }
         return assets;
     };
     var buildQueryString = function(query,options) {
@@ -532,6 +562,10 @@ var asset = {};
         var value;
         options = options || {};
         var wildcard = options.hasOwnProperty('wildcard')? options.wildcard : true; //Default to a wildcard search
+        // Deleting the _wildcard from the query param
+        if (query.hasOwnProperty('_wildcard')) {
+            delete query['_wildcard'];
+        }
         for(var key in query) {
             //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
@@ -542,11 +576,13 @@ var asset = {};
                 //Note: This prevents us from searching props
                 //with a underscore (_)
                 key = key.replace('_',':');
+                var queryWithQuots = value.match(/"(.*?)"/g);
+                value = decodeURIComponent(value);
                 //Check if wildcard search is enabled
-                if(wildcard && key != 'tags'){
+                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots) {
                     value = '*'+value+'*';
                 }
-                queryString.push(key+'='+value);
+                queryString.push(key + '=' + encodeURIComponent(value));
             }
         }
         return queryString.join('&');
@@ -676,6 +712,7 @@ var asset = {};
             options.wildcard = false;//query[constants.Q_PROP_GROUP];
             delete query[constants.Q_PROP_GROUP];
         }
+        options.wildcard = resolveWildcard(query);
         q  = buildQueryString(query, options);
         return q;
     };
@@ -725,21 +762,26 @@ var asset = {};
         return assets;
     };
     AssetManager.prototype.advanceSearch = function(query,paging) {
-        var assets = [];
-        var type = query.type;
-        var mediaType = '';
-        var registry = this.registry.registry;
-        var rm = this.rxtManager;
-        //Note: This will restrict the search to this asset type
-        type = this.type;
-        query = query || {};
-        paging = paging || null;
-        assets =  doAdvanceSearch(type,query,paging,registry,rm);
-        //assets is a set that must be converted to a JSON array
-        assets  = processAssets(type,assets,rm);
-        //Add additional meta data
-        addAssetsMetaData(assets,this);
-        return assets;
+        try {
+            metrics.start(this.constructor.name,'advanceSearch');
+            var assets = [];
+            var type = query.type;
+            var mediaType = '';
+            var registry = this.registry.registry;
+            var rm = this.rxtManager;
+            //Note: This will restrict the search to this asset type
+            type = this.type;
+            query = query || {};
+            paging = paging || null;
+            assets =  doAdvanceSearch(type,query,paging,registry,rm);
+            //assets is a set that must be converted to a JSON array
+            assets  = processAssets(type,assets,rm);
+            //Add additional meta data
+            addAssetsMetaData(assets,this);
+            return assets;
+        } finally {
+            metrics.stop();
+        }
     };
     asset.advanceSearch = function(query,paging,session,tenantId) {
         var storeAPI = require('store');
@@ -792,6 +834,18 @@ var asset = {};
             q[key] = '*' + q[key] + '*';
         }
         return q;
+    };
+
+    /**
+     * Convert string boolean to boolean according to the query param
+     * @param {Object} q Query object
+     */
+    var resolveWildcard = function(q) {
+        if ((q.hasOwnProperty(constants.Q_PROP_WILDCARD)) && (q[constants.Q_PROP_WILDCARD] === 'false')) {
+            return false;
+        }
+        delete q[constants.Q_PROP_WILDCARD];
+        return true;
     };
     /**
      * Executes a query to retrieve a set of assets bound by a paging object and
@@ -996,6 +1050,7 @@ var asset = {};
      * @return {Array}     An array of tag name count pairs
      */
     AssetManager.prototype.tags = function(query) {
+        metrics.start(this.constructor.name,'tags');
         var result;
         if (!query) {
             var tagsArr =[];
@@ -1027,6 +1082,7 @@ var asset = {};
             var mediaType = this.rxtManager.getMediaType(this.type);
             result = tagsQuerySearch(mediaType,query)
         }
+        metrics.stop();
         return result;
     };
     var tagsQuerySearch =function(mediaType,query){
@@ -1110,10 +1166,14 @@ var asset = {};
             log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
         }
         try {
+            metrics.start(this.constructor.name,'addTags');
             this.registry.tag(asset.path, tags);
             tagged = true;
         } catch (e) {
             log.error('Unable to add tags: ' + stringify(tags), e);
+        }
+        finally {
+            metrics.stop();
         }
         return tagged;
     };
@@ -1161,9 +1221,12 @@ var asset = {};
             log.error('Unable to retrieve the tags of the asset : ' + id + ' as the asset path was not located');
         }
         try{
+            metrics.start(this.constructor.name,'getTags');
             tags = this.registry.tags(asset.path)||[];
         } catch(e){
             log.error('Unable to retrieve the tags of the provided asset ',e);
+        } finally {
+            metrics.stop();
         }
         return tags;
     };
@@ -1200,11 +1263,14 @@ var asset = {};
     AssetManager.prototype.rate = function(id, rating) {
         var success = false;
         try {
+            metrics.start(this.constructor.name,'rate');
             this.registry.rate(id, rating);
             success = true;
         } catch (e) {
             log.error('Could not rate the asset: ' + id + ' type: ' + this.type + '.Exception: ' + e);
             throw e;
+        } finally {
+            metrics.stop();
         }
         return success;
     };
@@ -2059,10 +2125,17 @@ var asset = {};
      */
     AssetRenderer.prototype.applyPageDecorators = function(page, decoratorsToUse) {
         var pageDecorators = this.pageDecorators || {};
-        for (var key in pageDecorators) {
-            page = pageDecorators[key].call(this, page) || page;
+        try {
+            metrics.start(this.constructor.name,'applyPageDecorators');
+            for (var key in pageDecorators) {
+                metrics.start(this.constructor.name,'applyPageDecorators',key);
+                page = pageDecorators[key].call(this, page) || page;
+                metrics.stop();
+            }
+            return page;
+        } finally {
+            metrics.stop();
         }
-        return page;
     };
     var isSelectedDecorator = function(decorator, decoratorsToUse) {
         if (decoratorsToUse.indexOf(decorator) > -1) {

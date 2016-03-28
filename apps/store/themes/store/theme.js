@@ -67,7 +67,15 @@ var engine = caramel.engine('handlebars', (function() {
                                 if (new File(p).isExists()) {
                                     return p;
                                 }
+                                var rxtAPI = require('rxt');
+                                var appExtensionMediator = rxtAPI.core.defaultAppExtensionMediator();
+                                if(appExtensionMediator){
+                                    var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme,'partials'));
+                                    if (new File(defaultExtensionPartialsPath).isExists()){
+                                        return defaultExtensionPartialsPath;
+                                    }
 
+                                }
                             }
                         }
                         return theme.__proto__.resolve.call(theme, path);

@@ -76,6 +76,7 @@ var LifecycleUtils = {};
     constants.NOTIFICATION_WARN = 'warn';
     constants.NOTIFICATION_SUCCESS = 'success';
     constants.MSG_WARN_CANNOT_CHANGE_STATE = 'msgCannotChangeState';
+    constants.MSG_WARN_NO_TRAVERSABLE_STATE = 'msgNoTraversableStates';
     constants.MSG_SUCCESS_STATE_CHANGE = 'msgStateChangedSuccess';
     constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
@@ -180,12 +181,12 @@ var LifecycleUtils = {};
         if (eventMap.hasOwnProperty(eventName)) {
             eventCb = eventCb || {};
             eventCallbacks = eventMap[eventName];
-            console.log('emiting event::' + eventName + ' [active lifecycle: ' + LifecycleAPI.currentLifecycle() + ' ]');
+            //console.log('emiting event::' + eventName + ' [active lifecycle: ' + LifecycleAPI.currentLifecycle() + ' ]');
             for (var index = 0; index < eventCallbacks.length; index++) {
                 eventCallbacks[index](eventCb);
             }
         } else {
-            console.log('no event listeners for event :: ' + eventName);
+            //console.log('no event listeners for event :: ' + eventName);
         }
     };
     /**
@@ -496,7 +497,7 @@ var LifecycleUtils = {};
         var state = this.state(this.currentState);
         var datamodel;
         if (arguments.length === 1) {
-            console.log('changing checklist state');
+            //console.log('changing checklist state');
             datamodel = (state.datamodel) ? state.datamodel : (state.datamodel = {});
             datamodel.checkItems = arguments[0];
         } else {
@@ -666,7 +667,7 @@ var LifecycleUtils = {};
         return this.isLCActionsPermitted;
     };
     LifecycleImpl.prototype.processHistory = function(data) {
-        console.log('### Processing history ###');
+        //console.log('### Processing history ###');
         var entry;
         var historyEntry;
         this.history = [];

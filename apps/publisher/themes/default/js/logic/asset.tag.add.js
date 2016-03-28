@@ -22,7 +22,7 @@ $(function(){
 
         },
         error:function(){
-            console.log('unable to fetch tag cloud for '+type);
+            //console.log('unable to fetch tag cloud for '+type);
         }
     });
 

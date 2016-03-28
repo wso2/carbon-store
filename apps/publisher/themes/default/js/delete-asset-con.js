@@ -28,6 +28,7 @@ $(document).ready(function() {
         $('#btn-delete-con').addClass('disabled');
         $('#delete-loading').removeClass('hide');
         $('.nav li>a:not(:first):not(:last)').css("display", "none");
+        $('.tiles > li > a').css("display","block");
 
         $.ajax({
             url : path,

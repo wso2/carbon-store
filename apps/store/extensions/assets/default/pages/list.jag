@@ -24,6 +24,7 @@ require('/modules/store.js').exec(function(ctx) {
     var core = require('rxt').core;
     var ui = require('rxt').ui;
     var constants = require('rxt').constants;
+    var metrics = require('carbon-metrics').metrics;
     var query = ctx.params.query;
     var store = ctx.store;
     var user = ctx.user;
@@ -34,7 +35,9 @@ require('/modules/store.js').exec(function(ctx) {
     var options = uriMatcher.match(assetPageUrl) || uriMatcher.match(tenantedAssetPageUrl);
     var type = options.type;
     var assets = [];
-    var tenantId = ctx.tenant.tenantId;
+    var tenantApi = require('/modules/tenant-api.js').api;
+    var tenantDetails = tenantApi.createTenantDetails(ctx.request, ctx.session);
+    var tenantId = tenantDetails.tenantId;  
     var q = ctx.request.getParameter('q');
     var sortBy = ctx.request.getParameter('sortBy');
     var sortOrder = ctx.request.getParameter('sort');
@@ -44,13 +47,13 @@ require('/modules/store.js').exec(function(ctx) {
     var DEFAULT_LIST_PAGIN_COUNT = 1; //Move to constants next minor release
 
     //var sortOrder = ctx.request.getParameter('sortOrder');
-    var page = ui.buildPage(ctx.session, ctx.request);
+    var page = ui.buildPage(ctx.session, ctx.request, tenantId);
     var output = {};
     var tag = ctx.request.getParameter('tag');
     var assetApi = require('/modules/asset-api.js').api;
     var utilsRequest = require('utils').request;
     var subscriptionApi = require('/modules/subscriptions-api.js').api;
-    var tenantApi = require('/modules/tenant-api.js').api;
+
     var ratingApi = require('/modules/rating-api.js').api;
     var userApi = require('/modules/user-api.js').api;
     PAGING.sortBy = (sortBy || constants.DEFAULT_ASSET_PAGIN.sortBy);
@@ -135,7 +138,12 @@ require('/modules/store.js').exec(function(ctx) {
         if (log.isDebugEnabled()) {
             log.debug('list page search query: ' + stringify(query));
         }
-        assets = am.advanceSearch(query, PAGING);
+        try {
+            metrics.start("org.wso2.es.store.extensions.assets.list.advanceSearch");
+            assets = am.advanceSearch(query, PAGING);
+        } finally {
+            metrics.stop();
+        }
     } else {
         if (PAGING.sortOrder == 'popular') {
             assets = ratingApi.getPopularAssets(type, context.tenantId, am, PAGING.start);
@@ -143,7 +151,12 @@ require('/modules/store.js').exec(function(ctx) {
             if (rxtManager.isGroupingEnabled(type)) {
                 assets = am.searchByGroup();
             } else {
-                assets = am.search(null, PAGING);
+                try {
+                    metrics.start("org.wso2.es.store.extensions.assets.list.search");
+                    assets = am.search(null, PAGING);
+                } finally {
+                    metrics.stop();
+                }
             }
         }
     }
@@ -155,12 +168,26 @@ require('/modules/store.js').exec(function(ctx) {
     });
     //Add subscription details to the assets
     //tenantApi.debug();
-    subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);
-    ratingApi.addRatings(assets, am, context.tenantId, context.username);
-    var output = am.render(assets, page).list();
+    //Skip subscription and rating loading for the first call, since it is not required to render the page.
+    //check cameral data in request header to identify the second call.
+    if (ctx.request.getHeader('X-Caramel-Data')) {
+        subscriptionApi.addSubscriptionDetails(assets, am, ctx.session);
+        ratingApi.addRatings(assets, am, context.tenantId, context.username);
+    }
+    try {
+        metrics.start("org.wso2.es.store.extensions.assets.list.am.render");
+        output = am.render(assets, page).list();
+    } finally {
+        metrics.stop();
+    }
     output.paging = assetApi.assetsPaging(assets, type, ctx.request);
     var qtemp = ctx.request.getParameter('q') || '';
     var searchQuery = utilsRequest.formatSearchQuery(qtemp);
     output.searchQuery = searchQuery||'';
-    caramel.render(output);
+    try {
+        metrics.start("org.wso2.es.store.extensions.assets.list.caramal.render");
+        caramel.render(output);
+    } finally {
+        metrics.stop();
+    }
 }, request, response, session); %>
