@@ -1409,19 +1409,19 @@ var asset = {};
     AssetManager.prototype.invokeLcAction = function(asset, action) {
         var success = false;
         var lifecycleName = resolveLCName(arguments, asset, 2);
-        if (!action) {
-            log.error('Failed to invokeAction as an action was not provided for asset: ' + stringify(asset));
-            return success;
-        }
         if (!asset) {
             log.error('Failed to invokeAction as an asset was not provided.');
+            return success;
+        }
+        if (!action) {
+            log.error('Failed to invokeAction as an action was not provided for asset of id: ' + stringify(asset.id));
             return success;
         }
         try {
             this.am.promoteLifecycleState(action, asset, lifecycleName);
             success = true;
         } catch (e) {
-            log.error('Failed to invoke action: ' + action + ' for the asset: ' + stringify(asset) + '.The following exception was thrown: ' + e);
+            log.error('Failed to invoke action: ' + action + ' for the asset of id: ' + stringify(asset.id) + '.The following exception was thrown: ' + e);
             throw e;
         }
         return success;
