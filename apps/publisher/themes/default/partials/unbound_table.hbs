@@ -3,18 +3,29 @@
         <i class="cu-btn-exp-col btn-collapsed">{{label}}</i>
     </a>
 </h2>
-<div id="{{name}}" class="responsive-form-container {{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" aria-expanded="true" style="">
-    {{#if subheading}}
-    <table class='table table-bordered'>
-        <thead class="decorated-table-heading">
-            {{#each subheading}}
-                <th>{{heading}}</th>
-            {{/each}}
-        </thead>
-        <tbody>
-        {{renderUnboundTablePreview .}}
-        </tbody>
-    </table>
-    {{/if}}
-
-</div>
+{{#if renderingMetaData.emptyTable}}
+    <div id="{{name}}"
+         class="responsive-form-container {{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}"
+         aria-expanded="true" style="">
+        <div id="no-table-data">
+            <b>No {{label}} data available</b>
+        </div>
+    </div>
+{{else}}
+    <div id="{{name}}"
+         class="responsive-form-container {{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}"
+         aria-expanded="true" style="">
+        {{#if subheading}}
+            <table class='table table-bordered'>
+                <thead class="decorated-table-heading">
+                {{#each subheading}}
+                    <th>{{heading}}</th>
+                {{/each}}
+                </thead>
+                <tbody>
+                {{renderUnboundTablePreview .}}
+                </tbody>
+            </table>
+        {{/if}}
+    </div>
+{{/if}}
