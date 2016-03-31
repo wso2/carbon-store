@@ -18,6 +18,6 @@
  */
 var resources = function (page,meta) {
     return {
-        js: ['delete-asset-con.js']
+        js: ['delete-asset-con.js', 'delete-asset.js']
     };
 };
