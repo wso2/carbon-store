@@ -106,6 +106,57 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return new Handlebars.SafeString(output);
             });
+            Handlebars.registerHelper('renderUnboundTablePreview', function(table) {
+                //Get the number of rows in the table
+                var rowCount = getNumOfRowsUnbound(table);
+                var fields = table.fields;
+                var out = '';
+                var ref = require('utils').reflection;
+                for (var index = 0; index < rowCount; index++) {
+                    out += '<tr>';
+                    var columnCount = Object.keys(fields).length;
+                    for (var key in fields) {
+                        //Determine if the value is an array
+                        if (!ref.isArray(fields[key].value)) {
+                            fields[key].value = [fields[key].value];
+                        }
+                        var value = fields[key].value[index] ? fields[key].value[index] : ' ';
+                        out += '<td style="width:'+100/columnCount+'%">' + Handlebars.Utils.escapeExpression(value) + '</td>';
+                    }
+                    out += '</tr>';
+                }
+                return new Handlebars.SafeString(out);
+            });
+            Handlebars.registerHelper('renderHeadingTablePreview', function(table) {
+                var fieldCount = getFieldCount(table);
+                var firstField = getFirstField(table);
+                //Determine if there is only one field and it is an option text
+                if ((fieldCount == 1) && (firstField.type == 'option-text')) {
+                    return new Handlebars.SafeString(renderOptionsTextPreview(firstField));
+                } else {
+                    return new Handlebars.SafeString(renderHeadingFieldPreview(table));
+                }
+            });
+            Handlebars.registerHelper('renderTablePreview', function(table) {
+                var headingPtr = Handlebars.compile('{{> heading_table .}}');
+                var defaultPtr = Handlebars.compile('{{> default_table .}}');
+                var unboundPtr = Handlebars.compile('{{> unbound_table .}}');
+                var headings = getHeadings(table);
+                //Check if the table is unbounded
+                if ((table.maxoccurs) && (table.maxoccurs == 'unbounded')) {
+                    if (headings.length > 0) {
+                        table.subheading = table.subheading[0].heading;
+                    }
+                    return new Handlebars.SafeString(unboundPtr(table));
+                }
+                //Check if the table has headings
+                if (headings.length > 0) {
+                    table.subheading = table.subheading[0].heading;
+                    return new Handlebars.SafeString(headingPtr(table));
+                }
+                //Check if the table is a normal table
+                return new Handlebars.SafeString(defaultPtr(table));
+            });
             Handlebars.registerHelper('authentication', function(options) {
                 var log = new Log();
                 //Determine if security details are present
@@ -270,6 +321,49 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return ;
             });
+            Handlebars.registerHelper('eachField', function(context, options) {
+                var ret = '';
+                for (var key in context) {
+                    context[key].label = context[key].name.label ? context[key].name.label : context[key].name.name;
+                    if(!context[key].hidden){
+                        ret += options.fn(context[key]);
+                    }
+                }
+                return ret;
+            });
+            Handlebars.registerHelper('if_equal', function(lvalue, rvalue, options) {
+                if (arguments.length < 3)
+                    throw new Error("Handlebars Helper equal needs 2 parameters");
+                if( lvalue!=rvalue ) {
+                    return options.inverse(this);
+                } else {
+                    return options.fn(this);
+                }
+            });
+            Handlebars.registerHelper('renderCheckbox', function(value) {
+                var out = '';
+                if( value === "true") {
+                    out += '<div class="col-sm-4"><input type="checkbox" checked disabled="disabled"/></div>';
+                } else {
+                    out += '<div class="col-sm-4 "><input type="checkbox" disabled="disabled"/></div>';
+                }
+                return new Handlebars.SafeString(out);
+            });
+            var getHeadings = function(table) {
+                return (table.subheading) ? table.subheading[0].heading : [];
+            };
+            var getNumOfRowsUnbound = function(table) {
+                var ref = require('utils').reflection;
+                for (var key in table.fields) {
+                    //If there is only a single entry it will be returned as a string as opposed to an array
+                    //We must convert it to an array to mainatain consistency
+                    if (!ref.isArray(table.fields[key].value)) {
+                        table.fields[key].value = [table.fields[key].value];
+                    }
+                    return (table.fields[key].value) ? table.fields[key].value.length : 0;
+                }
+                return 0;
+            };
         },
         render: function(data, meta) {
             this.__proto__.render.call(this, data, meta);
