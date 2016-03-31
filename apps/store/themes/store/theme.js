@@ -364,6 +364,77 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return 0;
             };
+
+            var renderOptionsTextPreview = function(field) {
+                var value;
+                var values = field.value;
+                var output = '';
+                var ref = require('utils').reflection;
+                //If there is only a single entry then the registry API will send a string
+                //In order to uniformly handle these scenarios we must make it an array
+                if (values) {
+                    if (!ref.isArray(values)) {
+                        values = [values];
+                    }
+                    for (var index in values) {
+                        value = values[index];
+                        var delimter = value.indexOf(':')
+                        var option = value.substring(0, delimter);
+                        var text = value.substring(delimter + 1, value.length);
+                        if ((field.url == 'true'|| field.url == true) && text && text.lastIndexOf('http', 0) === 0){
+                            output += '<tr><td>' + option + '</td><td><a href="'+text+'">' + text + '</a></td></tr>';
+                        } else {
+                            output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';
+                        }
+                    }
+                }
+                return output;
+            };
+            var getNumOfRows = function(table) {
+                for (var key in table.fields) {
+                    return table.fields[key].value.length;
+                }
+                return 0;
+            };
+
+            var getFieldCount = function(table) {
+                var count = 0;
+                for (var key in table.fields) {
+                    count++;
+                }
+                return count;
+            };
+            var getFirstField = function(table) {
+                for (var key in table.fields) {
+                    return table.fields[key];
+                }
+                return null;
+            };
+            var renderHeadingFieldPreview = function(table) {
+                var fields = table.fields;
+                var columns = table.columns;
+                var index = 0;
+                var out = '<tr>';
+                //The table should only be drawn if it is not empty
+                if(table.renderingMetaData && table.renderingMetaData.emptyTable){
+                    return '';
+                }
+                for (var key in fields) {
+                    if ((index % 3) == 0) {
+                        index = 0;
+                        out += '</tr><tr>';
+                    }
+                    if (fields[key].url == 'true' && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
+                        out += '<td><a href="'+fields[key].value+'">' + (fields[key].value || ' ') + '</a></td>';
+                    } else if(fields[key].value) {
+                        out += '<td>' + (fields[key].value || ' ') + '</td>';
+                    } else {
+                        out+='';
+                    }
+                    index++;
+                }
+                return out;
+            };
         },
         render: function(data, meta) {
             this.__proto__.render.call(this, data, meta);
