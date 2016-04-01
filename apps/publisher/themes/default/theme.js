@@ -101,7 +101,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var delimter = value.indexOf(':')
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
-                        if (field.url == 'true' && text && text.lastIndexOf('http', 0) === 0){
+                        if ((field.url == 'true'|| field.url == true) && text && text.lastIndexOf('http', 0) === 0){
                             output += '<tr><td>' + option + '</td><td><a href="'+text+'">' + text + '</a></td></tr>';
                         } else {
                             output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';

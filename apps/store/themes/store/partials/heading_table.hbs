@@ -1,0 +1,12 @@
+<div class="{{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" id="collapse{{name}}">
+    <table class='table table-bordered'>
+        <thead class="decorated-table-heading">
+            {{#each subheading}}
+                <th>{{heading}}</th>
+            {{/each}}
+        </thead>
+        <tbody>
+            {{renderHeadingTablePreview .}}
+        </tbody>
+    </table>
+</div>
