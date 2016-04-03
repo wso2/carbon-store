@@ -380,6 +380,12 @@ var asset = {};
             if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
                 options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
             }
+            //If the asset is retrieved via a get it will contain a content property
+            //which is used to invoke the GenericArtifact setContent method.This check will ensure
+            //that it is removed prior to calling the carbon/artifact.js 
+            if(options.hasOwnProperty('content')){
+                delete options.content;
+            }
             this.am.update(options);
             var asset = this.am.get(options.id);
             if (!this.rxtManager.isGroupingEnabled(this.type)) {
