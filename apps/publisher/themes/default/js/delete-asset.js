@@ -52,7 +52,6 @@ $(document).ready(function () {
 var enableDelete = function () {
     $('#Delete').removeClass('not-active').removeAttr("title").unbind('click');
     $('#btn-delete-con').show();
-    $('#delete-msg').text("Do you want to delete this asset?");
 };
 
 var disableDelete = function (msg) {

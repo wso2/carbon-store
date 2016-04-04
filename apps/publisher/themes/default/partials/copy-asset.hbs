@@ -1,13 +1,34 @@
+{{#with assets}}
+    <div class="well asset-well">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-1">
+                    <div class="ast-img setbgcolor" style="background: {{this.uniqueColor}}">
+                        <span class="ast-type-icon">
+                            <i class="fw fw-soap fw-lg"></i>
+                        </span>
+
+                        <div class="ast-name-icon">{{this.nameToChar}}</div>
+                    </div>
+                </div>
+                <div class="col-lg-10 padding-left-double">
+                    <h4>{{name}}</h4>
+                    {{#if version}}
+                        <p>Version : {{version}}</p>
+                    {{/if}}
+                    {{#if lifecycleState}}
+                        <p>{{lifecycle}} : {{lifecycleState}}</p>
+                    {{/if}}
+                    <div class="well-description">{{tables.0.fields.createdtime.value}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{/with}}
 <div class="copy" id="newVersionModal" >
     <div class="modal-dialog modal-sm">
 
-        <h3>{{assets.name}}</h3>
-        <h6>{{assets.type}}</h6>
-        {{#if assets.version}}
-            <h4>{{assets.version}}</h4>
-        {{/if}}
-          <h4 class="modal-title">{{t "Create new version"}}</h4>
-
+        <h4 id="delete-msg" class="modal-title">{{t "Do you want to create a new version of "}}{{assets.name}}{{t " "}}{{rxt.singularLabel}}{{t "?"}}</h4>
           {{t "Version"}}: <input type="text" class="form-control" name="new-version" id="new-version">
           <input type="hidden" id="asset-id" value="{{assets.id}}">
           <input type="hidden" id="asset-type" value="{{assets.type}}">
