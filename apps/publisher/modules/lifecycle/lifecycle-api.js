@@ -246,12 +246,13 @@ var error = '';
 
                     checkItem.name = item.getName();
                     checkItem.checked = item.getValue();
-                    if (isLCActionsPermitted) {
+                    checkItem.isVisible = item.getVisible();
+                    /*if (isLCActionsPermitted) {
                         checkItem.isVisible = item.getVisible();
                     }
                     else {
                         checkItem.isVisible = null;
-                    }
+                    }*/
 
 
                     replaceCheckItems[item.getOrder()] = checkItem;
