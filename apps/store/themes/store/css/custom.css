@@ -311,7 +311,7 @@ a.ast-name{
     margin-top: 0px;
     height: 32px;
     word-wrap: break-word !important;
-    white-space: normal !important;
+    white-space: nowrap !important;
 }
 
 a.ast-name:hover {
@@ -358,7 +358,7 @@ a.ast-name:hover {
 }
 
 .padding {
-    padding: 10px;
+    padding: 5px;
 }
 
 .padding-bottom-sm {
