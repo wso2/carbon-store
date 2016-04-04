@@ -171,4 +171,10 @@ var constants = {};
 
     constants.MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
+    /**
+     * The version declared in the publisher.json
+     * @type {string}
+     */
+    constants.VERSION = 'app.version';
+
 }(constants));
