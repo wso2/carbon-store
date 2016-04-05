@@ -72,7 +72,8 @@ var ui = {};
                 currentPage: options.currentPage,
                 title: options.title,
                 landingPage: options.landingPage,
-                applicationTitle: options.applicationTitle
+                applicationTitle: options.applicationTitle,
+                applicationVersion:options.version
             }
         };
     };
@@ -192,7 +193,8 @@ var ui = {};
             landingPage: landingPage,
             title: pageDetails.title,
             tenantId:tenantId,
-            applicationTitle: applicationTitle
+            applicationTitle: applicationTitle,
+            version:app.version()
         });
         return page;
     };
@@ -210,7 +212,8 @@ var ui = {};
             landingPage: landingPage,
             title: pageDetails.title,
             tenantId:tenantId,
-            applicationTitle: applicationTitle
+            applicationTitle: applicationTitle,
+            version:app.version()
         });
         return page;
     };
