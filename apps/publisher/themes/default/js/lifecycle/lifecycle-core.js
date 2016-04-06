@@ -674,6 +674,7 @@ var LifecycleUtils = {};
         for (var index = 0; index < data.length; index++) {
             entry = data[index];
             historyEntry = {};
+            historyEntry.aspect = entry.aspect;
             historyEntry.state = entry.state;
             historyEntry.timestamp = entry.timestamp;
             historyEntry.user = entry.user;

@@ -74,9 +74,24 @@ messages.alertInfoLoader = function(value){
 
 };
 messages.alertWarn = function(value){
-    var value = params.value;
+    $.notify.addStyle('happyyellow', {
+        html: "<div><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "Gold",
+                "padding": "10px"
+            },
+            superblue: {
+                "color": "white",
+                "background-color": "yellow"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'warn'
+        className: 'warn',
+        style: 'happyyellow'
     });
 };

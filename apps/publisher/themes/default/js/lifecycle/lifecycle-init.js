@@ -175,6 +175,8 @@ $(function() {
         if (impl) {
             history = impl.history;
             data.history = history.slice(historyStart, historyEnd);
+            data.history.isStateChangedOnce = isStateChangedOnce(data.history);
+
             renderPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
             incrementHistoryRenderParams(historyStart, historyEnd, history.length);
         }
@@ -187,9 +189,21 @@ $(function() {
         if (impl) {
             history = impl.history;
             data.history = history.slice(start, end);
+            data.history.isStateChangedOnce = isStateChangedOnce(data.history);
+
             appendPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
             incrementHistoryRenderParams(start, end, history.length);
         }
+    };
+
+    var isStateChangedOnce = function (history) {
+        var isStateChangedOnce = false;
+        for (var i = 0; i < history.length; i++) {
+            if (history[i].targetState != undefined) {
+                return true;
+            }
+        }
+        return isStateChangedOnce;
     };
 
     var incrementHistoryRenderParams = function(start, end, historyLength){
@@ -362,10 +376,7 @@ $(function() {
         unrenderLCActions();
         unrenderChecklistItems();
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
-            LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
-                type: constants.NOTIFICATION_WARN,
-                global: true
-            });
+            messages.alertWarn(config(constants.MSG_WARN_CANNOT_CHANGE_STATE));
             renderChecklistItems();
             return;
         }
@@ -381,18 +392,12 @@ $(function() {
         hightlightCurrentStateNode();
         renderStateInformation();
         if (LifecycleAPI.lifecycle().nextStates().length == 0) {
-            LifecycleAPI.notify(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE), {
-                type: constants.NOTIFICATION_WARN,
-                global: false
-            });
+            messages.alertWarn(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE));
             renderChecklistItems();
             return;
         }
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
-            LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
-                type: constants.NOTIFICATION_WARN,
-                global: true
-            });
+            messages.alertWarn(config(constants.MSG_WARN_CANNOT_CHANGE_STATE));
             renderChecklistItems();
             return;
         }
@@ -403,7 +408,7 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED,function(){
         unrenderChecklistItems();
         $(id(config(constants.CONTAINER_CHECKLIST_OVERLAY))).hide();
-        LifecycleAPI.notify("Failed to obtain state information ",{type:"error",global:true});
+        messages.alertError("Failed to obtain state information");
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START, function() {
         blockChecklist();
@@ -413,9 +418,7 @@ $(function() {
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED, function() {
         unblockChecklist();
-        LifecycleAPI.notify(config(constants.MSG_ERROR_CHECKLIST_UPDATE), {
-            type: 'error'
-        });
+        messages.alertError(config(constants.MSG_ERROR_CHECKLIST_UPDATE));
     });
     LifecycleAPI.event(constants.EVENT_ACTION_START, function() {
         blockLCActions();
@@ -424,9 +427,7 @@ $(function() {
         //unrenderTransitionUI();
         unblockLCActions();
         clearComments();
-        LifecycleAPI.notify(config(constants.MSG_SUCCESS_STATE_CHANGE), {
-            type: 'success'
-        });
+        messages.alertSuccess(config(constants.MSG_SUCCESS_STATE_CHANGE));
         LifecycleAPI.lifecycle().fetchHistory();
     });
     LifecycleAPI.event(constants.EVENT_ACTION_FAILED, function() {
@@ -438,14 +439,10 @@ $(function() {
             var n = notifyMessage.indexOf(": ");
             //to remove ": " along with exception type 2 was added to n
             notifyMessage = notifyMessage.substring(n + 2);
-            LifecycleAPI.notify(notifyMessage, {
-                type: 'error'
-            });
+            messages.alertError(notifyMessage);
         }
         else{
-            LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
-                type: 'error'
-            });
+            messages.alertError(config(constants.MSG_ERROR_STATE_CHANGE));
         }
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
