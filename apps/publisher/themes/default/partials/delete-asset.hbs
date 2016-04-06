@@ -25,16 +25,15 @@
     </div>
 {{/with}}
 <div class="delete" id="deleteModal" >
-    <div class="modal-dialog modal-sm">
-
-        <h4 id="delete-msg" class="modal-title">{{t "Do you want to delete "}}{{assets.name}}{{t " "}}{{rxt.singularLabel}}{{t "?"}}</h4>
+    <div class="form-inline">
+          <p id="delete-msg">{{t "Do you want to delete "}}<b>{{assets.name}}</b>{{t " "}}{{rxt.singularLabel}}{{t "?"}}</p>
           <input type="hidden" id="asset-id" value="{{assets.id}}">
           <input type="hidden" id="asset-name" value="{{assets.name}}">
           <input type="hidden" id="asset-type" value="{{assets.type}}">
           <input type="hidden" id="landing-page" value="{{meta.landingPage}}">
           <i class="fa fa-spinner fa-spin fa-3x hide" id="delete-loading"></i>
           <br/>
-          <button type="button" id="btn-delete-con" class="btn btn-primary" >{{t "Delete"}}</button>
+          <button type="button" id="btn-delete-con" class="btn btn-danger" >{{t "Delete"}}</button>
           <button type="button" id="btn-cancel-con" class="btn btn-primary" >{{t "Cancel"}}</button>
     </div>
 </div>
