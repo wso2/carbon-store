@@ -1,13 +1,19 @@
-{{#each history}}
-{{#if targetState}}
+{{#if history.isStateChangedOnce}}
+    {{#each history}}
+        {{#if targetState}}
 
-    <div class="history-entry">
-        <span class="margin-right-double">{{dateOfTransition}}</span>
+            <div class="history-entry">
+                <span class="margin-right-double">{{dateOfTransition}}</span>
         <span> {{user}} moved asset from <span class="text-primary">{{state}}</span> to <span
                 class="text-success">{{targetState}}</span> in <b>{{aspect}}</b></span>
-        <br> <span class="comment-title"> {{#if hasComment}} comment:</span>
-        <span> {{comment}} {{/if}}</span>
-    </div>
+                <br> <span class="comment-title"> {{#if hasComment}} comment:</span>
+            <span> {{comment}} {{/if}}</span>
+            </div>
 
+        {{/if}}
+    {{/each}}
+{{else}}
+    <div class="emptyAssets-MsgDiv">
+        <p class="emptyAssets">We couldn't find any lifecycle history...</p>
+    </div>
 {{/if}}
-{{/each}}
