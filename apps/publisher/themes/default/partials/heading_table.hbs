@@ -3,15 +3,23 @@
             <i class="cu-btn-exp-col btn-collapsed">{{label}}</i>
     </a>
 </h2>
-<div class="{{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" id="collapse{{name}}">
-    <table class='table table-bordered'>
-        <thead class="decorated-table-heading">
+{{#if renderingMetaData.emptyTable}}
+    <div class="{{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" id="collapse{{name}}">
+        <div id="no-table-data">
+            <b>No {{label}} data available</b>
+        </div>
+    </div>
+{{else}}
+    <div class="{{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" id="collapse{{name}}">
+        <table class='table table-bordered'>
+            <thead class="decorated-table-heading">
             {{#each subheading}}
                 <th>{{heading}}</th>
             {{/each}}
-        </thead>
-        <tbody>
+            </thead>
+            <tbody>
             {{renderHeadingTablePreview .}}
-        </tbody>
-    </table>
-</div>
+            </tbody>
+        </table>
+    </div>
+{{/if}}

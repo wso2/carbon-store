@@ -130,14 +130,20 @@
  	else{
  		//Check if options have been provided
 		if(matcher.match(apiEndpoint)){
-			metrics.start('assets-router','apiEndpoint');
-			handleApiEndpoint(request,session,matcher.elements());
-			metrics.stop();
+			try {
+				metrics.start('assets-router','apiEndpoint');
+				handleApiEndpoint(request,session,matcher.elements());
+			} finally {
+				metrics.stop();
+			}
 		}
 		else if(matcher.match(pageEndpoint)){
-			metrics.start('assets-router','pageEndpoint');
-			handlePageEndpoint(request,session,matcher.elements());
-			metrics.stop();
+			try {
+				metrics.start('assets-router','pageEndpoint');
+				handlePageEndpoint(request,session,matcher.elements());
+			} finally {
+				metrics.stop();
+			}
 		}
 		else{
 			response.sendError(404,'Unable to route the request to an appropriate endpoint');

@@ -22,6 +22,7 @@
     stroke: #9d9c9c;
     fill: #9d9c9c;
     stroke-width: 1px;
+    fill-opacity: 0 !important;
 }
 
 text {
@@ -158,7 +159,7 @@ text {
 }
 
 .lifecycle-selection-area {
-    padding-top: 20px;
+    padding-top: 10px;
 }
 
 .lifecycle-information-area{
@@ -168,7 +169,7 @@ text {
 .wr-lifecycle-selection .dropdown-menu {
     border: 0px solid #787777;
     background: #8a8a8a;
-    top: 58px;
+    top: 232px;
     left: 133px;
     width: 202px;
     padding-top: 0;

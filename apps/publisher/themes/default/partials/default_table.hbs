@@ -3,10 +3,17 @@
         <i class="cu-btn-exp-col btn-collapsed">{{label}}</i>
     </a>
 </h2>
-<div class="{{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" id="collapse{{label}}">
-    {{#eachField this.fields}}
+{{#if renderingMetaData.emptyTable}}
+    <div class="{{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" id="collapse{{label}}">
+        <div id="no-table-data">
+            <b>No {{label}} data available</b>
+        </div>
+    </div>
+{{else}}
+    <div class="{{#if renderingMetaData.emptyTable}} collapse {{else}} collapse in {{/if}}" id="collapse{{label}}">
+        {{#eachField this.fields}}
             <div class="row padding-bottom-lg">
-                <div class="col-sm-2 text-right"><b>{{label}} {{t ":"}}</b></div>
+                <div class="col-sm-2 custom-form-label text-right">{{label}} {{t ":"}}</div>
                 {{#if this.url}}
                     <div id="{{label}}-value" class="col-sm-10"><a href="{{value}}">{{value}}</a></div>
                 {{else}}
@@ -17,5 +24,6 @@
                     {{/if_equal}}
                 {{/if}}
             </div>
-    {{/eachField}}
-</div>
+        {{/eachField}}
+    </div>
+{{/if}}

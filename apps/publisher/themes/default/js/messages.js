@@ -1,14 +1,46 @@
 var messages = {};
 messages.alertSuccess = function(value){
+    $.notify.addStyle('happygreen', {
+        html: "<div><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "lightgreen",
+                "padding": "10px"
+            },
+            supergreen: {
+                "color": "white",
+                "background-color": "DarkGreen"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'success'
+        className: 'success',
+        style: 'happygreen'
     });
 };
 messages.alertError = function(value){
+    $.notify.addStyle('sadred', {
+        html: "<div><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "IndianRed",
+                "padding": "10px"
+            },
+            superred: {
+                "color": "white",
+                "background-color":  "Maroon"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'error'
+        className: 'error',
+        style: 'sadred'
     });
 };
 messages.alertInfo = function(value){
@@ -24,7 +56,7 @@ messages.alertInfoLoader = function(value){
             base: {
                 "white-space": "nowrap",
                 "background-color": "lightblue",
-                "padding": "5px"
+                "padding": "10px"
             },
             superblue: {
                 "color": "white",
@@ -34,8 +66,7 @@ messages.alertInfoLoader = function(value){
     });
 
     $.notify(value, {
-        globalPosition: 'right bottom',
-        elementPosition: 'right bottom',
+        globalPosition: 'top center',
         className: 'info',
         autoHide: false,
         style: 'happyblue'
@@ -43,9 +74,24 @@ messages.alertInfoLoader = function(value){
 
 };
 messages.alertWarn = function(value){
-    var value = params.value;
+    $.notify.addStyle('happyyellow', {
+        html: "<div><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "Gold",
+                "padding": "10px"
+            },
+            superblue: {
+                "color": "white",
+                "background-color": "yellow"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'warn'
+        className: 'warn',
+        style: 'happyyellow'
     });
 };

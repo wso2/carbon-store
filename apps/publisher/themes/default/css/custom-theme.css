@@ -246,7 +246,6 @@ a.ctrl-filter-category:hover {
     text-align:center;
     width:100%;
     overflow:hidden;
-    position: relative;
     overflow: hidden;
 }
 .ast-img .ast-name-img:before {

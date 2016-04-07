@@ -66,7 +66,10 @@ publisher.init(pubConfig);
 rxt.server.init(pubConfig);
 
 rxt.permissions.init();
-metricsAPI.init(pubConfig);
+metricsAPI.init(context,pubConfig);
+
+//get the version from publisher.json and set it.
+rxt.app.version(config.version);
 
 
 //var SUPER_TENANT_ID=-1234;

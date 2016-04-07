@@ -18,18 +18,17 @@ $(document).ready(function() {
 				data : JSON.stringify({"attributes":{"overview_version": newVersion }}),
 				type : 'POST',
 				success : function(response) {
-					alertMessage.addClass('alert-success');
-					alertMessage.removeClass('alert-warning hide');
-					alertMessage.html('Asset version created successfully! <a href="'+assetPath+response.data+'"> View </a>');
+                    messages.alertSuccess('Asset version created successfully!');
+                    setTimeout(function () {
+                        var path = caramel.url('assets/' + assetType + '/details/' + response.data);
+                        window.location = path;
+                    }, 3000);
 					$('#btn-create-version').removeClass('disabled');
 					$('#new-version-loading').addClass('hide');
 				},
 				error : function(error) {
-					//console.log(error);
 					var errorText = JSON.parse(error.responseText).error;
-					alertMessage.text(errorText);
-					alertMessage.removeClass('alert-success hide');
-					alertMessage.addClass('alert-warning');
+                    messages.alertError(errorText);
 
 					$('#btn-create-version').removeClass('disabled');
 					$('#new-version-loading').addClass('hide');

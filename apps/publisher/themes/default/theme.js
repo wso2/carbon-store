@@ -101,7 +101,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var delimter = value.indexOf(':')
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
-                        if (field.url == 'true' && text && text.lastIndexOf('http', 0) === 0){
+                        if ((field.url == 'true'|| field.url == true) && text && text.lastIndexOf('http', 0) === 0){
                             output += '<tr><td>' + option + '</td><td><a href="'+text+'">' + text + '</a></td></tr>';
                         } else {
                             output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';
@@ -279,11 +279,11 @@ var engine = caramel.engine('handlebars', (function() {
                 var isHidden= (field.hidden)?field.hidden:false;
 
                 if (!isHidden && field.type != "option-text"){
-                    output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12">' + (field.name.label || field.name.name);
+                    output = '<label class="custom-form-label col-lg-2 col-md-2 col-sm-12 col-xs-12 text-right">' + (field.name.label || field.name.name);
                     if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
                         output += '<sup class="required-field">*</sup>';
                     }
-                    output += '</label>';
+                    output += ' : </label>';
                 }
                 return output;
             };

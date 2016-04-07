@@ -175,6 +175,8 @@ $(function() {
         if (impl) {
             history = impl.history;
             data.history = history.slice(historyStart, historyEnd);
+            data.history.isStateChangedOnce = isStateChangedOnce(data.history);
+
             renderPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
             incrementHistoryRenderParams(historyStart, historyEnd, history.length);
         }
@@ -187,9 +189,21 @@ $(function() {
         if (impl) {
             history = impl.history;
             data.history = history.slice(start, end);
+            data.history.isStateChangedOnce = isStateChangedOnce(data.history);
+
             appendPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
             incrementHistoryRenderParams(start, end, history.length);
         }
+    };
+
+    var isStateChangedOnce = function (history) {
+        var isStateChangedOnce = false;
+        for (var i = 0; i < history.length; i++) {
+            if (history[i].targetState != undefined) {
+                return true;
+            }
+        }
+        return isStateChangedOnce;
     };
 
     var incrementHistoryRenderParams = function(start, end, historyLength){
