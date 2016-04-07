@@ -46,7 +46,7 @@ require('/modules/store.js').exec(function (ctx) {
                     type = content.type;
                 }
                 if (query) {
-                    var searchQuery = utils.request.formatSearchQuery(query);
+                    var searchQuery = decodeURIComponent(utils.request.formatSearchQuery(query));
                     userApi.updateSearchHistory(ctx.session, searchQuery, type);
                     response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, ctx.response, searchQuery);
                 } else {
