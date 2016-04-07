@@ -311,23 +311,16 @@ var LifecycleUtils = {};
         }
         switch (notificationType) {
             case constants.NOTIFICATION_WARN:
-                partial = constants.TEMPLATE_NOTIFICATION_WARN;
+                messages.alertWarn(msg);
                 break;
             case constants.NOTIFICATION_ERROR:
-                partial = constants.TEMPLATE_NOTIFICATION_ERROR;
+                messages.alertError(msg);
                 break;
             case constants.NOTIFICATION_SUCCESS:
-                partial = constants.TEMPLATE_NOTIFICATION_SUCCESS;
+                messages.alertSuccess(msg);
             default:
                 break;
         }
-        //Clear existing content
-        $(id(container)).html('');
-        renderPartial(partial, container, {
-            msg: msg
-        }, function(container) {
-            $(id(container)).fadeIn(5000);
-        });
     };
 
     function LifecycleImpl(options) {
