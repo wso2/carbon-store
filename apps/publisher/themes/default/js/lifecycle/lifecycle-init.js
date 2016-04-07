@@ -376,7 +376,10 @@ $(function() {
         unrenderLCActions();
         unrenderChecklistItems();
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
-            messages.alertWarn(config(constants.MSG_WARN_CANNOT_CHANGE_STATE));
+            LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
+                type: constants.NOTIFICATION_WARN,
+                global: true
+            });
             renderChecklistItems();
             return;
         }
@@ -392,12 +395,18 @@ $(function() {
         hightlightCurrentStateNode();
         renderStateInformation();
         if (LifecycleAPI.lifecycle().nextStates().length == 0) {
-            messages.alertWarn(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE));
+            LifecycleAPI.notify(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE), {
+                type: constants.NOTIFICATION_WARN,
+                global: false
+            });
             renderChecklistItems();
             return;
         }
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
-            messages.alertWarn(config(constants.MSG_WARN_CANNOT_CHANGE_STATE));
+            LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
+                type: constants.NOTIFICATION_WARN,
+                global: true
+            });
             renderChecklistItems();
             return;
         }
@@ -408,7 +417,7 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_FAILED,function(){
         unrenderChecklistItems();
         $(id(config(constants.CONTAINER_CHECKLIST_OVERLAY))).hide();
-        messages.alertError("Failed to obtain state information");
+        LifecycleAPI.notify("Failed to obtain state information ",{type:"error",global:true});
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_START, function() {
         blockChecklist();
@@ -418,7 +427,9 @@ $(function() {
     });
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED, function() {
         unblockChecklist();
-        messages.alertError(config(constants.MSG_ERROR_CHECKLIST_UPDATE));
+        LifecycleAPI.notify(config(constants.MSG_ERROR_CHECKLIST_UPDATE), {
+            type: 'error'
+        });
     });
     LifecycleAPI.event(constants.EVENT_ACTION_START, function() {
         blockLCActions();
@@ -427,7 +438,9 @@ $(function() {
         //unrenderTransitionUI();
         unblockLCActions();
         clearComments();
-        messages.alertSuccess(config(constants.MSG_SUCCESS_STATE_CHANGE));
+        LifecycleAPI.notify(config(constants.MSG_SUCCESS_STATE_CHANGE), {
+            type: 'success'
+        });
         LifecycleAPI.lifecycle().fetchHistory();
     });
     LifecycleAPI.event(constants.EVENT_ACTION_FAILED, function() {
@@ -439,10 +452,14 @@ $(function() {
             var n = notifyMessage.indexOf(": ");
             //to remove ": " along with exception type 2 was added to n
             notifyMessage = notifyMessage.substring(n + 2);
-            messages.alertError(notifyMessage);
+            LifecycleAPI.notify(notifyMessage, {
+                type: 'error'
+            });
         }
         else{
-            messages.alertError(config(constants.MSG_ERROR_STATE_CHANGE));
+            LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
+                type: 'error'
+            });
         }
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
