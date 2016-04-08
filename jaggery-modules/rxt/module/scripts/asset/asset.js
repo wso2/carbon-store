@@ -579,7 +579,8 @@ var asset = {};
                 var queryWithQuots = value.match(/"(.*?)"/g);
                 value = decodeURIComponent(value);
                 //Check if wildcard search is enabled
-                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots) {
+                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots
+                    && !(value.indexOf('(') > -1)) {
                     value = '*'+value+'*';
                 }
                 queryString.push(key + '=' + encodeURIComponent(value));

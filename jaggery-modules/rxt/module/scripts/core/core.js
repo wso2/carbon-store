@@ -625,6 +625,40 @@ var core = {};
         }
         return false;
     };
+    RxtManager.prototype.isSolarFacetsEnabled = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type
+            + ' in order to determine if the asset can be downloaded';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.categorization)) {
+            return rxtDefinition.meta.categorization.solarFacetsEnabled || false;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether ' +
+                'solar facets is enabled in categorization for ' + type
+                + '.Make sure the meta property is present in the configuration callback of the asset.js');
+        }
+        return false;
+    };
+    RxtManager.prototype.collapseInCount = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type
+            + ' in order to determine if the asset can be downloaded';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.categorization)) {
+            return rxtDefinition.meta.categorization.collapseInMenuCount || 0;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether ' +
+                'collapse in menu is enabled in categorization for ' + type
+                + '.Make sure the meta property is present in the configuration callback of the asset.js');
+        }
+        return false;
+    };
     RxtManager.prototype.isGroupingEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
@@ -746,6 +780,42 @@ var core = {};
         }
         return result;
     };
+
+    /**
+     * Returns all fields that match field type provided in the RXT definition
+     * @example
+     *     var fields = rxtManager.listRxtFieldsOfType('gadget','file');
+     *     print( fields ); // ['images_thumbnail', 'images_banner'];
+     * @param  {String} type      The RXT type
+     * @param  {String} fieldType The field type
+     * @return {Array}           An array of category fields qualified by the table name
+     */
+    RxtManager.prototype.listRxtCategoryFields = function(type, fieldType) {
+        var tables = this.listRxtTypeTables(type);
+        if (tables.length == 0) {
+            if (log.isDebugEnabled()) {
+                log.debug('The rxt definition for ' + type + ' does not have any tables.');
+            }
+            return [];
+        }
+        var table;
+        var field;
+        var result = [];
+        //Go through all of the tables
+        for (var key in tables) {
+            table = tables[key];
+            for (var fieldName in table.fields) {
+                field = table.fields[fieldName];
+                if (field.type == fieldType) {
+                    if(field.categorization){
+                        result.push(field);
+                    }
+                }
+            }
+        }
+        return result;
+    };
+
     RxtManager.prototype.listRxtFields = function(type) {
         var tables = this.listRxtTypeTables(type);
         var fields = [];

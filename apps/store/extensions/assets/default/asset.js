@@ -136,6 +136,10 @@ asset.configure = function() {
             categories: {
                 categoryField: 'overview_category'
             },
+            categorization: {
+                solarFacetsEnabled: false,
+                collapseInMenuCount: 2
+            },
             search: {
                 searchableFields: ['all'],
             },
@@ -219,6 +223,7 @@ asset.renderer = function(ctx) {
             },
             list: function(page) {
                 require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page, this);
+                require('/modules/page-decorators.js').pageDecorators.assetCategoryFilterDetails(ctx, page, this);
             }
         }
     };
