@@ -143,10 +143,10 @@ $(function() {
         e.preventDefault();
         var $panel = $(this).parent().next();
         if($panel.is(":visible")){
-            $panel.hide('fast');
+            $panel.slideUp();
             $(this).parent().addClass('collapsed');
         }else{
-            $panel.show('fast');
+            $panel.slideDown();
             $(this).parent().removeClass('collapsed');
         }
     });
