@@ -37,8 +37,14 @@
                 }
             },
             "basic": {
-                "attributes": {}
+                "attributes": {
+                    "loginURL":"%https.host%/store/pages/basic-auth-login"
+                }
             }
         }
+    },
+    "metrics":{
+        "enabled":false,
+        "enableTraceLogs":false
     }
 }

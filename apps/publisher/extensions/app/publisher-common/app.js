@@ -28,6 +28,7 @@ app.server = function(ctx) {
                 path:'sso-auth-login-controller.jag'
             },{
                 url:'basic-auth-login',
+                title:'Login',
                 path:'basic-auth-login-controller.jag'
             },{
                 url:'sso-logout',
@@ -47,7 +48,8 @@ app.server = function(ctx) {
         configs: {
             landingPage: '/assets/gadget/list',
             disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint','swagger','restservice','comments','soapservice'],
-            uiDisabledAssets: []
+            uiDisabledAssets: [],
+            title : "WSO2 Enterprise Store - Publisher"
         },
         onLoadedServerConfigs:function(configs){
         }
@@ -59,7 +61,14 @@ app.renderer = function(ctx) {
     return {
         pageDecorators: {
             navigationBar: function(page) {
+                if (page.meta.pageName === 'basic-auth-login') {
+                    return;
+                }
                 return decoratorApi.navigationBar(ctx, page, this);
+            },
+            getStoreUrl: function (page) {
+                page.storeUrl = require('/config/publisher.js').config().storeUrl;
+                return page;
             }
         }
     }

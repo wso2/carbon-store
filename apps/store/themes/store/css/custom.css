@@ -201,12 +201,12 @@ h2.app-title {
 .assets-container{
     margin-top:20px;
 }
-.nav > li.advanced-search-link{
+.es-nav > li.advanced-search-link{
     position: absolute;
     right: 0;
     float:right;
 }
-.nav > li.advanced-search-link span{
+.es-nav > li.advanced-search-link span{
     font-weight: 100;
 }
 div.asset-well div.advanced-search-form-container{
@@ -228,7 +228,7 @@ div.asset-well div.advanced-search-form-container h1{
 
 .wr-app-bar {
     background: #237bd5;
-    height: 54px;
+    height: 40px;
     position: relative;
 }
 
@@ -311,7 +311,7 @@ a.ast-name{
     margin-top: 0px;
     height: 32px;
     word-wrap: break-word !important;
-    white-space: normal !important;
+    white-space: nowrap !important;
 }
 
 a.ast-name:hover {
@@ -358,7 +358,7 @@ a.ast-name:hover {
 }
 
 .padding {
-    padding: 10px;
+    padding: 5px;
 }
 
 .padding-bottom-sm {
@@ -939,6 +939,9 @@ a.more:focus {
 #ul-sort-assets li a  i{
     line-height:2;
 }
+.sort-asset-container.open>.dropdown-menu {
+    width: 200px;
+}
 
 .action-wrapper{
     border-radius: 2px;
@@ -991,7 +994,7 @@ a.more:focus {
 .btn-collapsed {
     background:url('../img/icons/wso2-logo-small.png') no-repeat;
 }
-.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+.es-nav-tabs > li.active > a, .es-nav-tabs > li.active > a:hover, .es-nav-tabs > li.active > a:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
@@ -1004,13 +1007,13 @@ a.more:focus {
     cursor: default;
     padding: 15px;
 }
-.nav-tabs > li > a {
+.es-nav-tabs > li > a {
     border: 1px solid transparent;
     border-radius: 0;
     line-height: 1.42857;
     margin-right: 2px;
 }
-.nav-tabs > li > a {
+.es-nav-tabs > li > a {
     background: #ccc none repeat scroll 0 0;
     border: 1px solid transparent;
     border-radius: 0;
@@ -1025,6 +1028,7 @@ a.more:focus {
     border-right: 1px solid #ededed;
     border-width: 0 1px 1px;
     display: block;
+    padding: 20px;
 }
 #socialIfr{ background: rgba(0, 0, 0, 0) none repeat scroll 0 0;
     border-bottom: 1px solid #ededed;
@@ -1105,10 +1109,14 @@ a:hover, a:focus {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid #e4e4e4;
+    border-bottom: 8px solid #4F5050;
     left: 81%;
     position: relative;
 }
+.es-logout-menu {
+    background: transparent !important;
+}
+
 .white{color: #f3f3f3;}
 #sortDropdown:hover {
     background: transparent;
@@ -1416,7 +1424,7 @@ span.advanced-search-icons{
     .bookmark-link-text{
         display: none;
     }
-    .navbar-nav{
+    .es-navbar-nav{
         margin: 0;
     }
     .asset-details-wrapper{
@@ -1504,8 +1512,8 @@ span.advanced-search-icons{
     border-top: 1px solid #efefef;
     position: absolute;
     width: 100%;
-    left: 0;
-    bottom: 55px;
+    left: 21px;
+    bottom: -90px;
 }
 .loading-animation-big i{
     font-size: 50px;

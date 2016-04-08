@@ -20,6 +20,8 @@
  */
 var api = {};
 var responseProcessor = require('utils').response;
+var metrics = require('carbon-metrics').metrics;
+
 (function(api) {
     var fieldExpansion = function(options, req, res, session) {
         var fields = options.fields;
@@ -229,6 +231,7 @@ var responseProcessor = require('utils').response;
         };
         var q = (request.getParameter("q") || '');
         try {
+            metrics.start("store-asset-api","search");
             if (q) {
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
@@ -253,6 +256,8 @@ var responseProcessor = require('utils').response;
             //print();
             result = null;
             log.error(e);
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -300,6 +305,7 @@ var responseProcessor = require('utils').response;
         };
         var q = (request.getParameter("q") || '');
         try {
+            metrics.start("store-asset-api","advanceSearch");
             if (q) {
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
@@ -329,6 +335,8 @@ var responseProcessor = require('utils').response;
             //print();
             result = null;
             log.error(e);
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -379,6 +387,7 @@ var responseProcessor = require('utils').response;
         };
         var q = (request.getParameter("q") || '');
         try {
+            metrics.start("store-asset-api","genericAdvanceSearch");
             if (q) {
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
@@ -411,6 +420,8 @@ var responseProcessor = require('utils').response;
             //print();
             result = null;
             log.error(e);
+        } finally {
+            metrics.stop();
         }
         ratingApi.addRatings(result);
         return result;  
@@ -460,6 +471,7 @@ var responseProcessor = require('utils').response;
             assetManager = asset.createUserAssetManager(session, options.type);
         }
         try {
+            metrics.start("store-asset-api","get");
             var retrievedAsset = assetManager.get(options.id);
             if (!retrievedAsset) {
                 // print(responseProcessor.buildSuccessResponse(200, 'No matching asset found by' + options.id, []));
@@ -482,6 +494,8 @@ var responseProcessor = require('utils').response;
             //   print(responseProcessor.buildErrorResponse(400, "No matching asset found"));
             log.error(e);
             result = null;
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -540,4 +554,5 @@ var responseProcessor = require('utils').response;
         paging.url = url;
         return paging;
     };
+
 }(api))

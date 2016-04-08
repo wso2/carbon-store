@@ -68,4 +68,46 @@ var log = new Log('request_module');
         });
         return obj;
     };
+    /*
+     * Format the encoded  query string and return user friendly search query
+     * */
+    request.formatSearchQuery = function (queryString) {
+        var searchQuery = "";
+        var qjson = parse('{' + queryString + '}');
+        var searchKeys = Object.keys(qjson);
+        if ((searchKeys.length === 1) && (searchKeys.indexOf("name") >= 0)) {
+            searchQuery += qjson[searchKeys.pop()];
+        }
+        else {
+            for (var keyIndex in searchKeys) {
+                var key = searchKeys[keyIndex];
+                var value = qjson[key];
+                searchQuery += key + ":" + value + " ";
+            }
+        }
+        searchQuery = searchQuery.trim();
+        return searchQuery;
+    };
+    // Fix for REGISTRY-3245
+    request.parseContentType = function(contentTypString) {
+        var comps = contentTypString.split(';');
+        return comps[0];
+    };
+
+    /**
+     * Returns the referrer in a request if one is present
+     */
+    request.getReferer = function(req,context) {
+        var queryString = this.getQueryOptions(req.getQueryString());
+        return queryString.referer || '';
+    };
+
+    /**
+     * Extracts the URL path from a URI
+     */
+    request.getURLPath = function(url) {
+        url = url || '';
+        return  '/'+url.split('/').slice(3).join('/');
+    };
+
 }(request))

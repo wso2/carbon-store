@@ -192,6 +192,9 @@ var error = '';
         return msg;
     };
     var isDeletable = function (assetState, deletableStates) {
+        if ('*' == deletableStates) {
+            return true;
+        }
         var astState = assetState ? assetState.toLowerCase() : assetState;
         for (var index in deletableStates) {
             if (deletableStates[index].toLowerCase() == astState) {
@@ -279,7 +282,6 @@ var error = '';
                     replaceApprovedActions[approvedLCActions[i]] = true;
                 }
             }
-
             approvedActions = replaceApprovedActions;
         } catch (e) {
             var msg = 'No approved acions are available for this asset state';
@@ -302,7 +304,7 @@ var error = '';
         //Check if the index provided is valid
         var msg;
         if ((checkItemIndex < 0) || (checkItemIndex > state.checkItems.length - 1)) {
-            msg = 'Unable to change the state of the check item as the index does not point to' + ' a valid check item.The check item index must be between 0 and ' + state.checkItems.length + '.';
+            msg = 'Unable to change the state of the check item as the index does not point to' + ' a valid check item.The check item index must be between 0 and ' + (state.checkItems.length - 1)  + '.';
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
         }
         //Check if the check item state is the same as the next state
@@ -373,21 +375,28 @@ var error = '';
      */
     api.getState = function (options, req, res, session) {
         var state;
-        validateOptions(options);
         var assetApi = rxtModule.asset;
-        var coreApi = rxtModule.core;
         var am = assetApi.createUserAssetManager(session, options.type); //get asset manager
+        var asset = getAsset(options, am); //get asset
+
+        if (!isLCPermitted(asset, session)){
+            throw "Unauthorized Action - does not have permissions to view lifecycle state";
+        }
+
+        validateOptions(options);
+        var coreApi = rxtModule.core;
         var server = storeModule.server; //get current server instance
         var user = server.current(session); //get current user
         var tenantId = user.tenantId; //get tenantID
-        var asset = getAsset(options, am); //get asset
         var lcName = resolveLifecycle(options, asset);
         validateAsset(asset, options); //validate asset
         var lcApi = lifecycleModule.api; //load lifecycle module
         var lifecycle = lcApi.getLifecycle(lcName, tenantId);
         var rxtManager = coreApi.rxtManager(tenantId);
-        var lcState = am.getLifecycleState(asset, lcName);
+        //var lcState = am.getLifecycleState(asset, lcName);
         var lcCheckedStates = am.getLifecycleCheckedState(asset.id, lcName);
+        //get the state from LifeCycleService instead of GovernanceArtifactImpl
+        var lcState = lcCheckedStates.getLifeCycleState();
         //Obtain the state data
         state = lifecycle.state(lcState);
         if (!state) {
@@ -399,16 +408,16 @@ var error = '';
         state.isDeletable = false;
         //We can only populate delete meta data if the default lifecycle
         //and the active lifecycle for the operation is the same
-        if (defaultLifecycle === lcName) {
+        //if (defaultLifecycle === lcName) {
             //Obtain the deletable states
             state.deletableStates = rxtManager.getDeletableStates(options.type);
             //Determine if the current state is a deletable state
             state.isDeletable = isDeletable(lcState, state.deletableStates, lcName);
-        }
+        //}
         //Update the state of the check items
-        state.isLCActionsPermitted = isLCActionsPermitted(asset, options, req, res, session);
-        state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
         state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
+        state.isLCActionsPermitted = isLCActionsPermitted(state.approvedActions); //(state.approvedActions.length > 0 ) ? true : false;//isLCActionsPermitted(asset, options, req, res, session);
+        state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
         return state;
     };
     /**
@@ -464,6 +473,10 @@ var error = '';
         var assetApi = rxtModule.asset;
         var am = assetApi.createUserAssetManager(session, options.type);
         var asset = getAsset(options, am);
+        if(!isLCActionsPermitted(asset, options, req, res, session)){
+            var error = 'User not permmited to update checkList of asset of id: ' + options.id;
+            throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.UNAUTHORIZED);
+        }
         validateAsset(asset, options);
         var state = this.getState(options, req, res, session);
         isSuccess = updateCheckItemStates(options, asset, am, state);
@@ -590,8 +603,18 @@ var error = '';
         });
         return lifecycleComments;
     };
-    var isLCActionsPermitted = function (asset, options, req, res, session) {
+    var isLCActionsPermitted = function (actions) {
+        for(var key in actions){
+            if(actions.hasOwnProperty(key)){
+                return true;
+            }
+        }
+        //var permissions = require('/modules/lifecycle/permissions.js').permissions;
+        //return permissions.isLCActionsPermitted( asset.path, session);
+        return false;
+    };
+    var isLCPermitted = function (asset, session) {
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
-        return permissions.isLCActionsPermitted( asset.path, session);
+        return permissions.isLCPermitted(asset.type, session);
     };
 }(api));

@@ -28,9 +28,9 @@
         return;
     }
     try {
-        storeAPI.user.logout();
+        session.invalidate();
     } catch (e) {
         log.error('Unable to logout the user', e);
     }
     response.sendRedirect(context);
-}(request, response, session)) %>
+}(request, response, session)); %>

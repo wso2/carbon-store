@@ -59,12 +59,21 @@ $(function () {
         },
         success: function (data) {
             var options = obtainFormMeta('#form-asset-create');
+            var type = PublisherUtils.resolveCurrentPageAssetType();
             $('#btn-create-asset').removeAttr('disabled');
-            $.cookie("new-asset-" + data.type, data.id + ":" + data.type + ":" + data.name);
+            $.cookie("new-asset-" + type, data.id + ":" + type + ":" + data.name);
             window.location = options.redirectUrl;
         },
-        error: function () {
-            messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
+        error: function (response) {
+            var result;
+            if (response && response.responseText){
+                result = JSON.parse(response.responseText);
+            }
+            if (result && result.moreInfomation){
+                messages.alertError(result.moreInfomation);
+            } else {
+                messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
+            }
             $('#btn-create-asset').removeAttr('disabled');
             $('.fa-spinner').parent().remove();
         }
@@ -150,13 +159,21 @@ $(function () {
         var $panel = $(this).parent().next();
         if($panel.is(":visible")){
             $panel.hide('fast');
+            $(this).parent().addClass('collapsed');
         }else{
             $panel.show('fast');
+            $(this).parent().removeClass('collapsed');
         }
     });
-    $('#form-asset-create .responsive-form-container').each(function(){
-        if($(this).attr('id') != 'collapseoverview'){
+    /**
+     * Hides tables which dose not contain required fields.
+     * count the number of required fields in one table, if count equals to zero
+     * then hide that table. First table will expand always
+     */
+    $('#form-asset-create .responsive-form-container').each(function (index) {
+        if ($(this).find('.required-field').length == 0 && index != 0) {
             $(this).hide();
+            $('.field-title').eq(index).addClass("collapsed");
         }
     });
 

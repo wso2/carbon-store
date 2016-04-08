@@ -31,6 +31,7 @@ var render = function(theme, data, meta, require) {
 
     theme('2-column-right', {
         title: data.meta.title,
+        applicationTitle: data.meta.applicationTitle,
         header: [{
             partial: 'header',
             context: data

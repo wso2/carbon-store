@@ -41,6 +41,9 @@ var resources = {};
     var getDefaultAssetTypeScriptPath = function(options, type) {
         return '/extensions/assets/' + type + '/asset.js';
     };
+    var getCustomAssetTypeScriptPath = function(options, type) {
+        return '/extensions/assets/' + type + '-customized/asset.js';
+    };
     var getAssetExtensionPath = function(type) {
         return constants.ASSET_EXTENSION_ROOT + '/' + type;
     };
@@ -78,8 +81,13 @@ var resources = {};
         return assetResource;
     };
     var loadAssetScript = function(options, type, assetResource) {
-        var path = getDefaultAssetTypeScriptPath(options, type);
+        var path = getCustomAssetTypeScriptPath(options, type);
         var content = loadAssetScriptContent(path);
+        if(!content){
+            path = getDefaultAssetTypeScriptPath(options, type);
+            content = loadAssetScriptContent(path);
+        }
+
         var defConfiguration = assetResource.configure();
         var ref = require('utils').reflection;
         if (content) {

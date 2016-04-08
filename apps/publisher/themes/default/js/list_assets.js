@@ -53,17 +53,21 @@ function convertTimeToUTC(assets) {
  * @param {string} path  : string
  */
 var setSortingParams = function(path) {
+    // if there is no sort parameter, then set default parameter.
+    if (path.indexOf("?sort") < 0) {
+        path += "?sort=-createdDate";
+    }
     var sorting = '';
     var obj = path.split('?');
-    if(obj[1]){
+    if (obj[1]) {
         var params = obj[1].split("&");
-        for(var j=0; j<params.length;j++){
+        for (var j = 0; j < params.length; j++) {
             var paramsPart = params[j];
-            if(paramsPart.indexOf("sort=") != -1){
+            if (paramsPart.indexOf("sort=") != -1) {
                 sorting = '&&' + paramsPart;
             }
         }
-    }else{
+    } else {
         sorting = '';
     }
     return sorting;
@@ -133,13 +137,19 @@ var parseUsedDefinedQuery = function(input) {
     var term;
     var arr =[];
     var previous;
-    //Use case #1 : The user has only entered a name
-    if((!isTokenizedTerm(input)) &&(!isEmpty(input))){
-        q.name = input;
-        return q;
-    }
     //Remove trailing whitespaces if any
     input = input.trim();
+    input = replaceAll(input,"(\\s)*:(\\s)*", ":");
+
+    //Use case #1 : The user has only entered a name
+    if ((!isTokenizedTerm(input)) && (!isEmpty(input))) {
+        if(input.indexOf('"') > -1){
+            q.name = JSON.stringify(JSON.parse(input));
+        } else {
+            q.name = encodeURIComponent(input);
+        }
+        return q;
+    }
     //Use case #2: The user has entered a complex query
     //and one or more properties in the query could values
     //with spaces
@@ -162,6 +172,16 @@ var parseUsedDefinedQuery = function(input) {
     }
     return parseArrToJSON(arr);
 };
+/**
+ * Replace all the occurrences of $find by $regex in $originalString
+ * @param  {originalString} input - Raw string.
+ * @param  {regex} input - Target key word or regex that need to be replaced.
+ * @param  {replace} input - Replacement key word
+ * @return {String}       Output string
+ */
+function replaceAll(originalString, regex, replace) {
+    return originalString.replace(new RegExp(regex, 'g'), replace);
+};
 var createQuery = function(options) {
     options = options || {};
     var searchUrl = caramel.url('/assets/' + store.publisher.type + '/list');
@@ -181,8 +201,7 @@ var createQuery = function(options) {
     }
     if (propCount(q) >= 1) {
         searchQueryString += 'q=';
-        searchQueryString += JSON.stringify(q);
-        searchQueryString = searchQueryString.replace('{', '').replace('}', '');
+        searchQueryString += encodeURIComponent(JSON.stringify(q).replace('{', '').replace('}', ''));
     }
     return searchUrl + searchQueryString;
 };
@@ -235,10 +254,8 @@ var  initAssetCreationChecker = function(){
     var newAssetType = newAsset.split(":")[1].trim();
     var newAssetName = newAsset.split(":")[2].trim();
 
-    var urlApi = caramel.url('/apis/assets'+'?type='+newAssetType + '&q="name":"'+newAssetName+'"');
+    var urlApi = caramel.url('/apis/assets'+'?type='+newAssetType + '&q="name":"'+encodeURIComponent(newAssetName)+'"');
     var url = caramel.url('/assets/'+newAssetType + '/details/' + newAssetId);
-
-
     $.ajax({
         url:urlApi,
         type:'GET',

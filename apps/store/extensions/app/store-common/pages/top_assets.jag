@@ -25,14 +25,23 @@ require('/modules/store.js').exec(function (ctx) {
     var server = require('store').server;
     var user = server.current(ctx.session);
     var ui = require('rxt').ui;
+    var metrics = require('carbon-metrics').metrics;
     var tenantApi = require('/modules/tenant-api.js').api;
-    var page = ui.buildPage(ctx.session, ctx.request);
+    var userApi = require('/modules/user-api.js').api;
+    var utilsRequest = require('utils').request;
+    var tenantDetails = tenantApi.createTenantDetails(request, session);
+    var tenantId = tenantDetails.tenantId;
+    var page = ui.buildPage(ctx.session, ctx.request, tenantId);
     var appManager;
     var log = new Log();
 
 //    var tenantId = ctx.tenant.tenantId || constants.DEFAULT_TENANT;
     var q = ctx.request.getParameter('q');
-
+    //search history dropdown updates
+    if (q) {
+        var searchQuery = utilsRequest.formatSearchQuery(q);
+        userApi.updateSearchHistory(ctx.session, searchQuery);
+    }
  //   var uriMatcher = new URIMatcher(ctx.request.getRequestURI());
 
     // var tenantedAssetPageUrl = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
@@ -57,14 +66,27 @@ require('/modules/store.js').exec(function (ctx) {
         appManager = app.createAnonAppManager(ctx.session, tenantId);
     }*/
     page.assetMeta.q = q;
-    var output = appManager.render([], page);
+    try {
+        metrics.start("org.wso2.store.store-common.top-assets.app-manager.render");
+        var output = appManager.render([], page);
+    } finally {
+        metrics.stop();
+    }
     var recentAssets = output.recentAssets;
-    for(var i in recentAssets){
-        if(recentAssets[i].thumbnail == 'null'){
+    for (var i in recentAssets) {
+        if (recentAssets[i].thumbnail == 'null') {
             recentAssets[i].thumbnail = null;
         }
     }
-    caramel.render(output);
+    var qtemp = ctx.request.getParameter('q') || '';
+    var searchQuery = utilsRequest.formatSearchQuery(qtemp);
+    output.searchQuery = decodeURIComponent(searchQuery)||'';
+    try {
+        metrics.start("org.wso2.store.store-common.top-assets.caramel.render");
+        caramel.render(output);
+    } finally {
+        metrics.stop();
+    }
     //print(page);
 }, request, response, session);
 %>

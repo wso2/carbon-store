@@ -16,14 +16,25 @@
     {{#each recentAssetsByType}}
         <div class="ast-container " id="ast-container">
             <div class="container-fluid ">
-        <div class="title">
-            <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">
-                {{#unless ../assetMeta.q}}Recent{{/unless}}
-                {{rxt.pluralLabel}}
-            </a>
-        </div><!--title-->
-                <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list" class="more">
-                    <span class="asset-more-in-listing">See More</span></a></div>
+                <div class="title">
+                    {{#if ../assetMeta.q}}
+                        <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?q={{../../assetMeta.q}}">
+                            {{rxt.pluralLabel}}
+                        </a>
+                    {{else}}
+                        <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">
+                            Recent
+                            {{rxt.pluralLabel}}
+                        </a>            
+                    {{/if}}
+                </div><!--title-->
+                {{#if ../assetMeta.q}}
+                    <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?q={{../../assetMeta.q}}" class="more">
+                        <span class="asset-more-in-listing">See More</span></a></div>
+                {{else}}
+                    <div class="float-right"><a href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list" class="more">
+                        <span class="asset-more-in-listing">See More</span></a></div>
+                {{/if}}  
                 <hr>
             </div>
         </div>
@@ -32,5 +43,9 @@
         {{/dyn}}
     {{/each}}
 {{else}}
-    <div class="top-assets-empty-assert">{{t "We couldn't find anything for you."}}</div>
+    {{#if cuser.isAnon}}
+        <div class="top-assets-empty-assert">{{t "There are no publicly available assets. Please login to access your assets"}}</div>
+    {{else}}
+        <div class="top-assets-empty-assert">{{t "There are no assets available."}}</div>
+    {{/if}}
 {{/if}}

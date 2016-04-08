@@ -97,8 +97,8 @@ a.ctrl-filter-category {
     border:1px solid #237bd5;
     color:#fff;
     text-decoration:none;
-    padding:7px 10px 7px 20px;
-    width:180px;
+    padding:5px 0px 5px 20px;
+    width:160px;
     font-size:18px;
     font-weight:100;
 }
@@ -115,7 +115,7 @@ a.ctrl-filter-category:hover {
     background:#237bd5;
     top:54px;
     left:5px;
-    width:180px;
+    width:160px;
     padding-top:0;
     padding-bottom:0;
     color:#fff;
@@ -246,7 +246,6 @@ a.ctrl-filter-category:hover {
     text-align:center;
     width:100%;
     overflow:hidden;
-    position: relative;
     overflow: hidden;
 }
 .ast-img .ast-name-img:before {
@@ -439,7 +438,7 @@ a.ctrl-filter-category:hover {
     height: 0;
     border-left: 8px solid transparent;
     border-right: 8px solid transparent;
-    border-bottom: 8px solid #e4e4e4;
+    border-bottom: 8px solid #4F5050;
     left:81%;
     position:relative;
 }

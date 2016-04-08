@@ -19,4 +19,5 @@ $(function() {
         var elem = $(this);
         asset.process(elem.data('type'), elem.data('aid'), location.href, elem);
     });
+    $('.loading-animation-big').remove();
 });

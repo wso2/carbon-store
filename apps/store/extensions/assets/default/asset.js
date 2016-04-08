@@ -62,8 +62,11 @@ asset.server = function(ctx) {
     var type = ctx.assetType;
     var typeDetails = ctx.rxtManager.listRxtTypeDetails(type);
     var typeSingularLabel = type; //Assume the type details are not returned
+    var pluralLabel = type; //Assume the type details are not returned
     if (typeDetails) {
         typeSingularLabel = typeDetails.singularLabel;
+        pluralLabel = typeDetails.pluralLabel;
+
     }
     return {
         onUserLoggedIn: function() {},
@@ -79,17 +82,17 @@ asset.server = function(ctx) {
                 path: 'rate.jag'
             }],
             pages: [{
-                title: 'Store |  ' + typeSingularLabel,
+                title: typeSingularLabel,
                 url: 'details',
                 path: 'details.jag',
                 permission:'ASSET_DETAILS'
             }, {
-                title: 'Store | ' + typeSingularLabel,
+                title: pluralLabel,
                 url: 'list',
                 path: 'list.jag',
                 permission:'ASSET_LIST'
             }, {
-                title: 'Store | ' + typeSingularLabel,
+                title: typeSingularLabel,
                 url: 'subscriptions',
                 path: 'subscriptions.jag'
             }]
@@ -178,9 +181,15 @@ asset.renderer = function(ctx) {
                 return decoratorApi.myAssets(ctx, page);
             },
             socialFeature: function(page) {
+                if (page.meta.pageName !== 'details') {
+                    return;
+                }
                 return decoratorApi.socialFeature(ctx, page);
             },
             socialSites: function(page, meta) {
+                if (page.meta.pageName !== 'details') {
+                    return;
+                }
                 return decoratorApi.socialSites(ctx,page, meta, this);
             },
             embedLinks: function(page, meta) {
@@ -194,6 +203,9 @@ asset.renderer = function(ctx) {
             },
             sorting: function(page,meta){
                 return decoratorApi.sorting(ctx,page,this);
+            },
+            searchHistory: function (page, meta) {
+                return decoratorApi.searchHistory(ctx, page, this);
             },
             populateActionBar: function(page,meta){
                 page.actionBar = {};

@@ -17,6 +17,7 @@
  *  under the License.
  *
  */
+(function(request,response,session) {
 var configs = require('/config/sso.js').config();
 var e = request.getParameter('authFailure');
 
@@ -26,7 +27,8 @@ relyingParty = relyingParty.replace(/\W+/g, "");
 
 if(!request.isSecure()){
     response.content = { 'authFailure' : e , 'relyingParty' : relyingParty };
-    response.sendRedirect(configs.server.https + request.getRequestURI());
+    response.sendRedirect(configs.server.https + request.getRequestURI()+'?relyingParty='+relyingParty);
+    return;
 }
 
 //TODO: this should be fixed properly
@@ -54,6 +56,7 @@ var themeModule = require('/modules/theme.js');
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="referrer" content="no-referrer" />
     <% include(themeModule.getThemedUrl('includes/header_file_imports.jag')); %>
 </head>
 <body>
@@ -139,7 +142,7 @@ var themeModule = require('/modules/theme.js');
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <span class="margin-top padding-top-double font-large">Already have an account? </span>
-                                    <a href="../store/login?ignoreReferer=true" id="signInLink" class="font-large">Sign in</a>
+                                    <a href="<%=signInUrl%>" id="signInLink" class="font-large">Sign in</a>
                                 </div>
                                 <div class="clearfix"></div>
                                 </div>
@@ -166,13 +169,10 @@ var themeModule = require('/modules/theme.js');
                 if (JSON.parse(data).error == 'false') {
                     regFormError.hide();
                     regFromSuccess.show();
-                    regFromSuccess.text(JSON.parse(data).msg);
-
-                    //submitting the login form
-                    $('#username').val($('#reg-username').val());
-                    $('#password').val($('#reg-password').val());
-                    $('#loginForm').submit();
-
+                    regFromSuccess.text(JSON.parse(data).msg + ". You will be redirected to login page.");
+                    setTimeout(function () {
+                        window.location = "<%=signInUrl%>";
+                    }, 2000);
                 } else {
                     regFromSuccess.hide();
                     regFormError.show();
@@ -202,3 +202,7 @@ var themeModule = require('/modules/theme.js');
 </script>
 </body>
 </html>
+
+<% 
+    }(request,response,session)); 
+%>

@@ -8,11 +8,17 @@
             "keys": {
                 "socialScriptSource": "%https.host%/social/export-js/social.js",
                 "socialScriptType": "text/javascript",
-                "socialAppUrl": "https://localhost:9443/social"
+                "socialAppUrl": "%https.local%/social"
             }
         },
         "assetTypesHotDelploy": {
             "enabled": false
+        },
+        "searchHistory": {
+            "enabled": true,
+            "keys": {
+                "maxCount": 5
+            }
         }
     },
     "assets": ["gadget", "site"],

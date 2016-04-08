@@ -46,8 +46,7 @@ var createQuery = function (options) {
     }
     if (propCount(q) >= 1) {
         searchQueryString += 'q=';
-        searchQueryString += JSON.stringify(q);
-        searchQueryString = searchQueryString.replace('{', '').replace('}', '');
+        searchQueryString += encodeURIComponent(JSON.stringify(q).replace('{', '').replace('}', ''));
     }
     return searchUrl + searchQueryString;
 };
@@ -69,12 +68,19 @@ var parseUsedDefinedQuery = function (input) {
     var term;
     var arr = [];
     var previous;
+    // clear prefix white spaces and tail white spaces
+    input = input.trim();
+    input = replaceAll(input,"(\\s)*:(\\s)*", ":");
     //Use case #1 : The user has only entered a name
     if ((!isTokenizedTerm(input)) && (!isEmpty(input))) {
-        q.name = input;
+        if(input.indexOf('"') > -1){
+            q.name = JSON.stringify(JSON.parse(input));
+        } else {
+            q.name = encodeURIComponent(input);
+        }
         return q;
     }
-    input = input.trim();
+
     //Use case #2: The user has entered a complex query
     //and one or more properties in the query could values
     //with spaces
@@ -95,7 +101,16 @@ var parseUsedDefinedQuery = function (input) {
     }
     return parseArrToJSON(arr);
 };
-
+/**
+ * Replace all the occurrences of $regex by $replace in $originalString
+ * @param  {originalString} input - Raw string.
+ * @param  {regex} input - Target key word or regex that need to be replaced.
+ * @param  {replace} input - Replacement key word
+ * @return {String}       Output string
+ */
+var replaceAll = function(originalString, regex, replace) {
+    return originalString.replace(new RegExp(regex, 'g'), replace);
+};
 var isTokenizedTerm = function (term) {
     return term.indexOf(':') > -1;
 };

@@ -50,7 +50,11 @@ app.server = function(ctx) {
                 url:'rate',
                 path:'rate.jag',
                 secured:true
-            },{
+            }, {
+                url: 'search-history',
+                path: 'search-history.jag',
+                secured: true
+            }, {
                 url:'partials',
                 path:'partials.jag'
             }]

@@ -23,6 +23,7 @@ var result;
 (function (api) {
     var utils = require('utils');
     var rxtModule = require('rxt');
+    var metrics = require('carbon-metrics').metrics;
     var log = new Log('asset_api');
     var exceptionModule = utils.exception;
     var constants = rxtModule.constants;
@@ -102,7 +103,7 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('User has not provided any resources such any new images or files when updating the asset with id ' + asset.id);
             }
-            return;
+            return false;
         }
         for (var index in resourceFields) {
             key = resourceFields[index];
@@ -119,6 +120,7 @@ var result;
                 asset.attributes[key] = resourceName;
             }
         }
+        return true;
     };
     /**
      * The function get current asset in the storage
@@ -147,24 +149,34 @@ var result;
         return (data[key]) || (data[key] == '');
     };
     /**
-     * keep unchanged values as they are
+     * Alters the user provided resource to keep unchangable values as they are.
+     * Performs the following alterations
+     * 1. Required values are populated with original values if the user has not provided a value
+     * 2. Replaces any user provided values with original valus for readonly and auto fields
+     * (This prevents users from changing non updateable fields)
      * @param  original old asset
      * @param  asset    asset
      * @param  sentData to change
      * @return The updated-asset
      */
-    var putInUnchangedValues = function (original, asset, sentData) {
+    var putInUnchangedValues = function (original, asset, sentData,rxtManager,type) {
+        var definition;
         for (var key in original.attributes) {
-            //We need to add the original values if the attribute was not present in the data object
-            // sent from the client
-            //and it was not deleted by the user (the sent data has an empty value)
-            if (original.attributes.hasOwnProperty(key)) {
-                if (((!asset.attributes[key]) || (asset.attributes[key].length == 0)) && (!isPresent(key, sentData))) {
-                    if (log.isDebugEnabled()) {
-                        log.debug('Copying old attribute value for ' + key);
-                    }
+            definition =  rxtManager.getRxtField(type,key);
+            if(definition){
+                
+                if(definition.required){
+                    //Check if the user has provided a value for the required value if
+                    //not use the original value
+                    asset.attributes[key] = (asset.attributes.hasOwnProperty(key))? asset.attributes[key] : original.attributes[key];
+                }
+
+                //Determine if the field is readonly or auto.if yes then ignore
+                //the user provided value and use the original value
+                if((definition.readonly)||(definition.auto)){
                     asset.attributes[key] = original.attributes[key];
                 }
+
             }
         }
     };
@@ -215,15 +227,28 @@ var result;
             var fieldName = key;
             var field = rxtManager.getRxtField(type, fieldName);
             if (field && (field.readonly || field.auto)) {
+                var errMsg = fieldName + ' is not an editable field. Hence, ' + fieldName + ' cannot be updated with the provided value : ' + assetReq[fieldName];
                 if(log.isDebugEnabled()){
-                    log.debug(fieldName + ' is not an editable field. Hence, ' + fieldName + ' will not be updated with the provided value : ' + assetReq[fieldName]);
+                    log.debug(errMsg);
                 }
-                delete assetReq[fieldName];
+
+                throw exceptionModule.buildExceptionObject(errMsg, constants.STATUS_CODES.BAD_REQUEST);
+                //delete assetReq[fieldName];
             }
         }
         return assetReq;
     };
 
+    var validateProvider = function (type, assetReq,user) {
+        var rxtManager = rxtModule.core.rxtManager(user.tenantId);
+        var provider = rxtManager.getProviderAttribute(type);
+        var storeModule = require('store');
+        if(provider && provider.length >1 && assetReq.hasOwnProperty('attributes')){
+            assetReq.attributes[provider] = storeModule.user.cleanUsername(user.username);
+        }
+    };
+
+    //moved this logic to rxt.asset module
     var validateRequiredFeilds = function (type, assetReq) {
         var rxtManager = rxtModule.core.rxtManager(user.tenantId);
         /*var name = rxtManager.getNameAttribute(type);
@@ -242,10 +267,11 @@ var result;
         for (var key in fields) {
             if (fields.hasOwnProperty(key)) {
                 var field =  fields[key];
+                log.info(field);
                 if (field && field.name && field.required == "true" && field.name.fullName) {
                     validateRequiredFeild(field.name.fullName, assetReq);
                 }
-                if (field && field.name && field.validate && field.name.fullName && field.value) {
+                if (field && field.name && field.validate && field.name.fullName) {
                     validateRegExField(field.name.fullName,assetReq, field.validate);
                 }
             }
@@ -289,6 +315,7 @@ var result;
      * @return The created asset or null if failed to create the asset
      */
     api.create = function (options, req, res, session) {
+        metrics.start("asset-api","create");
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var assetReq = req.getAllParameters('UTF-8'); //get asset attributes from the request
@@ -316,18 +343,22 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug('Creating Asset : ' + stringify(asset));
             }
-            validateRequiredFeilds(options.type, asset);
+            validateProvider(options.type, asset,user);
+//            validateRequiredFeilds(options.type, asset);
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);
-            putInStorage(asset, am, user.tenantId); //save to the storage
-            am.update(asset);
+            if (putInStorage(createdAsset, am, user.tenantId)) { //save to the storage
+                am.update(createdAsset);
+            }
         } catch (e) {
             if (e.hasOwnProperty('message') && e.hasOwnProperty('code')) {
                 throw e;
             }
             log.error('Asset '+ stringify(asset) + 'of type: ' + options.type + ' was not created due to ', e);
             return null;
+        } finally {
+            metrics.stop();
         }
         //Attempt to apply tags
         if (tags.length > 0) {
@@ -353,6 +384,7 @@ var result;
                 log.warn('Failed to invoke default action as the asset could not be synched.')
             }
         }
+        metrics.stop();
         return asset;
     };
     /**
@@ -364,8 +396,10 @@ var result;
      * @return updated-asset
      */
     api.update = function (options, req, res, session) {
+        metrics.start("asset-api","update");
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
+        var rxtManager = getRxtManager(session,options.type);
         var server = require('store').server;
         var user = server.current(session);
         var result;
@@ -375,7 +409,8 @@ var result;
         if(req.getContentType() === "application/json"){
             assetReq = processRequestBody(req, assetReq);
         }
-        assetReq = validateEditableFeilds(options.type, assetReq);
+
+        //assetReq = validateEditableFeilds(options.type, assetReq);
 
         var asset = null;
         var meta;
@@ -398,11 +433,13 @@ var result;
                 log.debug(e);
             }
             throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.NOT_FOUND);
+        } finally {
+            metrics.stop();
         }
         if (original) {
             putInStorage(asset, am, user.tenantId);
             putInOldResources(original, asset, am); //load current asset values
-            putInUnchangedValues(original, asset, assetReq);
+            putInUnchangedValues(original, asset, assetReq,rxtManager,options.type);
             //If the user has not uploaded any new resources then use the old resources
             if (!asset.name) {
                 asset.name = am.getName(asset);
@@ -420,8 +457,11 @@ var result;
                     log.debug('Failed to update the asset ' + stringify(asset));
                 }
                 throw exceptionModule.buildExceptionObject(errMassage, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
+            } finally {
+                metrics.stop();
             }
         }
+        metrics.stop();
         return result || asset;
     };
     /**
@@ -503,6 +543,7 @@ var result;
         paging.paginationLimit = (request.getParameter("paginationLimit") || paging.paginationLimit);
         var q = (request.getParameter("q") || '');
         try {
+            metrics.start("asset-api","search");
             var assets;
             if (q) { //if search-query parameters are provided
                 var qString = '{' + q + '}';
@@ -537,6 +578,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while searching assets as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -548,6 +591,7 @@ var result;
      * @param session sessionID
      */
     api.advanceSearch = function (options, req, res, session) {
+        metrics.start("asset-api","advanceSearch");
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         var sort = (request.getParameter("sort") || '');
@@ -602,6 +646,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while searching assets as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -627,8 +673,11 @@ var result;
         var q = (request.getParameter("q") || '');
         var result = [];
         try {
+            metrics.start("asset-api","genericAdvanceSearch");
             var assets;
-            if (q) { //if search-query parameters are provided
+            if (!q) { //if search-query parameters are not provided
+                q = '"name":""';
+            }
                 var qString = '{' + q + '}';
                 var query = validateQuery(qString);
                 if (log.isDebugEnabled) {
@@ -639,10 +688,7 @@ var result;
                 //TODO: The generic advance search does not honour grouping
                 //as grouping can be enabled/disabled per asset type
                 assets = assetAPI.advanceSearch(query, paging, session); // asset manager back-end call with search-query
-            } else {
-                log.error('Unable to perform a bulk asset retrieval without a type been specified');
-                throw 'Unable to perform a bulk asset retrieval without a type been specified';
-            }
+
             var expansionFieldsParam = (request.getParameter('fields') || '');
             if (expansionFieldsParam) { //if field expansion is requested
                 options.fields = getExpansionFileds(expansionFieldsParam); //set fields
@@ -657,6 +703,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while searching assets as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };
@@ -699,6 +747,7 @@ var result;
      * @return The retrieved asset or null if an asset not found
      */
     api.get = function (options, req, res, session) {
+        metrics.start("asset-api","get");
         var asset = rxtModule.asset;
         var assetManager = asset.createUserAssetManager(session, options.type);
         try {
@@ -723,6 +772,8 @@ var result;
             if (log.isDebugEnabled()) {
                 log.debug("Error while retrieving asset as for the request : " + req.getQueryString());
             }
+        } finally {
+            metrics.stop();
         }
         return result;
     };

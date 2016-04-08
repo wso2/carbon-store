@@ -13,7 +13,7 @@ function callback(topic, obj, subscriberData) {
 
 	var init = $('#chart-co2').attr('data-init');
 
-	console.log(chartCo2);
+	//console.log(chartCo2);
 
 	var myconfig = {
 		baseUrl : '/portal/js/dojo//'
@@ -22,7 +22,7 @@ function callback(topic, obj, subscriberData) {
 	var coords = [];
 
 	if (!init) {
-		console.log("create");
+		//console.log("create");
 		require(myconfig, ["dojox/charting/Chart", "dojox/charting/axis2d/Default", "dojox/charting/plot2d/StackedAreas", "dojox/charting/themes/Wetland", "dojo/ready"], function(Chart, Default, StackedAreas, Wetland, ready) {
 			ready(function() {
 				chartCo2 = new Chart("chart-co2");
@@ -50,13 +50,13 @@ function callback(topic, obj, subscriberData) {
 				}
 
 				coords.reverse();
-				console.log(coords);
+				//console.log(coords);
 				chartCo2.addSeries("Series A", coords).render();
 			});
 		});
 		$('#chart-co2').attr('data-init', true);
 	} else {
-		console.log("update");
+		//console.log("update");
 		for (i in obj) {
 			coords.push({
 				x : parseInt(obj[i].date),
@@ -65,7 +65,7 @@ function callback(topic, obj, subscriberData) {
 		}
 
 		coords.reverse();
-		console.log(coords);
+		//console.log(coords);
 		chartCo2.updateSeries("Series A", coords).render();
 
 	}

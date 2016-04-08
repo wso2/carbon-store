@@ -1,0 +1,75 @@
+<%
+/*
+ *  Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ *
+ */
+var caramel;
+require('//modules/store.js').exec(function(ctx){
+    caramel = require('caramel');
+    var carbon = require('carbon');
+    var log = new Log('social.activityBrowser');
+    var store = require('store');
+    var ReviewUtils = require('/extensions/app/social-reviews/modules/reviews-utils.js').ReviewUtils;
+    var server = store.server;
+    var user = server.current(session);
+    var username = ReviewUtils.formatUsername(user);
+    var logged = Boolean(user);
+    var reviews = [];
+    var more = true;
+    var urlDomain =request.getParameter('url-domain') || 'carbon.super';
+    var target = request.getParameter('target');
+    var userTenantDomain = user ? carbon.server.tenantDomain({tenantId: user.tenantId}) : null;
+    var permissionApi = require('rxt').permissions;
+
+    if (target) {
+        var hasUserReviewPermission  = false;
+
+        if (Boolean(user)){
+            hasUserReviewPermission = permissionApi.hasAssetPermission('ASSET_REVIEWS', target.split(':')[0], tenantId, user.username);
+        }
+        var isAuthorized =  Boolean(user && (urlDomain == userTenantDomain) && hasUserReviewPermission);
+        var message = '';
+        if (!Boolean(user)) {
+            message = 'Please Sign in to add a Review';
+        } else if ((Boolean(user) && Boolean(urlDomain != userTenantDomain))) {
+            message = ' Please Register in '+ urlDomain + ' domain to add a Review';
+        } else if (!hasUserReviewPermission){
+            message = 'You don\'t have permission to add a Review';
+        }
+        try {
+            reviews = ReviewUtils.listReviews(target,user,{
+                sortBy:'POPULAR'
+            });
+            more = ReviewUtils.hasMoreReviews(reviews);
+        } catch (e) {
+            log.error(e);
+        }
+        caramel.render({
+            isLogged: Boolean(user),
+            isAuthorized: isAuthorized,
+            urlDomain: urlDomain,
+            message: message,
+            input_param: {
+                user: username
+            },
+            stream: {reviews: reviews, id: target, user: username, offset: 10, more: more}
+        });
+    } else {
+        print('please use the target URL parameter as the asset id, eg: http://<HOST_NAME>:<PORT>/social/?target=33530252-rer-w345325');
+    }
+},request,response,session);
+%>

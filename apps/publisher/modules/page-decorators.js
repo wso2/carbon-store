@@ -47,7 +47,7 @@ var pageDecorators = {};
                 assetTypes.push({
                     url: utils.buildAssetPageUrl(assetType.shortName, '/list'),
                     assetIcon: assetType.ui.icon || DEFAULT_ICON,
-                    assetTitle: assetType.singularLabel
+                    assetTitle: assetType.pluralLabel
                 });
             }
         }
@@ -166,9 +166,9 @@ var pageDecorators = {};
             log.debug(page.assetTags);
         }
     };
-    pageDecorators.sorting = function(ctx,page){
+    pageDecorators.sorting = function (ctx, page, fields) {
         var queryString = request.getQueryString();
-        var sortable = [
+        var sortable = fields || [
             {field:"overview_name",label:"Name"},
             {field:"overview_version",label:"Version"},
             {field:"overview_provider",label:"Provider"},
@@ -221,6 +221,28 @@ var pageDecorators = {};
         }
         page.sorting = {selected:sortingListSelected,list:sortingList};
         return page;
+    };
+    pageDecorators.hideEmptyTables = function(ctx,page,type){
+        var table;
+        var tables = page.assets.tables||[];
+        for(var tableIndex=0; tableIndex < tables.length; tableIndex++){
+            table = tables[tableIndex];
+            table.renderingMetaData = {};
+            if(isEmptyTable(table)){
+                table.renderingMetaData.emptyTable = true;
+            }
+        }
+    };
+    var isEmptyTable = function(table){
+        var field;
+        var fields = table.fields;
+        for(var fieldKey in fields){
+            field = fields[fieldKey];
+            if(field.hasOwnProperty('value')){
+                return false;
+            }
+        }
+        return true;
     };
     var assetManager = function(ctx) {
         var rxt = require('rxt');

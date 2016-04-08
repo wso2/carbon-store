@@ -60,9 +60,15 @@
                 }
             },
             "basic": {
-                "attributes": {}
+                "attributes": {
+                    "loginURL":"%https.host%/publisher/pages/basic-auth-login"
+                }
             }
         }
+    },
+    "metrics":{
+        "enabled":false,
+        "enableTraceLogs":false
     },
     "constants": {
         "assetCreatedDateLength": 20

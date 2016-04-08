@@ -163,33 +163,29 @@ var pageDecorators = {};
             return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
         };
         var bookmarkPerms = {};
-        if (query) {
-            items = asset.advanceSearch(query, null, session, ctx.tenantId)||[];
-            ratingApi.addRatings(items, am, ctx.tenantId, ctx.username);
-            assetMap = {};
-            var template;
-            //Sort the results by type
-            items.forEach(function(item){
-                var type = item.type;
-                if(!assetMap[type]){
-                    assetMap[type] = [];
-                }
-                bookmarkable = bookmarkPerms[type];
-                if (bookmarkable === undefined) {
-                    bookmarkable = (bookmarkPerms[type] = canBookmark(type));
-                }
-                item.bookmarkable = bookmarkable;
-                assetMap[type].push(item);
+        
+        // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
+        // case 1 : Search query provided with mediaType search
+        if(isMediaType(query,types)){
+            var paging = {'start': 0,
+                        'count': 7,
+                        'sortOrder': 'desc',
+                        'sortBy': 'createdDate',
+                        'paginationLimit': 7 };
+            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                type: query.mediaType
             });
-            //Collect the asset result set along with the rxt definition
-            for(var key in assetMap){
-                template = ctx.rxtManager.getRxtTypeDetails(key);
-                assetsByType.push({
-                    assets:assetMap[key],
-                    rxt:template
-                });
-            }
-        } else {
+            assets = tenantAssetResources.am.advanceSearch(query, paging);
+            page.recentAssets = [];
+            page.recentAssetsByType = [];
+            typeDetails = ctx.rxtManager.getRxtTypeDetails(query.mediaType);
+            page.recentAssetsByType.push({
+                assets:assets,
+                rxt:typeDetails
+            });
+            return;
+        }
+        // case 2 : Search query provided without a mediaType search
             for (var index in types) {
                 typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
                 type = typeDetails.shortName;
@@ -202,7 +198,16 @@ var pageDecorators = {};
                 }
                 am = tenantAssetResources.am;
                 if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
-                    assets = am.recentAssets();
+                    if (query) {
+                        var paging = {'start': 0,
+                                    'count': 7,
+                                    'sortOrder': 'desc',
+                                    'sortBy': 'createdDate',
+                                    'paginationLimit': 7 };
+                        assets = am.advanceSearch(query, paging);
+                    } else {
+                        assets = am.recentAssets();
+                    }
                     if (assets.length > 0) {
                         //Add subscription details if this is not an anon context
                         if (!ctx.isAnonContext) {
@@ -217,9 +222,23 @@ var pageDecorators = {};
                     }
                 }
             }
-        }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
+    };
+
+    /**
+     * Method to check whether a user has entered a mediaType search query.
+     */
+    var isMediaType = function(q,types){
+         var hasMediaType = q ? Boolean(q.mediaType) : false;
+         //if a query is not provided or if media type is not provided we will skip media scoping 
+         if(!hasMediaType) {
+            return hasMediaType;            
+         }
+         var mediaType = q.mediaType;
+        return types.filter(function(type){
+            return type === q.mediaType.toLowerCase();
+        }).length > 0 ;
     };
     var replaceCategoryQuery = function(q, rxtManager, type) {
         //Determine if a category was provided
@@ -335,6 +354,7 @@ var pageDecorators = {};
     pageDecorators.socialFeature = function(ctx, page) {
         var app = require('rxt').app;
         var constants = require('rxt').constants;
+        var utils = require('utils');
         if (!app.isFeatureEnabled(ctx.tenantId, constants.SOCIAL_FEATURE)) {
             log.debug('social feature has been disabled.');
             return page;
@@ -347,6 +367,7 @@ var pageDecorators = {};
             tenantId: ctx.tenantId
         });
         socialFeatureDetails.keys.urlDomain = domain; //getDomainFromURL(request);
+        utils.url.popServerDetails(socialFeatureDetails.keys);
         page.features[constants.SOCIAL_FEATURE] = socialFeatureDetails;
         return page;
     };
@@ -504,6 +525,11 @@ var pageDecorators = {};
             dateTimeNextSort:dateTimeNextSort
         };
         return page;
+    };
+    pageDecorators.searchHistory = function (ctx, page, utils) {
+        var userApi = require('/modules/user-api.js').api;
+        page.searchHistory = {};
+        page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
     };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;

@@ -25,13 +25,13 @@
             samlResponse = request.getParameter('SAMLResponse'),
             sessionId = session.getId(),
             samlRequest = request.getParameter('SAMLRequest'),
-            relayState = request.getParameter('RelayState'),
+            relayState = decodeURIComponent(request.getParameter('RelayState')),
             sso = require('sso'),
             samlRespObj,
             attr = configs.authentication.methods.sso.attributes;
     var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
-    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Password");
-    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.TrustStore.Location");
+    var keyStorePassword = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Password");
+    var keyStoreName = CarbonUtils.getServerConfiguration().getFirstProperty("Security.KeyStore.Location");
     var identityAlias = attr.identityAlias;
     var keyStoreProps = {
                 KEY_STORE_NAME: keyStoreName,
@@ -104,7 +104,7 @@
                         if (hasPublisherLoginPermission) {
                             user.emitLogin(username)
                             log.debug('user is set :::' + username);
-                            response.sendRedirect(context);
+                            response.sendRedirect(relayState ? relayState : context);
                         }
                         else{
                             //session.invalidate();

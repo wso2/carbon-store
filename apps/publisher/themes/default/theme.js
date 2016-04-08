@@ -50,7 +50,9 @@ var engine = caramel.engine('handlebars', (function() {
             var appExtensionMediator = rxtAPI.core.defaultAppExtensionMediator();
             if(appExtensionMediator){
                 var defaultExtensionPartialsPath = appExtensionMediator.resolveCaramelResources(theme.__proto__.resolve.call(theme,'partials'));
-                log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+                if (log.isDebugEnabled()) {
+                    log.debug('Registering new partials directory from:  '+defaultExtensionPartialsPath);
+                }
                 partials(new File(defaultExtensionPartialsPath));
             }
             partials(new File(theme.resolve('partials')));
@@ -60,9 +62,12 @@ var engine = caramel.engine('handlebars', (function() {
                         var p,
                             publisher = require('/modules/publisher.js');
                         if (asset) {
-                            p = publisher.ASSETS_EXT_PATH + asset + '/themes/' + theme.name + '/' + path;
-                            if (new File(p).isExists()) {
-                                return p;
+                            p = publisher.ASSETS_EXT_PATH + asset + '-customized/themes/' + theme.name + '/' + path;
+                            if (!new File(p).isExists()) {
+                                p = publisher.ASSETS_EXT_PATH + asset + '/themes/' + theme.name + '/' + path;
+                                if (new File(p).isExists()) {
+                                    return p;
+                                }
                             }
                         }
                         return theme.__proto__.resolve.call(theme, path);
@@ -96,7 +101,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var delimter = value.indexOf(':')
                         var option = value.substring(0, delimter);
                         var text = value.substring(delimter + 1, value.length);
-                        if (field.url == 'true' && text && text.lastIndexOf('http', 0) === 0){
+                        if ((field.url == 'true'|| field.url == true) && text && text.lastIndexOf('http', 0) === 0){
                             output += '<tr><td>' + option + '</td><td><a href="'+text+'">' + text + '</a></td></tr>';
                         } else {
                             output += '<tr><td>' + option + '</td><td>' + text + '</td></tr>';
@@ -144,6 +149,10 @@ var engine = caramel.engine('handlebars', (function() {
                 var columns = table.columns;
                 var index = 0;
                 var out = '<tr>';
+                //The table should only be drawn if it is not empty
+                if(table.renderingMetaData.emptyTable){
+                    return '';
+                }
                 for (var key in fields) {
                     if ((index % 3) == 0) {
                         index = 0;
@@ -151,8 +160,10 @@ var engine = caramel.engine('handlebars', (function() {
                     }
                     if (fields[key].url == 'true' && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
                         out += '<td><a href="'+fields[key].value+'">' + (fields[key].value || ' ') + '</a></td>';
-                    } else {
+                    } else if(fields[key].value) {
                         out += '<td>' + (fields[key].value || ' ') + '</td>';
+                    } else {
+                        out+='';
                     }
                     index++;
                 }
@@ -214,7 +225,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var placeHolder = (field.placeholder)?field.placeholder:false;
                 var meta=' name="' + (name?name:field.name.tableQualifiedName) + '" '+
                          ' id="' + (name?name:field.name.tableQualifiedName) + '" ';
-                var className = " input-large form-control ";
+                var className = " form-control ";
                 if(field.type == "checkbox" || field.type == "file"){
                     className = "";
                 }
@@ -233,9 +244,9 @@ var engine = caramel.engine('handlebars', (function() {
                     isReadOnly = (field.auto)?field.auto:false;
                 }
                 if(isReadOnly){
-                    meta+=' readonly';
+                    meta+=' readonly disabled=\'disabled\'';
                 } else if(!isUpdatable && mode == 'edit'){
-                    meta+=' readonly';
+                    meta+=' readonly disabled=\'disabled\'';
                 }
 
                 //File required checking

@@ -1,0 +1,10 @@
+{
+    "baseAPIUrls": {
+        "publisher": "https://localhost:9443/publisher/apis",
+        "store":"https://localhost:9443/store/apis"
+    },
+    "authConfiguration": {
+        "username": "admin",
+        "password": "admin"
+    }
+}

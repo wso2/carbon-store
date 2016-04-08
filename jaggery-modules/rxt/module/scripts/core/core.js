@@ -237,6 +237,30 @@ var core = {};
         }
         return pathItem;
     };
+    /**
+     * Returns the namespace attribute as defined in the RXT definition
+     * @param  {String} rxtType RXT type
+     * @return {String|NULL} Returns the namespace attribute if it is defined,else NULL
+     */
+    RxtManager.prototype.getNamespaceAttribute = function(rxtType) {
+        var def = this.rxtMap[rxtType];
+        if(!def){
+            log.debug('Unable to locate rxt definition for ' + rxtType);
+            return null;         
+        }
+        if(!def.hasNamespace) {
+            return null;
+        }
+        var hasNamespace = Boolean(def.hasNamespace);
+        if(!hasNamespace){
+            return null;
+        }
+        if(!def.hasOwnProperty('namespaceAttribute')){
+            return null;
+        }
+        var namespaceAttribute = def.namespaceAttribute[0] || {};
+        return namespaceAttribute.namespaceAttribute;
+    };
     RxtManager.prototype.getStaticRxtStoragePath = function(rxtType) {
         var storagePath = this.getRxtStoragePath(rxtType);
         var components;
@@ -615,6 +639,20 @@ var core = {};
         }
         return false;
     };
+    RxtManager.prototype.isDownloadable = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if the asset can be downloaded';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.downloadable)) {
+            return rxtDefinition.meta.downloadable || false;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether asset downloading is enabled for ' + type + '.Make sure the meta property is present in the configuration callback of the asset.js');
+        }
+        return false;
+    };
     RxtManager.prototype.isLifecycleEnabled = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
@@ -939,6 +977,20 @@ var core = {};
         }
         return values;
     };
+    RxtManager.prototype.isNotificationsEnabled = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if default lifecycles are enabled';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.notifications)) {
+            return rxtDefinition.meta.notifications.enabled || false;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether default lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
+        }
+        return false;
+    };
     var getFieldNameParts = function(fieldName) {
         //Break the field by the _
         var components = fieldName.split('_');
@@ -1161,8 +1213,8 @@ var core = {};
             return updated;
         }
         //Case 2: Look for removed RXTs
-        for(var types in timeMap){
-            if(!currentTimeMap.hasOwnProperty(type)){
+        for(var shortName in timeMap){
+            if(!currentTimeMap.hasOwnProperty(shortName)){
                 updated = true;
             }
         }

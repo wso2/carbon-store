@@ -26,7 +26,7 @@
     <groupId>org.wso2.carbon.store</groupId>
     <artifactId>carbon-store</artifactId>
     <packaging>pom</packaging>
-    <version>2.3.10-SNAPSHOT</version>
+    <version>2.3.11-SNAPSHOT</version>
     <name>WSO2 Carbon - Enterprise Store</name>
     <url>http://wso2.com/products/enterprise-store</url>
     <description>WSO2 Enterprise Store apps, features, components and jaggery-modules</description>
@@ -43,7 +43,7 @@
         <module>jaggery-modules</module>
         <module>components/asset-client</module>
         <module>components/store-util</module>
-        <module>components/bam-client</module>
+        <!--module>components/bam-client</module-->
         <module>features/org.wso2.carbon.es.feature</module>
         <module>features/org.wso2.carbon.store.feature</module>
         <module>features/social</module>
@@ -253,19 +253,19 @@
                 <version>${carbon.kernel.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.commons</groupId>
-                <artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
-                <version>${carbon.commons.version}</version>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
+                <artifactId>org.wso2.carbon.databridge.agent</artifactId>
+                <version>${carbon.analytics.common.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.commons</groupId>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.databridge.commons</artifactId>
-                <version>${carbon.commons.version}</version>
+                <version>${carbon.analytics.common.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.wso2.carbon.commons</groupId>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.databridge.commons.thrift</artifactId>
-                <version>${carbon.commons.version}</version>
+                <version>${carbon.analytics.common.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon</groupId>
@@ -630,18 +630,19 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--<carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>-->
-        <carbon.kernel.version>4.4.1</carbon.kernel.version>
-        <carbon.social.version> 2.3.10-SNAPSHOT</carbon.social.version>
+        <carbon.kernel.version>4.4.4</carbon.kernel.version>
+        <carbon.social.version> 2.3.11-SNAPSHOT</carbon.social.version>
 
-        <carbon.store.version>2.3.10-SNAPSHOT</carbon.store.version>
+        <carbon.store.version>2.3.11-SNAPSHOT</carbon.store.version>
         <!--repo versions-->
 
-        <carbon.commons.version>4.4.8</carbon.commons.version>
-        <carbon.registry.version>4.5.0</carbon.registry.version>
-        <carbon.governance.version>4.6.0</carbon.governance.version>
-        <carbon.deployment.version>4.5.2</carbon.deployment.version>
-        <carbon.identity.version>4.5.6</carbon.identity.version>
-        <carbon.multitenancy.version>4.4.4</carbon.multitenancy.version>
+        <carbon.commons.version>4.5.2</carbon.commons.version>
+        <carbon.registry.version>4.5.3-SNAPSHOT</carbon.registry.version>
+        <carbon.governance.version>4.6.2-SNAPSHOT</carbon.governance.version>
+        <carbon.deployment.version>4.6.1</carbon.deployment.version>
+        <carbon.identity.version>5.0.8</carbon.identity.version>
+        <carbon.multitenancy.version>4.5.1</carbon.multitenancy.version>
+        <carbon.analytics.common.version>5.0.8</carbon.analytics.common.version>
 
         <!--<test.framework.version>4.3.1</test.framework.version>-->
         <!--<automation.utils.version>4.3.0-SNAPSHOT</automation.utils.version>-->
@@ -677,14 +678,14 @@
         <el.api.version>2.2</el.api.version>
         <h2.wso2.version>1.2.140.wso2v3</h2.wso2.version>
 
-        <jaggery.feature.version>0.11.2</jaggery.feature.version>
-        <caramel.feature.version>1.4.4</caramel.feature.version>
-        <handlebars.feature.version>1.4.4</handlebars.feature.version>
-        <markdown.feature.version>1.4.4</markdown.feature.version>
-        <carbon.feature.version>1.4.4</carbon.feature.version>
-        <process.feature.version>1.4.4</process.feature.version>
-        <uuid.feature.version>1.4.4</uuid.feature.version>
-        <sso.feature.version>1.4.4</sso.feature.version>
+        <jaggery.feature.version>0.12.3</jaggery.feature.version>
+        <caramel.feature.version>1.4.5-SNAPSHOT</caramel.feature.version>
+        <handlebars.feature.version>1.4.5-SNAPSHOT</handlebars.feature.version>
+        <markdown.feature.version>1.4.5-SNAPSHOT</markdown.feature.version>
+        <carbon.feature.version>1.4.5-SNAPSHOT</carbon.feature.version>
+        <process.feature.version>1.4.5-SNAPSHOT</process.feature.version>
+        <uuid.feature.version>1.4.5-SNAPSHOT</uuid.feature.version>
+        <sso.feature.version>1.4.5-SNAPSHOT</sso.feature.version>
         <jaggery-test.feature.version>1.2.2</jaggery-test.feature.version>
         <slf4j.wso2.version>1.5.10.wso2v1</slf4j.wso2.version>
         <log4j.version>1.2.17</log4j.version>

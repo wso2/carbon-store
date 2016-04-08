@@ -29,7 +29,7 @@ $(function() {
             var editButton = $('#editAssetButton');
             editButton.attr('disabled', 'disabled');
             editButton.next().attr('disabled', 'disabled');
-            caramel.render('loading', 'Creating asset. Please wait..', function (info, content) {
+            caramel.render('loading', 'Updating asset. Please wait..', function (info, content) {
                 var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
                 editButton.parent().append($content);
             });
@@ -50,13 +50,25 @@ $(function() {
             }
         },
         success: function(data) {
+            var editButton = $('#editAssetButton');
             messages.alertSuccess('Updated the '+PublisherUtils.resolveCurrentPageAssetType()+ ' successfully');
             var options=obtainFormMeta('#form-asset-update');
-            $('#editAssetButton').removeAttr('disabled');
-            window.location = options.redirectUrl + data.id;
+            editButton.removeAttr('disabled');
+            editButton.next().removeAttr('disabled');
+            $('.loading-animation').css('display','none');
         },
-        error: function() {
-            $('#editAssetButton').removeAttr('disabled');
+        error: function (response) {
+            var result;
+            if (response && response.responseText){
+                result = JSON.parse(response.responseText);
+            }
+            if (result && result.moreInfomation){
+                messages.alertError(result.moreInfomation);
+            } else {
+                messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
+            }
+            $('#btn-create-asset').removeAttr('disabled');
+            $('.fa-spinner').parent().remove();
         }
     });
 
@@ -132,13 +144,41 @@ $(function() {
         var $panel = $(this).parent().next();
         if($panel.is(":visible")){
             $panel.hide('fast');
+            $(this).parent().addClass('collapsed');
         }else{
             $panel.show('fast');
+            $(this).parent().removeClass('collapsed');
         }
     });
-    $('#form-asset-update .responsive-form-container').each(function(){
-        if($(this).attr('id') != 'collapseoverview'){
+
+    /**
+     * Hides all the tables except the first table in order to improve 
+     * readability
+     */
+    $('#form-asset-update .responsive-form-container').each(function(index){
+        if(index!=0){
             $(this).hide();
         }
+    });
+    
+    /**
+     * Changes the field icon to collapsed state
+     */
+    $('.field-title').each(function(index){
+        if(index!=0){
+            $(this).addClass("collapsed");
+        }
+    });
+
+    $('#btn-cancel-update').on('click', function(e) {
+        var assetId = $('#asset-id').val();
+        var assetType = $('#asset-type').val();
+        var path = caramel.url('/assets/'+assetType + '/details/' + assetId);
+
+        $.ajax({
+            success : function(response) {
+                window.location = path;
+            }
+        });
     });
 });

@@ -23,6 +23,8 @@ $(function() {
         cache: false
     });
     var constants = LifecycleAPI.constants;
+    var historyStart =0;
+    var historyEnd = constants.LIFECYCLE_HISTORY_PAGING_SIZE;
     var id = function(name) {
         return '#' + name;
     };
@@ -53,6 +55,25 @@ $(function() {
             fn(containerName);
         });
     };
+
+    var appendPartial = function(partialKey, containerKey, data, fn) {
+        fn = fn || function() {};
+        var partialName = config(partialKey);
+        var containerName = config(containerKey);
+        if (!partialName) {
+            throw 'A template name has not been specified for template key ' + partialKey;
+        }
+        if (!containerName) {
+            throw 'A container name has not been specified for container key ' + containerKey;
+        }
+        var obj = {};
+        obj[partialName] = partial(partialName);
+        caramel.partials(obj, function() {
+            var template = Handlebars.partials[partialName](data);
+            $(id(containerName)).append(template);
+            fn(containerName);
+        });
+    };
     var wireLCActionHandlers = function(container) {
         $(id(container)).children('a').each(function() {
             $(this).on('click', function(e) {
@@ -60,7 +81,7 @@ $(function() {
                 e.preventDefault();
                 action = $(this).data('action');
                 if(renderTransitionInputs(action)){
-                    console.log('Deferred executing action till transition inputs are provided');
+                    //console.log('Deferred executing action till transition inputs are provided');
                     return;
                 }
                 //Get the comment
@@ -140,8 +161,10 @@ $(function() {
         if (impl) {
             data.currentLifecycle = LifecycleAPI.currentLifecycle();
             data.currentState = impl.state(impl.currentState).label;
+            data.hasMultipleLifecycles = LifecycleUtils.currentAsset().hasMultipleLifecycles;
             renderPartial(constants.CONTAINER_INFORMATION_AREA, constants.CONTAINER_INFORMATION_AREA, data);
         }
+        $("#current-selected-lifecycle span:first-child").text(data.currentLifecycle);
     };
     var renderHistory = function() {
         var container = config(constants.CONTAINER_HISTORY_AREA);
@@ -151,10 +174,41 @@ $(function() {
         var modifiedHistory;
         if (impl) {
             history = impl.history;
-            data.history = history;
+            data.history = history.slice(historyStart, historyEnd);
             renderPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
+            incrementHistoryRenderParams(historyStart, historyEnd, history.length);
         }
     };
+
+    var appendHistory = function(start, end) {
+        var impl = LifecycleAPI.lifecycle();
+        var data = {};
+        var history;
+        if (impl) {
+            history = impl.history;
+            data.history = history.slice(start, end);
+            appendPartial(constants.CONTAINER_HISTORY_AREA, constants.CONTAINER_HISTORY_AREA, data);
+            incrementHistoryRenderParams(start, end, history.length);
+        }
+    };
+
+    var incrementHistoryRenderParams = function(start, end, historyLength){
+        historyStart = start + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
+        historyEnd = end + constants.LIFECYCLE_HISTORY_PAGING_SIZE;
+        if(historyStart >= historyLength){
+            $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).hide();
+        }
+        if(historyStart < historyLength){
+            $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).show();
+        }
+
+    };
+
+    var clearHistoryRenderParams = function(){
+        historyStart = 0;
+        historyEnd = constants.LIFECYCLE_HISTORY_PAGING_SIZE;
+    };
+
     var renderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         var impl = LifecycleAPI.lifecycle();
@@ -184,7 +238,7 @@ $(function() {
                 $(id(container)).removeClass('not-active').removeAttr("title").unbind('click');
                 return;
             }
-            $(id(container)).addClass('not-active').attr("title", "Asset is not in a delatable State!")
+            $(id(container)).addClass('not-active').attr("title", "Asset is not in a deletable State!")
                 .click(function (e) {
                     e.preventDefault()
                 });
@@ -278,6 +332,7 @@ $(function() {
         var container = config(constants.INPUT_TEXTAREA_LC_COMMENT);
         $(id(container)).val('');
     };
+
     LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
         options = options || {};
         var lifecycleName = options.lifecycle;
@@ -294,6 +349,7 @@ $(function() {
             renderLCActions();
             renderChecklistItems();
             renderDeleteActions();
+            $(id(config(constants.CONTAINER_LC_NOTIFICATIONS_AREA))).html('');
         }
     });
     //LifecycleAPI.event(constants.EVENT_LC_LOAD, function(options) {
@@ -324,6 +380,14 @@ $(function() {
         unblockChecklist();
         hightlightCurrentStateNode();
         renderStateInformation();
+        if (LifecycleAPI.lifecycle().nextStates().length == 0) {
+            LifecycleAPI.notify(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE), {
+                type: constants.NOTIFICATION_WARN,
+                global: false
+            });
+            renderChecklistItems();
+            return;
+        }
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
             LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
                 type: constants.NOTIFICATION_WARN,
@@ -379,12 +443,13 @@ $(function() {
             });
         }
         else{
-            LifecycleAPI.notify(config(config(constants.MSG_ERROR_STATE_CHANGE)), {
+            LifecycleAPI.notify(config(constants.MSG_ERROR_STATE_CHANGE), {
                 type: 'error'
             });
         }
     });
     LifecycleAPI.event(constants.EVENT_FETCH_HISTORY_SUCCESS, function() {
+        clearHistoryRenderParams();
         renderHistory();
     });
     LifecycleAPI.event(constants.EVENT_LC_UNLOAD, function(options) {
@@ -416,6 +481,12 @@ $(function() {
         LifecycleAPI.lifecycle(selectedLC).load();
         LifecycleAPI.lifecycle(selectedLC).fetchHistory();
     });
+
+    $(constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON).click(function(e) {
+        e.preventDefault();
+        appendHistory(historyStart,historyEnd);
+    });
+
     var init = function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();

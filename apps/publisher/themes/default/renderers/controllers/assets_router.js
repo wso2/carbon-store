@@ -22,6 +22,7 @@ var render = function (theme, data, meta, require) {
     //var addAssetUrl = "/publisher/asset/" + data.meta.shortName +"";
     theme('single-col-fluid', {
         title: data.title,
+        applicationTitle: data.meta.applicationTitle,
         header: [
             {
                 partial: 'header',

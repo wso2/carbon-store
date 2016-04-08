@@ -16,14 +16,59 @@
  *  under the License.
  *
  */
-$(function(){
-	$('#basic-login-form').ajaxForm({
-        success:function(){
-        	//alert('You have been logged in!'+caramel.url(''));
-        	window.location = caramel.url('');
+$(function () {
+
+    $('#username').keypress(function () {
+        $('#regFormError').hide();
+    });
+
+    $('#password').keypress(function () {
+        $('#regFormError').hide();
+    });
+
+    $("#basic-login-form").validate({
+        rules: {
+            username: "required",
+            password: "required"
         },
-        error:function(){
-        	alert('Failed to log in!');
+        messages: {
+            username: "Please provide a username",
+            password: "Please provide a password"
+        }
+    });
+
+    var spinnerURL = function(){
+        return caramel.url('/extensions/app/publisher-common/themes/default/img/sign-in.gif');
+    };
+
+    var showSpinner = function(spinnerLocation,msg){
+        $(spinnerLocation).html('<img src="'+spinnerURL()+'" /> '+msg);
+        $(spinnerLocation).attr('disabled',true);
+    };
+
+    var hideSpinner = function(spinnerLocation,msg){
+       $(spinnerLocation).html(msg); 
+       $(spinnerLocation).attr('disabled',false);
+    };
+
+    $('#basic-login-form').ajaxForm({
+        beforeSubmit:function(e){
+            showSpinner('#submitBtn','SIGNING IN');
+        },
+        success: function (data) {
+            data = JSON.parse(data);
+            var url = data.referer || caramel.url('');
+            window.location = url;
+        },
+        error: function (data) {
+            var regFormError = $('#regFormError');
+            regFormError.show();
+            regFormError.text(data.responseJSON.error);
+            $("#basic-login-form").resetForm();
+            $('#username').focus();
+            $('#password-error').hide();
+            $('#password').removeClass('error');
+            hideSpinner('#submitBtn','SIGN IN ');
         }
     });
 });
