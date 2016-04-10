@@ -70,9 +70,9 @@ $( document ).ready(function() {
     if ($(document).height() - $(window).height() > affixOffset) {
         $(document).scroll(function () {
             if ($(document).scrollTop() >= ( affixOffset + 20)) {
-                $('.navigation-container').addClass("affix");
+                $('#navigation-container').addClass("affix");
             } else {
-                $('.navigation-container').removeClass("affix");
+                $('#navigation-container').removeClass("affix");
             }
         });
     }
