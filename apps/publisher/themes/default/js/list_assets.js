@@ -282,4 +282,7 @@ $(window).load(function() {
     initSearch();
     initCategorySelection();
     initAssetCreationChecker();
+    if (document.getElementById("categoryDropDown") != null) {
+        document.getElementById("categoryDropDown").title = document.getElementById("categoryDropDown").text.trim()
+    }
 });

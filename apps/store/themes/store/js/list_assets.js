@@ -138,4 +138,7 @@ var parseArrToJSON = function (items) {
 
 $(window).load(function () {
     initCategorySelection();
+    if (document.getElementById("categoryDropDown") != null) {
+        document.getElementById("categoryDropDown").title = document.getElementById("categoryDropDown").text.trim()
+    }
 });
