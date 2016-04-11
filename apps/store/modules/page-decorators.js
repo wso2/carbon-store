@@ -385,7 +385,15 @@ var pageDecorators = {};
             'sortBy': '',
             'paginationLimit': 0
         };
-        page.tags = doTermSearch(ctx,'tags', paging, true);
+        var mytags = doTermSearch(ctx,'tags', paging, true);
+        var retTags = [];
+
+        for (var i=0;i<mytags.length;i++) {
+            if (mytags[i].value.indexOf("/") < 0) {
+                retTags.push(mytags[i]);
+            }
+        }
+        page.tags = retTags;
         page.selectedTag = selectedTag(ctx);
         return page;
     };

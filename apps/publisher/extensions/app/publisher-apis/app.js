@@ -36,6 +36,10 @@ app.server = function(ctx) {
                 path: 'asset.jag',
                 secured: true
             }, {
+                url: 'taxonomies',
+                path: 'taxonomy.jag',
+                secured: true
+            }, {
                 url: 'authenticate',
                 path: 'authenticate.jag'
             }, {

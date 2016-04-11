@@ -24,9 +24,10 @@ var format = function(context, data, page, area, meta) {
 
 var resources = function(page, meta) {
 	return {
-		js : ['asset-helpers.js', 'navigation.js', 'popover.js', 'jquery.validate.js', 'search.js', 'list_assets.js',
-			'jstree.min.js', 'categorization.js'],
-		css : ['navigation.css', 'style.min.css', 'categorization.css', 'theme-categorization.min.css']
+
+		js : ['asset-helpers.js', 'navigation.js', 'popover.js', 'jquery.validate.js', 'search.js', 'list_assets.js', 'categorization.js'],
+		css : ['navigation.css','style-taxonomy.css', 'categorization.css', 'theme-categorization.min.css']
+
 	};
 };
 

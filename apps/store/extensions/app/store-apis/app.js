@@ -55,6 +55,9 @@ app.server = function(ctx) {
                 path: 'search-history.jag',
                 secured: true
             }, {
+                url: 'taxonomies',
+                path: 'taxonomy.jag',
+            }, {
                 url:'partials',
                 path:'partials.jag'
             }]
