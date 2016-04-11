@@ -27,6 +27,7 @@
     <name>Enterprise Store - Jaggery Modules</name>
     <url>https://github.com/wso2/products-es</url>
     <modules>
+        <module>taxonomy</module>
         <module>event</module>
         <module>login</module>
         <module>permission</module>
