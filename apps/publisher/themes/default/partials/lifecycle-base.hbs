@@ -3,11 +3,33 @@
     <div id='lifecycle-global-notifications' class="col-xs-12 col-sm-12 col-md-12 col-lg-12"></div>
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div id='lifecycle-asset-details'>
-            <h4>{{assets.name}}</h4>
-            <h6>{{assets.mediaType}}</h6>
-            {{#if assets.version}}
-                <h5>{{assets.version}}</h5>
-            {{/if}}
+            {{#with assets}}
+                <div class="well asset-well">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-lg-1">
+                                <div class="ast-img setbgcolor" style="background: {{this.uniqueColor}}">
+                        <span class="ast-type-icon">
+                            <i class="{{icon}} fw-lg"></i>
+                        </span>
+
+                                    <div class="ast-name-icon">{{this.nameToChar}}</div>
+                                </div>
+                            </div>
+                            <div class="col-lg-10 padding-left-double">
+                                <h4>{{name}}</h4>
+                                {{#if version}}
+                                    <p>Version : {{version}}</p>
+                                {{/if}}
+                                {{#if lifecycleState}}
+                                    <p>{{lifecycle}} : {{lifecycleState}}</p>
+                                {{/if}}
+                                <div class="well-description">{{tables.0.fields.createdtime.value}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{/with}}
         </div>
         {{> lifecycle-selection-area}}
     </div>

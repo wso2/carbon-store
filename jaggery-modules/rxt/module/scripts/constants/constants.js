@@ -163,12 +163,18 @@ var constants = {};
 
     constants.DEFAULT_TAGS_PAGIN = {
         start: 0,
-        count: 1000,
+        count: 0,
         sortBy: '',
         sortOrder: 'ASC',
-        paginationLimit: 1000
+        paginationLimit: 0
     };
 
     constants.MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+
+    /**
+     * The version declared in the publisher.json
+     * @type {string}
+     */
+    constants.VERSION = 'app.version';
 
 }(constants));

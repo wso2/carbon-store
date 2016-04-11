@@ -328,10 +328,10 @@ var pageDecorators = {};
     pageDecorators.tags = function(ctx, page) {
         var paging = {
             'start': 0,
-            'count': 1000,
+            'count': 0,
             'sortOrder': 'ASC',
             'sortBy': '',
-            'paginationLimit': 1000
+            'paginationLimit': 0
         };
         page.tags = doTermSearch(ctx,'tags', paging, true);
         page.selectedTag = selectedTag(ctx);

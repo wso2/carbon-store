@@ -2,6 +2,7 @@ var caramel = require('caramel');
 
 var carbon = require('carbon');
 var process = require('process');
+var config = require('/config/store.json');
 var conf = carbon.server.loadConfig('carbon.xml');
 var offset = conf.*::['Ports'].*::['Offset'].text();
 var hostName = conf.*::['HostName'].text().toString();
@@ -73,7 +74,8 @@ lifecycle.core.init();
 var store = require('/modules/store.js');
 store.init(configs);
 rxt.server.init(configs);
-
+//get the app version from store.json
+rxt.app.version(config.version);
 rxt.permissions.init();
 metricsAPI.init(context,configs);
 
