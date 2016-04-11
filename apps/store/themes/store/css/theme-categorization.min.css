@@ -1,0 +1,136 @@
+.radio .helper:before,.radio>input[type=radio]:checked+.helper:after,.switch .helper:before,.switch>input[type=checkbox]+.helper:after,.tree-view.tree-view-lines ul li:before,.tree-view.tree-view-lines ul:before {
+	display:block;
+	content:""
+}
+.asset-image {
+	max-width:150px;
+	background:#2c313b;
+	float:none
+}
+.asset-desc .asset-name {
+	font-size:24px;
+	margin-bottom:0
+}
+.asset-desc .asset-publisher {
+	font-size:14px;
+	margin-bottom:20px
+}
+.radio {
+	display:inline-block;
+	margin-right:10px;
+	margin-bottom:0;
+	margin-top:0;
+	cursor:pointer;
+	font-weight:300
+}
+.radio>input[type=radio] {
+	position:absolute;
+	opacity:0
+}
+.radio>input[type=radio]:checked+.helper:after {
+	position:absolute;
+	color:#2c313b;
+	z-index:2;
+	font-size:16px;
+	font-weight:700;
+	left:5px;
+	margin-left:0;
+	top:50%;
+	margin-top:2.5px;
+	margin-left:-2px;
+	background-color:#2c313b;
+	width:8px;
+	height:8px;
+	border-radius:100%
+}
+.radio>input[type=radio]:checked+.helper:before {
+	border:2px solid #2c313b
+}
+.radio>input[type=radio]:disabled+.helper:before {
+	cursor:default;
+	background:#e6e6e6
+}
+.radio>input[type=radio]:disabled+.helper:after {
+	background-color:#8a8a8a
+}
+.radio>input[type=radio]:not(:disabled)+.helper:before {
+	border-color:#919191
+}
+.radio .helper {
+	padding-left:26px;
+	padding-top:1px;
+	position:relative
+}
+.radio .helper:before {
+	position:absolute;
+	height:15px;
+	width:15px;
+	text-indent:-9999px;
+	border:2px solid #d9d9d9;
+	z-index:1;
+	opacity:1;
+	top:-1px;
+	left:0;
+	border-radius:100%
+}
+.checkbox {
+	display:inline-block;
+	margin:0 10px 0 0;
+	cursor:pointer;
+	font-weight:300
+}
+.checkbox>input[type=checkbox] {
+	position:absolute;
+	opacity:0
+}
+.checkbox>input[type=checkbox]:checked+.helper:before {
+	border:2px solid #2c313b
+}
+.checkbox>input[type=checkbox]:checked+.helper:after {
+	position:absolute;
+	display:block;
+	content:"\e617";
+	font-size:7pt;
+	height:16px;
+	width:16px;
+	line-height:16px;
+	z-index:2;
+	top:2px;
+	margin-top:0;
+	left:2px;
+	margin-left:0;
+	text-align:center;
+	background:#2c313b;
+	color:#fff;
+	font-family:font-wso2
+}
+.checkbox>input[type=checkbox]:not(:checked)+.helper:after {
+	display:none
+}
+.checkbox>input[type=checkbox]:disabled+.helper:before {
+	cursor:default;
+	background:#e6e6e6
+}
+.checkbox>input[type=checkbox]:disabled+.helper:after {
+	color:#8a8a8a
+}
+.checkbox>input[type=checkbox] :not(:disabled)+.helper:before,.checkbox>input[type=checkbox]:not(:disabled)+.helper:before {
+	border-color:#526A84
+}
+.checkbox .helper {
+	padding-left:40px;
+	position:relative
+}
+.checkbox .helper:before {
+	position:absolute;
+	display:block;
+	height:20px;
+	width:20px;
+	content:"";
+	text-indent:-9999px;
+	border:2px solid #eaf0f1;
+	z-index:1;
+	opacity:1;
+	top:0;
+	left:0
+}
