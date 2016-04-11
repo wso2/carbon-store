@@ -135,6 +135,58 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
     };
+    pageDecorators.assetCategoryFilterDetails = function (ctx, page, utils) {
+        if (page.meta.pageName != 'list') {
+            return;
+        }
+        var paging = {};
+        page.assetCategoryFilterDetails = [];
+        var categorizationFields = ctx.rxtManager.listRxtCategoryFields(ctx.assetType, "options");
+        var updatedCategorizationFields = [];
+        var isVisible = false;
+
+        for (var index in categorizationFields) {
+            var updatedCategorizationField = {};
+            var categorizationField = categorizationFields[index];
+            var parentId = categorizationField.name.fullName;
+            var childValues = [];
+            var childFields = [];
+            updatedCategorizationField.text = categorizationField.name.label;
+            updatedCategorizationField.id = parentId;
+            updatedCategorizationField.divId = parentId + index;
+            if (ctx.rxtManager.isSolarFacetsEnabled(ctx.assetType)) {
+                childValues = doTermSearch(ctx,
+                    parentId, paging, true);
+            } else {
+                childValues = categorizationField.values[0].value;
+            }
+
+            if(index < ctx.rxtManager.collapseInCount(ctx.assetType)){
+                updatedCategorizationField.isCollapseIn = true;
+            } else {
+                updatedCategorizationField.isCollapseIn = false;
+            }
+
+            for(var childIndex in childValues){
+                var childCategorizationField = {};
+                var localField = childValues[childIndex];
+                childCategorizationField.text = localField.value;
+                childCategorizationField.id = parentId + "_child" + childIndex;
+                childCategorizationField.parent = parentId;
+
+                childFields.push(childCategorizationField);
+            }
+            updatedCategorizationField.children = childFields;
+            updatedCategorizationFields.push(updatedCategorizationField);
+        }
+        for(var i in updatedCategorizationFields){
+            if(updatedCategorizationFields[i].children.length != 0){
+                isVisible = true;
+            }
+        }
+        page.assetCategoryFilterDetails = updatedCategorizationFields;
+        page.isVisible = isVisible;
+    };
     pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
