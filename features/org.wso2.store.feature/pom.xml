@@ -173,9 +173,6 @@
                                     <!--org.wso2.carbon.stratos.common:2.3.0-->
                                 <!--</importFeatureDef>-->
                                 <importFeatureDef>
-                                    org.wso2.carbon.event:compatible:${patch.version.421}
-                                </importFeatureDef>
-                                <importFeatureDef>
                                     org.wso2.carbon.registry.ws:compatible:${carbon.registry.base.version}
                                 </importFeatureDef>
                             </importFeatures>
