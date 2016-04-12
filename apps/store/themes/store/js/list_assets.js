@@ -195,7 +195,6 @@ var createHTMLFromJsonSub = function (jsonInput, atag) {
 
 };
 
-var mainListC;
 //create first tree branches and call dynamically to checkAndSendQuery
 var createHTMLFromJsonFirst = function (jsonInput) {
 
@@ -236,7 +235,6 @@ var createHTMLFromJsonFirst = function (jsonInput) {
 
     mainList.appendChild(mainTagA);
     mainList.appendChild(mainSubList);
-    mainListC = mainList;
     $('#dropdown-taxonomy').append(mainList.outerHTML);
 };
 
@@ -247,7 +245,6 @@ String.prototype.replaceAll = function (find, replace) {
 };
 
 var getURL = function () {
-    debugger;
     var decodedURL = decodeURIComponent(window.location.href);
     var parameters = decodedURL.split('q=');
     var parameterArray = parameters[1].split(",");
@@ -352,7 +349,6 @@ $(window).load(function () {
                         }
 
                         taxaSub = data;
-                        debugger;
                         //since we have "/" in variable name, jquery selector cant select that element
                         var currentElement = document.getElementById(path);
                         createHTMLFromJsonSub(taxaSub, $(currentElement));
@@ -365,10 +361,8 @@ $(window).load(function () {
             } else {
                 var currentElement = document.getElementById(path);
                 createHTMLFromJsonSub([], $(currentElement));
-                var pp = document.getElementById(path);
-                debugger;
-                $("#" + $(pp).attr('globalId') + " a.dropdown").toggleClass('hide-after');
-                debugger;
+                var carrot = document.getElementById(path);
+                $("#" + $(carrot).attr('globalId') + " a.dropdown").toggleClass('hide-after');
             }
         }
 
