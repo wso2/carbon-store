@@ -7,18 +7,18 @@ var user = {};
 
     var USER_ROLE_PREFIX = 'Internal/private_';
 
-    var cleanUsername = function (username) {
+    user.cleanUsername = function (username) {
         /**
          * this is a one-way hash function, @ is replaced if the user name is an email
          * if the user name is coming from a secondery user store it will be second.com/user hence
          * "/" will be replaced.
          */
 
-        return username.replace('@', ':').replace('/', ':');
+        return username.replace('@', '-AT-').replace('/', ':');
     };
 
     user.privateRole = function (username) {
-        return USER_ROLE_PREFIX + cleanUsername(username);
+        return USER_ROLE_PREFIX + this.cleanUsername(username);
     };
 
     user.USER_OPTIONS = 'server.user.options';
@@ -189,7 +189,7 @@ var user = {};
      */
     user.userSpace = function (usr) {
         try {
-            return user.configs(usr.tenantId).userSpace + '/' + cleanUsername(usr.username);
+            return user.configs(usr.tenantId).userSpace + '/' + this.cleanUsername(usr.username);
         } catch (e) {
             return null;
         }
