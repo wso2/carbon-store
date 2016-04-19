@@ -11,6 +11,7 @@ LifecycleAPI.configs({
 	"lifecycleHistoryArea":"lifecycle-history",
 	"lifecycleInformationArea":"lifecycle-information",
 	"lifecycleCommentTextArea":"lifecycle-comment",
+	"lifecycleCommentContainer":"lifecycle-comments",
 	"lifecycleTransitionUIArea":"lifecycle-transition-ui",
 	"lifecycleNotificationsArea":"lifecycle-notifications",
 	"lifecycleGlobalNotificationsArea":"lifecycle-global-notifications",
