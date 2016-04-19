@@ -115,7 +115,7 @@ $(function () {
         if(!$('#advanced-search').is(':visible')){
             searchQuery = $('#search').val();
             if(searchQuery.indexOf(":") == -1 && searchQuery.trim() !== ""){
-                searchQuery = "content:" + searchQuery;
+                searchQuery = setDefaultSearchQuery(searchQuery);
             }
             searchQuery = searchQuery +  " " + $('#categorization-query').val();
             if(searchQuery.trim() !== ''){
@@ -144,6 +144,12 @@ $(function () {
             }
         }
         return output;
+    };
+
+    var setDefaultSearchQuery = function(query){
+        //This can be changed according to the user's preference
+        //"content:" +query + " name:" +query;
+        return "content:" +query;
     };
 
     var search = function () {
