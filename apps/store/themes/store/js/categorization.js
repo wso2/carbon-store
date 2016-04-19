@@ -132,9 +132,7 @@ $(function() {
                 param = params_arr[i].split("=")[1];
                 var innerParams = param.split(",");
                 for(var j= innerParams.length -1; j >= 0; j -= 1){
-                    //alert(innerParams[j]);
                     if(innerParams[j].indexOf(data.parent) > -1){
-                        //alert("RemoveWhole");
                         if((innerParams[j].indexOf("OR") > -1) && !removeWhole){
                             var currValues = innerParams[j].substring(innerParams[j].indexOf("\"(")+2,
                                 innerParams[j].indexOf(")\"")).split("OR");
