@@ -52,11 +52,9 @@ $(function() {
 
                     }
                 }
-                debugger;
             }
             originalPathAry = unique(originalPathAry);
             originalPathAry = originalPathAry.reverse();
-            debugger;
         },
         error: function () {
         }
@@ -84,7 +82,6 @@ $(function() {
                 return true;
 
             } else {
-                debugger;
                 //tree.open_node(node);
                 if (tree.is_open(node)) {
                     tree.close_node(node);
@@ -105,7 +102,7 @@ $(function() {
                     if (node.id === '#') {
                         return caramel.context + '/apis/taxonomies';
                     } else {
-                        return caramel.context + '/apis/taxonomies?terms=' + node.id + '/*';
+                        return caramel.context + '/apis/taxonomies?terms=' + node.id + '/children';
                     }
                 },
                 data: function (node) {
@@ -163,12 +160,10 @@ $(function() {
      * recursively open nodes. finally required nodes are opened, we will check required leaf nodes
      */
     $("#jstree-taxonomy").on("after_open.jstree", function (e, datax) {
-        debugger;
         if (programmatically) {
             datax.instance.open_node(originalPathAry.pop());
             if (originalPathAry.length == 0) {
                 for (var i = 0; i < selectedTaxa.length; i++) {
-                    debugger;
                     datax.instance.check_node(selectedTaxa[i]);
                 }
             }
@@ -183,7 +178,6 @@ $(function() {
         // try to improve using data parameter
         var tree = $('#jstree-taxonomy').jstree(true);
         tree.open_node(tree.get_node("#").children);
-        debugger;
         $("#" + tree.get_node("#").children[0]).find('.jstree-ocl').first().remove();
         $("#" + tree.get_node("#").children[0]).find('> a > .jstree-checkbox').remove()
 
@@ -210,7 +204,6 @@ $(function() {
             if (jsTree.is_leaf(checkedNodesList[i])) {
 
                 pathFromRoot += checkedNodesList[i].id + ",";
-                debugger;
             }
         }
         $("#taxonomy-list")[0].value = pathFromRoot;
