@@ -135,7 +135,7 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
     };
-    pageDecorators.assetCategoryFilterDetails = function (ctx, page, utils) {
+    pageDecorators.assetCategoryFilterDetails = function (ctx, page) {
         if (page.meta.pageName != 'list') {
             return;
         }
@@ -145,7 +145,7 @@ var pageDecorators = {};
         var updatedCategorizationFields = [];
         var isVisible = false;
 
-        for (var index in categorizationFields) {
+        for (var index=0; index < categorizationFields.length; index++) {
             var updatedCategorizationField = {};
             var categorizationField = categorizationFields[index];
             var parentId = categorizationField.name.fullName;
@@ -161,13 +161,13 @@ var pageDecorators = {};
                 childValues = categorizationField.values[0].value;
             }
 
-            if(index < ctx.rxtManager.collapseInCount(ctx.assetType)){
+            if (index < ctx.rxtManager.collapseInCount(ctx.assetType)){
                 updatedCategorizationField.isCollapseIn = true;
             } else {
                 updatedCategorizationField.isCollapseIn = false;
             }
 
-            for(var childIndex in childValues){
+            for(var childIndex=0; childIndex < childValues.length; childIndex++){
                 var childCategorizationField = {};
                 var localField = childValues[childIndex];
                 childCategorizationField.text = localField.value;
@@ -179,7 +179,7 @@ var pageDecorators = {};
             updatedCategorizationField.children = childFields;
             updatedCategorizationFields.push(updatedCategorizationField);
         }
-        for(var i in updatedCategorizationFields){
+        for(var i=0; i < updatedCategorizationFields.length; i++){
             if(updatedCategorizationFields[i].children.length != 0){
                 isVisible = true;
             }
@@ -215,7 +215,6 @@ var pageDecorators = {};
             return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
         };
         var bookmarkPerms = {};
-        
         // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
         // case 1 : Search query provided with mediaType search
         if(isMediaType(query,types)){
@@ -283,9 +282,9 @@ var pageDecorators = {};
      */
     var isMediaType = function(q,types){
          var hasMediaType = q ? Boolean(q.mediaType) : false;
-         //if a query is not provided or if media type is not provided we will skip media scoping 
+         //if a query is not provided or if media type is not provided we will skip media scoping
          if(!hasMediaType) {
-            return hasMediaType;            
+            return hasMediaType;
          }
          var mediaType = q.mediaType;
         return types.filter(function(type){

@@ -20,7 +20,7 @@ asset.manager = function(ctx) {
     /**
      * The function augments the provided query to include published state information
      * @param  {[type]} query [description]
-     * @return {[type]}       The provided query object 
+     * @return {[type]}       The provided query object
      */
     var buildPublishedQuery = function(query) {
         query = query || {};
@@ -137,11 +137,11 @@ asset.configure = function() {
                 categoryField: 'overview_category'
             },
             categorization: {
-                solarFacetsEnabled: false,
+                solarFacetsEnabled: true,
                 collapseInMenuCount: 2
             },
             search: {
-                searchableFields: ['all'],
+                searchableFields: ['all']
             },
             paging: {
                 size: 10
@@ -223,7 +223,7 @@ asset.renderer = function(ctx) {
             },
             list: function(page) {
                 require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page, this);
-                require('/modules/page-decorators.js').pageDecorators.assetCategoryFilterDetails(ctx, page, this);
+                require('/modules/page-decorators.js').pageDecorators.assetCategoryFilterDetails(ctx, page);
             }
         }
     };

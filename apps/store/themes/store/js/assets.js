@@ -89,6 +89,7 @@ store.infiniteScroll.getItems = function(from,to){
             if(data.body.assets.context.assets.length == 0) store.doPagination = false;
             caramel.partials(data._.partials, function() {
                 caramel.render('assets-thumbnails', data.body.assets.context, function (info, content) {
+                    $('.assets-container section').show();
                     $('.assets-container section').append($(content));
                     if(data.body.assets.context.assets.length != 0){
                         $('.top-assets-empty-assert').remove();

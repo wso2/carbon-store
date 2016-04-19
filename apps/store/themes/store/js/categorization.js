@@ -1,4 +1,6 @@
 $(function() {
+    var categorizationArray = [];
+
     var updateFilters = function (url){
         var queryArray = url.split("=")[1].split(",");
         var queryObjArray = [];
@@ -20,13 +22,13 @@ $(function() {
                 queryObjArray.push(queryObj);
             }
 
-
             for(var i in queryObjArray){
                 $('#categorization :checkbox').each(function() {
                     var $this = $(this);
                     if($this.attr('name') == queryObjArray[i].queryKey){
                         for(var k in queryObjArray[i].queryValue){
-                            if($this.attr('value') == queryObjArray[i].queryValue[k].trim()){
+                            if($this.attr('value').toLowerCase()
+                                == queryObjArray[i].queryValue[k].trim().toLowerCase()){
                                 $this.attr('checked', true);
                                 $("#"+$this.attr('name')).collapse('show');
                                 var icon = $("#"+$this.attr('name')).prev().find('.status').children();
@@ -71,6 +73,9 @@ $(function() {
                 url = caramel.tenantedUrl('/assets/' + store.asset.type + '/list?' + buildParams(encodedQueryString));
             }
 
+            if(url.indexOf("mediaType") == -1){
+                url = url + encodeURIComponent(",\"mediaType\":\""+store.asset.type+"\"");
+            }
             loadAssets(url);
         }
 
@@ -127,7 +132,9 @@ $(function() {
                 param = params_arr[i].split("=")[1];
                 var innerParams = param.split(",");
                 for(var j= innerParams.length -1; j >= 0; j -= 1){
+                    //alert(innerParams[j]);
                     if(innerParams[j].indexOf(data.parent) > -1){
+                        //alert("RemoveWhole");
                         if((innerParams[j].indexOf("OR") > -1) && !removeWhole){
                             var currValues = innerParams[j].substring(innerParams[j].indexOf("\"(")+2,
                                 innerParams[j].indexOf(")\"")).split("OR");
@@ -204,10 +211,37 @@ $(function() {
         resetPageAttributes();
         store.infiniteScroll.addItemsToPage();
 
-        var searchQuery =  url.split("q=")[1];
-        $('#search').val(formatSearchQuery(decodeURIComponent(searchQuery)));
+        setCategorizationQuery(url);
     };
 
+    var setCategorizationQuery = function(url){
+        var searchQuery =  removeUnrelatedKeys(decodeURIComponent(url));
+        $('#categorization-query').val(formatSearchQuery(searchQuery));
+    };
+
+    var removeUnrelatedKeys = function(url){
+        var searchQuery = url.split("q=")[1];
+        var keyValues = searchQuery.split(",");
+        for(var i in keyValues){
+            var data = {};
+            var isRemove = true;
+            data.parent = keyValues[i].split(":")[0].split("\"").join('').trim();
+            data.text = keyValues[i].split(":")[1].split("\"").join('').trim();
+
+            for(var j in categorizationArray){
+                if(categorizationArray[j] == data.parent){
+                    isRemove = false;
+                    break;
+                }
+            }
+
+            if(isRemove){
+                url = removeURLParameter(decodeURIComponent(url), data, true);
+            }
+        }
+
+        return decodeURIComponent(url.split("q=")[1]);
+    };
     var resetPageAttributes = function(){
         store.rows_added = 0;
         store.last_to = 0;
@@ -250,7 +284,22 @@ $(function() {
         }
     });
 
+    $('#categorization :checkbox').each(function() {
+        var $this = $(this);
+        categorizationArray.push($this.attr('name'));
+    });
+
+    $.unique(categorizationArray);
+    categorizationArray.push("mediaType");
+    categorizationArray.push("taxonomy");
+
     var url = decodeURIComponent(window.location.href);
+    if((url.indexOf("q=") > -1) && (url.split("q=")[1] !== "")){
+        setCategorizationQuery(url);
+    }
+
+    $('#search').val($('#search').val().replace($('#categorization-query').val(),""));
+
     if(url.indexOf("=") > -1){
         var query = url.split("=");
         if(query[1] !== ""){
