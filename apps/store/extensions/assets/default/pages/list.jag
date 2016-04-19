@@ -62,9 +62,36 @@ require('/modules/store.js').exec(function(ctx) {
     PAGING.count = (count || DEFAULT_LIST_PAGIN_COUNT);
     PAGING.paginationLimit = (paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit);
 
+    /**
+     * This method removes the keys from the search query which are not related
+     * to taxonomy for categorization in order to make generic search independent from taxonomy.
+     *
+     * This first loops through the existing query parameters and in the nested loop it loops through
+     * the categorization fields and removes the taxonomy and categorization related fields from the query.
+     */
+    var removeCategorizationFromHistory = function(ctx, options) {
+        var tenantContext = tenantApi.createTenantAwareAssetResources(ctx.session, options).context;
+        var categorizationFields = tenantContext.rxtManager.listRxtCategoryFields(tenantContext.assetType, "options");
+        categorizationFields.push({"name" : {"fullName" : "taxonomy"}});
+        categorizationFields.push({"name" : {"fullName" : "mediaType"}});
+        var queryParams = q.split(",");
+        for(var i=0; i < queryParams.length; ++i){
+            var queryParam = queryParams[i];
+            for (var index=0; index < categorizationFields.length; index++) {
+                var categorizationField = categorizationFields[index];
+                var fieldName = categorizationField.name.fullName;
+                if(queryParam.indexOf(fieldName) > -1){
+                    queryParams.splice(i--, 1);
+                }
+            }
+        }
+        return queryParams.join(",");
+    };
+
     //search history dropdown updates
     if (count && q) {
-        var searchQuery = decodeURIComponent(utilsRequest.formatSearchQuery(q));
+        var updatedQuery = removeCategorizationFromHistory(ctx, options);
+        var searchQuery = decodeURIComponent(utilsRequest.formatSearchQuery(updatedQuery));
         userApi.updateSearchHistory(ctx.session, searchQuery, type);
     }
     var carbon = require('carbon');
