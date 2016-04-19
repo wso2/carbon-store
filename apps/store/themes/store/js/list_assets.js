@@ -151,7 +151,6 @@ var getURL = function (param) {
                 var strJsonTaxonomy = "{" + parameterArray[i] + "}";
                 var taxonomyObject = JSON.parse(strJsonTaxonomy);
             }
-
         }
     }
 
@@ -173,17 +172,15 @@ var checkAndSendQuery = function (param) {
 
     var parameters = url.split('q=');
 
-    if (url.indexOf("categorization") > 0) {
+    if (url.indexOf("q=") > 0) {
         if (url.indexOf("taxonomy") > 0) {
-            topAssetRefresh(parameters[0] + getURL(param), param);
+            topAssetRefresh(parameters[0] +  getURL(param), param);
         } else {
-            topAssetRefresh(parameters[0] + "q=" + encodeURIComponent(query) + encodeURIComponent(",") +
-                getURL(param), param);
+            topAssetRefresh(url + encodeURIComponent(",") + encodeURIComponent(query), param);
         }
-    } else if (url.indexOf("?") > 0) {
-        topAssetRefresh(parameters[0] + getURL(param), param);
+
     } else {
-        topAssetRefresh(url.replaceAll("#", "") + "?q=" + encodeURIComponent(query), param);
+        topAssetRefresh(url + "?q=" + encodeURIComponent(query), param);
     }
 
 };
