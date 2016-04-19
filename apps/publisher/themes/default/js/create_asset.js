@@ -191,7 +191,6 @@ $(function () {
             if (jsTree.is_leaf(checkedNodesList[i])) {
 
                 pathFromRoot += checkedNodesList[i].id + ",";
-                debugger;
             }
         }
         $("#taxonomy-list")[0].value = pathFromRoot;
@@ -208,17 +207,14 @@ $(function () {
     var jsTreeView = $('#jstree-taxonomy');
     jsTreeView.jstree({
         conditionalselect: function (node, event) {
-            debugger;
             var tree = $('#jstree-taxonomy').jstree(true);
             if (tree.is_leaf(node) || $(event.originalEvent.target).attr("class") == "jstree-icon jstree-checkbox" || $(event.originalEvent.target).attr("class") == "jstree-icon jstree-checkbox jstree-undetermined") {
                 if (!tree.is_leaf(node)) {
                     tree.open_all(node);
                 }
-                debugger;
                 return true;
 
             } else {
-                debugger;
                 /// tree.open_node(node);
                 if (tree.is_open(node)) {
                     tree.close_node(node);
@@ -244,7 +240,7 @@ $(function () {
                     if (node.id === '#') {
                         return caramel.context + '/apis/taxonomies';
                     } else {
-                        return caramel.context + '/apis/taxonomies?terms=' + node.id + '/*';
+                        return caramel.context + '/apis/taxonomies?terms=' + node.id + '/children';
                     }
                 },
                 data: function (node) {

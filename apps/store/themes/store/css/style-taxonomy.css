@@ -10,7 +10,7 @@ nav-es ul {
     width: 100%;
     padding-left: 12px; /*first left element possition */
     margin-left: 200px;
-
+    cursor:pointer;
 }
 
 nav-es li {
@@ -19,10 +19,11 @@ nav-es li {
     display: inline-block;
     position: relative;
     min-width: 200px;
+    cursor:pointer;
 }
 
 nav-es a {
-
+    cursor:pointer;
     text-decoration: none;
     background: whitesmoke;
     color: #0a0a0a;
