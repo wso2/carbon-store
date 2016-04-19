@@ -333,8 +333,17 @@ var pageDecorators = {};
             'sortBy': '',
             'paginationLimit': 1000
         };
-        page.tags = doTermSearch(ctx,'tags', paging, true);
-        page.selectedTag = selectedTag(ctx);
+        //Obtain tenant aware resources 
+        var resources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+            type: ctx.assetType
+        });
+        page.tags = doTermSearch(resources.context,'tags', paging, true);
+        page.selectedTag = selectedTag(resources.context);
+        //The tags applied to an asset should only be calculated
+        //for the details page
+        if((page.meta.pageName === 'details')&&(page.assets.id)){
+            page.appliedTags = appliedTags(resources.am,page.assets.id);
+        }
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {
@@ -691,6 +700,16 @@ var pageDecorators = {};
             selectedTag.url = searchPage;
             return selectedTag;
         }
+    };
+
+    /**
+     * Obtains all of the tags that have been applied to the asset
+     * @param  {Object} assetManager An AssetManager instance
+     * @param  {String} assetId     The Id of the asset for which tags should be retrieved
+     * @return {Array} An array of tag objects
+     */
+    var appliedTags = function(assetManager,assetId){
+        return assetManager.getTags(assetId) || [];
     };
 
     var generatePaginationContext = function(paging){
