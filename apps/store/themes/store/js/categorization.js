@@ -217,6 +217,12 @@ $(function() {
         $('#categorization-query').val(formatSearchQuery(searchQuery));
     };
 
+    /**
+     * This method removes the keys from the search query which are not related
+     * to taxonomy for categorization in order to make generic search independent from taxonomy
+     * @param url
+     * @returns {string}
+     */
     var removeUnrelatedKeys = function(url){
         var searchQuery = url.split("q=")[1];
         var keyValues = searchQuery.split(",");
