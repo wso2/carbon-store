@@ -62,6 +62,13 @@ require('/modules/store.js').exec(function(ctx) {
     PAGING.count = (count || DEFAULT_LIST_PAGIN_COUNT);
     PAGING.paginationLimit = (paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit);
 
+    /**
+     * This method removes the keys from the search query which are not related
+     * to taxonomy for categorization in order to make generic search independent from taxonomy.
+     *
+     * This first loops through the existing query parameters and in the nested loop it loops through
+     * the categorization fields and removes the taxonomy and categorization related fields from the query.
+     */
     var removeCategorizationFromHistory = function(ctx, options) {
         var tenantContext = tenantApi.createTenantAwareAssetResources(ctx.session, options).context;
         var categorizationFields = tenantContext.rxtManager.listRxtCategoryFields(tenantContext.assetType, "options");
