@@ -146,7 +146,7 @@ var getURL = function (param) {
         if (parameterArray[i].indexOf("taxonomy") > 0) {
 
             if (param) {
-                parameterArray[i] = encodeURIComponent( '"taxonomy":' + '"' + $(param).attr("id") + '"');
+                parameterArray[i] = encodeURIComponent('"taxonomy":' + '"' + $(param).attr("id") + '"');
             } else {
                 var strJsonTaxonomy = "{" + parameterArray[i] + "}";
                 var taxonomyObject = JSON.parse(strJsonTaxonomy);
@@ -157,7 +157,7 @@ var getURL = function (param) {
 
     if (param) {
         var originalString = parameterArray.join(encodeURIComponent(","));
-        var mainString =  "q=" +   originalString;
+        var mainString = "q=" + originalString;
         return mainString;
     } else {
         return taxonomyObject.taxonomy;
@@ -189,25 +189,23 @@ var checkAndSendQuery = function (param) {
 };
 
 
-var topAssetRefresh  = function (url,param) {
+var topAssetRefresh = function (url, param) {
 
     if (window.location.href.toString().indexOf("top-assets") > 0) {
         window.location.href = url;
     } else {
-        loadURL(url,param);
-        //new add
-
+        loadURL(url, param);
         setCategorizationQuery(url);
     }
 };
 
-var setCategorizationQuery = function(url){
-    var searchQuery =  removeUnrelatedKeys(decodeURIComponent(url));
+var setCategorizationQuery = function (url) {
+    var searchQuery = removeUnrelatedKeys(decodeURIComponent(url));
     $('#categorization-query').val(formatSearchQuery(searchQuery));
 };
 
 
-$('#categorization :checkbox').each(function() {
+$('#categorization :checkbox').each(function () {
     var $this = $(this);
     categorizationArray.push($this.attr('name'));
 });
@@ -222,23 +220,23 @@ categorizationArray.push("taxonomy");
  * @param url
  * @returns {string}
  */
-var removeUnrelatedKeys = function(url){
+var removeUnrelatedKeys = function (url) {
     var searchQuery = url.split("q=")[1];
     var keyValues = searchQuery.split(",");
-    for(var i in keyValues){
+    for (var i in keyValues) {
         var data = {};
         var isRemove = true;
         data.parent = keyValues[i].split(":")[0].split("\"").join('').trim();
         data.text = keyValues[i].split(":")[1].split("\"").join('').trim();
 
-        for(var j in categorizationArray){
-            if(categorizationArray[j] == data.parent){
+        for (var j in categorizationArray) {
+            if (categorizationArray[j] == data.parent) {
                 isRemove = false;
                 break;
             }
         }
 
-        if(isRemove){
+        if (isRemove) {
             url = removeURLParameter(decodeURIComponent(url), data, true);
         }
     }
@@ -246,7 +244,7 @@ var removeUnrelatedKeys = function(url){
     return decodeURIComponent(url.split("q=")[1]);
 };
 
-var formatSearchQuery = function(query){
+var formatSearchQuery = function (query) {
     var searchQuery = "";
     var qjson = JSON.parse('{' + query + '}');
     var searchKeys = Object.keys(qjson);
@@ -264,7 +262,7 @@ var formatSearchQuery = function(query){
     return searchQuery;
 };
 
-var resetPageAttributes = function(){
+var resetPageAttributes = function () {
     store.rows_added = 0;
     store.last_to = 0;
     store.items_per_row = 0;
@@ -273,16 +271,13 @@ var resetPageAttributes = function(){
     store.infiniteScroll.recalculateRowsAdded();
 };
 
-
-
-
-var loadURL = function (url,param) {
+var loadURL = function (url, param) {
     $('.assets-container section .ctrl-wr-asset').remove();
     history.pushState("", "", url);
     resetPageAttributes();
     store.infiniteScroll.addItemsToPage();
 
-    $("#" + (parseInt($(param).attr("globalid")) - 1)).find('a').each(function() {
+    $("#" + (parseInt($(param).attr("globalid")) - 1)).find('a').each(function () {
 
         if ($(this).hasClass("selected")) {
             $(this).removeClass("selected");
@@ -290,12 +285,11 @@ var loadURL = function (url,param) {
     });
 
     $("#" + (globalCount - 1)).find('a').first().html($(param).html());
-    if ($(param).attr('children')=="true") {
+    if ($(param).attr('children') == "true") {
         loadSubCategories();
-    }else {
+    } else {
         $(param).toggleClass("selected");
     }
-
 
 };
 
@@ -447,7 +441,8 @@ var createHTMLFromJsonFirst = function (jsonInput) {
         innerElement.setAttribute('globalId', globalCount);
         innerElement.setAttribute('title',  jsonInput[0].children[i].id);
         // myInner.innerHTML = jsonInput[0].children[i].text;
-        innerElement.innerHTML = (jsonInput[0].children[i].text == "" ? jsonInput[0].children[i].elementName : jsonInput[0].children[i].text);
+        innerElement.innerHTML = (jsonInput[0].children[i].text == "" ? jsonInput[0].children[i].
+            elementName : jsonInput[0].children[i].text);
         myinnerLI.appendChild(innerElement);
         mainSubList.appendChild(myinnerLI);
     }
@@ -481,7 +476,8 @@ function resolveDomain() {
 
 $(window).load(function () {
 // this condition will check current page is asset list page or top asset page.
-    if (window.location.href.toString().indexOf('list') > 0 || window.location.href.toString().indexOf('top-assets') > 0) {
+    if (window.location.href.toString().indexOf('list') > 0 || window.location.href.toString().
+            indexOf('top-assets') > 0) {
 
         // first ajax call when page loads
         $.ajax({
