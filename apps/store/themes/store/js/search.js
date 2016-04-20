@@ -40,6 +40,9 @@ $(function () {
     var isTokenizedTerm = function(term){
         return term.indexOf(':')<=-1;
     };
+    var isEmpty = function(input) {
+        return (input.length === 0);
+    };
     /**
      * Takes the users input and builds a query.This method
      * first checks if the user is attempting to search by name , if not
@@ -114,9 +117,23 @@ $(function () {
         //used the advanced search
         if(!$('#advanced-search').is(':visible')){
             searchQuery = $('#search').val();
-            if(searchQuery.indexOf(":") == -1 && searchQuery.trim() !== ""){
+            $.cookie("searchQuery", searchQuery);
+            if (searchQuery.indexOf(":") == -1 && searchQuery.trim() !== "") {
                 searchQuery = setDefaultSearchQuery(searchQuery);
             }
+            var array = getSearchKeyArray($('#categorization-query').val());
+            //Removes the categorization values from the hidden field if it exists in the search query
+            for (var i = 0; i < categorizationArray.length; i++) {
+                if (searchQuery.indexOf(categorizationArray[i]) > -1) {
+                    for (var j = 0; j < array.length; j++) {
+                        if (array[j].indexOf(categorizationArray[i]) > -1) {
+                            array.splice(j, 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            $('#categorization-query').val(array.join(' '));
             searchQuery = searchQuery +  " " + $('#categorization-query').val();
             if(searchQuery.trim() !== ''){
                 q = parseUsedDefinedQuery(searchQuery);
@@ -150,6 +167,37 @@ $(function () {
         //This can be changed according to the user's preference
         //"content:" +query + " name:" +query;
         return "content:" +query;
+    };
+
+    /***
+     * This method is used to get the categorization values as an array
+     * @param query
+     * @returns {Array}
+     */
+    var getSearchKeyArray = function (query){
+
+        var terms;
+        var term;
+        var arr =[];
+        var previous;
+
+        terms = query.split(' ');
+        for(var index = 0; index < terms.length; index++){
+            term = terms[index];
+            term = term.trim(); //Remove any whitespaces
+            //If this term is not empty and does not have a : then it should be appended to the
+            //previous term
+            if((!isEmpty(term))&&(isTokenizedTerm(term))){
+                previous = arr.length -1;
+                if(previous>=0) {
+                    arr[previous]= arr[previous]+' '+term;
+                }
+            } else {
+                arr.push(term);
+            }
+        }
+
+        return arr;
     };
 
     var search = function () {

@@ -1,5 +1,5 @@
+var categorizationArray = [];
 $(function() {
-    var categorizationArray = [];
 
     var updateFilters = function (url){
         var queryArray = url.split("=")[1].split(",");
@@ -302,6 +302,9 @@ $(function() {
         setCategorizationQuery(url);
     }
 
+    if($('#search').val() !== ''){
+        $('#search').val($.cookie("searchQuery"));
+    }
     $('#search').val($('#search').val().replace($('#categorization-query').val(),""));
 
     if(url.indexOf("=") > -1){
