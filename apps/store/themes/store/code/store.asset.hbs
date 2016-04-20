@@ -12,8 +12,8 @@
         store.security = {};
     }
     store.security = {{#if security}}{{json security}}{{else}}null{{/if}};
+    store.assetAvailability ="{{recentAssetsByType.length}}";
     store.security.details ={};
-    store.assetAvailability = {{#if assets}}false {{else}} true {{/if}};
     if(!store.store){
        store.store = {};
     }
