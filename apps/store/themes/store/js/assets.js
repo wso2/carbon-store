@@ -28,7 +28,7 @@ store.infiniteScroll ={};
 store.infiniteScroll.recalculateRowsAdded = function(){
     return (store.last_to - store.last_to%store.items_per_row)/store.items_per_row;
 };
-store.infiniteScroll.addItemsToPage = function(){
+store.infiniteScroll.addItemsToPage = function(cb){
     var screen_width = $(window).width();
     var screen_height = $(window).height();
 
@@ -56,13 +56,14 @@ store.infiniteScroll.addItemsToPage = function(){
         store.last_to = to; //We store this os we can recalculate rows_added when resolution change
         store.rows_added = row_current;
 
-        store.infiniteScroll.getItems(from,to);
+        store.infiniteScroll.getItems(from,to,cb);
 
     }
 
 };
 
-store.infiniteScroll.getItems = function(from,to){
+store.infiniteScroll.getItems = function(from,to,cb){
+    cb = cb ? cb : function(){};
     var count = to-from;
     var dynamicData = {};
     dynamicData["from"] = from;
@@ -115,10 +116,12 @@ store.infiniteScroll.getItems = function(from,to){
                     });
                 }
             });
+            cb(data,status);
         },
         error : function(xhr, status, error) {
             $('.loading-animation-big').remove();
             store.doPagination = false;
+            cb({},status,error);
         }
     });
     //}

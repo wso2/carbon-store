@@ -176,7 +176,7 @@ var checkAndSendQuery = function (param) {
         if (url.indexOf("taxonomy") > 0) {
             topAssetRefresh(parameters[0] +  getURL(param), param);
         } else {
-            topAssetRefresh(url + encodeURIComponent(",") + encodeURIComponent(query), param);
+            topAssetRefresh(url + encodeURIComponent("," +  query), param);
         }
 
     } else {
@@ -272,7 +272,33 @@ var loadURL = function (url, param) {
     $('.assets-container section .ctrl-wr-asset').remove();
     history.pushState("", "", url);
     resetPageAttributes();
-    store.infiniteScroll.addItemsToPage();
+    store.infiniteScroll.addItemsToPage(function (data, status, err) {
+        if (err) {
+            assetAvailability = false;
+        } else {
+            if (data.body.assets.context.assets.length == 0) {
+                assetAvailability = false;
+                // if assets not available in page
+                $(param).toggleClass("selected");
+
+                for (var j = 0; j < globalCount; j++) {
+                    if (parseInt($(param).attr('globalid')) - 1 < j) {
+                        $("#" + j).remove();
+                    }
+                }
+
+            } else {
+                assetAvailability = true;
+
+                $("#" + (globalCount - 1)).find('a').first().html($(param).html());
+                if ($(param).attr('children') == "true") {
+                    loadSubCategories();
+                } else {
+                    $(param).toggleClass("selected");
+                }
+            }
+        }
+    });
 
     $("#" + (parseInt($(param).attr("globalid")) - 1)).find('a').each(function () {
 
@@ -280,13 +306,6 @@ var loadURL = function (url, param) {
             $(this).removeClass("selected");
         }
     });
-
-    $("#" + (globalCount - 1)).find('a').first().html($(param).html());
-    if ($(param).attr('children') == "true") {
-        loadSubCategories();
-    } else {
-        $(param).toggleClass("selected");
-    }
 
 };
 
@@ -363,7 +382,7 @@ var createHTMLFromJsonSub = function (jsonInput, atag) {
     $("#" + (globalCount - 1)).find('a').first().html(atag.html());
 
     for (var j=0;j<globalCount;j++) {
-        if (parseInt(atag.attr('globalid')) -1 < j) {
+        if (parseInt($(atag).attr('globalid')) -1 < j) {
             $("#" + j).remove();
         }
     }
@@ -589,7 +608,7 @@ $(window).load(function () {
 });
 
 $( document ).ready(function() {
-    if (!store.assetAvailability) {
+    if (store.assetAvailability > 0) {
         assetAvailability = true;
     } else {
         assetAvailability = false;
