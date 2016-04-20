@@ -320,7 +320,7 @@ var result;
      */
     var addTempFileFieldValues = function(asset,assetManager,rxtManager,request){
         var fileFields = assetManager.getAssetResources();
-        var files = request.getAllFiles();
+        var files = request.getAllFiles()||[];
         var fieldInfo;
         //Iterate through all fields marked as required file field types and
         //then check if a file has been provided for it
