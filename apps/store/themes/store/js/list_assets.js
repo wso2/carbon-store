@@ -608,7 +608,7 @@ $(window).load(function () {
 });
 
 $( document ).ready(function() {
-    if (store.assetAvailability > 0) {
+    if (store.assetCount > 0) {
         assetAvailability = true;
     } else {
         assetAvailability = false;
