@@ -26,8 +26,8 @@ var resources = function(page, meta) {
 	return {
 
 		js : ['asset-helpers.js', 'navigation.js', 'popover.js', 'jquery.validate.js', 'search.js', 'list_assets.js', 'categorization.js'],
-		css : ['navigation.css','style-taxonomy.css', 'categorization.css', 'theme-categorization.min.css']
-
+		css : ['navigation.css','style-taxonomy.css', 'categorization.css', 'theme-categorization.min.css'],
+		code : ['taxonomy-tenant-meta.hbs']
 	};
 };
 
