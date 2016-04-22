@@ -608,6 +608,8 @@ $(window).load(function () {
 });
 
 $( document ).ready(function() {
+    //This code was added to check weather the search query contains of the search query cookie and if it contains
+    //set the search field to the value of cookie
     if($('#search').val() !== '' && $('#search').val().indexOf($.cookie("searchQuery")) > -1){
         $('#search').val($.cookie("searchQuery"));
     } else {
