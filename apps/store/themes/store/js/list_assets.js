@@ -608,6 +608,12 @@ $(window).load(function () {
 });
 
 $( document ).ready(function() {
+    if($('#search').val() !== '' && $('#search').val().indexOf($.cookie("searchQuery")) > -1){
+        $('#search').val($.cookie("searchQuery"));
+    } else {
+        $('#search').val('');
+    }
+
     if (store.assetCount > 0) {
         assetAvailability = true;
     } else {
