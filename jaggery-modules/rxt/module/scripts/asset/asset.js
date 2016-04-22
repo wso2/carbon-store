@@ -30,6 +30,7 @@
 var asset = {};
 (function(asset, core) {
     var log = new Log('rxt.asset');
+    var carbon = require('carbon');
     var DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime'; //TODO:Move to constants
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
