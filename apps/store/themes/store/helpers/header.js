@@ -21,6 +21,6 @@ var resources = function (page, meta) {
         template: 'header.hbs',
         css: ['left-navigation.css', 'font-wso2.css', 'typeahead.css'],
         js: ['typeahead.bundle.min.js', 'typeahead.js'],
-        code: ['taxonomy-tenant-meta.hbs']
+        code: ['taxonomy-meta-data.hbs','tenant-meta-data.hbs']
     };
 };
