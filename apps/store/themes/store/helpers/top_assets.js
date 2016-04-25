@@ -20,7 +20,6 @@ var resources = function (page, meta) {
     return {
         template: 'top-assets.hbs',
         js: ['asset-core.js', 'top-assets.js' ],
-        code: ['greg-diff-meta.hbs','taxonomy-asset-count.hbs'],
         css: ['top-assets.css']
     };
 };
