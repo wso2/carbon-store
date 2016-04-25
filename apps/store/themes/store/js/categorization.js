@@ -72,10 +72,6 @@ $(function() {
             } else {
                 url = caramel.tenantedUrl('/assets/' + store.asset.type + '/list?' + buildParams(encodedQueryString));
             }
-
-            if(url.indexOf("mediaType") == -1){
-                url = url + encodeURIComponent(",\"mediaType\":\""+store.asset.type+"\"");
-            }
             loadAssets(url);
         }
 
@@ -294,7 +290,6 @@ $(function() {
     });
 
     $.unique(categorizationArray);
-    categorizationArray.push("mediaType");
     categorizationArray.push("taxonomy");
 
     var url = decodeURIComponent(window.location.href);
