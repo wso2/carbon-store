@@ -208,7 +208,6 @@ $('#categorization :checkbox').each(function () {
 });
 
 $.unique(categorizationArray);
-categorizationArray.push("mediaType");
 categorizationArray.push("taxonomy");
 
 /**
