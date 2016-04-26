@@ -1,0 +1,39 @@
+{{#if isVisible}}
+    <div class="categorization-wrapper">
+        <div class="tag-title"> {{t "Search Filters"}} </div>
+        <div id="categorization" >
+            <div id="accordion1" class="panel-group" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    {{#each assetCategoryFilterDetails}}
+                        <div class="panel-heading" role="tab" id="{{this.divId}}" data-toggle="collapse"  href="#{{this.id}}" aria-expanded="true" aria-controls="{{this.id}}">
+                            <h4 class="panel-title">
+                                <div>
+                                    <div >{{this.text}}</div>
+                                    <div class="status">
+                                        <i class="fw fw-{{#if this.isCollapseIn}}up{{else}}down{{/if}}"></i>
+                                    </div>
+                                </div>
+
+                                <div class="clearfix"></div>
+                            </h4>
+                        </div>
+                        <div aria-expanded="true" id="{{this.id}}" class="panel-collapse collapse{{#if this.isCollapseIn}} in{{/if}}" role="tabpanel" aria-labelledby="{{this.divId}}">
+                            <div class="panel-body">
+                                {{#each this.children}}
+                                    <div class="row">
+                                        <label class="checkbox">
+                                            <input class="cat-checkbox" type="checkbox" name="{{this.parent}}" value="{{this.text}}">
+                                            <span class="helper">{{this.text}}</span>
+                                        </label>
+                                    </div>
+                                {{/each}}
+                            </div>
+                        </div>
+
+                    {{/each}}
+
+                </div>
+            </div>
+        </div>
+    </div>
+{{/if}}

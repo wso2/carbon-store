@@ -170,6 +170,8 @@ var constants = {};
     };
 
     constants.MultitenantConstants = Packages.org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+    constants.FILTER_CHAR = '/';
+    constants.ACCEPT_ALL = '*/*';
 
     /**
      * The version declared in the publisher.json

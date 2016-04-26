@@ -21,76 +21,79 @@ $(function () {
     };
 
     var parseArrToJSON = function(items){
-    var item;
-    var components;
-    var obj = {};
-    var key;
-    var value;
-    for(var index = 0; index < items.length; index++){
-        item = items[index];
-        components = item.split(':');
-        if(components.length == 2) {
-            key = components[0];
-            value = components[1];
-            obj[key]=value;
-        }
-    }
-    return obj;
-};
-var isTokenizedTerm = function(term){
-    return term.indexOf(':')<=-1;
-};
-/**
- * Takes the users input and builds a query.This method
- * first checks if the user is attempting to search by name , if not
- * it will look for a : delimited complex query
- *    E.g. name:wso2 tags:bubble
- * @param  {[type]} input [description]
- * @return {[type]}       [description]
- */
-var parseUsedDefinedQuery = function(input) {
-    var terms;
-    var q = {};
-    var current;
-    var term;
-    var arr =[];
-    var previous;
-    //Remove trailing whitespaces if any
-    input = input.trim();
-    input = replaceAll(input,"(\\s)*:(\\s)*", ":");
-
-    //Use case #1 : The user has only entered a name
-    if(isTokenizedTerm(input)){
-        if(input.indexOf('"') > -1){
-            q.name = JSON.stringify(JSON.parse(input));
-        } else {
-            q.name = encodeURIComponent(input);
-        }
-        return q;
-    }
-
-    //Use case #2: The user has entered a complex query
-    //and one or more properties in the query could values
-    //with spaces
-    //E.g. name:This is a test tags:wso2
-    terms = input.split(' ');
-
-    for(var index = 0; index < terms.length; index++){
-        term = terms[index];
-        term = term.trim(); //Remove any whitespaces
-        //If this term is empty and does not have a : then it should be appended to the
-        //previous term
-        if((term.length>0)&&(isTokenizedTerm(term))){
-            previous = arr.length -1;
-            if(previous>=0) {
-                arr[previous]= arr[previous]+' '+term;
+        var item;
+        var components;
+        var obj = {};
+        var key;
+        var value;
+        for(var index = 0; index < items.length; index++){
+            item = items[index];
+            components = item.split(':');
+            if(components.length == 2) {
+                key = components[0];
+                value = components[1];
+                obj[key]=value;
             }
-        } else {
-            arr.push(term);
         }
-    }
-    return parseArrToJSON(arr);
-};
+        return obj;
+    };
+    var isTokenizedTerm = function(term){
+        return term.indexOf(':')<=-1;
+    };
+    var isEmpty = function(input) {
+        return (input.length === 0);
+    };
+    /**
+     * Takes the users input and builds a query.This method
+     * first checks if the user is attempting to search by name , if not
+     * it will look for a : delimited complex query
+     *    E.g. name:wso2 tags:bubble
+     * @param  {[type]} input [description]
+     * @return {[type]}       [description]
+     */
+    var parseUsedDefinedQuery = function(input) {
+        var terms;
+        var q = {};
+        var current;
+        var term;
+        var arr =[];
+        var previous;
+        //Remove trailing whitespaces if any
+        input = input.trim();
+        input = replaceAll(input,"(\\s)*:(\\s)*", ":");
+
+        //Use case #1 : The user has only entered a name
+        if(isTokenizedTerm(input)){
+            if(input.indexOf('"') > -1){
+                q.name = JSON.stringify(JSON.parse(input));
+            } else {
+                q.name = encodeURIComponent(input);
+            }
+            return q;
+        }
+
+        //Use case #2: The user has entered a complex query
+        //and one or more properties in the query could values
+        //with spaces
+        //E.g. name:This is a test tags:wso2
+        terms = input.split(' ');
+
+        for(var index = 0; index < terms.length; index++){
+            term = terms[index];
+            term = term.trim(); //Remove any whitespaces
+            //If this term is empty and does not have a : then it should be appended to the
+            //previous term
+            if((term.length>0)&&(isTokenizedTerm(term))){
+                previous = arr.length -1;
+                if(previous>=0) {
+                    arr[previous]= arr[previous]+' '+term;
+                }
+            } else {
+                arr.push(term);
+            }
+        }
+        return parseArrToJSON(arr);
+    };
     /**
      * Replace all the occurrences of $regex by $replace in $originalString
      * @param  {originalString} input - Raw string.
@@ -114,7 +117,25 @@ var parseUsedDefinedQuery = function(input) {
         //used the advanced search
         if(!$('#advanced-search').is(':visible')){
             searchQuery = $('#search').val();
-            if(searchQuery !== ''){
+            $.cookie("searchQuery", searchQuery);
+            if (searchQuery.indexOf(":") == -1 && searchQuery.trim() !== "") {
+                searchQuery = setDefaultSearchQuery(searchQuery);
+            }
+            var array = getSearchKeyArray($('#categorization-query').val());
+            //Removes the categorization values from the hidden field if it exists in the search query
+            for (var i = 0; i < categorizationArray.length; i++) {
+                if (searchQuery.indexOf(categorizationArray[i]) > -1) {
+                    for (var j = 0; j < array.length; j++) {
+                        if (array[j].indexOf(categorizationArray[i]) > -1) {
+                            array.splice(j, 1);
+                            break;
+                        }
+                    }
+                }
+            }
+            $('#categorization-query').val(array.join(' '));
+            searchQuery = searchQuery +  " " + $('#categorization-query').val();
+            if(searchQuery.trim() !== ''){
                 q = parseUsedDefinedQuery(searchQuery);
                 q = JSON.stringify(q);
                 q = q.replace('{','').replace('}', '');
@@ -140,6 +161,43 @@ var parseUsedDefinedQuery = function(input) {
             }
         }
         return output;
+    };
+
+    var setDefaultSearchQuery = function(query){
+        //This can be changed according to the user's preference
+        //"content:" +query + " name:" +query;
+        return "content:" +query;
+    };
+
+    /***
+     * This method is used to get the categorization values as an array
+     * @param query
+     * @returns {Array}
+     */
+    var getSearchKeyArray = function (query){
+
+        var terms;
+        var term;
+        var arr =[];
+        var previous;
+
+        terms = query.split(' ');
+        for(var index = 0; index < terms.length; index++){
+            term = terms[index];
+            term = term.trim(); //Remove any whitespaces
+            //If this term is not empty and does not have a : then it should be appended to the
+            //previous term
+            if((!isEmpty(term))&&(isTokenizedTerm(term))){
+                previous = arr.length -1;
+                if(previous>=0) {
+                    arr[previous]= arr[previous]+' '+term;
+                }
+            } else {
+                arr.push(term);
+            }
+        }
+
+        return arr;
     };
 
     var search = function () {
@@ -214,7 +272,7 @@ var parseUsedDefinedQuery = function(input) {
             var $this = $(this);
             var data = getValue($this);
             if (data.value.length > 0) {
-                    $('#search').val($('#search').val() + ',"' + data.name + '":"' + data.value + '"');
+                $('#search').val($('#search').val() + ',"' + data.name + '":"' + data.value + '"');
             } else {
                 if (data.value.length > 0) {
                     $('#search').val(data.name + ':"' + data.value + '"');

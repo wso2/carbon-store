@@ -135,6 +135,58 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
     };
+    pageDecorators.assetCategoryFilterDetails = function (ctx, page) {
+        if (page.meta.pageName != 'list') {
+            return;
+        }
+        var paging = {};
+        page.assetCategoryFilterDetails = [];
+        var categorizationFields = ctx.rxtManager.listRxtCategoryFields(ctx.assetType, "options");
+        var updatedCategorizationFields = [];
+        var isVisible = false;
+
+        for (var index=0; index < categorizationFields.length; index++) {
+            var updatedCategorizationField = {};
+            var categorizationField = categorizationFields[index];
+            var parentId = categorizationField.name.fullName;
+            var childValues = [];
+            var childFields = [];
+            updatedCategorizationField.text = categorizationField.name.label;
+            updatedCategorizationField.id = parentId;
+            updatedCategorizationField.divId = parentId + index;
+            if (ctx.rxtManager.isSolarFacetsEnabled(ctx.assetType)) {
+                childValues = doTermSearch(ctx,
+                    parentId, paging, true);
+            } else {
+                childValues = categorizationField.values[0].value;
+            }
+
+            if (index < ctx.rxtManager.collapseInCount(ctx.assetType)){
+                updatedCategorizationField.isCollapseIn = true;
+            } else {
+                updatedCategorizationField.isCollapseIn = false;
+            }
+
+            for(var childIndex=0; childIndex < childValues.length; childIndex++){
+                var childCategorizationField = {};
+                var localField = childValues[childIndex];
+                childCategorizationField.text = localField.value;
+                childCategorizationField.id = parentId + "_child" + childIndex;
+                childCategorizationField.parent = parentId;
+
+                childFields.push(childCategorizationField);
+            }
+            updatedCategorizationField.children = childFields;
+            updatedCategorizationFields.push(updatedCategorizationField);
+        }
+        for(var i=0; i < updatedCategorizationFields.length; i++){
+            if(updatedCategorizationFields[i].children.length != 0){
+                isVisible = true;
+            }
+        }
+        page.assetCategoryFilterDetails = updatedCategorizationFields;
+        page.isVisible = isVisible;
+    };
     pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
@@ -163,7 +215,6 @@ var pageDecorators = {};
             return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
         };
         var bookmarkPerms = {};
-        
         // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
         // case 1 : Search query provided with mediaType search
         if(isMediaType(query,types)){
@@ -231,9 +282,9 @@ var pageDecorators = {};
      */
     var isMediaType = function(q,types){
          var hasMediaType = q ? Boolean(q.mediaType) : false;
-         //if a query is not provided or if media type is not provided we will skip media scoping 
+         //if a query is not provided or if media type is not provided we will skip media scoping
          if(!hasMediaType) {
-            return hasMediaType;            
+            return hasMediaType;
          }
          var mediaType = q.mediaType;
         return types.filter(function(type){
@@ -333,7 +384,7 @@ var pageDecorators = {};
             'sortBy': '',
             'paginationLimit': 0
         };
-        //Obtain tenant aware resources 
+//Obtain tenant aware resources
         var resources = tenantApi.createTenantAwareAssetResources(ctx.session, {
             type: ctx.assetType
         });
@@ -344,6 +395,16 @@ var pageDecorators = {};
         if((page.meta.pageName === 'details')&&(page.assets.id)){
             page.appliedTags = appliedTags(resources.am,page.assets.id);
         }
+        var mytags = doTermSearch(ctx,'tags', paging, true);
+        var retTags = [];
+
+        for (var i=0;i<mytags.length;i++) {
+            if (mytags[i].value.indexOf("/") < 0) {
+                retTags.push(mytags[i]);
+            }
+        }
+        page.tags = retTags;
+        page.selectedTag = selectedTag(ctx);
         return page;
     };
     pageDecorators.myAssets = function(ctx, page) {

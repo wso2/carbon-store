@@ -49,13 +49,14 @@
                                         {{/if}}
                                     {{/if}}
                             {{/each}}
+                            {{> categorization-entry .}}
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <div id="the-basics" class="es-input-group input-group input-wrap">
-            <div class="search-wrapper" style="float:left;width:80%;position:relative;left:0px;margin-left:-10px;">
+            <div class="search-wrapper" style="float:left;width:80%;position:relative;left:0px;margin-left:-45px;">
                 {{#if rxt.pluralLabel}}
                     <input  id="search"  type="text" class="typeahead es-form-control form-control" placeholder="Search in {{rxt.pluralLabel}}" value="{{searchQuery}}">
                 {{else}}
@@ -69,6 +70,12 @@
             </div>
         </div>
         <!--search--->
+        <nav-es style="float:left;width:100%;position:relative;left:5px ;">
+            <ul id="dropdown-taxonomy" >
+
+
+            </ul>
+        </nav-es>
     </div>
     {{#unless isUserDomainAndUrlDomainDifferent}}
         <div class="site-wide-menu">
@@ -118,3 +125,4 @@
         {{/if}}
     </div>
 {{/if}}
+</br> </br> </br>

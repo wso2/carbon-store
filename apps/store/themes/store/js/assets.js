@@ -19,17 +19,16 @@
  var details;
  ;
  */
-var rows_added = 0;
-var last_to = 0;
-var items_per_row = 0;
-var doPagination = true;
-var firstRun = true;
+store.rows_added = 0;
+store.last_to = 0;
+store.items_per_row = 0;
+store.doPagination = true;
+store.firstRun = true;
 store.infiniteScroll ={};
 store.infiniteScroll.recalculateRowsAdded = function(){
-    return (last_to - last_to%items_per_row)/items_per_row;
+    return (store.last_to - store.last_to%store.items_per_row)/store.items_per_row;
 };
-store.infiniteScroll.addItemsToPage = function(){
-
+store.infiniteScroll.addItemsToPage = function(cb){
     var screen_width = $(window).width();
     var screen_height = $(window).height();
 
@@ -42,7 +41,7 @@ store.infiniteScroll.addItemsToPage = function(){
     screen_width = screen_width - gutter_width; // reduce the padding from the screen size
     screen_height = screen_height - header_height;
 
-    items_per_row = (screen_width-screen_width%thumb_width)/thumb_width;
+    store.items_per_row = (screen_width-screen_width%thumb_width)/thumb_width;
     //var rows_per_page = (screen_height-screen_height%thumb_height)/thumb_height;
     var scroll_pos = $(document).scrollTop();
     var row_current =  (screen_height+scroll_pos-(screen_height+scroll_pos)%thumb_height)/thumb_height;
@@ -51,19 +50,20 @@ store.infiniteScroll.addItemsToPage = function(){
 
     var from = 0;
     var to = 0;
-    if(row_current > rows_added && doPagination){
-        from = rows_added * items_per_row;
-        to = row_current*items_per_row;
-        last_to = to; //We store this os we can recalculate rows_added when resolution change
-        rows_added = row_current;
+    if(row_current > store.rows_added && store.doPagination){
+        from = store.rows_added * store.items_per_row;
+        to = row_current*store.items_per_row;
+        store.last_to = to; //We store this os we can recalculate rows_added when resolution change
+        store.rows_added = row_current;
 
-        store.infiniteScroll.getItems(from,to);
+        store.infiniteScroll.getItems(from,to,cb);
 
     }
 
 };
 
-store.infiniteScroll.getItems = function(from,to){
+store.infiniteScroll.getItems = function(from,to,cb){
+    cb = cb ? cb : function(){};
     var count = to-from;
     var dynamicData = {};
     dynamicData["from"] = from;
@@ -72,35 +72,58 @@ store.infiniteScroll.getItems = function(from,to){
     // Returns the jQuery ajax method
     var url = caramel.tenantedUrl(store.asset.paging.url+"&paginationLimit=" + to + "&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
 
-    if(!firstRun) {
+    if(!store.firstRun) {
         caramel.render('loading', 'Loading assets.', function (info, content) {
             $('.loading-animation-big').remove();
             $('body').append($(content));
             $('.loading-animation-big').css('bottom','48px').css('left','0');
         });
     } else {
-        firstRun = false;
+        store.firstRun = false;
     }
-
-        caramel.data({
-             title : null,
-             body : ['assets']
-         }, {
-             url : url,
-             success : function(data, status, xhr) {
-                 if(data.body.assets.context.assets.length == 0) doPagination = false;
-                 caramel.partials(data._.partials, function() {
-                     caramel.render('assets-thumbnails', data.body.assets.context, function (info, content) {
-                         $('.assets-container section').append($(content));
-                         $('.loading-animation-big').remove();
-                     });
-                 });
-             },
-             error : function(xhr, status, error) {
-                 $('.loading-animation-big').remove();
-                 doPagination = false;
-             }
-         });
+    caramel.data({
+        title : null,
+        body : ['assets']
+    }, {
+        url : url,
+        success : function(data, status, xhr) {
+            if(data.body.assets.context.assets.length == 0) store.doPagination = false;
+            caramel.partials(data._.partials, function() {
+                caramel.render('assets-thumbnails', data.body.assets.context, function (info, content) {
+                    $('.assets-container section').show();
+                    $('.assets-container section').append($(content));
+                    if(data.body.assets.context.assets.length != 0){
+                        $('.top-assets-empty-assert').remove();
+                    }
+                    $('.sort-asset-container').show();
+                    $('.loading-animation-big').remove();
+                });
+                if(data.body.assets.context.assets.length == 0
+                    && (!$('.assets-container section').html() || ($('.assets-container section').html()
+                    && $('.assets-container section').html().trim() == ''))){
+                    caramel.render('assets', data.body.assets.context, function (info, content) {
+                        if($('.assets-container').html().indexOf('top-assets-empty-assert') <= -1){
+                            if(store.user){
+                                $('.assets-container').
+                                    append("<div class='top-assets-empty-assert'>There are no assets available</div>");
+                            } else {
+                                $('.assets-container').
+                                    append("<div class='top-assets-empty-assert'>There are no publicly available assets." +
+                                    " Please login to access your assets</div>");
+                            }
+                            $('.sort-asset-container').hide();
+                        }
+                    });
+                }
+            });
+            cb(data,status);
+        },
+        error : function(xhr, status, error) {
+            $('.loading-animation-big').remove();
+            store.doPagination = false;
+            cb({},status,error);
+        }
+    });
     //}
 
 };
@@ -111,7 +134,7 @@ store.infiniteScroll.showAll = function(){
     });
     $(window).resize(function () {
         //recalculate "rows_added"
-        rows_added = store.infiniteScroll.recalculateRowsAdded();
+        store.rows_added = store.infiniteScroll.recalculateRowsAdded();
         store.infiniteScroll.addItemsToPage();
     });
 };
@@ -135,32 +158,32 @@ store.infiniteScroll.setQueryParams = function(path) {
 };
 $(function() {
     /*
-    * Bookmark event handler
-    * */
+     * Bookmark event handler
+     * */
     $('#assets-container').on('click', '.js_bookmark', function () {
         var elem = $(this);
         asset.process(elem.data('type'), elem.data('aid'), location.href, elem);
     });
 
     /*
-    * subscribe button event handler
-    * */
-	$(document).on('click', '#assets-container .asset-add-btn', function(event) {
-		var parent = $(this).parent().parent().parent();
-		asset.process(parent.data('type'), parent.data('id'), location.href, parent);
-		event.stopPropagation();
-	});
+     * subscribe button event handler
+     * */
+    $(document).on('click', '#assets-container .asset-add-btn', function(event) {
+        var parent = $(this).parent().parent().parent();
+        asset.process(parent.data('type'), parent.data('id'), location.href, parent);
+        event.stopPropagation();
+    });
     /*
-    * Sort button event handler
-    * */
-     $('#sortDropdown').click(function(e){
-         e.preventDefault();
-     });
+     * Sort button event handler
+     * */
+    $('#sortDropdown').click(function(e){
+        e.preventDefault();
+    });
     /*
-    * Pagination for listing page
-    * */
+     * Pagination for listing page
+     * */
     $('.assets-container section .ctrl-wr-asset').remove();
-     store.infiniteScroll.showAll();
-	caramel.loaded('js', 'assets');
-	caramel.loaded('js', 'sort-assets');
+    store.infiniteScroll.showAll();
+    caramel.loaded('js', 'assets');
+    caramel.loaded('js', 'sort-assets');
 });
