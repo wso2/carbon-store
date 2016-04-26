@@ -179,6 +179,7 @@ $(function(){
         $('#search-results').html('');       
         var query = buildQuery();
         if(isEmptyQuery(query)) {
+            messages.alertError('Please enter search criteria to find assets');
             //console.log('User has not entered anything');
             return;
         }
