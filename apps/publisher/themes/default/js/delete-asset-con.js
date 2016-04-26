@@ -34,15 +34,19 @@ $(document).ready(function() {
             url : path,
             type : 'DELETE',
             success : function(response) {
-                $('.alert-success').html(asset_Name + ' deleted successfully! <a href="'+landingPageUrl+'"> Home </a>');
+                messages.alertSuccess(asset_Name + ' deleted successfully!');
                 $('.alert-success').removeClass('hide');
                 $('#btn-delete-con').addClass('hide ');
                 $('#btn-cancel-con').addClass('hide ');
                 $('#delete-loading').addClass('hide');
                 $('#delete-msg').addClass('hide');
+                setTimeout(function(){
+                    var path = caramel.url('/assets/'+assetType + '/list');
+                    window.location = path;
+                },3000);
             },
             error : function() {
-                $('.alert-success').text('Error while deleting asset!');
+                messages.alertError('Error while deleting'+ asset_Name + 'asset!');
                 $('.alert-success').removeClass('hide');
                 $('#delete-loading').removeClass('hide');
                 $('#delete-loading').addClass('hide');

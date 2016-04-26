@@ -631,14 +631,15 @@
 
         <!--<carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>-->
         <carbon.kernel.version>4.4.5</carbon.kernel.version>
-        <carbon.social.version> 2.3.11-SNAPSHOT</carbon.social.version>
+         <carbon.social.version> 2.3.10-SNAPSHOT</carbon.social.version>
+
 
         <carbon.store.version>2.3.11-SNAPSHOT</carbon.store.version>
         <!--repo versions-->
 
         <carbon.commons.version>4.5.2</carbon.commons.version>
-        <carbon.registry.version>4.5.3</carbon.registry.version>
-        <carbon.governance.version>4.6.2</carbon.governance.version>
+        <carbon.registry.version>4.5.5-SNAPSHOT</carbon.registry.version>
+        <carbon.governance.version>4.6.4-SNAPSHOT</carbon.governance.version>
         <carbon.deployment.version>4.6.1</carbon.deployment.version>
         <carbon.identity.version>5.0.8</carbon.identity.version>
         <carbon.multitenancy.version>4.5.1</carbon.multitenancy.version>
@@ -699,3 +700,4 @@
 
     </properties>
 </project>
+

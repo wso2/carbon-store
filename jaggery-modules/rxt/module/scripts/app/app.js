@@ -524,10 +524,22 @@ var app = {};
      * Returns the context of the application
      * @return {String} The context of the application (e.g. publisher or store)
      */
-    app.getContext = function() {
+    app.getContext = function () {
         var context = application.get(constants.APP_CONTEXT);
         return context;
     };
+    /**
+     * Add the version coming from publisher.json.
+     * If no version return empty string
+     * @returns {Object|string}
+     */
+    app.version = function () {
+        if (arguments.length == 1) {
+            application.put(constants.VERSION, arguments[0]);
+            return;
+        }
+        return application.get(constants.VERSION) || '';
+    }
     /**
      * Returns an object containing all of the app level extension scripts
      * @param  {Number} tenantId  The tenant id  for which the application resources must be obtained

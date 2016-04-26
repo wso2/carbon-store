@@ -88,7 +88,7 @@ $(function(){
                 }
                 if(results.length==0) {
                     if(from == 0) {
-                        $('#search-results').html('We are sorry but we could not find any matching assets');
+                        $('#search-results').html('<div class="emptyAssets-MsgDiv"><p class="emptyAssets">We are sorry! we couldn\'t find anything for you ...</p></div>');
                     }
                     $('.loading-animation-big').remove();
                     doPagination = false;
@@ -179,6 +179,7 @@ $(function(){
         $('#search-results').html('');       
         var query = buildQuery();
         if(isEmptyQuery(query)) {
+            messages.alertError('Please enter search criteria to find assets');
             //console.log('User has not entered anything');
             return;
         }

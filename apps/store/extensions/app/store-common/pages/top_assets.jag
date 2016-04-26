@@ -39,7 +39,7 @@ require('/modules/store.js').exec(function (ctx) {
     var q = ctx.request.getParameter('q');
     //search history dropdown updates
     if (q) {
-        var searchQuery = utilsRequest.formatSearchQuery(q);
+        var searchQuery = decodeURIComponent(utilsRequest.formatSearchQuery(q));
         userApi.updateSearchHistory(ctx.session, searchQuery);
     }
  //   var uriMatcher = new URIMatcher(ctx.request.getRequestURI());

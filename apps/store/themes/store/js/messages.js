@@ -1,14 +1,52 @@
 var messages = {};
 messages.alertSuccess = function(value){
+    $.notify.addStyle('happygreen', {
+        html: "<div><i class='icon fw fw-info'></i> <strong>Success! </strong><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "#5CB85C",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
+            },
+            supergreen: {
+                "color": "white",
+                "background-color": "#5CB85C"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'success'
+        className: 'success',
+        style: 'happygreen'
     });
 };
 messages.alertError = function(value){
+    $.notify.addStyle('sadred', {
+        html: "<div><i class='icon fw fw-error'></i> <strong>Error! </strong><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "#D9534F",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
+            },
+            superred: {
+                "color": "white",
+                "background-color":  "#D9534F"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'error'
+        className: 'error',
+        style: 'sadred'
     });
 };
 messages.alertInfo = function(value){
@@ -24,7 +62,7 @@ messages.alertInfoLoader = function(value){
             base: {
                 "white-space": "nowrap",
                 "background-color": "lightblue",
-                "padding": "5px"
+                "padding": "10px"
             },
             superblue: {
                 "color": "white",
@@ -34,8 +72,7 @@ messages.alertInfoLoader = function(value){
     });
 
     $.notify(value, {
-        globalPosition: 'right bottom',
-        elementPosition: 'right bottom',
+        globalPosition: 'top center',
         className: 'info',
         autoHide: false,
         style: 'happyblue'
@@ -43,9 +80,24 @@ messages.alertInfoLoader = function(value){
 
 };
 messages.alertWarn = function(value){
-    var value = params.value;
+    $.notify.addStyle('happyyellow', {
+        html: "<div><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "Gold",
+                "padding": "10px"
+            },
+            superblue: {
+                "color": "white",
+                "background-color": "yellow"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'warn'
+        className: 'warn',
+        style: 'happyyellow'
     });
 };
