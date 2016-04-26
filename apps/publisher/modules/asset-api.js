@@ -214,7 +214,7 @@ var result;
     };
     var processTags = function (assetReq) {
         if (assetReq._tags) {
-            return assetReq._tags.split(',');
+            return assetReq._tags;//.split(',');
         } else {
             return [];
         }
@@ -305,6 +305,37 @@ var result;
         }
     };
 
+    /**
+     * Adds a temporary value to mandatory file fields.The file field
+     * is a synthetic field present only in the ES level.The Governance API
+     * has no knowledge of this field type and it considers these fields merely as 
+     * text fields.If any of these file fields are marked as required the Governance API will throw an error
+     * if they do not contain a value.Since the file fields are put in storage after the asset is created this
+     * leads to a situation where a mandatory file fields will cause an error during asset creation if they
+     * do not contain a value.
+     * @param {[type]} asset        [description]
+     * @param {[type]} assetManager [description]
+     * @param {[type]} rxtManager   [description]
+     * @param {[type]} request      [description]
+     */
+    var addTempFileFieldValues = function(asset,assetManager,rxtManager,request){
+        var fileFields = assetManager.getAssetResources();
+        var files = request.getAllFiles()||[];
+        var fieldInfo;
+        //Iterate through all fields marked as required file field types and
+        //then check if a file has been provided for it
+        fileFields.forEach(function(fieldName){
+
+            fieldInfo = rxtManager.getRxtField(assetManager.type,fieldName);
+            //Check if the file with the same field name exists and it is required
+            if((!files[fieldName])&&(fieldInfo&&fieldInfo.required)){
+                throw 'Required field not provided';
+            } else {
+                //Populate a dummy value for the purpose of creating the asset
+                asset.attributes[fieldName] = fieldName;
+            }
+        });
+    };
 
     /**
      * api to create a new asset
@@ -344,7 +375,8 @@ var result;
                 log.debug('Creating Asset : ' + stringify(asset));
             }
             validateProvider(options.type, asset,user);
-//            validateRequiredFeilds(options.type, asset);
+            //validateRequiredFeilds(options.type, asset)
+            addTempFileFieldValues(asset,am,rxtManager,req);
             am.create(asset);
             createdAsset = am.get(asset.id);
             am.postCreate(createdAsset, ctx);

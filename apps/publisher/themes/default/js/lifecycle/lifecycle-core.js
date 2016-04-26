@@ -34,6 +34,7 @@ var LifecycleUtils = {};
     constants.API_UPDATE_CHECKLIST = 'apiUpdateChecklist';
     constants.UI_LIFECYCLE_SELECT_ID = '#lifecycle-selector';
     constants.UI_LIFECYCLE_SELECT_BOX = 'ul.lifecycle-dropdown-menu li a';
+    constants.UI_LIFECYCLE_COMMENT_CONTAINER = 'lifecycleCommentContainer';
     constants.CONTAINER_SVG = 'svgContainer';
     constants.CONTAINER_GRAPH = 'graphContainer';
     constants.CONTAINER_LC_ACTION_AREA = 'lifecycleActionArea';

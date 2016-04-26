@@ -13,10 +13,9 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-{{#if tags}}
-    <h4><i class="fa fw-tag"></i> {{t "Tags"}}</h4>
-    {{#itr tags}}
-        <a class="tags" href='{{url ""}}/assets/{{../rxt.shortName}}/list?q="tags":"{{value.value}}"'>{{value.value}}</a>
-    {{/itr}}
+{{#if appliedTags}}
+    <h4><i class="fa fw-tag"></i> {{t "Associated Tags"}}</h4>
+    {{#each appliedTags}}
+        <a class="tags" target='_blank' href='{{url ""}}/assets/{{../rxt.shortName}}/list?q="tags":"{{this}}"'>{{this}}</a>
+    {{/each}}
 {{/if}}

@@ -26,6 +26,7 @@ var log = new Log("apis_router");
 var responseProcessor = require('utils').response;
 var rxtAPI = require('rxt');
 var metrics = require('carbon-metrics').metrics;
+var msg;
 var getPage = function(uri) {
     var comps = uri.split('/');
     return comps.length > 0 ? comps[0] : null;
@@ -56,9 +57,12 @@ try{
                 request.getMappedPath = mapper(path);
                 var username = user ? user.username : null;
                 var isAuthorized = rxtAPI.permissions.hasAppAPIPermission(page,tenantId,username);
+                //We should send a 404 error as returning a 401 error would indicate
+                //that such an endpoint exists to attackers
                 if(!isAuthorized){
                     log.error('user '+username+' does not have permission to access the api '+page);
-                    response.sendError(401,'You do not have access to this api');
+                    msg = 'Unable to locate api : ' + args.suffix;
+                    response = responseProcessor.buildErrorResponse(response, 404, msg);
                 } else {
                     var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
                     if (proceed) {
@@ -66,7 +70,7 @@ try{
                     }
                 }
             } else {
-                var msg = 'Unable to locate mapped endpoint at path: ' + path;
+                msg = 'Unable to locate mapped endpoint at path: ' + path;
                 log.error(msg);
                 response = responseProcessor.buildErrorResponse(response, 404, msg);
             }

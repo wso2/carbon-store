@@ -29,17 +29,17 @@
     <div>
         <p id="delete-msg" class="">{{t "Do you want to create a new version of "}} <b>{{assets.name}}{{t " "}}</b>{{rxt.singularLabel}}{{t "?"}}</p>
         <div class='form-inline'>
-          <div class='form-group'>
-            <label>{{t "Version"}} : </label>
-            <input type="text" class="form-control input-m" name="new-version" id="new-version">
-            <input type="hidden" id="asset-id" value="{{assets.id}}">
-            <input type="hidden" id="asset-type" value="{{assets.type}}">
-          </div>
+            <div class='form-group'>
+                <label>{{t "Version"}} : </label>
+                <input type="text" class="form-control input-m" name="new-version" id="new-version">
+                <input type="hidden" id="asset-id" value="{{assets.id}}">
+                <input type="hidden" id="asset-type" value="{{assets.type}}">
+            </div>
         </div>
-          <div id="alertSection" class="alert hide" role="alert"></div>
-          <i class="fa fa-spinner fa-spin fa-3x hide" id="new-version-loading"></i>
-          <br/>
-          <button type="button" id="btn-create-version" class="btn btn-default" >{{t "Create"}}</button>
-          <button type="button" id="btn-cancel-version" class="btn btn-primary" >{{t "Cancel"}}</button>
+        <div id="alertSection" class="alert hide" role="alert"></div>
+        <i class="fa fa-spinner fa-spin fa-3x hide" id="new-version-loading"></i>
+        <br/>
+        <button type="button" id="btn-create-version" class="btn btn-default" >{{t "Create"}}</button>
+        <button type="button" id="btn-cancel-version" class="btn btn-primary" >{{t "Cancel"}}</button>
     </div>
 </div>
