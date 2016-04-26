@@ -234,6 +234,14 @@ $(function() {
         historyStart = 0;
         historyEnd = constants.LIFECYCLE_HISTORY_PAGING_SIZE;
     };
+    var hideCommentInputArea = function(){
+        var container = config(constants.UI_LIFECYCLE_COMMENT_CONTAINER);
+        $(id(container)).hide();
+    };
+    var showCommentInputArea = function(){
+        var container = config(constants.UI_LIFECYCLE_COMMENT_CONTAINER);
+        $(id(container)).show();
+    };
 
     var renderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
@@ -253,6 +261,9 @@ $(function() {
                 mapping.style = 'btn-default';
                 map.push(mapping);
             }
+            if(actions.length > 0){
+                showCommentInputArea();
+            } 
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
@@ -411,6 +422,7 @@ $(function() {
                 type: constants.NOTIFICATION_WARN,
                 global: false
             });
+            hideCommentInputArea();
             renderChecklistItems();
             return;
         }
