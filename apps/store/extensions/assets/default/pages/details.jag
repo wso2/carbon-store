@@ -55,26 +55,27 @@ require('/modules/store.js').exec(function(ctx) {
         //The asset retrieval may fail when attempting to obtain an asset which is not accessible
         try {
             assets = am.get(options.id);
-            var assetsArray = [];
-            assetsArray.push(assets);
-            ratingApi.addRatings(assetsArray, am, context.tenantId, context.username);
-            //Cross tenant view could be anonymous
-            if (!context.isAnonContext) {
-                assets.isSubscribed = am.isSubscribed(options.id, ctx.session);
+            if (assets == null) {
+                response.sendError(404, 'The asset with id: ' + options.id + ' could not be located.');
+            } else {
+                var assetsArray = [];
+                assetsArray.push(assets);
+                ratingApi.addRatings(assetsArray, am, context.tenantId, context.username);
+                //Cross tenant view could be anonymous
+                if (!context.isAnonContext) {
+                    assets.isSubscribed = am.isSubscribed(options.id, ctx.session);
+                }
+                var output = am.renderBasic(assets, page).details();
+                output.guestDomain = guestDomain;
+                caramel.render(output);
             }
         } catch (e) {
-            if(e.javaException.getMessage().startsWith("Error in retrieving governance artifact by path")){
-                response.sendError(401, 'Error in retrieving governance artifact by path');
+            log.error('Unable to retrieve asset with id: ' + options.id + ' due to ', e);
+            if((e.hasOwnProperty('javaException'))&&(e.javaException.getMessage().startsWith("Error in retrieving governance artifact by path"))){
+                response.sendError(404, 'Unable to locate asset with id: ' + options.id );
                 return;
             }
-            log.error('Unable to retrieve asset with id: ' + options.id + ' due to ', e);
-        }
-        if (assets == null) {
-            response.sendError(404, 'The asset with id: ' + options.id + ' could not be located.');
-        } else {
-            var output = am.renderBasic(assets, page).details();
-            output.guestDomain = guestDomain;
-            caramel.render(output);
+            response.sendError(500,'Unable to obtain asset details');
         }
     }
 }, request, response, session); %>
