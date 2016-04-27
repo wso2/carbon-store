@@ -233,6 +233,14 @@ var pageDecorators = {};
             }
         }
     };
+    pageDecorators.taxonomyAvailability = function(ctx, page, utils) {
+        var taxonomyAvailability = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
+        if (taxonomyAvailability.getTaxonomyAvailability() == "Available") {
+            page.taxonomyAvailability = true;
+        } else {
+            page.taxonomyAvailability = false;
+        }
+    };
     var isEmptyTable = function(table){
         var field;
         var fields = table.fields;

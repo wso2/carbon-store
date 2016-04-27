@@ -34,124 +34,125 @@ require('/modules/store.js').exec(function (ctx) {
     var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
     var username = user ? user.username : carbon.user.anonUser;
     var tenantId;
+    var taxonomyAvailability = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
 
     var defaultPagination = function (options, key, limit) {
         return (options[key] ? options[key] : limit);
     };
 
-    switch (method) {
-        case 'GET':// GET endpoints
-            if (uriMatcher.match(TAXA)) {
-                acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
-                jsonHeaderAccept = acceptHeader.indexOf('application/json');
-                try {
-                    if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
-                        var taxaPathList;
-                        var options = ref.getQueryOptions(req.getQueryString());
-                        var tenantDomain = options.tenant ? options.tenant : MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
-                        tenantId = carbon.server.tenantId({domain: tenantDomain});
-                        options.tenantId = tenantId;
-                        options.username = username;
+    if (taxonomyAvailability.getTaxonomyAvailability() == "Available") {
+        switch (method) {
+            case 'GET':// GET endpoints
+                if (uriMatcher.match(TAXA)) {
+                    acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
+                    jsonHeaderAccept = acceptHeader.indexOf('application/json');
+                    try {
+                        if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
+                            var taxaPathList;
+                            var options = ref.getQueryOptions(req.getQueryString());
+                            var tenantDomain = options.tenant ? options.tenant : MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+                            tenantId = carbon.server.tenantId({domain: tenantDomain});
+                            options.tenantId = tenantId;
+                            options.username = username;
 
-                        if (options['terms']) {
-                            store.server.sandbox(options, function () {
-                                taxaPathList = taxa.taxonomy.getNodesList(options['terms'],
-                                        defaultPagination(options, "startnode", 0),
-                                        defaultPagination(options, "endnode", 5));
-                            });
+                            if (options['terms']) {
+                                store.server.sandbox(options, function () {
+                                    taxaPathList = taxa.taxonomy.getNodesList(options['terms'],
+                                            defaultPagination(options, "startnode", 0),
+                                            defaultPagination(options, "endnode", 5));
+                                });
+                            } else {
+                                store.server.sandbox(options, function () {
+                                    taxaPathList = taxa.taxonomy.getNodesList("/*",
+                                            defaultPagination(options, "startnode", 0),
+                                            defaultPagination(options, "endnode", 5));
+                                });
+                            }
+                            response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                    taxaPathList);
+                            return;
                         } else {
-                            store.server.sandbox(options, function () {
-                                taxaPathList = taxa.taxonomy.getNodesList("/*",
-                                        defaultPagination(options, "startnode", 0),
-                                        defaultPagination(options, "endnode", 5));
-                            });
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                    UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
+                            return;
                         }
-                        response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
-                                taxaPathList);
-                        return;
-                    } else {
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
-                                UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
-                        return;
-                    }
-                } catch (e) {
+                    } catch (e) {
 
-                    if (e.toString().indexOf("javax.xml.xpath.XPathExpressionException") > 0) {
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
-                                "Please provide correct syntax format");
-                    } else {
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
-                                "error on retrieving all taxa");
-                    }
-
-
-
-                    return;
-                }
-            }
-
-            break;
-        case 'POST':// POST endpoints
-
-            if (uriMatcher.match(TAXA)) {
-                acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
-                jsonHeaderAccept = acceptHeader.indexOf('application/json');
-                var options = req.getContent();
-
-                try {
-                    if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
-                        var taxaPathList;
-                        var tenantDomain = options.tenant ? options.tenant : MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
-                        tenantId = carbon.server.tenantId({domain: tenantDomain});
-                        options.tenantId = tenantId;
-                        options.username = username;
-
-                        if (options['terms']) {
-                            store.server.sandbox(options, function () {
-                                taxaPathList = taxa.taxonomy.getNodesList(options['terms'],
-                                        defaultPagination(options, "startnode", 0),
-                                        defaultPagination(options, "endnode", 5));
-                            });
+                        if (e.toString().indexOf("javax.xml.xpath.XPathExpressionException") > 0) {
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
+                                    "Please provide correct syntax format");
                         } else {
-                            store.server.sandbox(options, function () {
-                                taxaPathList = taxa.taxonomy.getNodesList("/*",
-                                        defaultPagination(options, "startnode", 0),
-                                        defaultPagination(options, "endnode", 5));
-                            });
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
+                                    "error on retrieving all taxa");
                         }
 
 
-                        response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
-                                taxaPathList);
-                        return;
-                    } else {
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
-                                UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
-                } catch (e) {
-
-                    if (e.toString().indexOf("javax.xml.xpath.XPathExpressionException") > 0) {
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
-                                "Please provide correct syntax format");
-                    } else {
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
-                                "error on retrieving all taxa");
-                    }
-                    return;
                 }
-            }
 
-            break;
+                break;
+            case 'POST':// POST endpoints
 
-        default:
-            response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_IMPLEMENTED,
-                    'Not Implemented API endpoints', res,
-                    'The endpoint that you have requested is not implemented for the ' + method +
-                    ' method.Try making the request with the appropriate verb', []);
+                if (uriMatcher.match(TAXA)) {
+                    acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
+                    jsonHeaderAccept = acceptHeader.indexOf('application/json');
+                    var options = req.getContent();
 
+                    try {
+                        if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
+                            var taxaPathList;
+                            var tenantDomain = options.tenant ? options.tenant : MultitenantConstants.SUPER_TENANT_DOMAIN_NAME;
+                            tenantId = carbon.server.tenantId({domain: tenantDomain});
+                            options.tenantId = tenantId;
+                            options.username = username;
+
+                            if (options['terms']) {
+                                store.server.sandbox(options, function () {
+                                    taxaPathList = taxa.taxonomy.getNodesList(options['terms'],
+                                            defaultPagination(options, "startnode", 0),
+                                            defaultPagination(options, "endnode", 5));
+                                });
+                            } else {
+                                store.server.sandbox(options, function () {
+                                    taxaPathList = taxa.taxonomy.getNodesList("/*",
+                                            defaultPagination(options, "startnode", 0),
+                                            defaultPagination(options, "endnode", 5));
+                                });
+                            }
+
+
+                            response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                    taxaPathList);
+                            return;
+                        } else {
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                    UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
+                            return;
+                        }
+                    } catch (e) {
+
+                        if (e.toString().indexOf("javax.xml.xpath.XPathExpressionException") > 0) {
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
+                                    "Please provide correct syntax format");
+                        } else {
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
+                                    "error on retrieving all taxa");
+                        }
+                        return;
+                    }
+                }
+
+                break;
+
+            default:
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_IMPLEMENTED,
+                        'Not Implemented API endpoints', res,
+                        'The endpoint that you have requested is not implemented for the ' + method +
+                        ' method.Try making the request with the appropriate verb', []);
+
+        }
     }
-
 
 }, request, response, session);
 

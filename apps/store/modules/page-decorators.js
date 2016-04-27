@@ -601,6 +601,14 @@ var pageDecorators = {};
         page.searchHistory = {};
         page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
     };
+    pageDecorators.taxonomyAvailability = function(ctx, page, utils) {
+        var taxonomyAvailability = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
+        if (taxonomyAvailability.getTaxonomyAvailability() == "Available") {
+            page.taxonomyAvailability = true;
+        } else {
+            page.taxonomyAvailability = false;
+        }
+    };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;
         var am;

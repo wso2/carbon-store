@@ -28,54 +28,56 @@ require('/modules/publisher.js').exec(function (ctx) {
     var acceptHeader, jsonHeaderAccept;
     var utils = require('utils');
     var ref = utils.request;
+    var taxonomyAvailability = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
 
-    switch (method) {
-        case 'GET':// GET endpoints
+    if (taxonomyAvailability.getTaxonomyAvailability() == "Available") {
+        switch (method) {
+            case 'GET':// GET endpoints
 
-            if (uriMatcher.match(TAXA)) {
-                acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
-                jsonHeaderAccept = acceptHeader.indexOf('application/json');
-                try {
-                    if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
-                        var taxaPathList;
-                        var options = ref.getQueryOptions(req.getQueryString());
-                        if (options['terms']) {
-                            taxaPathList = taxa.taxonomy.getNodesList(options['terms'],
-                                    ( options['startnode']) ? options['startnode'] : 0,
-                                    (options['endnode']) ? options['endnode'] : 5);
+                if (uriMatcher.match(TAXA)) {
+                    acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
+                    jsonHeaderAccept = acceptHeader.indexOf('application/json');
+                    try {
+                        if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
+                            var taxaPathList;
+                            var options = ref.getQueryOptions(req.getQueryString());
+                            if (options['terms']) {
+                                taxaPathList = taxa.taxonomy.getNodesList(options['terms'],
+                                        ( options['startnode']) ? options['startnode'] : 0,
+                                        (options['endnode']) ? options['endnode'] : 5);
+                            } else {
+                                taxaPathList = taxa.taxonomy.getNodesList("/*",
+                                        ( options['startnode']) ? options['startnode'] : 0,
+                                        (options['endnode']) ? options['endnode'] : 5);
+                            }
+
+
+                            response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                    taxaPathList);
+                            return;
                         } else {
-                            taxaPathList = taxa.taxonomy.getNodesList("/*",
-                                    ( options['startnode']) ? options['startnode'] : 0,
-                                    (options['endnode']) ? options['endnode'] : 5);
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                    UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
+                            return;
                         }
+                    } catch (e) {
 
-
-                        response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
-                                taxaPathList);
-                        return;
-                    } else {
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
-                                UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
+                        log.error('error on retrieving all taxa', e);
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
+                                "error on retrieving all taxa");
                         return;
                     }
-                } catch (e) {
-
-                    log.error('error on retrieving all taxa', e);
-                    response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
-                            "error on retrieving all taxa");
-                    return;
                 }
-            }
 
-            break;
-        default:
-            response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_IMPLEMENTED,
-                    'Not Implemented API endpoints', res,
-                    'The endpoint that you have requested is not implemented for the ' + method +
-                    ' method.Try making the request with the appropriate verb', []);
+                break;
+            default:
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_IMPLEMENTED,
+                        'Not Implemented API endpoints', res,
+                        'The endpoint that you have requested is not implemented for the ' + method +
+                        ' method.Try making the request with the appropriate verb', []);
 
+        }
     }
-
 
 }, request, response, session);
 

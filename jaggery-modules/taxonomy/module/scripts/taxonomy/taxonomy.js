@@ -19,6 +19,8 @@ var taxonomy = {};
 var log = new Log('taxonomy_module');
 var GovernanceCommon = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
 var GovernanceAPITree = org.wso2.carbon.governance.api.util.TaxonomyTreeAPI;
+var LAST_MODIFIED_TIME = "LastModifiedTime";
+var TAXA = "taxa";
 
 (function (taxonomy) {
 
@@ -45,8 +47,21 @@ var GovernanceAPITree = org.wso2.carbon.governance.api.util.TaxonomyTreeAPI;
      * @return {Object}  Categories list as paths, which admin defined.
      */
     taxonomy.getTaxa = function () {
-        return JSON.parse(GovernanceCommon.getPathCategories());
+        if (!session.get(TAXA)) {
+            return putInSession();
+        } else {
+            if (session.get(LAST_MODIFIED_TIME) != GovernanceCommon.getLastModifiedTime()) {
+                return putInSession();
+            }
+            return session.get(TAXA);
+        }
+
     };
 
+    function putInSession() {
+        session.put(LAST_MODIFIED_TIME, GovernanceCommon.getLastModifiedTime());
+        session.put(TAXA, JSON.parse(GovernanceCommon.getPathCategories()));
+        return session.get(TAXA)
+    }
 
 }(taxonomy));
