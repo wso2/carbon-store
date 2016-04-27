@@ -48,6 +48,10 @@ asset.manager = function(ctx) {
             var assets = this._super.search.call(this, query, paging);
             return assets;
         },
+        advanceSearch:function(query,paging){
+            query = buildPublishedQuery(query);
+            return this._super.advanceSearch.call(this,query,paging);
+        },
         list: function(paging) {
             var assets = this._super.list.call(this, paging);
             return assets;
