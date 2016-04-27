@@ -781,7 +781,7 @@ var asset = {};
             paging = paging || null;
             assets =  doAdvanceSearch(type,query,paging,registry,rm);
             //assets is a set that must be converted to a JSON array
-            assets  = processAssets(type,assets,rm);
+            assets  = assets? processAssets(type,assets,rm) : [];
             //Add additional meta data
             addAssetsMetaData(assets,this);
             return assets;
