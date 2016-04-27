@@ -71,11 +71,11 @@ require('/modules/store.js').exec(function(ctx) {
             }
         } catch (e) {
             log.error('Unable to retrieve asset with id: ' + options.id + ' due to ', e);
-            if((e.hasOwnProperty('javaException'))&&(e.javaException.getMessage().startsWith("Error in retrieving governance artifact by path"))){
-                response.sendError(404, 'Unable to locate asset with id: ' + options.id );
+            if ((e.hasOwnProperty('javaException')) && (e.javaException.getMessage().startsWith("Error in retrieving governance artifact by path"))) {
+                response.sendError(404, 'The asset with id: ' + options.id + ' could not be located.');
                 return;
             }
-            response.sendError(500,'Unable to obtain asset details');
+            response.sendError(500, 'Unable to obtain asset details');
         }
     }
 }, request, response, session); %>
