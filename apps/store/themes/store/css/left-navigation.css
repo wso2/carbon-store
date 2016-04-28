@@ -580,6 +580,16 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     bottom: 0;
 }
 
+.ast-thumbnail {
+  position:relative;
+}
+
+.ast-type-icon {
+  position:absolute;
+  bottom:2px;
+  left:2px;
+  opacity:1;
+}
 
 .ast-img .ast-type-icon{
     display:block;
