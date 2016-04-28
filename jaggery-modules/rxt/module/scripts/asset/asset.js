@@ -1192,11 +1192,11 @@ var asset = {};
             tags = [tags];
         }
         if (!asset) {
-            log.error('Unable to add tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
+            log.error('Unable to remove tags: ' + stringify(tags) + ' to asset id: ' + id + ' as it was not located.');
             return tagged;
         }
         if (!asset.path) {
-            log.error('Unable to add tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
+            log.error('Unable to remove tags ' + stringify(tags) + ' to asset id: ' + id + ' as the asset path was not located');
         }
         try{
             for(var index =0; index< tags.length; index++){
