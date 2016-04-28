@@ -300,18 +300,19 @@ a.ast-name:after {
 
 }
 a.ast-name{
-    font-size: 16px !important;
+    font-size: 16px;
     font-weight: unset;
     color: #555;
-    margin-bottom: 3px;
-    max-height: 45px;
+    margin-bottom: 2px;
+    max-height: 30px;
     overflow: hidden;
     font-weight: 100;
     padding-top: 0px;
     margin-top: 0px;
     height: 32px;
-    word-wrap: break-word !important;
-    white-space: nowrap !important;
+    position: relative;
+    white-space: nowrap;
+    display: block;
 }
 
 a.ast-name:hover {
@@ -676,7 +677,7 @@ a.login:focus {
     color: #fff;
     float: right;
     font-size: 14px;
-    left: 7px;
+    left: 6px;
     list-style: outside none none;
     margin: 0 0 0 -121px;
     width: 120px;
@@ -684,10 +685,11 @@ a.login:focus {
     padding: 5px 0;
     position: absolute;
     text-align: left;
-    top: 30px;
+    top: 24px;
     z-index: 1000;
     box-shadow: none;
     min-width:152px;
+    opacity: 0.9;
 }
 
 .dropdown-asset-custom ul.dropdown-menu a {
@@ -1574,4 +1576,8 @@ a.ctrl-filter-category {
 
 .wr-filter-category .dropdown-menu li a:hover {
     background:#61a3e6;
+}
+
+.ctrl-wr-asset  {
+    margin-bottom: 15px !important;
 }
