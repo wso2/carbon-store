@@ -93,6 +93,9 @@ app.renderer = function(ctx) {
             },
             searchHistory: function (page, meta) {
                 return decoratorApi.searchHistory(ctx, page, this);
+            }, taxonomy: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.taxonomyAvailability(ctx, page, this);
+
             }
         }
     }
