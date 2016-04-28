@@ -28,9 +28,7 @@ require('/modules/publisher.js').exec(function (ctx) {
     var acceptHeader, jsonHeaderAccept;
     var utils = require('utils');
     var ref = utils.request;
-    var taxonomyAvailability = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
 
-    if (taxonomyAvailability.getTaxonomyAvailability() == "Available") {
         switch (method) {
             case 'GET':// GET endpoints
 
@@ -77,7 +75,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                         ' method.Try making the request with the appropriate verb', []);
 
         }
-    }
 
 }, request, response, session);
 

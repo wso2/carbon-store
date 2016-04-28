@@ -34,13 +34,12 @@ require('/modules/store.js').exec(function (ctx) {
     var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
     var username = user ? user.username : carbon.user.anonUser;
     var tenantId;
-    var taxonomyAvailability = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
+
 
     var defaultPagination = function (options, key, limit) {
         return (options[key] ? options[key] : limit);
     };
 
-    if (taxonomyAvailability.getTaxonomyAvailability() == "Available") {
         switch (method) {
             case 'GET':// GET endpoints
                 if (uriMatcher.match(TAXA)) {
@@ -152,7 +151,6 @@ require('/modules/store.js').exec(function (ctx) {
                         ' method.Try making the request with the appropriate verb', []);
 
         }
-    }
 
 }, request, response, session);
 
