@@ -63,6 +63,8 @@ try {
                     var proceed = app.execApiHandlers('onApiLoad', request, response, session, page);
                     if (proceed) {
                         include(path);
+                    } else {
+                        response.sendError(401, 'Authentication error');
                     }
                 }
             } else {
