@@ -163,6 +163,14 @@ var core = {};
         rxtField.name = {};
         rxtField.name = nameBlock[0];
     };
+    /***
+     *
+     * @param term
+     * @returns {string}
+     */
+    var defaultSearchTemplateImpl = function(term){
+        return constants.DEFAULT_SEARCH_ATTRIBUTE+":"+term;
+    };
     /**
      * Represents an interface for managing interactions with the different
      * RXT types deployed in the Governance Registry
@@ -641,6 +649,45 @@ var core = {};
                 + '.Make sure the meta property is present in the configuration callback of the asset.js');
         }
         return false;
+    };
+    RxtManager.prototype.defaultSearchSplit = function(type){
+        if(!type){
+            var userMod = require('store').user;
+            var configs = userMod.configs(this.registry.tenantId) || {};
+            var templateFuncCommon = configs.defaultSearchSplit || defaultSearchTemplateImpl;
+            return templateFuncCommon;
+        }
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            throw 'Unable to locate the rxt definition for type: ' + type
+            + ' in order to determine if the asset can be downloaded';
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.search)) {
+            var templateFuncSpecific = rxtDefinition.meta.search.defaultSearchSplit || defaultSearchTemplateImpl;
+            return templateFuncSpecific;
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether ' +
+                'solar facets is enabled in defaultSearch for ' + type
+                + '.Make sure the meta property is present in the configuration callback of the asset.js');
+        }
+    };
+    RxtManager.prototype.defaultSearchString = function(type){
+        var rxtDefinition = this.rxtMap[type];
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type);
+            return null;
+        }
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.search) && (rxtDefinition.meta.search.defaultSearchString)) {
+            var templateFuncSpecific = rxtDefinition.meta.search.defaultSearchString;
+            return templateFuncSpecific.toString();
+        }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate the  meta property to determine whether ' +
+                'solar facets is enabled in defaultSearch for ' + type
+                + '.Make sure the meta property is present in the configuration callback of the asset.js');
+        }
     };
     RxtManager.prototype.collapseInCount = function(type){
         var rxtDefinition = this.rxtMap[type];

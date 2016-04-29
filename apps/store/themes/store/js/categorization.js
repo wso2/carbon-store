@@ -300,7 +300,6 @@ $(function() {
     if($('#search').val() !== ''){
         $('#search').val($.cookie("searchQuery"));
     }
-    $('#search').val($('#search').val().replace($('#categorization-query').val(),""));
 
     if(url.indexOf("=") > -1){
         var query = url.split("=");
