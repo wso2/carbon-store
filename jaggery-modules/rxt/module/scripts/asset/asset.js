@@ -711,7 +711,7 @@ var asset = {};
             log.debug('[pagination-context] successfully destroyed context')
         }
     };
-    var buildQuery = function(query){
+    var buildQuery = function(type, rxtManager, app, query){
         var q = '';
         var options = {};
         options.wildcard = true; //Assume that wildcard is enabled
@@ -721,6 +721,10 @@ var asset = {};
             delete query[constants.Q_PROP_GROUP];
         }
         options.wildcard = resolveWildcard(query);
+        if(query.hasOwnProperty("_default")){
+            query = buildDefaultSearchString(type, rxtManager, app, query);
+            return query;
+        }
         q  = buildQueryString(query, options);
         return q;
     };
@@ -754,7 +758,8 @@ var asset = {};
             if (log.isDebugEnabled()) {
                 log.debug('[advance search] building query ');
             }
-            q = buildQuery(query);
+            q = buildQuery(type, rxtManager, app, query);
+            //log.info(q);
             if (log.isDebugEnabled()) {
                 log.debug('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);
             }
@@ -769,6 +774,65 @@ var asset = {};
         }
         return assets;
     };
+    /**
+     * This function is used to retrieve the search template from store.json or publisher.json
+     * @param type
+     * @param rxtManager
+     * @param app
+     * @returns {string}
+     */
+    var getSearchTemplate = function(type, rxtManager, app){
+        var template = rxtManager.defaultSearchString(type);
+        if(template){
+            return template;
+        } else {
+            template = app.defaultSearchTemplate();
+            if(template){
+                return template;
+            } else {
+                return defaultSearchTemplateImpl();
+            }
+        }
+    };
+
+    /**
+     * This function is used to build the default search query retrieved from store.json or publisher.json
+     * @param type
+     * @param rxtManager
+     * @param app
+     * @param query
+     * @returns {*}
+     */
+    var buildDefaultSearchString = function(type, rxtManager, app, query){
+        var splitFunc = rxtManager.defaultSearchSplit(type);
+        var searchTemplate = getSearchTemplate(type, rxtManager, app);
+        var newStr = splitFunc(query._default, searchTemplate);
+        //Append the rest of the query
+        var keys = Object.keys(query);
+        if(keys.length > 1){
+            for(var j=0; j<keys.length; j++){
+                if(keys[j].toString() != "_default"){
+                    if(keys[j].toString() == "taxonomy"){
+                        newStr = newStr + "&" + keys[j] + "=*" + encodeURIComponent(query[keys[j]]) +  "*";
+                    } else {
+                        newStr = newStr + "&" + keys[j].replace("_", ":") + "=" + encodeURIComponent(query[keys[j]]);
+                    }
+                }
+            }
+        }
+
+        return newStr;
+
+    };
+    /***
+     *
+     * @param term
+     * @returns {string}
+     */
+    var defaultSearchTemplateImpl = function(){
+        return constants.DEFAULT_SEARCH_ATTRIBUTE+":$input";
+    };
+
     AssetManager.prototype.advanceSearch = function(query,paging) {
         try {
             metrics.start(this.constructor.name,'advanceSearch');
@@ -783,7 +847,7 @@ var asset = {};
             paging = paging || null;
             assets =  doAdvanceSearch(type,query,paging,registry,rm);
             //assets is a set that must be converted to a JSON array
-            assets  = processAssets(type,assets,rm);
+            assets  = assets ? processAssets(type,assets,rm) : [];
             //Add additional meta data
             addAssetsMetaData(assets,this);
             return assets;
@@ -822,7 +886,7 @@ var asset = {};
             log.debug('[advance search] about to process result set');
         }
         if(assets){
-            assets = processAssets(null,assets,rxtManager,tenantId);
+            assets  = assets ? processAssets(null,assets,rxtManager,tenantId) : [];
             addMetaDataToGenericAssets(assets,session,tenantId);
         }
         return assets;
