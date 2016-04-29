@@ -601,6 +601,14 @@ var pageDecorators = {};
         page.searchHistory = {};
         page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
     };
+    pageDecorators.taxonomyAvailability = function(ctx, page, utils) {
+        var app = require('rxt').app;
+        if (app.isTaxonomyEnabled()) {
+            page.taxonomyAvailability = true;
+        } else {
+            page.taxonomyAvailability = false;
+        }
+    };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;
         var am;

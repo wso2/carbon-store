@@ -224,7 +224,7 @@ var api = {};
                         }
 
                         if (am.removeTaxa(options.id, options.taxa)) {
-                            return successMsg(msg(constants.STATUS_CODES.CREATED, 'taxa removed successfully'));
+                            return successMsg(msg(constants.STATUS_CODES.OK, 'taxa removed successfully'));
                         } else {
                             return errorMsg(msg(constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
                                 'taxa is not removed'));
