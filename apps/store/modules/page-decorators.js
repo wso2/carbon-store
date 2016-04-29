@@ -602,8 +602,8 @@ var pageDecorators = {};
         page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
     };
     pageDecorators.taxonomyAvailability = function(ctx, page, utils) {
-        var taxonomyAvailability = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
-        if (taxonomyAvailability.getTaxonomyAvailability() == "Available") {
+        var app = require('rxt').app;
+        if (app.isTaxonomyEnabled()) {
             page.taxonomyAvailability = true;
         } else {
             page.taxonomyAvailability = false;

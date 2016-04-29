@@ -17,8 +17,8 @@
 
 var taxonomy = {};
 var log = new Log('taxonomy_module');
-var GovernanceCommon = org.wso2.carbon.governance.api.util.TaxonomyCategoryParser;
-var GovernanceAPITree = org.wso2.carbon.governance.api.util.TaxonomyTreeAPI;
+var categoryParser = org.wso2.carbon.governance.taxonomy.util.TaxonomyCategoryParser;
+var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.TaxonomyService');
 var LAST_MODIFIED_TIME = "LastModifiedTime";
 var TAXA = "taxa";
 
@@ -34,7 +34,7 @@ var TAXA = "taxa";
      */
     taxonomy.getNodesList = function (query, startNode, endNode) {
         try {
-            return JSON.parse(GovernanceAPITree.getNodes(query, startNode, endNode));
+            return JSON.parse(TaxonomyService.getNodes(query, startNode, endNode));
         } catch (e) {
             log.error('Error occurred while retrieving the admin defined taxonomy ', e);
         }
@@ -50,7 +50,7 @@ var TAXA = "taxa";
         if (!session.get(TAXA)) {
             return putInSession();
         } else {
-            if (session.get(LAST_MODIFIED_TIME) != GovernanceCommon.getLastModifiedTime()) {
+            if (session.get(LAST_MODIFIED_TIME) != TaxonomyService.getLastModifiedTime()) {
                 return putInSession();
             }
             return session.get(TAXA);
@@ -59,8 +59,8 @@ var TAXA = "taxa";
     };
 
     function putInSession() {
-        session.put(LAST_MODIFIED_TIME, GovernanceCommon.getLastModifiedTime());
-        session.put(TAXA, JSON.parse(GovernanceCommon.getPathCategories()));
+        session.put(LAST_MODIFIED_TIME, TaxonomyService.getLastModifiedTime());
+        session.put(TAXA, JSON.parse(categoryParser.getPathCategories()));
         return session.get(TAXA)
     }
 
