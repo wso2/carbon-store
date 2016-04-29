@@ -224,6 +224,8 @@ asset.renderer = function(ctx) {
             list: function(page) {
                 require('/modules/page-decorators.js').pageDecorators.assetCategoryDetails(ctx, page, this);
                 require('/modules/page-decorators.js').pageDecorators.assetCategoryFilterDetails(ctx, page);
+            }, taxonomy: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.taxonomyAvailability(ctx, page, this);
             }
         }
     };

@@ -980,6 +980,19 @@ var app = {};
         }
         return details.enabled ? details.enabled : false;
     };
+
+    app.isTaxonomyEnabled = function () {
+        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.TaxonomyService');
+        var availability = TaxonomyService.getTaxonomyAvailability();
+        availability = String(availability);
+        availability = (availability == "true");
+        if (availability) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     /**
      * Returns  the social feature is enabled.This method will internally call the getFeatureDetails method
      * to locate the details about the social component.If the social feature is not found then NULL is returned

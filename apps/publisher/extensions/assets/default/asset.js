@@ -419,6 +419,10 @@ asset.renderer = function(ctx) {
                     return;
                 }
                 require('/modules/page-decorators.js').pageDecorators.hideEmptyTables(ctx,page,this);
+            },
+            taxonomy: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.taxonomyAvailability(ctx, page, this);
+
             }
         }
     };
