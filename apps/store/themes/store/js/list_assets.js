@@ -534,7 +534,7 @@ $(window).load(function () {
             });
 
             // bellow code block will generate sub categories for only
-            if (assetAvailability) {
+            if (assetAvailability || store.listAssetsCount > 0) {
                 var nodes = getURL().split("/");
 
                 var path = nodes[0];
