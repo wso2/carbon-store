@@ -46,8 +46,6 @@ var popoverFunction = (function(){
 var currentPageFunction = (function(){
     var returnObj = {};
     returnObj.init = function(){
-        console.log("tmkasun debug yhehaa "+store.publisher.currentPage);
-
         switch(store.publisher.currentPage) {
             case "details":
                 $(".btn-overview").css("background-color","#1965b2");

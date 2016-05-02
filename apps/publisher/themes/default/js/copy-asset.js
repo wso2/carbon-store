@@ -24,8 +24,6 @@ $(document).ready(function() {
                         var path = caramel.url('assets/' + assetType + '/details/' + response.data);
                         window.location = path;
                     }, 3000);
-                    $('#btn-create-version').removeClass('disabled');
-                    $('#new-version-loading').addClass('hide');
                 },
                 error: function(error) {
                     var errorText = JSON.parse(error.responseText).error;
