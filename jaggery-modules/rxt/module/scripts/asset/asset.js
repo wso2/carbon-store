@@ -1660,6 +1660,22 @@ var asset = {};
         }
         return '';
     };
+    AssetManager.prototype.getCreatedDate = function(asset){
+        var timeAttribute = this.rxtManager.getTimeStampAttribute(this.type);
+        if (asset.attributes) {
+            var time = asset.attributes[timeAttribute];
+            if (!time) {
+                if (log.isDebugEnabled()) {
+                    log.debug('Unable to locate versionAttribute: ' + timeAttribute + ' in asset ' + stringify(asset));
+                }
+                return '';
+            }
+            var d = new Date();
+            d.setTime(time);
+            return d.toUTCString();
+        }
+        return '';
+    };
     AssetManager.prototype.getVersion = function(asset) {
         var versionAttribute = this.rxtManager.getVersionAttribute(this.type);
         if (asset.attributes) {
@@ -1899,6 +1915,7 @@ var asset = {};
         asset.banner = am.getBanner(asset);
         asset.rating = 0;
         asset.version = am.getVersion(asset);
+        asset.createdDate = am.getCreatedDate(asset);
         am.setDefaultAssetInfo(asset);
         am.setUIMetaData(asset, am);
         //am.setAssetVersionInfo(asset);
