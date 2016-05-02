@@ -24,12 +24,22 @@ $(function () {
     };
     var populateTags = function (arr) {
         var entry;
-        for (var index = 0; index < arr.length; index++) {
-            entry = arr [index];
-            if (entry.name === '_tags') {
-                entry.value = tagsAPI.selectedTags();
+        var modifiedArr = [];
+        var tagEntry;
+        //The Select2 plugin creates multiple entries in the FormData 
+        //object.These duplicates need to be removed and a single
+        //_tags entry created in their place
+        arr.forEach(function(entry){
+            if(entry.name !== '_tags'){
+                modifiedArr.push(entry);
+            } else {
+                tagEntry = entry;
             }
-        }
+        });
+        //Populate the selected tags
+        tagEntry.value = tagsAPI.selectedTags();
+        modifiedArr.push(tagEntry);
+        arr = modifiedArr;
     };
     $('#form-asset-create').ajaxForm({
         beforeSubmit: function (arr) {
