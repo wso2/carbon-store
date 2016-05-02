@@ -39,7 +39,7 @@ asset.manager = function(ctx) {
             return query;
         }
         //TODO: Even though an array is sent in only the first search value is accepted
-        query.lcState=[publishedStates[0]];
+        query.lcState = publishedStates[0];
         return query;
     };
     return {
