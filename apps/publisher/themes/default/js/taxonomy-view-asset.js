@@ -187,7 +187,8 @@ $(function() {
 
     });
 
-
+    jsTreeView.unbind("click");
+    jsTreeView.click(function(e){e.preventDefault()});
 
 
 });
