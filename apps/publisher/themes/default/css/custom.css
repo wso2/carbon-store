@@ -254,6 +254,7 @@ header {
     display: block;
     top: 0;
     z-index: 1000;
+    position: fixed;
 }
 
 .wr-asset-type-switcher {
@@ -963,6 +964,8 @@ h2 span.fa-stack{
 .ribbon-container{
     padding-left: 0;
     padding-right: 0;
+    position: absolute;
+    width: 100%;
 }
 .date-range-wrapper{
     float:none;
@@ -995,6 +998,7 @@ h2 span.fa-stack{
 .wr-main-content {
     margin-left:3px;
     margin-right:0px;
+    margin-top: 50px;
 }
 
 /* validation */
