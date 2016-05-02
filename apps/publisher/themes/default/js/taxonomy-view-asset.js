@@ -131,14 +131,14 @@ $(function() {
 
     });
 
-    $("#jstree-taxonomy").on("click.jstree", function (e, datax) {
+    jsTreeView.on("click.jstree", function (e, datax) {
         programmatically = false;
 
     });
     /**
      * recursively open nodes. finally required nodes are opened, we will check required leaf nodes
      */
-    $("#jstree-taxonomy").on("after_open.jstree", function (e, datax) {
+    jsTreeView.on("after_open.jstree", function (e, datax) {
         if (programmatically) {
             datax.instance.open_node(originalPathAry.pop());
             if (originalPathAry.length == 0) {
@@ -151,9 +151,9 @@ $(function() {
     });
 
     function disable(node_id) {
-        var node = $("#jstree-taxonomy").jstree().get_node( node_id );
+        var node = jsTreeView.jstree().get_node( node_id );
 
-        $("#jstree-taxonomy").jstree().disable_node(node);
+        jsTreeView.jstree().disable_node(node);
 
         node.children.forEach( function(child_id) {
             disable( child_id );
@@ -163,7 +163,7 @@ $(function() {
     /**
      * This method will open root node by default
      */
-    $("#jstree-taxonomy").on("ready.jstree", function (e, data) {
+    jsTreeView.on("ready.jstree", function (e, data) {
         // try to improve using data parameter
         var tree = $('#jstree-taxonomy').jstree(true);
         tree.open_node(tree.get_node("#").children);
@@ -180,14 +180,14 @@ $(function() {
     /**
      * This method will invoked on first load of (root) jstree
      */
-    $("#jstree-taxonomy").on("loaded.jstree", function (e, datax) {
+    jsTreeView.on("loaded.jstree", function (e, datax) {
         programmatically = true;
         datax.instance.open_node(originalPathAry.pop());
 
 
     });
 
-
-
+    jsTreeView.unbind("click");
+    jsTreeView.click(function(e){e.preventDefault()});
 
 });
