@@ -1660,7 +1660,7 @@ var asset = {};
         }
         return '';
     };
-    AssetManager.prototype.getCreatedTime = function(asset){
+    AssetManager.prototype.getCreatedDate = function(asset){
         var timeAttribute = this.rxtManager.getTimeStampAttribute(this.type);
         if (asset.attributes) {
             var time = asset.attributes[timeAttribute];
@@ -1915,7 +1915,7 @@ var asset = {};
         asset.banner = am.getBanner(asset);
         asset.rating = 0;
         asset.version = am.getVersion(asset);
-        asset.createdTime = am.getCreatedTime(asset);
+        asset.createdDate = am.getCreatedDate(asset);
         am.setDefaultAssetInfo(asset);
         am.setUIMetaData(asset, am);
         //am.setAssetVersionInfo(asset);
