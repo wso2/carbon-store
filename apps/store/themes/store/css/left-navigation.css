@@ -87,7 +87,7 @@ nav.navigation > a.green:hover > .icon {
 }
 
 nav.navigation > a.green:hover > .left-menu-item, nav.navigation > a.green.active > .left-menu-item, nav.navigation > a.green.hover > .left-menu-item {
-    background: #27ae60;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
@@ -104,7 +104,7 @@ nav.navigation > a.red:hover > .icon {
 }
 
 nav.navigation > a.red:hover > .left-menu-item, nav.navigation > a.red.active > .left-menu-item, nav.navigation > a.red.hover > .left-menu-item {
-    background: #c0392b;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
@@ -121,13 +121,13 @@ nav.navigation > a.orange:hover > .icon {
 }
 
 nav.navigation > a.orange:hover > .left-menu-item, nav.navigation > a.orange.active > .left-menu-item, nav.navigation > a.orange.hover > .left-menu-item {
-    background: #d35400;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
 }
 
-nav.navigation > a.yellow .icon {
+    nav.navigation > a.yellow .icon {
     background: #f39c12;
     color: white;
 }
@@ -138,7 +138,7 @@ nav.navigation > a.yellow:hover > .icon {
 }
 
 nav.navigation > a.yellow:hover > .left-menu-item, nav.navigation > a.yellow.active > .left-menu-item, nav.navigation > a.yellow.hover > .left-menu-item {
-    background: #f39c12;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
@@ -155,7 +155,7 @@ nav.navigation > a.blue:hover > .icon {
 }
 
 nav.navigation > a.blue:hover > .left-menu-item, nav.navigation > a.blue.active > .left-menu-item, nav.navigation > a.blue.hover > .left-menu-item {
-    background: #2980b9;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
