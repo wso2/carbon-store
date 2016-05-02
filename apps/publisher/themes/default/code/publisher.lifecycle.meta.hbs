@@ -21,7 +21,8 @@
     if(!store.publisher.lifecycle){
     	store.publisher.lifecycle ={};
     }
-    store.publisher.lifecycle = { 
+    store.publisher.currentPage = "{{meta.pageName}}";
+    store.publisher.lifecycle = {
         id: "{{assets.id}}",
         currentState: "{{assets.lifecycleState}}",
         activeLifecycle: "{{assets.lifecycle}}",    

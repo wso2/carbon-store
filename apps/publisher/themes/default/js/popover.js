@@ -43,6 +43,33 @@ var popoverFunction = (function(){
     return returnObj;
 })();
 
+var currentPageFunction = (function(){
+    var returnObj = {};
+    returnObj.init = function(){
+        console.log("tmkasun debug yhehaa "+store.publisher.currentPage);
+
+        switch(store.publisher.currentPage) {
+            case "details":
+                $(".btn-overview").css("background-color","#1965b2");
+                break;
+            case "copy":
+                $(".btn-copy").css("background-color","#1965b2");
+                break;
+            case "update":
+                $(".btn-edit").css("background-color","#1965b2");
+                break;
+            case "delete":
+                $(".btn-delete").css("background-color","#1965b2");
+                break;
+            case "lifecycle":
+                $(".btn-lifecycle").css("background-color","#1965b2");
+                break;
+        }
+    };
+    return returnObj;
+})();
+
 $(function(){
     popoverFunction.init();
+    currentPageFunction.init();
 });
