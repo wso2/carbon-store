@@ -576,6 +576,7 @@ var asset = {};
             //Drop the type property from the query
             if((query.hasOwnProperty(key)) && (key!='type')){
                 value = query[key];
+                value = String(value);
                 //If the key contains an underscore (_) we 
                 //need  replace it with a semi colon (:)
                 //as the underlying API requires this
