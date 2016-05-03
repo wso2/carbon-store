@@ -1700,6 +1700,10 @@ var asset = {};
                 }
                 return '';
             }
+            //Check if only a placeholder is specified
+            if(thumb === this.getFileFieldPlaceholder()){
+                return '';
+            }
             return asset.attributes[thumbnailAttribute];
         }
         return '';
@@ -1712,6 +1716,10 @@ var asset = {};
                 if (log.isDebugEnabled()) {
                     log.debug('Unable to locate bannerAttribute ' + bannerAttribute + ' in asset ' + asset.id);
                 }
+                return '';
+            }
+            //Check if only a placeholder is specified
+            if(banner === this.getFileFieldPlaceholder()){
                 return '';
             }
             return asset.attributes[bannerAttribute];
@@ -1739,6 +1747,13 @@ var asset = {};
      */
     AssetManager.prototype.getAssetResources = function() {
         return this.rxtManager.listRxtFieldsOfType(this.type, 'file');
+    };
+    /**
+     * Returns the placeholder value used for file type fields
+     * @return {[type]} [description]
+     */
+    AssetManager.prototype.getFileFieldPlaceholder = function(){
+        return 'no-file-specified';
     };
     AssetManager.prototype.importAssetFromHttpRequest = function(options) {
         var asset = {};

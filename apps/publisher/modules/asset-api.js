@@ -332,7 +332,7 @@ var result;
                 throw 'Required field not provided';
             } else {
                 //Populate a dummy value for the purpose of creating the asset
-                asset.attributes[fieldName] = fieldName;
+                asset.attributes[fieldName] = assetManager.getFileFieldPlaceholder();
             }
         });
     };
