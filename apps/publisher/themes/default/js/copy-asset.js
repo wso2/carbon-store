@@ -19,13 +19,11 @@ $(document).ready(function() {
                 }),
                 type: 'POST',
                 success: function(response) {
-                    messages.alertSuccess('Asset version created successfully!');
+                    messages.alertSuccess('Asset version created successfully!,You will be redirected to new asset details page in few seconds.....');
                     setTimeout(function() {
                         var path = caramel.url('assets/' + assetType + '/details/' + response.data);
                         window.location = path;
                     }, 3000);
-                    $('#btn-create-version').removeClass('disabled');
-                    $('#new-version-loading').addClass('hide');
                 },
                 error: function(error) {
                     var errorText = JSON.parse(error.responseText).error;
