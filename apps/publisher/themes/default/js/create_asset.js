@@ -26,7 +26,7 @@ $(function () {
         var entry;
         var modifiedArr = [];
         var tagEntry;
-        //The Select2 plugin creates multiple entries in the FormData 
+        //The Select2 plugin creates multiple entries in the FormData
         //object.These duplicates need to be removed and a single
         //_tags entry created in their place
         arr.forEach(function(entry){
@@ -37,9 +37,14 @@ $(function () {
             }
         });
         //Populate the selected tags
-        tagEntry.value = tagsAPI.selectedTags();
-        modifiedArr.push(tagEntry);
-        arr = modifiedArr;
+        if(tagEntry == undefined) {
+            return;
+        }
+        else {
+            tagEntry.value = tagsAPI.selectedTags();
+            modifiedArr.push(tagEntry);
+            arr = modifiedArr;
+        }
     };
     $('#form-asset-create').ajaxForm({
         beforeSubmit: function (arr) {
