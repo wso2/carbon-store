@@ -75,17 +75,10 @@ public class GenericExecutor implements Execution
         //Used to inject asset specific information to a permission instruction
 
         DynamicValueInjector dynamicValueInjector=new DynamicValueInjector();
-
         //Set the asset author key
-	//Workaround for https://wso2.org/jira/browse/REGISTRY-2214
-        boolean isEmailEnabled = Boolean.parseBoolean(CarbonUtils.getServerConfiguration().getFirstProperty("EnableEmailUserName"));
-        String provider = requestContext.getResource().getAuthorUserName();
-//        if (provider != null && !isEmailEnabled && provider.contains("-AT-")) {
-//            provider = provider.substring(0, provider.indexOf("-AT-"));
-//
-//        }
-	//dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY,requestContext.getResource().getAuthorUserName());
-        dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY,provider);
+        //Workaround for https://wso2.org/jira/browse/REGISTRY-2214
+        String provider = PrivilegedCarbonContext.getThreadLocalCarbonContext().getUsername();
+        dynamicValueInjector.setDynamicValue(DynamicValueInjector.ASSET_AUTHOR_KEY, cleanUsername(provider));
 
         //Execute all permissions for the current state
         //this.stateExecutor.executePermissions(this.userRealm,dynamicValueInjector,path,s2);
@@ -100,6 +93,10 @@ public class GenericExecutor implements Execution
         JaggeryThreadLocalMediator.set(jaggeryThreadContext);
 
         return true;
+    }
+
+    private String cleanUsername(String username){
+        return username.replace("@","-AT-").replace("/","-AT-");
     }
 
     /*
