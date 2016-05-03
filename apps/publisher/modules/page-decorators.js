@@ -137,6 +137,7 @@ var pageDecorators = {};
                 return am.compareVersions(a1, a2);
             });
             info.isDefault = am.isDefaultAsset(page.assets);
+            info.version = assetInstance.version;
             for (var index = 0; index < versions.length; index++) {
                 asset = versions[index];
                 entry = {};
