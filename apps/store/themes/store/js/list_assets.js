@@ -279,17 +279,15 @@ var loadURL = function (url, param) {
                 assetAvailability = false;
                 // if assets not available in page
                 $(param).toggleClass("selected");
-
-                for (var j = 0; j < globalCount; j++) {
-                    if (parseInt($(param).attr('globalid')) - 1 < j) {
-                        $("#" + j).remove();
-                    }
-                }
+                removeDropDowns(param);
+                changeComboValue(param);
 
             } else {
                 assetAvailability = true;
+                $(param).toggleClass("selected");
+                removeDropDowns(param);
+                changeComboValue(param);
 
-                $("#" + (globalCount - 1)).find('a').first().html($(param).html());
                 if ($(param).attr('children') == "true") {
                     loadSubCategories();
                 } else {
@@ -306,6 +304,19 @@ var loadURL = function (url, param) {
         }
     });
 
+};
+
+var changeComboValue = function (param) {
+    var root1 = document.getElementById($(param).attr('id')).parentElement.parentElement.parentElement;
+    root1.getElementsByClassName('dropdown')[0].innerHTML = $(param).html();
+};
+
+var removeDropDowns = function (param) {
+    for (var j = 0; j < globalCount; j++) {
+        if (parseInt($(param).attr('globalid')) - 1 < j) {
+            $("#" + j).remove();
+        }
+    }
 };
 
 var loadSubCategories = function () {
