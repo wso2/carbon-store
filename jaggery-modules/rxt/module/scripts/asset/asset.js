@@ -1872,6 +1872,7 @@ var asset = {};
         page.assets.name = am.getName(assets);
         page.assets.thumbnail = am.getThumbnail(assets);
         page.assets.banner = am.getBanner(assets);
+        page.assets.createdDate = am.getCreatedDate(assets);
         page.assetMeta.categories = am.getCategories();
         page.assets[constants.Q_PROP_DEFAULT] = am.isDefaultAsset(assets);
         //am.setDefaultAssetInfo(page.assets);
