@@ -13,7 +13,9 @@
                         {{#if lifecycleState}}
                             <h5>{{lifecycle}} : {{lifecycleState}}</h5>
                         {{/if}}
-                        <div class="well-description">{{tables.0.fields.createdtime.value}}</div>
+                        {{#if createdDate}}
+                        <div class="well-description">{{createdDate}}</div>
+                        {{/if}}
                         <div class="well-description">{{tables.0.fields.description.value}}</div>
                         <div id='tag-ui-container-view'>
                             {{> tag-ui-container-view ..}}
