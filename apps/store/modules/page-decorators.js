@@ -326,6 +326,10 @@ var pageDecorators = {};
         page.popularAssets = items;
     };
     pageDecorators.tags = function(ctx, page) {
+        //Avoid generating tags if there is no asset types
+        if(!ctx.assetType) {
+            return;
+        }
         var paging = {
             'start': 0,
             'count': 0,
