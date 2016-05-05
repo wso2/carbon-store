@@ -1285,3 +1285,9 @@ sup.required-field{
     .form-search a.advance i { line-height: 35px; padding-bottom: 5px; }
     .form-search a.advance span { display: inline-block; }
 }
+
+.tab-selected {
+    pointer-events: none;
+    cursor: default;
+    background-color: #1965b2;
+}

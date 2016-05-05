@@ -48,19 +48,19 @@ var currentPageFunction = (function(){
     returnObj.init = function(){
         switch(store.publisher.currentPage) {
             case "details":
-                $(".btn-overview").css("background-color","#1965b2");
+                $(".btn-overview").addClass("tab-selected");
                 break;
             case "copy":
-                $(".btn-copy").css("background-color","#1965b2");
+                $(".btn-copy").addClass("tab-selected");
                 break;
             case "update":
-                $(".btn-edit").css("background-color","#1965b2");
+                $(".btn-edit").addClass("tab-selected");
                 break;
             case "delete":
-                $(".btn-delete").css("background-color","#1965b2");
+                $(".btn-delete").addClass("tab-selected");
                 break;
             case "lifecycle":
-                $(".btn-lifecycle").css("background-color","#1965b2");
+                $(".btn-lifecycle").addClass("tab-selected");
                 break;
         }
     };
