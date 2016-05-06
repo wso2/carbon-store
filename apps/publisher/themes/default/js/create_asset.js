@@ -26,26 +26,26 @@ $(function () {
         var entry;
         var modifiedArr = [];
         var tagEntry;
+
         //The Select2 plugin creates multiple entries in the FormData
         //object.These duplicates need to be removed and a single
         //_tags entry created in their place
+
         arr.forEach(function(entry){
             if(entry.name !== '_tags'){
                 modifiedArr.push(entry);
             } else {
                 tagEntry = entry;
+                if(tagEntry == undefined) {
+                    return;
+                }
+                tagEntry.value = tagsAPI.selectedTags();
             }
         });
-        //Populate the selected tags
-        if(tagEntry == undefined) {
-            return;
-        }
-        else {
-            tagEntry.value = tagsAPI.selectedTags();
-            modifiedArr.push(tagEntry);
-            arr = modifiedArr;
-        }
+        modifiedArr.push(tagEntry);
+        return modifiedArr;
     };
+
     $('#form-asset-create').ajaxForm({
         beforeSubmit: function (arr) {
             var createButton = $('#btn-create-asset');
@@ -55,7 +55,7 @@ $(function () {
                 var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
                 createButton.parent().append($content);
             });
-            populateTags(arr);
+            // populateTags(arr);
             if (!validator.isValidForm('form-asset-create')) {
                 window.scrollTo(0, 0);
                 $('div.error').each(function () {
