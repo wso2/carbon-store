@@ -26,6 +26,7 @@ var $sort = $('.com-sort');
 var $lastReview = $('.load-more');
 var $more = $('#more');
 var $empty_list = $('#empty_list');
+var $reviews_frame = $("html");
 var windowProxy;
 var publish = function(activity, onSuccess) {
     if (activity.target) {
@@ -253,3 +254,4 @@ $stream.on('click', '#btn-delete', function(e) {
         }
     });
 });
+$reviews_frame.niceScroll();
