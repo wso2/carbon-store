@@ -17,15 +17,17 @@
         <div class="ast-container " id="ast-container">
             <div class="container-fluid ">
                 <div class="title">
-                    {{#if ../assetMeta.q}}
-                        <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?q={{../../assetMeta.q}}">
-                            {{rxt.pluralLabel}}
-                        </a>
-                    {{else}}
-                        <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">
-                            Recent
-                            {{rxt.pluralLabel}}
-                        </a>            
+                    {{#if moreAssets}}
+                        {{#if ../assetMeta.q}}
+                            <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?q={{../../assetMeta.q}}">
+                                {{rxt.pluralLabel}}
+                            </a>
+                        {{else}}
+                            <a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">
+                                Recent
+                                {{rxt.pluralLabel}}
+                            </a>
+                        {{/if}}
                     {{/if}}
                 </div><!--title-->
                 {{#if ../assetMeta.q}}
