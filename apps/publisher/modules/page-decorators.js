@@ -234,6 +234,21 @@ var pageDecorators = {};
             }
         }
     };
+    pageDecorators.populateAssetPageBreadcrumb = function(ctx,page,utils){
+        var Breadcrumb = require('rxt').app.Breadcrumb;
+        var breadcrumb = new Breadcrumb(page.breadcrumb);
+
+        if(!page.rxt) {
+            return;
+        }
+        breadcrumb.crumb(page.rxt.pluralLabel.toUpperCase(),utils.buildUrl('list'));
+        if(!page.assets.name) {
+            page.breadcrumb  = breadcrumb.build();
+            return;
+        }
+        breadcrumb.crumb(page.assets.name.toUpperCase(),utils.buildUrl('details')+'/'+page.assets.id);
+        page.breadcrumb = breadcrumb.build();
+    };
     var isEmptyTable = function(table){
         var field;
         var fields = table.fields;

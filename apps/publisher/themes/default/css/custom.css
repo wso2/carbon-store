@@ -263,6 +263,7 @@ header {
     /* position: absolute; */
     top:0;
     left: 0;
+    margin-top: -20px;
 }
 .wr-asset-type-switcher a.switcher-link{
     color:#fff;
@@ -678,7 +679,7 @@ a.cu-ico-button-stats {
 /* filter */
 .wr-filters {
 	/*padding:18px 30px 15px 15px;*/
-	padding-top:15px;
+	padding-top:50px;
 }
 
 .wr-filters .dropdown-menu .filter-item{
@@ -813,7 +814,7 @@ a.cu-ico-button-stats {
 }
 .asset-well{
     padding:0;
-    margin-top:20px;
+    margin-top:100px;
     border-radius: 0;
     border:none;
 }
@@ -935,7 +936,7 @@ h2 span.fa-stack{
 .navbar-themed{
     margin:0;
     background: none repeat scroll 0 0 #237bd5;
-    height: 54px;
+    height: 85px;
     border: none;
     border-radius: 0;
 }
@@ -993,12 +994,13 @@ h2 span.fa-stack{
 #navbar {
     float:left;
     padding-left:0px;
+    margin-top:-20px;
 }
 
 .wr-main-content {
     margin-left:3px;
     margin-right:0px;
-    margin-top: 50px;
+    margin-top: 80px;
 }
 
 /* validation */
@@ -1290,4 +1292,20 @@ sup.required-field{
     pointer-events: none;
     cursor: default;
     background-color: #1965b2;
+}
+
+.breadcrumb {
+    padding: 5px 15px;
+    margin-bottom: 20px;
+    list-style: outside none none;
+    background-color: #282828;
+    border-radius: 0px;
+}
+
+.breadcrumb-wrapper{
+    color: #222;
+}
+
+.breadcrumb-link {
+    color:white;
 }
