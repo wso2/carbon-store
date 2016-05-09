@@ -1807,6 +1807,8 @@ var asset = {};
                 //If the field exists then update the value
                 if (attrFieldValue) {
                     fields[fieldName].value = attrFieldValue;
+		    fields[fieldName].assetId = modAsset.id;
+		    fields[fieldName].assetType = modAsset.type;
                 }
                 if (field.type == 'options' && field.values[0].class) {
                     var values = resolveValues(asset.id, asset.path, field.values[0].class, this.registry);
