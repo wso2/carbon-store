@@ -87,7 +87,7 @@ var asset = {};
         //If there is a list then  it can be either an array or a string(If it is an array it sends it back as a Java array which is not detected)
         list = parse(stringify(list));
         var ref = require('utils').reflection;
-        //Determine if the list is provided as a string 
+        //Determine if the list is provided as a string
         if (!ref.isArray(list)) {
             list = list.split(',');
         }
@@ -350,10 +350,10 @@ var asset = {};
         var group = this.getAssetGroup(currentAsset);
         var asset;
         //Go through each asset in the group and remove the default property
-        //if it is present 
+        //if it is present
         for (var index = 0; index < group.length; index++) {
             asset = group[index];
-            //Omit the current asset 
+            //Omit the current asset
             if (asset.id !== currentAsset.id) {
                 var properties = this.registry.properties(asset.path);
                 //Check if the default property is present and remove it
@@ -382,7 +382,7 @@ var asset = {};
             }
             //If the asset is retrieved via a get it will contain a content property
             //which is used to invoke the GenericArtifact setContent method.This check will ensure
-            //that it is removed prior to calling the carbon/artifact.js 
+            //that it is removed prior to calling the carbon/artifact.js
             if(options.hasOwnProperty('content')){
                 delete options.content;
             }
@@ -577,7 +577,7 @@ var asset = {};
             if((query.hasOwnProperty(key)) && (key!='type')){
                 value = query[key];
                 value = String(value);
-                //If the key contains an underscore (_) we 
+                //If the key contains an underscore (_) we
                 //need  replace it with a semi colon (:)
                 //as the underlying API requires this
                 //Note: This prevents us from searching props
@@ -1160,9 +1160,9 @@ var asset = {};
         var asset = this.get(id);
         var tagged; //Assume that the tag will not be applied
         var utilsAPI = require('utils');
-        //If the user has provided a single tag then it should be 
+        //If the user has provided a single tag then it should be
         //assigned to an array to keep the registry invocation uniform
-        if (!utilsAPI.reflection.isArray(tags)) {
+        if (typeof tags === 'string') {
             tags = [tags];
         }
         if (!asset) {
@@ -1438,7 +1438,7 @@ var asset = {};
             log.error('Failed to attach a lifecycle as an asset object was not provided.');
             return success;
         }
-        //Check if a lifecycle was provided,if not check if it is provided in the 
+        //Check if a lifecycle was provided,if not check if it is provided in the
         //configuration
         if (lifecycle == '') {
             lifecycle = this.rxtManager.getLifecycleName(this.type);
@@ -2300,7 +2300,7 @@ var asset = {};
         } else {
             defaultCb = defaultCb(context);
             serverCb = serverCb(context);
-            //Combine the endpoints 
+            //Combine the endpoints
             var defaultApiEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.apis)) ? defaultCb.endpoints.apis : [];
             var defaultPageEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.pages)) ? defaultCb.endpoints.pages : [];
             var serverApiEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.apis)) ? serverCb.endpoints.apis : [];
@@ -2341,7 +2341,7 @@ var asset = {};
         } else {
             defaultCb = defaultCb(context);
             serverCb = serverCb(context);
-            //Combine the endpoints 
+            //Combine the endpoints
             var defaultApiEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.apis)) ? defaultCb.endpoints.apis : [];
             var defaultPageEndpoints = ((defaultCb.endpoints) && (defaultCb.endpoints.pages)) ? defaultCb.endpoints.pages : [];
             var serverApiEndpoints = ((serverCb.endpoints) && (serverCb.endpoints.apis)) ? serverCb.endpoints.apis : [];

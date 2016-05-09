@@ -1,7 +1,13 @@
 <!-- secondary header - app bar -->
-
 <nav class="navbar navbar-default navbar-themed">
     <div>
+        <div class="breadcrumb-wrapper">
+                <ol class="breadcrumb">
+                    {{#each breadcrumb}}
+                    <li><a href='{{url ""}}{{this.link}}' class='breadcrumb-link'>{{this.label}}</a></li>
+                    {{/each}}
+                </ol>
+        </div>
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
@@ -29,7 +35,6 @@
                     </ul>
                 </div>
             </div>
-            {{#if rxt.pluralLabel}}<a class="pull-left switcher-link" href='{{url ""}}{{currentUrl}}{{ribbon.currentUrl}}'>{{rxt.pluralLabel}}</a>{{/if}}
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             
