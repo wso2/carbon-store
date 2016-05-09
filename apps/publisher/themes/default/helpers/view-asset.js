@@ -30,7 +30,7 @@ var format = function(data){
 
 var resources = function(){
 	return {
-		js:['select2.min.js','tags/tags-common.js','tags/tags-init-view-asset.js'],
+		js:['select2.min.js','tags/tags-common.js','tags/tags-init-view-asset.js','view-asset.js'],
 		css:['select2.min.css']
 	}
 };

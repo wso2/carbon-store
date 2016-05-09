@@ -182,3 +182,6 @@ $(function() {
         });
     });
 });
+var showImageFull = function(img){
+    $(img).next().trigger('click');
+};

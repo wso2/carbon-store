@@ -1212,7 +1212,11 @@ sup.required-field{
     font-weight:400;
 }
 
-
+.image-display{
+    max-height: 150px;
+    margin-right: 20px;
+    cursor:pointer;
+}
 .search-label {
     font-weight: 200;
     font-size: 18px;
