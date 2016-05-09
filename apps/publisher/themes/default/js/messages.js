@@ -101,3 +101,32 @@ messages.alertWarn = function(value){
         style: 'happyyellow'
     });
 };
+messages.modal_pop = function(modalData){
+    var title = modalData.title;
+    var content = modalData.content;
+    var footer = modalData.footer;
+
+    //setting title
+    if(title){
+        $('#esModalLabel').html(title).parent().show();
+    } else {
+        $('#esModalLabel').parent().hide();
+        content += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+    }
+
+    //setting content
+    if(content){
+        $('#esModalContent').show().html(content);
+    } else {
+        $('#esModalContent').hide();
+    }
+
+    //setting footer
+    if(footer){
+        $('#esModalFooter').show().html(footer);
+    } else {
+        $('#esModalFooter').hide();
+    }
+
+    $('#esModal').modal();
+};

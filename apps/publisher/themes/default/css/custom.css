@@ -153,7 +153,8 @@ footer {
     background-color: #f5f5f5;
 }
 .wr-main-content div.asset-well img{
-max-width:152px;
+    max-height:150px;
+    width: auto;
 }
 
 .wrapper{
@@ -411,11 +412,12 @@ a.ast-type-item .icon {
 br.c-both {
 	clear:both;
 }
-
+.asset-well .ast-img{
+    background: transparent;
+    margin-bottom:10px;
+}
 .ast-img img {
 	float:left;
-	width:150px;
-	height:150px;
 }
 
 .ast-desc {
@@ -793,6 +795,12 @@ a.cu-ico-button-stats {
 .version-list-dropdown{
     display: inline-block;
 }
+.modal-body{
+    text-align: center;
+}
+.modal-content{
+    background: transparent url(../img/modal-back.png) left top repeat;
+}
 .modal-comment{
     width:100%;
     height: 150px;
@@ -813,13 +821,19 @@ a.cu-ico-button-stats {
     background-color: #efefef;
 }
 .asset-well{
-    padding:0;
-    margin-top:100px;
+    margin-top:14px;
     border-radius: 0;
     border:none;
+    padding-left: 10px;
+    padding-top:10px;
+    padding-bottom: 0;
 }
 .asset-well [class^="col-lg-"]{
     padding:0;
+}
+.asset-well h1{
+    padding-top:0;
+    margin-top:0;
 }
 .well-description{
     padding-top:20px;
@@ -1214,7 +1228,11 @@ sup.required-field{
     font-weight:400;
 }
 
-
+.image-display{
+    max-height: 150px;
+    margin-right: 20px;
+    cursor:pointer;
+}
 .search-label {
     font-weight: 200;
     font-size: 18px;
