@@ -51,10 +51,10 @@ $(function () {
             var createButton = $('#btn-create-asset');
             createButton.attr('disabled', 'disabled');
             createButton.next().attr('disabled', 'disabled');
-            caramel.render('loading', 'Creating asset. Please wait..', function (info, content) {
+            /*caramel.render('loading', 'Creating asset. Please wait..', function (info, content) {
                 var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
                 createButton.parent().append($content);
-            });
+            });*/
             // populateTags(arr);
             if (!validator.isValidForm('form-asset-create')) {
                 window.scrollTo(0, 0);
@@ -71,6 +71,7 @@ $(function () {
                     }, 1000);
                 return false;
             }
+            messages.alertInfoLoader('<i class="fa fa-spinner fa-spin"></i> <strong>Creating the new asset</strong>.Please wait .....');
         },
         success: function (data) {
             var options = obtainFormMeta('#form-asset-create');
@@ -81,11 +82,12 @@ $(function () {
         },
         error: function (response) {
             var result;
+            messages.hideAlertInfoLoader();
             if (response && response.responseText){
                 result = JSON.parse(response.responseText);
             }
             if (result && result.moreInfomation){
-                messages.alertError(result.moreInfomation);
+                messages.alertError('Unable to create the '+ PublisherUtils.resolveCurrentPageAssetType()+ ' instance.'+result.moreInfomation);
             } else {
                 messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
             }

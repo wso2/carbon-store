@@ -262,12 +262,12 @@ var  initAssetCreationChecker = function(){
         success:function(data){
             if(data.list.length == 0 ){
                 if($('#assetLoader').length < 1) {
-                    messages.alertInfoLoader('Asset added successfully. Please wait. <i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <i class="fa fa-close" onclick="clearWaiting()"></i>');
+                    messages.alertInfoLoader('<i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <strong>Asset added successfully</strong>.Please wait while the asset is been indexed...  <i class="fa fa-close" onclick="clearWaiting()"></i>');
                 }
                 setTimeout(initAssetCreationChecker,3000);
             }else{
                 $('#assetLoader').parent().parent().remove();
-                messages.alertInfoLoader('Now you can access the asset. <a href="'+url+'">'+ newAssetName + '</a>');
+                messages.alertInfo('The new asset was indexed successfully.Click <a href="'+url+'">here</a> to access the new asset.');
                 $.removeCookie(cookieName);
             }
         },

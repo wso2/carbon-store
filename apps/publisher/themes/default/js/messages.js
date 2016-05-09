@@ -50,23 +50,45 @@ messages.alertError = function(value){
     });
 };
 messages.alertInfo = function(value){
-    $.notify(value, {
-        globalPosition: 'top center',
-        className: 'info'
-    });
-};
-messages.alertInfoLoader = function(value){
-    $.notify.addStyle('happyblue', {
-        html: "<div><span data-notify-html/></div>",
+        $.notify.addStyle('happygreen', {
+        html: "<div><i class='icon fw fw-info'></i> <strong>Success! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "lightblue",
-                "padding": "10px"
+                "background-color": "#5CB85C",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
+            },
+            supergreen: {
+                "color": "white",
+                "background-color": "#5CB85C"
+            }
+        }
+    });
+
+    $.notify(value, {
+        globalPosition: 'top center',
+        className: 'info',
+        style:'happygreen'
+    });
+};
+messages.alertInfoLoader = function(value){
+    $.notify.addStyle('happygreen', {
+        html: "<div><strong></strong><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "#5CB85C",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
             },
             superblue: {
                 "color": "white",
-                "background-color": "blue"
+                "background-color": "#5CB85C"
             }
         }
     });
@@ -75,7 +97,7 @@ messages.alertInfoLoader = function(value){
         globalPosition: 'top center',
         className: 'info',
         autoHide: false,
-        style: 'happyblue'
+        style: 'happygreen'
     });
 
 };
@@ -129,4 +151,8 @@ messages.modal_pop = function(modalData){
     }
 
     $('#esModal').modal();
+};
+
+messages.hideAlertInfoLoader = function(){
+    $('.notifyjs-happygreen-info').remove();
 };
