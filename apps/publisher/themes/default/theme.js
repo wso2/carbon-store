@@ -358,7 +358,9 @@ var engine = caramel.engine('handlebars', (function() {
                         break;
                     case 'file':
                         out = elementPrefix;
-                        out += '<img onclick="showImageFull(this)" alt="thumbnail" class="image-display pull-left" src="/publisher/storage/'+field.assetType+'/'+field.assetId+'/'+field.name.tableQualifiedName+'">';
+                        if(modeValue == "edit"){
+                            out += '<img onclick="showImageFull(this)" alt="thumbnail" class="image-display pull-left" src="/publisher/storage/'+field.assetType+'/'+field.assetId+'/'+field.name.tableQualifiedName+'">';
+                        }
                         out += '<input class="pull-left" type="file" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     case 'date':
