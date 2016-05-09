@@ -173,7 +173,7 @@ var result;
 
                 //Determine if the field is readonly or auto.if yes then ignore
                 //the user provided value and use the original value
-                if((definition.readonly)||(definition.auto)){
+                if((definition.readonly)||(definition.auto)||(definition.hidden)){
                     asset.attributes[key] = original.attributes[key];
                 }
 
