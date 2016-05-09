@@ -357,7 +357,9 @@ var engine = caramel.engine('handlebars', (function() {
                         out = elementPrefix + '<textarea row="3" style="width:100%; height:70px"' + renderFieldMetaData(field, null, mode) + '>' + Handlebars.Utils.escapeExpression(value) + '</textarea>' + elementSuffix;
                         break;
                     case 'file':
-                        out = elementPrefix + '<input type="file" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
+                        out = elementPrefix;
+                        out += '<img alt="thumbnail" class="square-element" src="/publisher/storage/'+field.assetType+'/'+field.assetId+'/'+field.name.tableQualifiedName+'">';
+                        out += '<input type="file" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
                     case 'date':
                         out = elementPrefix + '<input type="text" data-render-options="date-time"  value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
@@ -482,6 +484,7 @@ var engine = caramel.engine('handlebars', (function() {
             });
             Handlebars.registerHelper('renderTable', function(table, options) {
                 table.mode = options.hash.mode;
+                table.assetId = options.hash.id;
                 var headingPtr = Handlebars.compile('{{> editable_heading_table .}}');
                 var defaultPtr = Handlebars.compile('{{> editable_default_table .}}');
                 var unboundPtr = Handlebars.compile('{{> editable_unbound_table .}}');
