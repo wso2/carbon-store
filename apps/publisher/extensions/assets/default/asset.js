@@ -248,7 +248,7 @@ asset.renderer = function(ctx) {
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
         var user = require('store').server.current(session);
         var username = user? user.username : null;
-        navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
+        //navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session) && permissionAPI.hasAssetPagePermission(type,'update',user.tenantId,username)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
         }
@@ -419,6 +419,9 @@ asset.renderer = function(ctx) {
                     return;
                 }
                 require('/modules/page-decorators.js').pageDecorators.hideEmptyTables(ctx,page,this);
+            },
+            populateBreadcrumb:function(page){
+                require('/modules/page-decorators.js').pageDecorators.populateAssetPageBreadcrumb(ctx,page,this);
             }
         }
     };
