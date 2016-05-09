@@ -28,7 +28,9 @@
             {{#if cuser.username}}
                 <a href="#" data-toggle="dropdown" class="">
                     <div class="auth-img">
-                        <span id="logedInUser" class="hidden-xs-320">{{cuser.username}}&nbsp;&nbsp;</span><i class="fw fw-user"></i>
+                        <i class="fw fw-user"></i>&nbsp;&nbsp;<span id="logedInUser"
+                                                                    class="hidden-xs-320">{{cuser.username}}</span>
+                                                  &nbsp;&nbsp;<span class="caret"></span>
                     </div>
                 </a>
                 <div class="dropdown-menu">
