@@ -194,6 +194,9 @@ a{
 a:hover, a:focus{
     text-decoration:none;
 }
+.wr-global-header a:hover, .wr-global-header a:focus, .breadcrumb-wrapper a:hover, .breadcrumb-wrapper a:focus{
+    color:#efefef;
+}
 h2.field-title {
     margin:0 0 20px 0;
     border-bottom:solid 1px #f0f0f0;
