@@ -141,6 +141,7 @@ var pageDecorators = {};
         var permissions = require('rxt').permissions;
         var assetAPI = require('/modules/asset-api.js').api;
         var assets = {};
+        var isMoreAssets = false;
         var items = [];
         var assetsByType = [];
         var am;
@@ -163,65 +164,73 @@ var pageDecorators = {};
             return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
         };
         var bookmarkPerms = {};
-        
+        var paging = {'start': 0,
+            'count': 8,
+            'sortOrder': 'desc',
+            'sortBy': 'createdDate',
+            'paginationLimit': 8 };
         // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
         // case 1 : Search query provided with mediaType search
         if(isMediaType(query,types)){
-            var paging = {'start': 0,
-                        'count': 7,
-                        'sortOrder': 'desc',
-                        'sortBy': 'createdDate',
-                        'paginationLimit': 7 };
             tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
                 type: query.mediaType
             });
             assets = tenantAssetResources.am.advanceSearch(query, paging);
+            isMoreAssets = assets.length >= paging.paginationLimit;
+            if(isMoreAssets) {
+                assets.pop();
+            }
             page.recentAssets = [];
             page.recentAssetsByType = [];
             typeDetails = ctx.rxtManager.getRxtTypeDetails(query.mediaType);
             page.recentAssetsByType.push({
                 assets:assets,
-                rxt:typeDetails
+                rxt:typeDetails,
+                moreAssets: isMoreAssets
             });
             return;
         }
         // case 2 : Search query provided without a mediaType search
-            for (var index in types) {
-                typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
-                type = typeDetails.shortName;
-                tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
-                    type: type
-                });
-                bookmarkable = bookmarkPerms[type];
-                if(bookmarkable === undefined) {
-                    bookmarkable = (bookmarkPerms[type] = canBookmark(type));
+        for (var index in types) {
+            typeDetails = ctx.rxtManager.getRxtTypeDetails(types[index]);
+            type = typeDetails.shortName;
+            tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
+                type: type
+            });
+            bookmarkable = bookmarkPerms[type];
+            if (bookmarkable === undefined) {
+                bookmarkable = (bookmarkPerms[type] = canBookmark(type));
+            }
+            am = tenantAssetResources.am;
+            if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
+                if (query) {
+                    assets = am.advanceSearch(query, paging);
+                    isMoreAssets = assets.length >= paging.paginationLimit;
+                    if (isMoreAssets) {
+                        assets.pop();
+                    }
+                } else {
+                    assets = am.recentAssets(paging);
+                    isMoreAssets = assets.length >= paging.paginationLimit;
+                    if (isMoreAssets) {
+                        assets.pop();
+                    }
                 }
-                am = tenantAssetResources.am;
-                if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
-                    if (query) {
-                        var paging = {'start': 0,
-                                    'count': 7,
-                                    'sortOrder': 'desc',
-                                    'sortBy': 'createdDate',
-                                    'paginationLimit': 7 };
-                        assets = am.advanceSearch(query, paging);
-                    } else {
-                        assets = am.recentAssets();
+                if (assets.length > 0) {
+                    //Add subscription details if this is not an anon context
+                    if (!ctx.isAnonContext) {
+                        addSubscriptionDetails(assets, am, ctx.session, bookmarkable);
                     }
-                    if (assets.length > 0) {
-                        //Add subscription details if this is not an anon context
-                        if (!ctx.isAnonContext) {
-                            addSubscriptionDetails(assets, am, ctx.session, bookmarkable);
-                        }
-                        ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
-                        items = items.concat(assets);
-                        assetsByType.push({
-                            assets: assets,
-                            rxt: typeDetails
-                        });
-                    }
+                    ratingApi.addRatings(assets, am, ctx.tenantId, ctx.username);
+                    items = items.concat(assets);
+                    assetsByType.push({
+                        assets: assets,
+                        rxt: typeDetails,
+                        moreAssets: isMoreAssets
+                    });
                 }
             }
+        }
         page.recentAssets = items;
         page.recentAssetsByType = assetsByType;
     };
