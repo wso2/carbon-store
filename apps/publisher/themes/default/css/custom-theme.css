@@ -486,3 +486,56 @@ a.ctrl-filter-category:hover {
     -webkit-border-radius: 0px!important;
     -moz-border-radius: 0px!important;
 }
+
+/* ========================================================================
+ * message styles
+ * ======================================================================== */
+.message {
+    padding: 20px;
+    margin: 20px 0;
+    border-left: 5px solid transparent;
+    background: #f9f9f9;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+}
+.message h4 {
+    font-weight: 300;
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+.message h4 .icon {
+    padding-bottom: 3px;
+    margin-right: 5px;
+}
+.message p:last-child {
+    margin-bottom: 0;
+}
+.message + .message {
+    margin-top: -5px;
+}
+
+.message-success {
+    border-left-color: #5cb85c;
+}
+.message-success h4 {
+    color: #5cb85c;
+}
+.message-info {
+    border-left-color: #009DA7;
+}
+.message-info h4 {
+    color: #009DA7;
+}
+.message-warning {
+    border-left-color: #f0ad4e;
+}
+.message-warning h4 {
+    color: #f0ad4e;
+}
+.message-danger {
+    border-left-color: #d9534f;
+}
+.message-danger h4 {
+    color: #d9534f;
+}
