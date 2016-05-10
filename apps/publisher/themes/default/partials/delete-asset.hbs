@@ -19,23 +19,27 @@
                         <p>{{lifecycle}} : {{lifecycleState}}</p>
                     {{/if}}
                     {{#if createdDate}}
-                    <div class="well-description">{{createdDate}}</div>
+                        <div class="well-description">{{createdDate}}</div>
                     {{/if}}
                 </div>
             </div>
         </div>
     </div>
 {{/with}}
-<div class="delete" id="deleteModal" >
+<div class="delete" id="deleteModal">
     <div class="form-inline">
-          <p id="delete-msg">{{t "Do you want to delete "}}<b>{{assets.name}}</b>{{t " "}}{{rxt.singularLabel}}{{t "?"}}</p>
-          <input type="hidden" id="asset-id" value="{{assets.id}}">
-          <input type="hidden" id="asset-name" value="{{assets.name}}">
-          <input type="hidden" id="asset-type" value="{{assets.type}}">
-          <input type="hidden" id="landing-page" value="{{meta.landingPage}}">
-          <i class="fa fa-spinner fa-spin fa-3x hide" id="delete-loading"></i>
-          <br/>
-          <button type="button" id="btn-delete-con" class="btn btn-danger" >{{t "Delete"}}</button>
-          <button type="button" id="btn-cancel-con" class="btn btn-primary" >{{t "Cancel"}}</button>
+        <div class="message message-danger">
+            <h4><i class="icon fw fw-error"></i>Asset deletion</h4>
+            <p id="delete-msg">{{t "Do you want to delete "}}
+                <b>{{assets.name}}</b>{{t " "}}{{rxt.singularLabel}}{{t "?"}}</p>
+        </div>
+        <input type="hidden" id="asset-id" value="{{assets.id}}">
+        <input type="hidden" id="asset-name" value="{{assets.name}}">
+        <input type="hidden" id="asset-type" value="{{assets.type}}">
+        <input type="hidden" id="landing-page" value="{{meta.landingPage}}">
+        <i class="fa fa-spinner fa-spin fa-3x hide" id="delete-loading"></i>
+        <br/>
+        <button type="button" id="btn-delete-con" class="btn btn-danger">{{t "Delete"}}</button>
+        <button type="button" id="btn-cancel-con" class="btn btn-default">{{t "Cancel"}}</button>
     </div>
 </div>

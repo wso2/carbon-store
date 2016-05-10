@@ -275,7 +275,7 @@ $(function() {
                 $(id(container)).removeClass('not-active').removeAttr("title").unbind('click');
                 return;
             }
-            $(id(container)).addClass('not-active').attr("title", "Asset is not in a deletable State!")
+            $(id(container)).attr("title", "Asset is not in a deletable State!")
                 .click(function (e) {
                     e.preventDefault()
                 });

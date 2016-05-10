@@ -55,9 +55,9 @@ var enableDelete = function () {
 };
 
 var disableDelete = function (msg) {
-    $('#Delete').addClass('not-active').attr("title", msg).click(function (e) {
-        e.preventDefault()
-    });
+    var deletePanel = $('.message.message-danger');
+    deletePanel.removeClass('message-danger').addClass('message-warning');
+    deletePanel.find('.fw.fw-error').removeClass('fw-error').addClass('fw-warning');
 
     $('#btn-delete-con').hide();
     $('#delete-msg').text('Asset is not in a deletable state');
