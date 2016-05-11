@@ -275,10 +275,7 @@ $(function() {
                 $(id(container)).removeClass('not-active').removeAttr("title").unbind('click');
                 return;
             }
-            $(id(container)).attr("title", "Asset is not in a deletable State!")
-                .click(function (e) {
-                    e.preventDefault()
-                });
+            $(id(container)).attr("title", "Asset is not in a deletable State!");
         }
     };
     var unrenderLCActions = function() {
