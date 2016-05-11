@@ -40,6 +40,7 @@ $(document).ready(function() {
                 $('#btn-cancel-con').addClass('hide ');
                 $('#delete-loading').addClass('hide');
                 $('#delete-msg').addClass('hide');
+                $('.message.message-danger').hide();
                 setTimeout(function(){
                     var path = caramel.url('/assets/'+assetType + '/list');
                     window.location = path;
