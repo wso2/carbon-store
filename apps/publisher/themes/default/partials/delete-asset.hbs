@@ -3,23 +3,18 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-lg-1">
-                    <div class="ast-img setbgcolor" style="background: {{this.uniqueColor}}">
-                        <span class="ast-type-icon">
-                            <i class="{{icon}} fw-lg"></i>
-                        </span>
-                        <div class="ast-name-icon">{{this.nameToChar}}</div>
-                    </div>
+                    {{>asset-thumbnail .}}
                 </div>
                 <div class="col-lg-10 padding-left-double">
-                    <h4>{{name}}</h4>
+                    <h1 class="asset-name">{{name}}</h1>
                     {{#if version}}
-                        <p>Version : {{version}}</p>
+                        <h5>Version : {{version}}</h5>
                     {{/if}}
                     {{#if lifecycleState}}
-                        <p>{{lifecycle}} : {{lifecycleState}}</p>
+                        <h5>{{lifecycle}} : {{lifecycleState}}</h5>
                     {{/if}}
                     {{#if createdDate}}
-                        <div class="well-description">{{createdDate}}</div>
+                    <div class="well-description padding-bottom-lg">{{createdDate}}</div>
                     {{/if}}
                 </div>
             </div>
