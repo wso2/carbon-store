@@ -62,5 +62,6 @@ require('/modules/store.js').exec(function(ctx) {
         }
     }
     var output = appManager.render(assets, page);
+    output.hasAssets = !(Object.keys(assets).length === 0 && assets.constructor === Object);
     caramel.render(output);
 }, request, response, session); %>
