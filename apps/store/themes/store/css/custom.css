@@ -1119,6 +1119,16 @@ a:hover, a:focus {
     background: transparent !important;
 }
 
+.es-user-icon{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.es-user-name{
+    display: inline-block;
+    margin-right: 5px;
+}
+
 .white{color: #f3f3f3;}
 #sortDropdown:hover {
     background: transparent;
