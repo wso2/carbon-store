@@ -460,6 +460,17 @@ a.ctrl-filter-category:hover {
 .auth-img:hover {
     background:#5c5c5c;
 }
+
+.es-user-icon{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.es-user-name{
+    display: inline-block;
+    margin-right: 5px;
+}
+
 .btn,.btn-primary,.btn-default{
     border-radius: 0px;
     -moz-border-radius: 0px;
