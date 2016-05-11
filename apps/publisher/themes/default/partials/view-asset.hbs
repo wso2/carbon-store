@@ -2,19 +2,19 @@
         <div class="well asset-well">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12">
+                    <div class="col-lg-1">
                         {{>asset-thumbnail .}}
                     </div>
-                    <div class="col-lg-10 col-md-10 col-sm-8 col-xs-12">
+                    <div class="col-lg-10 padding-left-double">
                         <h1 class="asset-name">{{name}}</h1>
                         {{#if version}}
-                            <h5>{{version}}</h5>
+                            <h5>Version : {{version}}</h5>
                         {{/if}}
                         {{#if lifecycleState}}
                             <h5>{{lifecycle}} : {{lifecycleState}}</h5>
                         {{/if}}
                         {{#if createdDate}}
-                        <div class="well-description">{{createdDate}}</div>
+                        <div class="well-description padding-bottom-lg">{{createdDate}}</div>
                         {{/if}}
                         <div id='tag-ui-container-view'>
                             {{> tag-ui-container-view ..}}
