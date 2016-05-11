@@ -134,7 +134,7 @@ asset.configure = function() {
                 lifecycleEnabled:true
             },
             ui: {
-                icon: 'fw fw-resource',
+                icon: 'fw fw-web-app',
                 iconColor: 'purple'
             },
             categories: {

@@ -21,7 +21,7 @@ asset.configure = function() {
     return {
         meta: {
             ui: {
-                icon: 'fw fw-resource',
+                icon: 'fw fw-web-app',
                 iconColor: 'yellow'
             }
 
