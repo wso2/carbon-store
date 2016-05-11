@@ -743,8 +743,20 @@ a.cu-ico-button-stats {
     color: #fff;
 }
 
-.footer .fw {
+.footer p {
+    margin: 5px 0;
+}
+
+#logo-wso2 {
+    background: url("../img/wso2-logo-small.png") no-repeat scroll left top transparent;
     font-size: 21px;
+    display: inline-block;
+    height: 17px;
+    width: 41px;
+}
+
+#logo-wso2:hover {
+    background-position: left -18px;
 }
 
 /* search */
