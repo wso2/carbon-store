@@ -517,15 +517,9 @@ a.ast-name:hover {
 }
 
 .bookmark-link{
-    display: block;
     color: #fff;
-    margin-top: 10px;
-    z-index: 1000;
-    width: 151px;
-    right: 31px;
-    /* top: -8px; */
-    margin-top: -3px;
-    height: auto;
+    position: relative;
+    line-height: 30px;
 }
 .bookmark-link span{
     padding-right:4px;
@@ -535,6 +529,18 @@ a.ast-name:hover {
 }
 .bookmark-link i{
     line-height:30px;
+}
+.fw.store-bookmarked,.fw.store-bookmark{
+    font-size: 20px;
+}
+.ast-content a.btn{
+    padding: 0 5px 0 0;
+}
+.store-bookmarked{
+    color: #ff8100;
+}
+.store-bookmark{
+    color: #cccccc;
 }
 .register {
     width: auto;
@@ -665,7 +671,10 @@ a.login:focus {
     background: url('../img/store-stars.png') no-repeat bottom left;
     height: inherit;
 }
-
+.asset-type-separator{
+    border: solid 1px #ccc;
+    width: 100%;
+}
 /* sorting */
 .dropdown-asset-custom{
     position: relative;
@@ -807,11 +816,10 @@ a.ast-type-item:hover {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
 }
 .title {
-    border-bottom: 3px solid #237bd5;
+    border-bottom: 2px solid #237bd5;
     float: left;
     font-size: 22px;
-    height: 59px;
-    padding: 27px 0px 0;
+    padding: 10px 0 0;
     width: auto;
     margin-bottom: 15px;
 }
@@ -1327,6 +1335,7 @@ h2.app-title {
 }
 .ctrl-wr-asset .ast-content {
     background-color: #fff;
+    padding-bottom:10px;
 }
 
 .ctrl-wr-asset.selected {
