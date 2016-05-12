@@ -267,7 +267,7 @@ var  initAssetCreationChecker = function(){
                 setTimeout(initAssetCreationChecker,3000);
             }else{
                 $('#assetLoader').parent().parent().remove();
-                messages.alertInfo('The new asset was indexed successfully.Click <a href="'+url+'">here</a> to access the new asset.');
+                messages.alertInfo('The new asset was indexed successfully. Click <a href="'+url+'">here</a> to access the new asset.');
                 $.removeCookie(cookieName);
             }
         },
