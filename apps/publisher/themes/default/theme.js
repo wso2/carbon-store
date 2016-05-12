@@ -233,7 +233,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var isUpdatable = true;
 
                 var mode = 'create';
-                if(options && options.hash && options.hash.mode && options.hash.mode == "edit" || options == "edit"){
+                if(options && options.hash && options.hash.mode && options.hash.mode == "edit"){
                     mode = "edit";
                 }
 
@@ -344,6 +344,12 @@ var engine = caramel.engine('handlebars', (function() {
                         out = elementPrefix + renderOptions(field.value, field.values[0].value, field, mode) + elementSuffix;
                         break;
                     case 'option-text':
+                        var options = {
+                            'hash': {
+                                'mode': mode
+                            }
+                        };
+                        mode = options;
                         var optionValue = value.substr(0,value.indexOf(':'));
                         var textValue = value.substr(value.indexOf(':')+1);
                         var values = value.split(":");
