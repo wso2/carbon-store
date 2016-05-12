@@ -120,7 +120,7 @@ var isTokenizedTerm = function(term){
     return term.indexOf(':')>-1;
 };
 var isEmpty = function(input) {
-    return (input.length === 0); 
+    return (input.length === 0);
 };
 /**
  * Takes the users input and builds a query.This method
@@ -262,7 +262,7 @@ var  initAssetCreationChecker = function(){
         success:function(data){
             if(data.list.length == 0 ){
                 if($('#assetLoader').length < 1) {
-                    messages.alertInfoLoader('<i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <strong>Asset added successfully</strong>.Please wait while the asset is been indexed...  <i class="fa fa-close" onclick="clearWaiting()"></i>');
+                    messages.alertInfoLoader('<i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <strong>Asset added successfully</strong>. Please wait while the asset is being indexed  <i class="fa fa-close" onclick="clearWaiting()"></i>');
                 }
                 setTimeout(initAssetCreationChecker,3000);
             }else{
