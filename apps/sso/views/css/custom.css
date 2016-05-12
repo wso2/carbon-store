@@ -424,6 +424,9 @@ label.error{
 .no-border-top{
     border-top:none;
 }
+.sup-required{
+    color: red;
+}
 .alert-success{
     color:#fff;
     background-color: #339900;
