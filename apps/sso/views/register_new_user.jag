@@ -117,7 +117,7 @@ var themeModule = require('/modules/theme.js');
                                             var validationClass = "";
                                             var span = "";
                                             if(claims[claimIndex].displayTag == "Email"){
-                                                validationClass = "email";
+                                                validationClass = "emailValidate";
                                                 span = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
                                             }else{
                                                 span = "col-xs-12 col-sm-12 col-md-6 col-lg-6"
@@ -202,6 +202,9 @@ var themeModule = require('/modules/theme.js');
         jQuery.validator.addMethod("passwordLength", function (value, element) {
             return this.optional(element) || /^[\S]{5,30}$/.test(value);
         }, "Password must contain minimum 5 characters and maximum 30 characters");
+        jQuery.validator.addMethod("emailValidate", function (value, element) {
+            return this.optional(element) || /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/igm.test(value);
+        }, "Please enter a valid email address");
     });
 </script>
 </body>
