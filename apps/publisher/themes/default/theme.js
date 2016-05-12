@@ -347,7 +347,7 @@ var engine = caramel.engine('handlebars', (function() {
                         var optionValue = value.substr(0,value.indexOf(':'));
                         var textValue = value.substr(value.indexOf(':')+1);
                         var values = value.split(":");
-                        out = elementPrefix + renderOptionsForOptionsText(optionValue, field.values[0].value, field) + elementSuffix;
+                        out = elementPrefix + renderOptionsForOptionsText(optionValue, field.values[0].value, field, mode) + elementSuffix;
                         out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(textValue) + '" ' + renderFieldMetaData(field, field.name.tableQualifiedName+'_text', mode) + ' />' + elementSuffix;
                         break;
                     case 'text':
