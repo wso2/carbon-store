@@ -37,9 +37,11 @@ $(function() {
             contentType: 'application/json',
             success: function() {
                 tagsAPI.enableSelect2();
+                messages.alertInfo('The tag ' + tags + ' was removed from the asset');
             },
             error: function() {
                 tagsAPI.enableSelect2();
+                messages.alertError('The tag ' + tags + ' was not removed from the asset');
             }
         });
     };
@@ -54,9 +56,11 @@ $(function() {
             contentType: 'application/json',
             success: function() {
                 tagsAPI.enableSelect2();
+                messages.alertInfo('The tag  ' + tags + ' was added to the asset');
             },
             error: function() {
                 tagsAPI.enableSelect2();
+                messages.alertError('The tag ' +  tags + ' was not applied to the asset');
             }
         });
     };
