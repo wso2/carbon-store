@@ -287,9 +287,9 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 return output;
             };
-            var renderOptions = function(value, values, field,count) {
+            var renderOptions = function(value, values, field, mode, count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
-                var out = '<select ' + renderFieldMetaData(field,id) + '>';
+                var out = '<select ' + renderFieldMetaData(field,id,mode) + '>';
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
@@ -304,9 +304,9 @@ var engine = caramel.engine('handlebars', (function() {
             };
 
 
-            var renderOptionsForOptionsText = function(value, values, field) {
+            var renderOptionsForOptionsText = function(value, values, field,mode) {
                 var id=field.name.tableQualifiedName+'_option';
-                var out = '<select ' + renderFieldMetaData(field,id) + '>';
+                var out = '<select ' + renderFieldMetaData(field,id,mode) + '>';
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
@@ -341,13 +341,19 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 switch (field.type) {
                     case 'options':
-                        out = elementPrefix + renderOptions(field.value, field.values[0].value, field) + elementSuffix;
+                        out = elementPrefix + renderOptions(field.value, field.values[0].value, field, mode) + elementSuffix;
                         break;
                     case 'option-text':
+                        var options = {
+                            'hash': {
+                                'mode': mode
+                            }
+                        };
+                        mode = options;
                         var optionValue = value.substr(0,value.indexOf(':'));
                         var textValue = value.substr(value.indexOf(':')+1);
                         var values = value.split(":");
-                        out = elementPrefix + renderOptionsForOptionsText(optionValue, field.values[0].value, field) + elementSuffix;
+                        out = elementPrefix + renderOptionsForOptionsText(optionValue, field.values[0].value, field, mode) + elementSuffix;
                         out += elementPrefix + '<input type="text" value="' + Handlebars.Utils.escapeExpression(textValue) + '" ' + renderFieldMetaData(field, field.name.tableQualifiedName+'_text', mode) + ' />' + elementSuffix;
                         break;
                     case 'text':
@@ -537,9 +543,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
                 var username = options.hash.username;
-                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var isAuthorized =options.hash.auth ? options.hash.auth : false;
                 var missingParams = (!key) || (!type) || (!tenantId) || (!username);
-                //If the user is forcing the view to render 
+                //If the user is forcing the view to render
                 if(isAuthorized){
                     return options.fn(context);
                 }
@@ -560,9 +566,9 @@ var engine = caramel.engine('handlebars', (function() {
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
                 var username = options.hash.username;
-                var isAuthorized =options.hash.auth ? options.hash.auth : false; 
+                var isAuthorized =options.hash.auth ? options.hash.auth : false;
                 var missingParams = (!key) || (!tenantId) || (!username);
-                //If the user is forcing the view to render 
+                //If the user is forcing the view to render
                 if(isAuthorized){
                     return options.fn(context);
                 }
