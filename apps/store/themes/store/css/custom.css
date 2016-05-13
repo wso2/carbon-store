@@ -144,7 +144,9 @@ body {
     font-family: 'Open Sans';
     padding-bottom: 40px;
 }
-
+html, body {
+    min-width: 530px;
+}
 footer {
     position: absolute;
     bottom: 0;
@@ -542,6 +544,7 @@ a.ast-name:hover {
     color: #fff;
     position: relative;
     line-height: 30px;
+    margin-right:10px;
 }
 .bookmark-link span{
     padding-right:4px;
