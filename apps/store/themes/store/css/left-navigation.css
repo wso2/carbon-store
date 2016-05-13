@@ -532,7 +532,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 .ctrl-wr-asset  {
     position: relative;
-    width: 13.2%;
+    width: 15.2%;
     float: left;
     margin: 0.5%;
     background: #fbfbfb;
@@ -653,9 +653,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 /* Large Devices, Wide Screens */
 @media only screen and (max-width: 1200px) {
 
-    .left-col {
-        margin: 55px;
-    }
+
     .ctrl-wr-asset  {
         position: relative;
         width:19%;
@@ -803,4 +801,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     .more-list {
         margin-right: -20px !important;
     }
+}
+.navigation-container.container-fluid{
+    padding-right:0;
 }

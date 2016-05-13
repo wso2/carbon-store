@@ -14,50 +14,51 @@
    ~ limitations under the License.
    -->
 <!-- secondary header - app bar -->
+<div class="wr-asset-type-switcher">
+    <div class="ctrl-asset-type-switcher">
+        <div class="left-menu">
+            <nav class="navigation">
+                <a href='{{tenantedUrl ""}}/pages/top-assets' class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}">
+                    <span class="icon"><i class="fw fw-store"></i></span> <span class="left-menu-item">ALL</span>
+                </a>
+                {{#with navigationBar}}
+                    {{#each types}}
+                        <a href='{{tenantedUrl ""}}{{this.listingUrl}}' class="{{ui.iconColor}} {{this.style}}">
+                            <span class="icon"><i class="{{ui.icon}}"></i></span> <span class="left-menu-item">{{pluralLabel}}</span>
+                        </a>
+                    {{/each}}
+                {{/with}}
+            </nav>
+            {{#if tags}}
+                <div class="tags-wrapper">
+                    <div class="tag-title"> Tags </div>
+                    <div class="tag-content">
+                        {{#each tags}}
+                            {{#if this.selected}}
+                                {{#if ../../assetCategoryDetails.hasCategories}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
+                                {{else}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
+                                {{/if}}
+                            {{else}}
+                                {{#if ../../assetCategoryDetails.hasCategories}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span>{{this.value}}</span></a>
+                                {{else}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span>{{this.value}}</span></a>
+                                {{/if}}
+                            {{/if}}
+                        {{/each}}
+                    </div>
+                </div>
+            {{/if}}
+        </div>
+    </div>
+</div>
+<div class="clear-both"></div>
 <div id="nav" class="es-row row wr-app-bar">
     <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
-        <div class="wr-asset-type-switcher">
-            <div class="ctrl-asset-type-switcher">
-                <div class="left-menu">
-                    <nav class="navigation">
-                        <a href='{{tenantedUrl ""}}/pages/top-assets' class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}">
-                            <span class="icon"><i class="fw fw-store"></i></span> <span class="left-menu-item">ALL</span>
-                        </a>
-                        {{#with navigationBar}}
-                            {{#each types}}
-                                <a href='{{tenantedUrl ""}}{{this.listingUrl}}' class="{{ui.iconColor}} {{this.style}}">
-                                    <span class="icon"><i class="{{ui.icon}}"></i></span> <span class="left-menu-item">{{pluralLabel}}</span>
-                                </a>
-                            {{/each}}
-                        {{/with}}
-                    </nav>
-                    {{#if tags}}
-                    <div class="tags-wrapper">
-                        <div class="tag-title"> Tags </div>
-                        <div class="tag-content">
-                            {{#each tags}}
-                                    {{#if this.selected}}
-                                        {{#if ../../assetCategoryDetails.hasCategories}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
-                                        {{else}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
-                                        {{/if}}
-                                    {{else}}
-                                        {{#if ../../assetCategoryDetails.hasCategories}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span>{{this.value}}</span></a>
-                                        {{else}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span>{{this.value}}</span></a>
-                                        {{/if}}
-                                    {{/if}}
-                            {{/each}}
-                        </div>
-                    </div>
-                    {{/if}}
-                </div>
-            </div>
-        </div>
         <div id="the-basics" class="es-input-group input-group input-wrap">
-            <div class="search-wrapper" style="float:left;width:80%;position:relative;left:0px;margin-left:-10px;">
+            <div class="search-wrapper">
                 {{#if rxt.pluralLabel}}
                     <input  id="search"  type="text" class="typeahead es-form-control form-control" placeholder="Search in {{rxt.pluralLabel}}" value="{{searchQuery}}">
                 {{else}}
