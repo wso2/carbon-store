@@ -8,10 +8,10 @@
             <div class="col-lg-10 padding-left-double">
                 <h1 class="asset-name">{{name}}</h1>
                 {{#if version}}
-                    <h5>{{version}}</h5>
+                    <h5 class="ast-ver ast-details">Version : {{version}}</h5>
                 {{/if}}
                 {{#if lifecycleState}}
-                    <h5>{{lifecycle}} : {{lifecycleState}}</h5>
+                    <h5 class="ast-lc ast-details">{{lifecycle}} : {{lifecycleState}}</h5>
                 {{/if}}
                 {{#if createdDate}}
                 <div class="well-description padding-bottom-lg">{{createdDate}}</div>
