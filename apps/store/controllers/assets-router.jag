@@ -21,6 +21,7 @@
 var log = new Log('assets_router');
 var matcher = new URIMatcher(request.getRequestURI());
 var rxt = require('rxt');
+var responseProcessor = require('utils').response;
 var metrics = require('carbon-metrics').metrics;
 var constants = rxt.constants;
 var apiEndpoint = constants.ASSET_API_URL_PATTERN;// '/{context}/assets/{type}/api/{+suffix}';
@@ -40,8 +41,10 @@ var mapper = function (path) {
 
 var handleApiEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
-    if(!validateType(type)){
-        response.sendError(404, 'Unabled to locate a active endpoint for the type: ' + type);
+    var tenantId = getTenantId(request, session);
+    if(!validateType(type, tenantId)){
+        response = responseProcessor.buildErrorResponse(response, 404,
+                'Unabled to locate a active endpoint for the type: ' + type);
         return;
     }
     var page = getPage(uriParams.suffix);
@@ -56,8 +59,6 @@ var handleApiEndpoint = function (request, session, uriParams) {
     var user = require('store').server.current(session);
     var username = user? user.username:null;
     var carbon = require('carbon');
-    //TODO: Tenant Id needs to be properly resolved or this will break when we do /t/
-    var tenantId = user ? user.tenantId : carbon.server.superTenant.tenantId;
     var isAuthorized = rxt.permissions.hasAssetAPIPermission(type,page,tenantId,username);
     if(!isAuthorized){
         log.error('user '+username+' does not have permission to access the api '+page);
@@ -69,7 +70,8 @@ var handleApiEndpoint = function (request, session, uriParams) {
         include(endpoint);
     }
     else {
-        response.sendError(404, 'Unabled to locate an api endpoint for the type: ' + type);
+        response = responseProcessor.buildErrorResponse(response, 404,
+                'Unable to locate an api endpoint for the type: ' + type);
     }
 };
 
@@ -139,9 +141,20 @@ var validateType = function (type, tenantId){
  * @return {[type]}         Tenant id for the request
  */
 var getTenantId = function(request, session) {
+    var server = require('carbon').server;
     var tenantAPI = require('/modules/tenant-api.js').api;
-    var tenantDetails = tenantAPI.createTenantDetails(request, session);
-    var tenantId = tenantDetails.tenantId;
+    var tenantId;
+    var domain = request.getHeader("domain");
+    if(!domain){
+        var tenantDetails = tenantAPI.createTenantDetails(request, session);
+        tenantId = tenantDetails.tenantId;
+    }
+    else {
+        var options = {
+            'domain': domain
+        };
+        tenantId = server.tenantId(options);
+    }
     return tenantId;
 };
 
