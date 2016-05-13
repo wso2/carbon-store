@@ -879,6 +879,8 @@ a.ast-type-item:hover {
     float: left;
     height:44px;
     width: 54px;
+    left: 0;
+    position: absolute;
 }
 .wr-asset-type-switcher span.btn-asset {
     width: 54px;
