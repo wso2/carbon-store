@@ -184,7 +184,7 @@ h1.asset-name {
     font-size: 27px;
     margin-bottom: 0px;
     padding-bottom: 0px;
-    font-weight: 400;
+    font-weight: 300;
     font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
     border-bottom: 0px solid #f0f0f0;
 }
@@ -454,11 +454,16 @@ h3.ast-name:after {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
 
 }
+h5.ast-details {
+    margin-bottom: 12px;
+}
 .ast-ver {
 	font-weight:300;
-	font-size:13px;
+    margin-top: 1em;
 }
-
+.ast-lc {
+	font-weight:300;
+}
 .ast-auth {
 	font-weight:300;
 	font-size:13px;
@@ -860,7 +865,8 @@ a.cu-ico-button-stats {
     margin-top:0;
 }
 .well-description{
-    padding-top:20px;
+    padding-top:0px;
+    font-weight: 300;
 }
 h2 i.fa-stack-1x{
     font-size: 29px;
@@ -876,13 +882,14 @@ h2 span.fa-stack{
     width: 30px;
 }
 .tag-element{
+    margin-bottom: 3px;
     background: #cdcdcd;
     padding: 4px 8px;
     display: inline-block;
 }
 #tag-ui-container-view{
-    padding-top:10px;
-    padding-bottom:10px;
+    padding-top:0px;
+    padding-bottom:0px;
 }
 .padding-bottom-xs{
     padding-bottom:5px;
@@ -891,7 +898,7 @@ h2 span.fa-stack{
 }.padding-bottom-md{
     padding-bottom:15px;
 }.padding-bottom-lg{
-    padding-bottom:20px;
+    padding-bottom:15px;
 }
 
 .padding-left-xs{
