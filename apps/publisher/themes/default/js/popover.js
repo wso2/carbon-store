@@ -70,4 +70,5 @@ var currentPageFunction = (function(){
 $(function(){
     popoverFunction.init();
     currentPageFunction.init();
+    $('[data-toggle="tooltip"]').tooltip();
 });
