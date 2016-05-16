@@ -204,16 +204,16 @@ var pageDecorators = {};
             sortObj.sort = "-";
             sortObj.active = false;
             sortObj.sortNext = "+";
-            sortObj.sortIcon = "fa-arrow-up";
+            sortObj.sortIcon = "sorting_asc";
             if(sortable[i].field == sortBy){
                 if(sort == "+"){
-                    sortingListSelected.helpIcon = "fa-arrow-up";
+                    sortingListSelected.helpIcon = "sorting_asc";
                     sortObj.sortNext = "-";
-                    sortObj.sortIcon = "fa-arrow-up";
+                    sortObj.sortIcon = "sorting_asc";
                 }else if(sort == "-"){
-                    sortingListSelected.helpIcon = "fa-arrow-down";
+                    sortingListSelected.helpIcon = "sorting_desc";
                     sortObj.sortNext = "+";
-                    sortObj.sortIcon = "fa-arrow-down";
+                    sortObj.sortIcon = "sorting_desc";
                 }
                 sortingListSelected.help = sortable[i].label;
                 sortObj.active = true;
