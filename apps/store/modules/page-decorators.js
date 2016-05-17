@@ -476,13 +476,13 @@ var pageDecorators = {};
         var sortBy = "";
         var sort = "";
         var sortHelp = "";
-        var sortHelpIcon = "fa-arrow-down";
+        var sortHelpIcon = "";
         var popularActive = false;
         var nameActive = false;
-        var nameIcon = "fa-arrow-down";
+        var nameIcon = "";
         var nameNextSort = "DES";
         var dateTimeActive = false;
-        var dateTimeIcon = "fa-arrow-down";
+        var dateTimeIcon = "";
         var dateTimeNextSort = "DES";
 
         var queryString = request.getQueryString();
@@ -506,29 +506,29 @@ var pageDecorators = {};
 
         if(sortBy == "overview_name" && sort == "DES"){
             sortHelp = 'Name';
-            sortHelpIcon = "fa-arrow-down";
+            sortHelpIcon = "sorting_desc";
             nameActive = true;
-            nameIcon = "fa-arrow-down";
+            nameIcon = "sorting_desc";
             nameNextSort = "ASC";
         }else if(sortBy == "overview_name" && sort == "ASC"){
             sortHelp = 'Name';
-            sortHelpIcon = "fa-arrow-up";
+            sortHelpIcon = "sorting_asc";
             nameActive = true;
-            nameIcon = "fa-arrow-up";
+            nameIcon = "sorting_asc";
         }else if(sortBy == "createdDate" && sort == "DES"){
             sortHelp = 'Date/Time Created';
-            sortHelpIcon = "fa-arrow-down";
+            sortHelpIcon = "sorting_desc";
             dateTimeActive = true;
-            dateTimeIcon = "fa-arrow-down";
+            dateTimeIcon = "sorting_desc";
             dateTimeNextSort = "ASC";
         }else if(sortBy == "createdDate" && sort == "ASC"){
             sortHelp = 'Date/Time Created';
-            sortHelpIcon = "fa-arrow-up";
+            sortHelpIcon = "sorting_asc";
             dateTimeActive = true;
-            dateTimeIcon = "fa-arrow-up";
+            dateTimeIcon = "sorting_asc";
         }else if(sort == "popular"){
             sortHelp = 'Popular';
-            sortHelpIcon = "fa-arrow-down";
+            sortHelpIcon = "sorting_desc";
             popularActive = true;
         }
 

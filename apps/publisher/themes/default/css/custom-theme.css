@@ -584,3 +584,54 @@ a.ctrl-filter-category:hover {
 .message-danger h4 {
     color: #d9534f;
 }
+
+
+/* ========================================================================
+ * Sorting template styling
+ * ======================================================================== */
+
+ul.sort-list li a:before {
+    margin-right: 5px;
+    content: "\e673";
+    font-family: "font-wso2", serif;
+}
+
+ul.sort-list li a.sorting_asc:before {
+    content: "\e64b";
+    color: aliceblue;
+}
+
+ul.sort-list li a.sorting_asc:hover::before{
+    content: "\e64b";
+    color: black;
+}
+
+
+ul.sort-list li a.sorting_desc:before {
+    content: "\e663";
+    color: aliceblue;
+}
+
+
+ul.sort-list li a.sorting_desc:hover::before {
+    content: "\e663";
+    color: black;
+}
+
+
+ul.sort-list li a.active{
+    color: aliceblue;
+}
+
+ul.sort-list li a.active:hover{
+    color: black;
+}
+
+.dropdown-header {
+    display: block;
+    padding: 3px 20px;
+    font-size: 12px;
+    line-height: 1.42857;
+    color: currentColor;
+    white-space: nowrap;
+}
