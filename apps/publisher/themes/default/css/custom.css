@@ -198,8 +198,20 @@ a:hover, a:focus{
 .wr-global-header a:hover, .wr-global-header a:focus, .breadcrumb-wrapper a:hover, .breadcrumb-wrapper a:focus{
     color:#efefef;
 }
+h2.advanced-search-field-title {
+    margin:-20px 0 20px 0;
+    border-bottom:solid 1px #f0f0f0;
+    padding-bottom:10px;
+}
+h2.advanced-search-field-title a.collapsing-h2 {
+    color: #222222;
+    font-size: 22px;
+    font-weight: 200;
+    font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    cursor:pointer;
+}
 h2.field-title {
-    margin:0 0 20px 0;
+    margin:0px 0 20px 0;
     border-bottom:solid 1px #f0f0f0;
     padding-bottom:10px;
 }
