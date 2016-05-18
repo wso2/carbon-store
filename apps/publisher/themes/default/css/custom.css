@@ -689,7 +689,7 @@ a.cu-ico-button-stats {
 /* filter */
 .wr-filters {
     /*padding:18px 30px 15px 15px;*/
-    padding-top:50px;
+    padding-top:20px;
 }
 
 .wr-filters .dropdown-menu .filter-item{
@@ -1358,4 +1358,7 @@ sup.required-field{
 
 .breadcrumb-link {
     color:white;
+}
+.thumbnail-width-fixer{
+    max-width: 200px;
 }
