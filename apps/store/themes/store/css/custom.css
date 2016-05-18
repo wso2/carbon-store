@@ -1456,8 +1456,8 @@ span.advanced-search-icons{
         float: right;
     }
     .ro-text {
-        visibility: hidden;
-        display: none;
+    /*    visibility: hidden;
+        display: none;*/
     }
     #advanced-search{
         width: 100%;
