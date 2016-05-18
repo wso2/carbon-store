@@ -63,7 +63,7 @@ require('/modules/store.js').exec(function(ctx) {
     PAGING.paginationLimit = (paginationLimit || constants.DEFAULT_ASSET_PAGIN.paginationLimit);
 
     //search history dropdown updates
-    if (count && q) {
+    if (q) {
         var searchQuery = decodeURIComponent(utilsRequest.formatSearchQuery(q));
         userApi.updateSearchHistory(ctx.session, searchQuery, type);
     }
