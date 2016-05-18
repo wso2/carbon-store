@@ -6,7 +6,6 @@
     </div>
     <div class="col-xs-12 col-sm-7 col-md-7 col-lg-7">
 
-        {{#hasAssetPermission . key="ASSET_CREATE" type=assets.type username=cuser.username tenantId=cuser.tenantId}}
         <div id='lifecycle-checklist-container'>
             <div id='lifecycle-checklist'>
             </div>
@@ -29,7 +28,6 @@
             <div id='lifecycle-actions-overlay'></div>
             <div class="clearfix"></div>
         </div>
-        {{/hasAssetPermission}}
 
         <div id='lifecycle-history-container'>
             <h3>History</h3>
