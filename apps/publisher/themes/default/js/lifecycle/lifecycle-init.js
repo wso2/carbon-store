@@ -243,6 +243,10 @@ $(function() {
         $(id(container)).show();
     };
 
+    var renderServerWarning = function(message){
+        renderPartial(constants.CONTAINER_WARN_MESSAGE,constants.CONTAINER_LC_GLOBAL_NOTIFICATIONS_AREA,message);
+    };
+
     var renderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         var impl = LifecycleAPI.lifecycle();
@@ -419,6 +423,7 @@ $(function() {
                 type: constants.NOTIFICATION_WARN,
                 global: false
             });
+            renderServerWarning(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE));
             hideCommentInputArea();
             renderChecklistItems();
             return;
@@ -426,8 +431,9 @@ $(function() {
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
             LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
                 type: constants.NOTIFICATION_WARN,
-                global: true
+                global: false
             });
+            renderServerWarning(config(constants.MSG_WARN_CANNOT_CHANGE_STATE));
             renderChecklistItems();
             return;
         }
