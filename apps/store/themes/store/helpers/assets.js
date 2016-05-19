@@ -20,7 +20,7 @@ var resources = function (block, page, area, meta) {
     return {
         template: 'assets.hbs',
         js: ['asset-core.js', 'asset-helpers.js', 'assets.js'],
-        code: ['store.asset.hbs']
+        code: ['store.asset.hbs', 'search-history.hbs']
     };
 };
 
