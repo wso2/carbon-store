@@ -63,9 +63,10 @@ var mapper = function(path) {
     };
 }
 var handleApiEndpoint = function(request, session, uriParams) {
-    var options = ref.getQueryOptions(request.getQueryString());
-    var type = options.type;
+    //var options = ref.getQueryOptions(request.getQueryString());
+    var type = request.getParameter('type');//options.type;
     var page = getPage(uriParams.suffix);
+
     try {
         var endPoints = asset.getAssetApiEndpoints(session, type);
         var endpoint;
