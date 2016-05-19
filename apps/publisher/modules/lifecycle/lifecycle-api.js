@@ -273,7 +273,7 @@ var error = '';
      * @param lcCurrentStatesCheckitems
      * @return An object of LCActions with approved:true
      */
-    var setAvailableApprovedActions = function (approvedActions, lcCurrentStatesCheckitems) {
+    var setAvailableApprovedActions = function (approvedActions, lcCurrentStatesCheckitems,asset,session) {
         try {
             var replaceApprovedActions = new Object();
 
@@ -291,6 +291,11 @@ var error = '';
             }
         }
 
+        //Check if a user can edit the asset since, they will not be able to perform the lifecycle actions
+        //if they do not have this permission
+        var permissionAPI = require('rxt').permissions;
+        var isAuthorized =   permissionAPI.hasActionPermissionforPath(asset.path, 'write', session);        
+        approvedActions = isAuthorized ? approvedActions: [];
         return approvedActions;
     };
     /**
@@ -416,7 +421,7 @@ var error = '';
             state.isDeletable = isDeletable(lcState, state.deletableStates, lcName);
         //}
         //Update the state of the check items
-        state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates);
+        state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates,asset,session);
         state.isLCActionsPermitted = isLCActionsPermitted(state.approvedActions); //(state.approvedActions.length > 0 ) ? true : false;//isLCActionsPermitted(asset, options, req, res, session);
         state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
         return state;
