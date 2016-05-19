@@ -33,5 +33,6 @@ LifecycleAPI.configs({
 	"msgStateChangeError":"State could not be updated. Please contact your administrator.",
 	"msgChecklistUpdateSuccess":"Checklist updated successfully",
 	"msgChecklistUpdateError":"Checklist was not updated",
-    "deleteActionArea":"Delete"
+    "deleteActionArea":"Delete",
+    "serverWarningMessage":"lifecycle-server-warning"
 });

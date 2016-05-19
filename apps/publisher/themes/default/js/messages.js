@@ -87,8 +87,7 @@ messages.alertInfoLoader = function(value){
                 "font-weight":300
             },
             superblue: {
-                "color": "white",
-                "background-color": "#5CB85C"
+                "color": "white"
             }
         }
     });
@@ -103,16 +102,19 @@ messages.alertInfoLoader = function(value){
 };
 messages.alertWarn = function(value){
     $.notify.addStyle('happyyellow', {
-        html: "<div><span data-notify-html/></div>",
+        html: "<div><i class='icon fw fw-info'></i> <strong>Warning! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "Gold",
-                "padding": "10px"
+                "background-color": "#F0AD4E",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
             },
             superblue: {
                 "color": "white",
-                "background-color": "yellow"
+                "background-color": "#F0AD4E"
             }
         }
     });

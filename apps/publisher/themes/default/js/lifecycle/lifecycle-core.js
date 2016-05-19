@@ -50,6 +50,7 @@ var LifecycleUtils = {};
     constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA = 'lifecycleTransitionInputsFieldsArea';
     constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA = 'lifecycleTransitionInputsActionsArea';
     constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM = 'lifecycleTRansitionInputsFieldsForm';
+    constants.CONTAINER_WARN_MESSAGE = 'serverWarningMessage';
     constants.TEMPLATE_NOTIFICATION_ERROR = 'lifecycleTemplateNotficationError';
     constants.TEMPLATE_NOTIFICATION_INFO = 'lifecycleTemplateNotificationInfo';
     constants.TEMPLATE_NOTIFICATION_WARN = 'lifecycleTemplateNotificationWarn';
