@@ -595,38 +595,28 @@ ul.sort-list li a:before {
     content: "\e673";
     font-family: "font-wso2", serif;
 }
-
 ul.sort-list li a.sorting_asc:before {
     content: "\e64b";
     color: aliceblue;
 }
-
 ul.sort-list li a.sorting_asc:hover::before{
     content: "\e64b";
     color: black;
 }
-
-
 ul.sort-list li a.sorting_desc:before {
     content: "\e663";
     color: aliceblue;
 }
-
-
 ul.sort-list li a.sorting_desc:hover::before {
     content: "\e663";
     color: black;
 }
-
-
 ul.sort-list li a.active{
     color: aliceblue;
 }
-
 ul.sort-list li a.active:hover{
     color: black;
 }
-
 .dropdown-header {
     display: block;
     padding: 3px 20px;
@@ -634,4 +624,14 @@ ul.sort-list li a.active:hover{
     line-height: 1.42857;
     color: currentColor;
     white-space: nowrap;
+}
+.btn-default > .margin-top-align , .margin-bottom-align{
+    font-size: 12pt;
+    color: gray;
+}
+.margin-top-align{
+    margin-top: -12px;
+}
+.margin-bottom-align{
+    margin-bottom: -10px;
 }
