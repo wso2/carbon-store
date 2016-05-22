@@ -100,6 +100,7 @@
                         var modifiedUsername = user.removeTenantDomainFromUsername(username);
                         var hasPublisherLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
                                 modifiedUsername);
+                        sso.client.login(sesssionObj.sessionIndex,session);
 
                         if (hasPublisherLoginPermission) {
                             user.emitLogin(username)
@@ -131,10 +132,9 @@
 
         delete application.get('sso_sessions')[index];
 
-
-        log.debug('portal Session Id :::' + jSessionId);
-
-        session.invalidate();
+        sso.client.logout(index);
+        //log.debug('portal Session Id :::' + jSessionId);
+        //session.invalidate();
     }
 }());
 %>

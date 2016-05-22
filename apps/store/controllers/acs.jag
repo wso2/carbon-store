@@ -97,6 +97,8 @@
                         var modifiedUsername = user.removeTenantDomainFromUsername(username);
                         var hasStoreLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
                                 modifiedUsername);
+                        
+                        sso.client.login(sesssionObj.sessionIndex,session);
 
                         if (hasStoreLoginPermission) {
                             user.emitLogin(username)
@@ -127,11 +129,10 @@
         var jSessionId = application.get('sso_sessions')[index];
 
         delete application.get('sso_sessions')[index];
+        sso.client.logout(index);
+        //log.debug('store Session Id :::' + jSessionId);
 
-
-        log.debug('store Session Id :::' + jSessionId);
-
-        session.invalidate();
+        //session.invalidate();
     }
 }());
 %>
