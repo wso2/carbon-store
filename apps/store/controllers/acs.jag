@@ -98,7 +98,7 @@
                         var hasStoreLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
                                 modifiedUsername);
                         
-                        sso.client.login(sesssionObj.sessionIndex,session);
+                        sso.client.login(sessionObj.sessionIndex,session);
 
                         if (hasStoreLoginPermission) {
                             user.emitLogin(username)
