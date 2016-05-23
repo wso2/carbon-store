@@ -6,7 +6,7 @@
     font-size: 14px;
     list-style: outside none none;
     text-align: left;
-    background: #000;
+    background: #444444;
     color:#fff;
 }
 .wr-filters .dropdown-menu a {
@@ -437,7 +437,7 @@ a.ctrl-filter-category:hover {
     float: left;
     min-width: 160px;
     padding: 5px 0;
-    margin: 2px 10px 0;
+    margin: 2px 6px 0;
     font-size: 14px;
     text-align: left;
     list-style: none;
