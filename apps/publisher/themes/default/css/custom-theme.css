@@ -431,13 +431,14 @@ a.ctrl-filter-category:hover {
 .dropdown-menu {
     position: absolute;
     top: 32px;
-    left: 0;
+    right: 0;
+    left: auto;
     z-index: 1000;
     display: none;
     float: left;
     min-width: 160px;
     padding: 5px 0;
-    margin: 2px 6px 0;
+    margin: 2px 0px 0;
     font-size: 14px;
     text-align: left;
     list-style: none;
