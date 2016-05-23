@@ -54,8 +54,8 @@ var ReviewUtils = {};
             //Only populate review details if there is a logged in
             //user
             if (user) {
-                review.iLike = socialSvc.isUserliked(usernameOnReview, review.object.id, 1);;
-                review.iDislike = socialSvc.isUserliked(usernameOnReview, review.object.id, 0);;
+                review.iLike = socialSvc.isUserliked(formattedUsername, review.object.id, 1);;
+                review.iDislike = socialSvc.isUserliked(formattedUsername, review.object.id, 0);;
                 review.isMyComment = (usernameOnReview === formatUsername(user)) ? true : false;
             }
         }
