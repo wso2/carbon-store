@@ -205,13 +205,13 @@ var pageDecorators = {};
             sortObj.active = false;
             sortObj.sortNext = "+";
             sortObj.sortIcon = "sorting_asc";
-            if(sortable[i].field == sortBy){
-                if(sort == "+"){
-                    sortingListSelected.helpIcon = "sorting_asc";
+            if(sortable[i].field == sortBy) {
+                if(sort == "+") {
+                    sortingListSelected.helpIcon = "fw-sort-up margin-bottom-align";
                     sortObj.sortNext = "-";
                     sortObj.sortIcon = "sorting_asc";
-                }else if(sort == "-"){
-                    sortingListSelected.helpIcon = "sorting_desc";
+                } else if(sort == "-") {
+                    sortingListSelected.helpIcon = "fw-sort-down margin-top-align";
                     sortObj.sortNext = "+";
                     sortObj.sortIcon = "sorting_desc";
                 }

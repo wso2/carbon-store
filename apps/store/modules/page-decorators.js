@@ -498,37 +498,36 @@ var pageDecorators = {};
                     }
                 }
             }
-        }else{
+        } else {
             sortBy = "createdDate";
             sort = "DES";
             sortHelp = 'Date/Time Created';
         }
-
-        if(sortBy == "overview_name" && sort == "DES"){
+        if(sortBy == "overview_name" && sort == "DES") {
             sortHelp = 'Name';
-            sortHelpIcon = "sorting_desc";
+            sortHelpIcon = "fw-sort-down margin-top-align";
             nameActive = true;
             nameIcon = "sorting_desc";
             nameNextSort = "ASC";
-        }else if(sortBy == "overview_name" && sort == "ASC"){
+        } else if(sortBy == "overview_name" && sort == "ASC") {
             sortHelp = 'Name';
-            sortHelpIcon = "sorting_asc";
+            sortHelpIcon = "fw-sort-up margin-bottom-align";
             nameActive = true;
             nameIcon = "sorting_asc";
-        }else if(sortBy == "createdDate" && sort == "DES"){
+        } else if(sortBy == "createdDate" && sort == "DES") {
             sortHelp = 'Date/Time Created';
-            sortHelpIcon = "sorting_desc";
+            sortHelpIcon = "fw-sort-down margin-top-align";
             dateTimeActive = true;
             dateTimeIcon = "sorting_desc";
             dateTimeNextSort = "ASC";
-        }else if(sortBy == "createdDate" && sort == "ASC"){
+        } else if(sortBy == "createdDate" && sort == "ASC") {
             sortHelp = 'Date/Time Created';
-            sortHelpIcon = "sorting_asc";
+            sortHelpIcon = "fw-sort-up margin-bottom-align";
             dateTimeActive = true;
             dateTimeIcon = "sorting_asc";
-        }else if(sort == "popular"){
+        } else if(sort == "popular") {
             sortHelp = 'Popular';
-            sortHelpIcon = "sorting_desc";
+            sortHelpIcon = "fw-sort-up margin-bottom-align";
             popularActive = true;
         }
 
