@@ -216,6 +216,14 @@ asset.configure = function() {
             permissions: {
                 configureRegistryPermissions: function(ctx) {
                 }
+            },
+            sorting: {
+                names: [
+                    {field: "overview_name", label: "Name"},
+                    {field: "overview_version", label: "Version"},
+                    {field: "overview_provider", label: "Provider"},
+                    {field: "createdDate", label: "Date/Time"}]
+
             }
         }
     };
