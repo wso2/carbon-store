@@ -116,10 +116,14 @@ var themeModule = require('/modules/theme.js');
                                             var formElementName = 'reg-' + claims[claimIndex].displayTag.toLowerCase().replace(' ', '-');
                                             var validationClass = "";
                                             var span = "";
-                                            if(claims[claimIndex].displayTag == "Email"){
+                                            if (claims[claimIndex].displayTag == "Email") {
                                                 validationClass = "emailValidate";
                                                 span = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
-                                            }else{
+                                            } else if (claims[claimIndex].displayTag == "First Name" ||
+                                                       claims[claimIndex].displayTag == "Last Name") {
+                                                validationClass = "firstAndLastNameValidate";
+                                                span = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
+                                            } else {
                                                 span = "col-xs-12 col-sm-12 col-md-6 col-lg-6"
                                             }
                                             %>
@@ -205,6 +209,9 @@ var themeModule = require('/modules/theme.js');
         jQuery.validator.addMethod("emailValidate", function (value, element) {
             return this.optional(element) || /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,5}$/igm.test(value);
         }, "Please enter a valid email address");
+        jQuery.validator.addMethod("firstAndLastNameValidate", function (value, element) {
+            return this.optional(element) || /^[^0-9]*$/.test(value);
+        },  "Only non numeric values are allowed");
     });
 </script>
 </body>
