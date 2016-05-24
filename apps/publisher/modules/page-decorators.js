@@ -168,12 +168,12 @@ var pageDecorators = {};
         }
     };
     pageDecorators.sorting = function (ctx, page, fields) {
+        if(page.meta.pageName !== 'list'){
+            return;
+        }
+        var names = ctx.rxtManager.getSortingNames(ctx.assetType);
         var queryString = request.getQueryString();
-        var sortable = fields || [
-            {field:"overview_name",label:"Name"},
-            {field:"overview_version",label:"Version"},
-            {field:"overview_provider",label:"Provider"},
-            {field:"createdDate",label:"Date/Time"}];
+        var sortable = fields || names;
         var sortingList = [];
         var sortingListSelected = {};
         var sortBy = "createdDate";
