@@ -119,9 +119,8 @@ var themeModule = require('/modules/theme.js');
                                             if (claims[claimIndex].displayTag == "Email") {
                                                 validationClass = "emailValidate";
                                                 span = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
-                                            }
-                                            else if (claims[claimIndex].displayTag == "First Name" ||
-                                                     claims[claimIndex].displayTag == "Last Name") {
+                                            } else if (claims[claimIndex].displayTag == "First Name" ||
+                                                       claims[claimIndex].displayTag == "Last Name") {
                                                 validationClass = "firstAndLastNameValidate";
                                                 span = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
                                             } else {
