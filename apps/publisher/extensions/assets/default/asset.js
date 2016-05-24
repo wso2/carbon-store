@@ -218,11 +218,11 @@ asset.configure = function() {
                 }
             },
             sorting: {
-                names: [
-                    {field: "overview_name", label: "Name"},
-                    {field: "overview_version", label: "Version"},
-                    {field: "overview_provider", label: "Provider"},
-                    {field: "createdDate", label: "Date/Time"}]
+                attributes: [
+                    {name: "overview_name", label: "Name"},
+                    {name: "overview_version", label: "Version"},
+                    {name: "overview_provider", label: "Provider"},
+                    {name: "createdDate", label: "Date/Time"}]
 
             }
         }

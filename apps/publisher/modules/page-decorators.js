@@ -171,9 +171,9 @@ var pageDecorators = {};
         if(page.meta.pageName !== 'list'){
             return;
         }
-        var names = ctx.rxtManager.getSortingNames(ctx.assetType);
+        var attributes = ctx.rxtManager.getSortingAttributes(ctx.assetType);
         var queryString = request.getQueryString();
-        var sortable = fields || names;
+        var sortable = fields || attributes;
         var sortingList = [];
         var sortingListSelected = {};
         var sortBy = "createdDate";
@@ -205,7 +205,7 @@ var pageDecorators = {};
             sortObj.active = false;
             sortObj.sortNext = "+";
             sortObj.sortIcon = "sorting_asc";
-            if(sortable[i].field == sortBy) {
+            if(sortable[i].name == sortBy) {
                 if(sort == "+") {
                     sortingListSelected.helpIcon = "fw-sort-up margin-bottom-align";
                     sortObj.sortNext = "-";

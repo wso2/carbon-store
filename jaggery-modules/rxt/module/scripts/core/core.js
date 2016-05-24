@@ -994,27 +994,27 @@ var core = {};
     /**
      * Returns an Object with a mapping of sortable field name and the corresponding label name.This mapping contains
      * the fields need to be displayed in the sort dropdown menu in the asset list page.
-     * If the field is not found then null value is returned
+     * If the field is not found then an empty array is returned
      * @example
      *     var value = rxtManager.getSortingNames('gadget');
      * @param  {String} type The RXT type
      * @return {Object}  The list of sortable fields with their associated label names, available for the give RXT type
      */
-    RxtManager.prototype.getSortingNames = function(type) {
+    RxtManager.prototype.getSortingAttributes = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type +
                 ' in order to return sortable field names');
             throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return sortable field names ';
         }
-        if ((rxtDefinition.meta) && (rxtDefinition.meta.sorting) && (rxtDefinition.meta.sorting.names)) {
-            return rxtDefinition.meta.sorting.names;
+        if ((rxtDefinition.meta) && (rxtDefinition.meta.sorting) && (rxtDefinition.meta.sorting.attributes)) {
+            return rxtDefinition.meta.sorting.attributes;
         }
         if (log.isDebugEnabled()) {
             log.debug('Unable to locate sortable field names for type: ' + type +
                 '.Check if a sortable field names property is defined in the rxt configuration.');
         }
-        return null;
+        return [];
     };
 
     var getFieldNameParts = function(fieldName) {
