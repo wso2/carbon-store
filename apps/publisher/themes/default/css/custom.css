@@ -1373,4 +1373,5 @@ sup.required-field{
 }
 .thumbnail-width-fixer{
     max-width: 200px;
+    margin-right: 10px;
 }
