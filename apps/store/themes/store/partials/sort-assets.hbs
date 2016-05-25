@@ -1,40 +1,36 @@
 <div class="es-col-lg-12 col-lg-12">
     <div class="ast-container ">
         <div class="container-fluid padding-none ">
-            <div class="title"><a class="asset-type-{{rxt.shortName}}" href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">{{rxt.pluralLabel}}</a></div>
+            <div class="title">
+                <a class="asset-type-{{rxt.shortName}}"
+                   href="{{tenantedUrl "/assets/"}}{{rxt.shortName}}/list?">{{rxt.pluralLabel}}</a></div>
             <!-- sorting start-->
             {{#if assets}}
-            <div class="sort-asset-container">
-                <div class="dataTables_toolbar pull-right">
-                    <ul class="nav nav-pills navbar-mid remove-margin" role="tablist">
-                        <li data-toggle="tooltip" title="sort result">
-                            <button class="btn btn-default" data-toggle="dropdown" aria-expanded="false">
-                                <i class="fw {{ sorting.sortHelpIcon }} fw-2x"></i>
-                                <span>Sort by : <strong>{{ sorting.sortHelp }} </strong></span>
-                            </button>
-                            <ul class="dropdown-menu arrow arrow-top-right dark sort-list add-margin-top-2x">
-                                <li class="dropdown-header">Sort by</li>
-                                <li><a
-                                        data-column="1"
-                                        class="{{#if sorting.nameActive}}active{{/if}} sort-name {{sorting.nameIcon}}"
-                                        href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sortBy=overview_name&sort={{sorting.nameNextSort}}'
-                                >
-                                    Name
-                                </a>
-                                </li>
-                                <li><a
-                                        data-column="1"
-                                        class="{{#if sorting.dateTimeActive}}active{{/if}} sort-time {{sorting.dateTimeIcon}}"
-                                        href='{{tenantedUrl ""}}/assets/{{rxt.shortName}}/list?sortBy=createdDate&sort={{sorting.dateTimeNextSort}}'
-                                >
-                                    Date/Time Created
-                                </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+                <div class="sort-asset-container">
+                    <div class="pull-right">
+                        <ul class="nav nav-pills navbar-mid remove-margin" role="tablist">
+                            <li data-toggle="tooltip" title="sort result">
+                                <button class="btn btn-default" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fw {{ sorting.selected.helpIcon }} fw-2x"></i>
+                                    <span>Sort by : <strong>{{ sorting.selected.help }} </strong></span>
+                                </button>
+                                <ul class="dropdown-menu arrow arrow-top-right dark sort-list add-margin-top-2x">
+                                    <li class="dropdown-header">Sort by</li>
+                                    {{#each sorting.list}}
+                                        <li><a
+                                                data-column="@index"
+                                                class="{{#if active}}{{sortIcon}} active {{/if}} {{sortBy.label}}"
+                                                href='{{tenantedUrl ""}}/assets/{{../rxt.shortName}}/list?sortBy={{sortBy.name}}&sort={{sortNext}}'
+                                        >
+                                            {{sortBy.label}}
+                                        </a>
+                                        </li>
+                                    {{/each}}
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
             {{/if}}
         </div>
     </div>
