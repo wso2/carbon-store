@@ -476,7 +476,7 @@ var pageDecorators = {};
         if (page.meta.pageName !== 'list'){
             return;
         }
-        var sortBy = "overview_createdtime";
+        var sortBy = ctx.rxtManager.getTimeStampAttribute(ctx.assetType);
         var sort = "DESC";
         var sortingList = [];
         var sortingListSelected = {};
@@ -514,7 +514,9 @@ var pageDecorators = {};
                 sortingList.push(sortObj);
             }
         }
-        page.sorting = {selected:sortingListSelected,list:sortingList};
+        page.sorting = {};
+        page.sorting.selected = sortingListSelected;
+        page.sorting.list = sortingList;
         return page;
     };
     pageDecorators.searchHistory = function (ctx, page, utils) {
