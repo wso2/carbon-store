@@ -1375,3 +1375,21 @@ sup.required-field{
     max-width: 200px;
     margin-right: 10px;
 }
+.no-image {
+    position: relative;
+}
+.no-image::after {
+    content: "\2757 " " " attr(data-noImage);
+    font-size: 16px;
+    font-family: FontAwesome, serif;
+    color: rgb(100, 100, 100);
+    display: block;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    width: 100%;
+    min-width: 105px;
+    height: 100%;
+    background-color: #fff;
+}
