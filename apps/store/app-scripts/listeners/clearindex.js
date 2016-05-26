@@ -5,5 +5,7 @@
         return;
     }
     l.debug("session deleting :: " + session.getId() + " :: " + sso_sessions[session.getId()]);
+    var sso = require('sso');
+    sso.client.cleanUp(session,'store');
     delete sso_sessions[session.getId()];
 }());

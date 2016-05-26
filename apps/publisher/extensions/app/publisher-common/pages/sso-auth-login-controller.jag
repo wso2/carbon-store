@@ -34,6 +34,8 @@
     if(ignoreReferer){
         referer = null;
     }
+    log.info("[PUB] LOGIN URL: " + postUrl);
+    log.info('[PUB] Initiating login request from ' + session.getId());
     var relayState = (referer? referer:'/publisher');
     if (!session.get("Loged")) {
     %>
