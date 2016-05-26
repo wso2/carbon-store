@@ -396,18 +396,11 @@ var pageDecorators = {};
             page.appliedTags = appliedTags(resources.am,page.assets.id);
         }
         var mytags = doTermSearch(ctx,'tags', paging, true);
-        var assetTags = page.appliedTags;
+        var assetTags = page.appliedTags || [];
         var retTags = [];
 
         for (var i=0;i<mytags.length;i++) {
-            if(assetTags) {
-                mytags[i].applied = false;
-                for(var j=0;j<assetTags.length;j++) {
-                    if(mytags[i].value == assetTags[j]) {
-                        mytags[i].applied = true;
-                    }    
-                }
-            }
+            mytags[i].applied = assetTags.indexOf(String(mytags[i].value)) > -1;
             if (mytags[i].value.indexOf("/") < 0) {
                 retTags.push(mytags[i]);
             }
