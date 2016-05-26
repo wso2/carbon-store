@@ -365,7 +365,7 @@ var engine = caramel.engine('handlebars', (function() {
                     case 'file':
                         out = elementPrefix;
                         if(modeValue == "edit"){
-                            out += '<img onclick="showImageFull(this)" alt="thumbnail" class="image-display pull-left" src="/publisher/storage/'+field.assetType+'/'+field.assetId+'/'+field.name.tableQualifiedName+'">';
+                            out += '<img onclick="showImageFull(this)" alt="thumbnail" class="image-display pull-left no-image" data-noImage="No Image" src="/publisher/storage/'+field.assetType+'/'+field.assetId+'/'+field.name.tableQualifiedName+'">';
                         }
                         out += '<input class="pull-left" type="file" value="' + Handlebars.Utils.escapeExpression(value) + '" ' + renderFieldMetaData(field, null, mode) + ' >' + elementSuffix;
                         break;
