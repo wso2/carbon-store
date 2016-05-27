@@ -472,8 +472,8 @@ var pageDecorators = {};
             info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
     };
-    pageDecorators.sorting = function (ctx,page){
-        if (page.meta.pageName !== 'list'){
+    pageDecorators.sorting = function (ctx, page) {
+        if (page.meta.pageName !== 'list') {
             return;
         }
         var sortBy = ctx.rxtManager.getTimeStampAttribute(ctx.assetType);
@@ -484,32 +484,39 @@ var pageDecorators = {};
         var attributes = ctx.rxtManager.getSortingAttributes(ctx.assetType);
         var queryString = request.getQueryString();
         if (queryString) {
-            var match = queryString.match(/sortBy=([^&]+)/);
+            var match = queryString.match(/sortBy=([^&;]+)/);
             sortBy = match ? match[1] : sortBy;
-            match = queryString.match(/sort=([^&]+)/);
+            match = queryString.match(/sort=([^&;]+)/);
             sort = match ? match[1] : sort;
         }
-        for (var attribute in attributes){
-            if (attributes.hasOwnProperty(attribute)){
+        for (var attribute in attributes) {
+            if (attributes.hasOwnProperty(attribute)) {
                 attribute = attributes[attribute];
                 var sortObj = {};
-                sortObj.sortBy = attribute;
-                sortObj.sort = "DESC";
-                sortObj.active = false;
-                sortObj.sortNext = "ASC";
-                sortObj.sortIcon = "sorting_asc";
-                if (sortBy == attribute.name){
+                if (sortBy == attribute.name) {
                     if (sort == "ASC") {
+                        sortObj.sortBy = attribute;
+                        sortObj.sort = "DESC";
+                        sortObj.active = false;
                         sortingListSelected.helpIcon = "fw-sort-up margin-bottom-align";
                         sortObj.sortNext = "DESC";
                         sortObj.sortIcon = "sorting_asc";
-                    } else if (sort == "DESC") {
-                        sortingListSelected.helpIcon = "fw-sort-down margin-top-align";
+                    } else {
+                        sortObj.sortBy = attribute;
+                        sortObj.sort = "DESC";
+                        sortObj.active = false;
                         sortObj.sortNext = "ASC";
-                        sortObj.sortIcon = "sorting_desc";
+                        sortObj.sortIcon = "sorting_asc";
+                        sortingListSelected.helpIcon = "fw-sort-down margin-top-align";
                     }
                     sortingListSelected.help = attribute.label;
                     sortObj.active = true;
+                } else {
+                    sortObj.sortBy = attribute;
+                    sortObj.sort = "DESC";
+                    sortObj.active = false;
+                    sortObj.sortNext = "ASC";
+                    sortObj.sortIcon = "sorting_asc";
                 }
                 sortingList.push(sortObj);
             }
