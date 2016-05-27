@@ -1,7 +1,7 @@
 $(document).ready(function () {
     var image = $('.image-display');
     image.click(function () {
-        messages.modal_pop({content: '<img src="' + $(this).attr('src') + '" />'});
+        messages.modal_pop({content: '<img class="img-responsive" src="' + $(this).attr('src') + '" />'});
     });
     image.error(
         function () {
