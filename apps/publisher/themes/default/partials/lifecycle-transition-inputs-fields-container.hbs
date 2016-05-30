@@ -1,9 +1,9 @@
-<h3>Transition Inputs</h3>
+	<i>Please fill in the additional information to proceed or click </i><a id='transition-inputs-cancel-btn'>Cancel</a> <i> to abort.</i>
 <form id='lifecycle-transition-inputs-field-form' class="form-horizontal">
 {{#each .}}
 	<div class="form-group">
-		<label class="col-sm-2 form-label">{{label}}</label>
-		<div class="col-sm-10">
+		<label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 custom-form-label text-right">{{label}}</label>
+		<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">
 			<input class="form-control" type='{{type}}' name='{{name}}' placeholder="{{tooltip}}" {{#if required}}required{{/if}} />
 		</div>
 	</div>

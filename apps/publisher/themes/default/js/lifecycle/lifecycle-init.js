@@ -107,6 +107,19 @@ $(function() {
         }
         return data;
     };
+    var hideTransitionInputsUI = function(){
+        $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI))).hide();
+        //Show the lifecycle actions
+        $(id(config(constants.CONTAINER_LC_ACTION_AREA))).show();
+    };
+
+    var wireTransitionInputCancelBtn = function(){
+        $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI_CANCEL))).on('click',function(e){
+            e.preventDefault();
+            hideTransitionInputsUI();
+        })
+    };
+
     var wireTransitionInputActions = function(container) {
         $(id(container)).children('a').each(function() {
             $(this).on('click', function(e) {
@@ -150,9 +163,11 @@ $(function() {
         //Hide the lifecycle actions
         $(id(config(constants.CONTAINER_LC_ACTION_AREA))).hide();
         //Render the inputs 
-        renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, inputs);
+        renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, inputs,wireTransitionInputCancelBtn);
         //Render the actions
         renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,actionData,wireTransitionInputActions);
+
+        $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI))).show();
         return true;
     };
     var renderStateInformation = function() {
@@ -464,6 +479,7 @@ $(function() {
     });
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
         //unrenderTransitionUI();
+        hideTransitionInputsUI();
         unblockLCActions();
         clearComments();
         LifecycleAPI.notify(config(constants.MSG_SUCCESS_STATE_CHANGE), {
