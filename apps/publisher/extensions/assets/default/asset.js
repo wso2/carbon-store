@@ -186,7 +186,7 @@ asset.configure = function() {
         },
         meta: {
             lifecycle: {
-                name: 'ServiceLifeCycle',
+                name: 'SampleLifeCycle2',
                 commentRequired: false,
                 defaultLifecycleEnabled: true,
                 defaultAction: '',
