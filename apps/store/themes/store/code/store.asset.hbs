@@ -12,5 +12,10 @@
         store.security = {};
     }
     store.security = {{#if security}}{{json security}}{{else}}null{{/if}};
+    store.assetAvailability ="{{recentAssetsByType.length}}";
     store.security.details ={};
+    if(!store.store){
+       store.store = {};
+    }
+    store.store.searchHistory = "{{searchHistory.queries}}";
 </script>

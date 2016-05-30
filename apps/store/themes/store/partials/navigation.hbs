@@ -48,6 +48,7 @@
                                 {{/if}}
                             {{/if}}
                         {{/each}}
+                        {{> categorization-entry .}}
                     </div>
                 </div>
             {{/if}}
@@ -58,7 +59,7 @@
 <div id="nav" class="es-row wr-app-bar">
     <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
         <div id="the-basics" class="es-input-group input-group input-wrap">
-            <div class="search-wrapper">
+            <div class="search-wrapper" style="float:left;width:80%;position:relative;left:0px;margin-left:-45px;">
                 {{#if rxt.pluralLabel}}
                     <input  id="search"  type="text" class="typeahead es-form-control form-control" placeholder="Search in {{rxt.pluralLabel}}" value="{{searchQuery}}">
                 {{else}}
@@ -72,12 +73,17 @@
             </div>
         </div>
         <!--search--->
+        <nav-es style="float:left;width:100%;position:relative;left:5px ;">
+            <ul class="cf" id="dropdown-taxonomy" >
+                <>
+            </ul>
+        </nav-es>
     </div>
     {{#unless isUserDomainAndUrlDomainDifferent}}
         <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
-                {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
-                    <a href="{{tenantedUrl "/pages/my-items"}}" class="bookmark-link pull-right" title="{{t "Navigate to your bookmarks list"}}"><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i> <span class="bookmark-link-text">{{t "My bookmarks "}}</span></a>
-                {{/hasAppPermission}}
+            {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
+                <a href="{{tenantedUrl "/pages/my-items"}}" class="bookmark-link pull-right" title="{{t "Navigate to your bookmarks list"}}"><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i> <span class="bookmark-link-text">{{t "My bookmarks "}}</span></a>
+            {{/hasAppPermission}}
         </div>
     {{/unless}}
 </div>

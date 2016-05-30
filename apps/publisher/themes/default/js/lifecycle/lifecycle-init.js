@@ -428,15 +428,6 @@ $(function() {
             renderChecklistItems();
             return;
         }
-        if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
-            LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
-                type: constants.NOTIFICATION_WARN,
-                global: false
-            });
-            renderServerWarning(config(constants.MSG_WARN_CANNOT_CHANGE_STATE));
-            renderChecklistItems();
-            return;
-        }
         renderChecklistItems();
         renderLCActions();
         renderDeleteActions();
