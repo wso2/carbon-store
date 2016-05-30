@@ -189,6 +189,10 @@ var createQuery = function(options) {
     var input = $('#inp_searchAsset').val();
     var category = options.category || undefined;
     var searchQueryString = '?';
+    input = input.trim();
+    if (input.indexOf(":") == -1 && input.trim() !== "") {
+        input = setDefaultSearchQuery(input);
+    }
     q = parseUsedDefinedQuery(input);
     // if (name) {
     //     q.name = name;
@@ -204,6 +208,9 @@ var createQuery = function(options) {
         searchQueryString += encodeURIComponent(JSON.stringify(q).replace('{', '').replace('}', ''));
     }
     return searchUrl + searchQueryString;
+};
+var setDefaultSearchQuery = function(query){
+    return "_default:" +query;
 };
 var initSearch = function() {
     //Support for searching when pressing enter

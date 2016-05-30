@@ -413,9 +413,11 @@ var pageDecorators = {};
             page.appliedTags = appliedTags(resources.am,page.assets.id);
         }
         var mytags = doTermSearch(ctx,'tags', paging, true);
+        var assetTags = page.appliedTags || [];
         var retTags = [];
 
         for (var i=0;i<mytags.length;i++) {
+            mytags[i].applied = assetTags.indexOf(String(mytags[i].value)) > -1;
             if (mytags[i].value.indexOf("/") < 0) {
                 retTags.push(mytags[i]);
             }
@@ -617,6 +619,14 @@ var pageDecorators = {};
         var userApi = require('/modules/user-api.js').api;
         page.searchHistory = {};
         page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
+    };
+    pageDecorators.taxonomyAvailability = function(ctx, page, utils) {
+        var app = require('rxt').app;
+        if (app.isTaxonomyEnabled()) {
+            page.taxonomyAvailability = true;
+        } else {
+            page.taxonomyAvailability = false;
+        }
     };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;

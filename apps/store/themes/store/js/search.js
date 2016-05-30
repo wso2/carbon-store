@@ -164,9 +164,7 @@ $(function () {
     };
 
     var setDefaultSearchQuery = function(query){
-        //This can be changed according to the user's preference
-        //"content:" +query + " name:" +query;
-        return "content:" +query;
+        return "_default:" +query;
     };
 
     /***

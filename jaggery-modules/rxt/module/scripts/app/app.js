@@ -312,6 +312,12 @@ var app = {};
             //configs.disabledAssets = disabledAssets.concat(serverConfigs.disabledAssets);
             log.info('Disabled assets: ' + stringify(configs.disabledAssets));
         }
+        if ((serverConfigs.defaultSearchSplit) && (serverConfigs.defaultSearchSplit.length > 0)) {
+            //Overriding extensions will completely replace the default search template
+            configs.defaultSearchSplit = serverConfigs.defaultSearchSplit;
+            //configs.disabledAssets = disabledAssets.concat(serverConfigs.disabledAssets);
+            log.info('Default search template: ' + stringify(configs.defaultSearchSplit));
+        }
 
         if ((serverConfigs.title) && (serverConfigs.title.length > 0)) {
             //Overriding extensions will completely replace the application title
@@ -557,6 +563,18 @@ var app = {};
         }
         return application.get(constants.VERSION) || '';
     }
+    /**
+     * Add the searchTemplate coming from store.json.
+     * If no searchTemplate return empty string
+     * @returns {Object|string}
+     */
+    app.defaultSearchTemplate = function () {
+        if (arguments.length == 1) {
+            application.put(constants.DEFAULT_SEARCH_TEMPLATE, arguments[0]);
+            return;
+        }
+        return application.get(constants.DEFAULT_SEARCH_TEMPLATE) || '';
+    };
     /**
      * Returns an object containing all of the app level extension scripts
      * @param  {Number} tenantId  The tenant id  for which the application resources must be obtained
@@ -997,6 +1015,19 @@ var app = {};
         }
         return details.enabled ? details.enabled : false;
     };
+
+    app.isTaxonomyEnabled = function () {
+        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.TaxonomyService');
+        var availability = TaxonomyService.getTaxonomyAvailability();
+        availability = String(availability);
+        availability = (availability == "true");
+        if (availability) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     /**
      * Returns  the social feature is enabled.This method will internally call the getFeatureDetails method
      * to locate the details about the social component.If the social feature is not found then NULL is returned

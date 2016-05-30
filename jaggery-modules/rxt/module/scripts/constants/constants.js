@@ -44,6 +44,7 @@ var constants = {};
     constants.AUTH_METHOD_BASIC = 'basic';
     constants.AUTH_METHOD_SSO = 'sso';
     constants.AUTH_METHOD_OTHER = 'other';
+    constants.DEFAULT_SEARCH_TEMPLATE = 'defaultSearchTemplate';
     /***
      * ES Feature Constants
      */
@@ -64,6 +65,7 @@ var constants = {};
     constants.Q_PROP_WILDCARD = '_wildcard'
     constants.PROP_DEFAULT = 'default';
     constants.DEFAULT_NAME_ATTRIBUTE = 'overview_name';
+    constants.DEFAULT_SEARCH_ATTRIBUTE = 'name';
     /**
      * Registry actions
      */

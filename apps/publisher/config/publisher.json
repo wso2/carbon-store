@@ -66,6 +66,9 @@
             }
         }
     },
+    "search": {
+        "defaultSearchTemplate":"name=*$input*&content=*$input*"
+    },
     "metrics": {
         "enabled": false,
         "enableTraceLogs": false

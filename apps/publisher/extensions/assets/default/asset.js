@@ -195,10 +195,56 @@ asset.configure = function() {
                 lifecycleEnabled: true
             },
             ui: {
-                icon: 'fw fw-web-app'
+                icon: 'fw fw-resource'
             },
             categories: {
                 categoryField: 'overview_category'
+            },
+            search: {
+                defaultSearchSplit: function(term, searchTemplate){
+                    var terms ;
+                    var newStr = "";
+                    if(term.indexOf("\"") > -1){
+                        terms = term.split("\" \"");
+                        for(var i=0; i<terms.length; i++){
+                            if(i == 0){
+                                terms[i] = terms[i] + "\"";
+                            } else if(i == terms.length-1){
+                                terms[i] = "\"" + terms[i];
+                            } else {
+                                terms[i] = "\"" + terms[i] + "\"";
+                            }
+                        }
+                    } else {
+                        terms = term.split(" ");
+                    }
+
+                    if(terms.length == 1){
+                        if(term.indexOf("\"") > -1){
+                            newStr = searchTemplate.replace(/\*\$input\*/g,function(){
+                                return term;
+                            });
+                        } else {
+                            newStr = searchTemplate.replace(/\$input/g,function(){
+                                return term;
+                            });
+                        }
+                    } else {
+                        var orString = "(";
+                        for(var i=0; i<terms.length; i++){
+                            if(orString != "("){
+                                orString = orString + " OR ";
+                            }
+                            orString = orString + terms[i];
+                        }
+                        orString = orString + ")";
+                        newStr = searchTemplate.replace(/\*\$input\*/g,function(){
+                            return orString;
+                        });
+                    }
+
+                    return newStr;
+                }
             },
             notifications:{
                 enabled:true
@@ -236,6 +282,7 @@ asset.renderer = function(ctx) {
         var navList = util.navList();
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
             navList.push('Add ', 'btn-add-new', util.buildUrl('create'));
+            navList.push('Statistics', 'btn-stats', '/assets/' + type + '/statistics');
         }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
@@ -247,7 +294,7 @@ asset.renderer = function(ctx) {
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
         var user = require('store').server.current(session);
         var username = user? user.username : null;
-        //navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
+        navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session) && permissionAPI.hasAssetPagePermission(type,'update',user.tenantId,username)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
         }
@@ -418,6 +465,10 @@ asset.renderer = function(ctx) {
                     return;
                 }
                 require('/modules/page-decorators.js').pageDecorators.hideEmptyTables(ctx,page,this);
+            },
+            taxonomy: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.taxonomyAvailability(ctx, page, this);
+
             },
             populateBreadcrumb:function(page){
                 require('/modules/page-decorators.js').pageDecorators.populateAssetPageBreadcrumb(ctx,page,this);
