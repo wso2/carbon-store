@@ -202,6 +202,11 @@ asset.configure = function() {
             grouping:{
                 groupingEnabled:false,
                 groupingAttributes:['overview_name']
+            },
+            sorting: {
+                attributes: [
+                    {name: "overview_name", label: "Name"},
+                    {name: "overview_createdtime", label: "Date/Time"}]
             }
         }
     };

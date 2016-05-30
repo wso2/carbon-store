@@ -1631,49 +1631,36 @@ a.ctrl-filter-category {
 /* ========================================================================
  * data table styles
  * ======================================================================== */
-
 ul.sort-list li a:before {
     margin-right: 5px;
     content: "\e673";
     font-family: "font-wso2", serif;
 }
-
 ul.sort-list li a.sorting_asc:before {
     content: "\e64b";
     color: black;
 }
-
 ul.sort-list li a.sorting_asc:hover::before{
     content: "\e64b";
     color: #fff;
 }
-
-
 ul.sort-list li a.sorting_desc:before {
     content: "\e663";
     color: black;
 }
-
-
 ul.sort-list li a.sorting_desc:hover::before {
     content: "\e663";
     color: #fff;
 }
-
-
 ul.sort-list li a.active{
     color: black;
 }
-
 ul.sort-list li a.active:hover{
     color: #fff;
 }
-
-
 .sort-list > li > a {
     color: black;
 }
-
 .dropdown-header {
     display: block;
     padding: 3px 20px;
@@ -1682,4 +1669,13 @@ ul.sort-list li a.active:hover{
     /*color: currentColor;*/
     white-space: nowrap;
 }
-
+.btn-default > .margin-top-align , .margin-bottom-align{
+    font-size: 12pt !important;
+    color: gray;
+}
+.margin-top-align{
+    margin-top: -12px;
+}
+.margin-bottom-align{
+    margin-bottom: -10px;
+}

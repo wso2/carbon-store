@@ -168,12 +168,12 @@ var pageDecorators = {};
         }
     };
     pageDecorators.sorting = function (ctx, page, fields) {
+        if(page.meta.pageName !== 'list'){
+            return;
+        }
+        var attributes = ctx.rxtManager.getSortingAttributes(ctx.assetType);
         var queryString = request.getQueryString();
-        var sortable = fields || [
-            {field:"overview_name",label:"Name"},
-            {field:"overview_version",label:"Version"},
-            {field:"overview_provider",label:"Provider"},
-            {field:"createdDate",label:"Date/Time"}];
+        var sortable = fields || attributes;
         var sortingList = [];
         var sortingListSelected = {};
         var sortBy = "createdDate";
@@ -205,13 +205,13 @@ var pageDecorators = {};
             sortObj.active = false;
             sortObj.sortNext = "+";
             sortObj.sortIcon = "sorting_asc";
-            if(sortable[i].field == sortBy){
-                if(sort == "+"){
-                    sortingListSelected.helpIcon = "sorting_asc";
+            if(sortable[i].name == sortBy) {
+                if(sort == "+") {
+                    sortingListSelected.helpIcon = "fw-sort-up margin-bottom-align";
                     sortObj.sortNext = "-";
                     sortObj.sortIcon = "sorting_asc";
-                }else if(sort == "-"){
-                    sortingListSelected.helpIcon = "sorting_desc";
+                } else if(sort == "-") {
+                    sortingListSelected.helpIcon = "fw-sort-down margin-top-align";
                     sortObj.sortNext = "+";
                     sortObj.sortIcon = "sorting_desc";
                 }

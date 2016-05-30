@@ -273,6 +273,8 @@ hr.emboss {
 
 .es-nav-tabs .dropdown-menu, .nav-pills .dropdown-menu, .navbar .dropdown-menu {
     margin-top: 0;
+    right: 0;
+    left: inherit;
 }
 
 .es-navbar .sub-menu:before {

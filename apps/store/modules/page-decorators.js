@@ -539,80 +539,58 @@ var pageDecorators = {};
             info.hasMultipleVersions = (info.versions.length > 0) ? true : false;
         }
     };
-    pageDecorators.sorting = function(ctx,page){
-        var sortBy = "";
-        var sort = "";
-        var sortHelp = "";
-        var sortHelpIcon = "";
-        var popularActive = false;
-        var nameActive = false;
-        var nameIcon = "";
-        var nameNextSort = "DES";
-        var dateTimeActive = false;
-        var dateTimeIcon = "";
-        var dateTimeNextSort = "DES";
+    pageDecorators.sorting = function (ctx, page) {
+        if (page.meta.pageName !== 'list') {
+            return;
+        }
+        var sortBy = ctx.rxtManager.getTimeStampAttribute(ctx.assetType);
+        var sort = "DESC";
+        var sortingList = [];
+        var sortingListSelected = {};
 
+        var attributes = ctx.rxtManager.getSortingAttributes(ctx.assetType);
         var queryString = request.getQueryString();
-        if(queryString){
-            var parts = queryString.split('&');
-            for(var i=0;i<parts.length;i++){
-                if(parts[i].indexOf("=") != -1 ){
-                    var params = parts[i].split("=");
-                    if(params[0] == "sortBy"){
-                        sortBy = params[1];
-                    }else if(params[0] == "sort"){
-                        sort = params[1];
+        if (queryString) {
+            var match = queryString.match(/sortBy=([^&;]+)/);
+            sortBy = match ? match[1] : sortBy;
+            match = queryString.match(/sort=([^&;]+)/);
+            sort = match ? match[1] : sort;
+        }
+        for (var attribute in attributes) {
+            if (attributes.hasOwnProperty(attribute)) {
+                attribute = attributes[attribute];
+                var sortObj = {};
+                if (sortBy == attribute.name) {
+                    if (sort == "ASC") {
+                        sortObj.sortBy = attribute;
+                        sortObj.sort = "DESC";
+                        sortObj.active = false;
+                        sortingListSelected.helpIcon = "fw-sort-up margin-bottom-align";
+                        sortObj.sortNext = "DESC";
+                        sortObj.sortIcon = "sorting_asc";
+                    } else {
+                        sortObj.sortBy = attribute;
+                        sortObj.sort = "DESC";
+                        sortObj.active = false;
+                        sortObj.sortNext = "ASC";
+                        sortObj.sortIcon = "sorting_asc";
+                        sortingListSelected.helpIcon = "fw-sort-down margin-top-align";
                     }
+                    sortingListSelected.help = attribute.label;
+                    sortObj.active = true;
+                } else {
+                    sortObj.sortBy = attribute;
+                    sortObj.sort = "DESC";
+                    sortObj.active = false;
+                    sortObj.sortNext = "ASC";
+                    sortObj.sortIcon = "sorting_asc";
                 }
+                sortingList.push(sortObj);
             }
-        }else{
-            sortBy = "createdDate";
-            sort = "DES";
-            sortHelp = 'Date/Time Created';
         }
-
-        if(sortBy == "overview_name" && sort == "DES"){
-            sortHelp = 'Name';
-            sortHelpIcon = "sorting_desc";
-            nameActive = true;
-            nameIcon = "sorting_desc";
-            nameNextSort = "ASC";
-        }else if(sortBy == "overview_name" && sort == "ASC"){
-            sortHelp = 'Name';
-            sortHelpIcon = "sorting_asc";
-            nameActive = true;
-            nameIcon = "sorting_asc";
-        }else if(sortBy == "createdDate" && sort == "DES"){
-            sortHelp = 'Date/Time Created';
-            sortHelpIcon = "sorting_desc";
-            dateTimeActive = true;
-            dateTimeIcon = "sorting_desc";
-            dateTimeNextSort = "ASC";
-        }else if(sortBy == "createdDate" && sort == "ASC"){
-            sortHelp = 'Date/Time Created';
-            sortHelpIcon = "sorting_asc";
-            dateTimeActive = true;
-            dateTimeIcon = "sorting_asc";
-        }else if(sort == "popular"){
-            sortHelp = 'Popular';
-            sortHelpIcon = "sorting_desc";
-            popularActive = true;
-        }
-
-
-        page.sorting={
-            sort:sort,
-            sortBy:sortBy,
-            sortHelp:sortHelp,
-            sortHelpIcon:sortHelpIcon,
-            popularActive:popularActive,
-            nameActive:nameActive,
-            nameIcon:nameIcon,
-            nameNextSort:nameNextSort,
-            dateTimeActive:dateTimeActive,
-            dateTimeIcon:dateTimeIcon,
-            dateTimeNextSort:dateTimeNextSort
-        };
+        page.sorting = {};
+        page.sorting.selected = sortingListSelected;
+        page.sorting.list = sortingList;
         return page;
     };
     pageDecorators.searchHistory = function (ctx, page, utils) {
