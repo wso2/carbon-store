@@ -32,6 +32,7 @@ var api = {};
 (function (api, core) {
     var log = new Log('lifecycle');
     var CHECKITEM_TOKEN = 'checkItems';
+    var TRANSITION_INPUT = 'transitionInput';
     var TRANSITION_EXECUTION = 'transitionExecution';
 
     /**
@@ -144,6 +145,7 @@ var api = {};
         }
         var checkItems = getCheckitems(rawState.datamodel.data || {});
         state.checkItems = checkItems;
+        state.transitionInputs = getTransitionInputs(rawState.datamodel.data || {});
         return state;
     };
 
@@ -163,6 +165,23 @@ var api = {};
         }
         return items;
     };
+
+    /**
+     * Returns transition input definitions by processing the state meta block
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+    var getTransitionInputs = function(data){
+        var items = [];
+        var item;
+        for(var index in data){
+            item = data[index];
+            if (item.name === TRANSITION_INPUT ) {
+                return item.inputs || [];
+            }
+        }
+        return items;
+    }
 
     /**
      * Returns details about the state

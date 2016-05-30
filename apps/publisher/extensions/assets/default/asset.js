@@ -72,10 +72,10 @@ asset.manager = function(ctx) {
         get: function(id) {
             return this._super.get.call(this, id);
         },
-        invokeLcAction: function(asset, action, lcName) {
+        invokeLcAction: function(asset, action, lcName,userArgs) {
             var success;
             if (lcName) {
-                success = this._super.invokeLcAction.call(this, asset, action, lcName);
+                success = this._super.invokeLcAction.call(this, asset, action, lcName,userArgs);
             } else {
                 success = this._super.invokeLcAction.call(this, asset, action);
             }
@@ -186,10 +186,10 @@ asset.configure = function() {
         },
         meta: {
             lifecycle: {
-                name: 'SampleLifeCycle2',
+                name: 'ServiceLifeCycle',
                 commentRequired: false,
                 defaultLifecycleEnabled: true,
-                defaultAction: 'Promote',
+                defaultAction: '',
                 deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
                 lifecycleEnabled: true

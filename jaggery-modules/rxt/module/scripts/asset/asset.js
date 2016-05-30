@@ -30,6 +30,7 @@
 var asset = {};
 (function(asset, core) {
     var log = new Log('rxt.asset');
+    var carbon = require('carbon');
     var DEFAULT_TIME_STAMP_FIELD = 'overview_createdtime'; //TODO:Move to constants
     var DEFAULT_RECENT_ASSET_COUNT = 5; //TODO: Move to constants
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
@@ -1423,6 +1424,20 @@ var asset = {};
         }
         return args[index];
     };
+
+    /**
+     * Determines the arguments list provided for a transition input UI when changing state
+     * @param  {arguments} args     Arguments array of a function
+     * @param  {Object} artifact Asset instance
+     * @param  {Number} index    The index of the arguments array at which the arguments may be found
+     * @return {Object}          If an argument object is provided it is returned else an empty object is returned
+     */
+    var resolveLCArgs = function(args,artifact,index) {
+        if((args.length -1) <= index) {
+            return args[index];
+        }
+        return null;
+    };
     /**
      * Attachs a lifecycle to the provided asset.The type of
      * lifecycle will be read from the configuration if a lifecycle is not provided.If a lifecycle cannot be found
@@ -1482,6 +1497,7 @@ var asset = {};
     AssetManager.prototype.invokeLcAction = function(asset, action) {
         var success = false;
         var lifecycleName = resolveLCName(arguments, asset, 2);
+        var userArgs = resolveLCArgs(arguments, asset, 3);
         if (!asset) {
             log.error('Failed to invokeAction as an asset was not provided.');
             return success;
@@ -1491,7 +1507,7 @@ var asset = {};
             return success;
         }
         try {
-            this.am.promoteLifecycleState(action, asset, lifecycleName);
+            this.am.promoteLifecycleState(action, asset, lifecycleName,userArgs);
             success = true;
         } catch (e) {
             log.error('Failed to invoke action: ' + action + ' for the asset of id: ' + stringify(asset.id) + '.The following exception was thrown: ' + e);

@@ -86,6 +86,10 @@ var error = '';
         }
         return asset.lifecycle;
     };
+    var getLCArguments = function(req) {
+        var obj = req.getContent() || {};
+        return obj.arguments || null;
+    };
     /**
      * change the state of an asset
      * @param  options  Object contains asset-id
@@ -127,7 +131,8 @@ var error = '';
             throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.BAD_REQUEST)
         }
         try {
-            success = am.invokeLcAction(asset, action, lcName);
+            var userArgs = getLCArguments(req);
+            success = am.invokeLcAction(asset, action, lcName,userArgs);
             if (success) {
                 options.path = asset.path;
                 //Check if the user provided a comment and add it
