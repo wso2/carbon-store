@@ -173,7 +173,7 @@ var result;
 
                 //Determine if the field is readonly or auto.if yes then ignore
                 //the user provided value and use the original value
-                if((definition.readonly)||(definition.auto)){
+                if((definition.readonly)||(definition.auto)||(definition.hidden)){
                     asset.attributes[key] = original.attributes[key];
                 }
 
@@ -338,7 +338,7 @@ var result;
                 throw 'Required field not provided';
             } else {
                 //Populate a dummy value for the purpose of creating the asset
-                asset.attributes[fieldName] = fieldName;
+                asset.attributes[fieldName] = assetManager.getFileFieldPlaceholder();
             }
         });
     };

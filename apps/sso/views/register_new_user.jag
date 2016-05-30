@@ -69,7 +69,7 @@ var themeModule = require('/modules/theme.js');
                         <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">Create An Account</h2>
                         <div class="clearfix"></div>
                         <div class="boarder-all ">
-                            <div class="padding-double font-large">Enter all text fields to complete registration </div>
+                            <br>
                             <!-- validation -->
                             <div class="padding-double">
                                 <div id="regFormError" class="alert alert-error" style="display:none"></div>
@@ -77,14 +77,17 @@ var themeModule = require('/modules/theme.js');
 
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                         <label>Username</label>
+                                        <sup class="sup-required">*</sup>
                                         <input id="reg-username" name="reg-username" type="text" class="form-control required usrName usrNameLength">
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 form-group">
                                         <label>Password</label>
+                                        <sup class="sup-required">*</sup>
                                         <input id="reg-password" name="reg-password" type="password" class="form-control required passwordLength">
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 form-group">
                                         <label>Confirm password</label>
+                                        <sup class="sup-required">*</sup>
                                         <input id="reg-password2" name="password2" type="password" class="form-control required" equalTo="#reg-password">
                                     </div>
 
@@ -114,7 +117,7 @@ var themeModule = require('/modules/theme.js');
                                             var validationClass = "";
                                             var span = "";
                                             if(claims[claimIndex].displayTag == "Email"){
-                                                validationClass = "email";
+                                                validationClass = "emailValidate";
                                                 span = "col-xs-12 col-sm-12 col-md-12 col-lg-12";
                                             }else{
                                                 span = "col-xs-12 col-sm-12 col-md-6 col-lg-6"
@@ -122,6 +125,7 @@ var themeModule = require('/modules/theme.js');
                                             %>
                                         <div class="<%=span%> form-group">
                                             <label><%=claims[claimIndex].displayTag%></label>
+                                            <sup class="sup-required">*</sup>
                                             <input type="text" name="<%=formElementName%>" data-claim-uri="<%=claims[claimIndex].claimUri%>" class="form-control <%=validationClass%> required <%=claims[claimIndex].customClass%>">
                                         </div>
                                     <%
@@ -198,11 +202,14 @@ var themeModule = require('/modules/theme.js');
         jQuery.validator.addMethod("passwordLength", function (value, element) {
             return this.optional(element) || /^[\S]{5,30}$/.test(value);
         }, "Password must contain minimum 5 characters and maximum 30 characters");
+        jQuery.validator.addMethod("emailValidate", function (value, element) {
+            return this.optional(element) || /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,5}$/igm.test(value);
+        }, "Please enter a valid email address");
     });
 </script>
 </body>
 </html>
 
-<% 
-    }(request,response,session)); 
+<%
+    }(request,response,session));
 %>

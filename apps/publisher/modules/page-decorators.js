@@ -137,6 +137,7 @@ var pageDecorators = {};
                 return am.compareVersions(a1, a2);
             });
             info.isDefault = am.isDefaultAsset(page.assets);
+            info.version = assetInstance.version;
             for (var index = 0; index < versions.length; index++) {
                 asset = versions[index];
                 entry = {};
@@ -203,16 +204,16 @@ var pageDecorators = {};
             sortObj.sort = "-";
             sortObj.active = false;
             sortObj.sortNext = "+";
-            sortObj.sortIcon = "fa-arrow-up";
+            sortObj.sortIcon = "sorting_asc";
             if(sortable[i].field == sortBy){
                 if(sort == "+"){
-                    sortingListSelected.helpIcon = "fa-arrow-up";
+                    sortingListSelected.helpIcon = "sorting_asc";
                     sortObj.sortNext = "-";
-                    sortObj.sortIcon = "fa-arrow-up";
+                    sortObj.sortIcon = "sorting_asc";
                 }else if(sort == "-"){
-                    sortingListSelected.helpIcon = "fa-arrow-down";
+                    sortingListSelected.helpIcon = "sorting_desc";
                     sortObj.sortNext = "+";
-                    sortObj.sortIcon = "fa-arrow-down";
+                    sortObj.sortIcon = "sorting_desc";
                 }
                 sortingListSelected.help = sortable[i].label;
                 sortObj.active = true;
@@ -232,6 +233,21 @@ var pageDecorators = {};
                 table.renderingMetaData.emptyTable = true;
             }
         }
+    };
+    pageDecorators.populateAssetPageBreadcrumb = function(ctx,page,utils){
+        var Breadcrumb = require('rxt').app.Breadcrumb;
+        var breadcrumb = new Breadcrumb(page.breadcrumb);
+
+        if(!page.rxt) {
+            return;
+        }
+        breadcrumb.crumb(page.rxt.pluralLabel.toUpperCase(),utils.buildUrl('list'));
+        if(!page.assets.name) {
+            page.breadcrumb  = breadcrumb.build();
+            return;
+        }
+        breadcrumb.crumb(page.assets.name.toUpperCase(),utils.buildUrl('details')+'/'+page.assets.id);
+        page.breadcrumb = breadcrumb.build();
     };
     var isEmptyTable = function(table){
         var field;

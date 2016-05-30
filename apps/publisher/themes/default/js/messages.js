@@ -50,23 +50,44 @@ messages.alertError = function(value){
     });
 };
 messages.alertInfo = function(value){
-    $.notify(value, {
-        globalPosition: 'top center',
-        className: 'info'
-    });
-};
-messages.alertInfoLoader = function(value){
-    $.notify.addStyle('happyblue', {
-        html: "<div><span data-notify-html/></div>",
+        $.notify.addStyle('happygreen', {
+        html: "<div><i class='icon fw fw-info'></i> <strong>Success! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "lightblue",
-                "padding": "10px"
+                "background-color": "#5CB85C",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
+            },
+            supergreen: {
+                "color": "white",
+                "background-color": "#5CB85C"
+            }
+        }
+    });
+
+    $.notify(value, {
+        globalPosition: 'top center',
+        className: 'info',
+        style:'happygreen'
+    });
+};
+messages.alertInfoLoader = function(value){
+    $.notify.addStyle('happygreen', {
+        html: "<div><strong></strong><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "#5CB85C",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
             },
             superblue: {
-                "color": "white",
-                "background-color": "blue"
+                "color": "white"
             }
         }
     });
@@ -75,22 +96,25 @@ messages.alertInfoLoader = function(value){
         globalPosition: 'top center',
         className: 'info',
         autoHide: false,
-        style: 'happyblue'
+        style: 'happygreen'
     });
 
 };
 messages.alertWarn = function(value){
     $.notify.addStyle('happyyellow', {
-        html: "<div><span data-notify-html/></div>",
+        html: "<div><i class='icon fw fw-info'></i> <strong>Warning! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "Gold",
-                "padding": "10px"
+                "background-color": "#F0AD4E",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
             },
             superblue: {
                 "color": "white",
-                "background-color": "yellow"
+                "background-color": "#F0AD4E"
             }
         }
     });
@@ -100,4 +124,37 @@ messages.alertWarn = function(value){
         className: 'warn',
         style: 'happyyellow'
     });
+};
+messages.modal_pop = function(modalData){
+    var title = modalData.title;
+    var content = modalData.content;
+    var footer = modalData.footer;
+
+    //setting title
+    if(title){
+        $('#esModalLabel').html(title).parent().show();
+    } else {
+        $('#esModalLabel').parent().hide();
+        content += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+    }
+
+    //setting content
+    if(content){
+        $('#esModalContent').show().html(content);
+    } else {
+        $('#esModalContent').hide();
+    }
+
+    //setting footer
+    if(footer){
+        $('#esModalFooter').show().html(footer);
+    } else {
+        $('#esModalFooter').hide();
+    }
+
+    $('#esModal').modal();
+};
+
+messages.hideAlertInfoLoader = function(){
+    $('.notifyjs-happygreen-info').remove();
 };

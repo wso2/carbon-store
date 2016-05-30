@@ -39,7 +39,7 @@ asset.manager = function(ctx) {
             return query;
         }
         //TODO: Even though an array is sent in only the first search value is accepted
-        query.lcState=[publishedStates[0]];
+        query.lcState = publishedStates[0];
         return query;
     };
     return {
@@ -47,6 +47,10 @@ asset.manager = function(ctx) {
             query=buildPublishedQuery(query);
             var assets = this._super.search.call(this, query, paging);
             return assets;
+        },
+        advanceSearch:function(query,paging){
+            query = buildPublishedQuery(query);
+            return this._super.advanceSearch.call(this,query,paging);
         },
         list: function(paging) {
             var assets = this._super.list.call(this, paging);
@@ -130,7 +134,7 @@ asset.configure = function() {
                 lifecycleEnabled:true
             },
             ui: {
-                icon: 'fw fw-resource',
+                icon: 'fw fw-web-app',
                 iconColor: 'purple'
             },
             categories: {

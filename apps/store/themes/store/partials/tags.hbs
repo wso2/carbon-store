@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 {{#if appliedTags}}
-    <h4><i class="fa fw-tag"></i> {{t "Associated Tags"}}</h4>
+    <h4>{{t "Associated Tags"}}</h4>
     {{#each appliedTags}}
         <a class="tags" target='_blank' href='{{url ""}}/assets/{{../rxt.shortName}}/list?q="tags":"{{this}}"'>{{this}}</a>
     {{/each}}

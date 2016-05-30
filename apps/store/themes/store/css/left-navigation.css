@@ -20,6 +20,7 @@ nav.navigation {
 .left-menu {
     position: absolute;
     z-index: 1000;
+    left: 0;
 }
 
 nav.navigation > a, nav.navigation {
@@ -87,7 +88,7 @@ nav.navigation > a.green:hover > .icon {
 }
 
 nav.navigation > a.green:hover > .left-menu-item, nav.navigation > a.green.active > .left-menu-item, nav.navigation > a.green.hover > .left-menu-item {
-    background: #27ae60;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
@@ -104,7 +105,7 @@ nav.navigation > a.red:hover > .icon {
 }
 
 nav.navigation > a.red:hover > .left-menu-item, nav.navigation > a.red.active > .left-menu-item, nav.navigation > a.red.hover > .left-menu-item {
-    background: #c0392b;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
@@ -121,13 +122,13 @@ nav.navigation > a.orange:hover > .icon {
 }
 
 nav.navigation > a.orange:hover > .left-menu-item, nav.navigation > a.orange.active > .left-menu-item, nav.navigation > a.orange.hover > .left-menu-item {
-    background: #d35400;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
 }
 
-nav.navigation > a.yellow .icon {
+    nav.navigation > a.yellow .icon {
     background: #f39c12;
     color: white;
 }
@@ -138,7 +139,7 @@ nav.navigation > a.yellow:hover > .icon {
 }
 
 nav.navigation > a.yellow:hover > .left-menu-item, nav.navigation > a.yellow.active > .left-menu-item, nav.navigation > a.yellow.hover > .left-menu-item {
-    background: #f39c12;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
@@ -155,7 +156,7 @@ nav.navigation > a.blue:hover > .icon {
 }
 
 nav.navigation > a.blue:hover > .left-menu-item, nav.navigation > a.blue.active > .left-menu-item, nav.navigation > a.blue.hover > .left-menu-item {
-    background: #2980b9;
+    background: #212121;
     color: white;
     width: 77.5%;
     height: 40px;
@@ -453,7 +454,10 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     background-position: center left;
     background-repeat: no-repeat;
     text-transform: uppercase;
-    padding: 23px 3px 16px 36px !important;
+    padding: 0;
+    text-indent: 34px;
+    height: 30px;
+    line-height: 30px;
 }
 
 
@@ -528,7 +532,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 .ctrl-wr-asset  {
     position: relative;
-    width: 13.2%;
+    width: 15.2%;
     float: left;
     margin: 0.5%;
     background: #fbfbfb;
@@ -542,7 +546,6 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 .ast-img {
     width: 100%;
     background: #ffffff;
-    height:145px;
     overflow-y: hidden;
 }
 
@@ -580,6 +583,16 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     bottom: 0;
 }
 
+.ast-thumbnail {
+  position:relative;
+}
+
+.ast-type-icon {
+  position:absolute;
+  bottom:2px;
+  left:2px;
+  opacity:1;
+}
 
 .ast-img .ast-type-icon{
     display:block;
@@ -596,7 +609,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 }
 .ast-img .ast-type-icon i{
     font-size:2.2em;
-    padding:9px 6px;
+    padding:9px 2px;
 }
 .ast-desc {
     /*float:left;*/
@@ -640,9 +653,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 /* Large Devices, Wide Screens */
 @media only screen and (max-width: 1200px) {
 
-    .left-col {
-        margin: 55px;
-    }
+
     .ctrl-wr-asset  {
         position: relative;
         width:19%;
@@ -665,7 +676,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         margin: 0 30px;
     }
     .ctrl-wr-asset {
-        width: 21.6%;
+        width: 25.6%;
         margin-bottom: 2%;
     }
     .es-row > .col-lg-12 {
@@ -705,7 +716,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     }
     .ctrl-wr-asset {
         position: relative;
-        width: 27%;
+        width: 43%;
         float: left;
         margin:1% 3%;
         background: #fbfbfb;
@@ -790,4 +801,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     .more-list {
         margin-right: -20px !important;
     }
+}
+.navigation-container.container-fluid{
+    padding-right:0;
 }

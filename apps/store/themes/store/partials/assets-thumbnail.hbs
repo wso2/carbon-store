@@ -1,5 +1,8 @@
 {{#if thumbnail}}
-	<img alt="thumbnail" class="img-responsive" src="{{tenantedUrl ""}}/storage/{{type}}/{{id}}/{{thumbnail}}">
+    <span class="ast-type-icon">
+      <i class="{{this.icon}} fw-lg"></i>
+      </span>
+    <img alt="thumbnail" class="img-responsive" src="{{tenantedUrl ""}}/storage/{{type}}/{{id}}/{{thumbnail}}">
 {{else}}
-	{{> assets-default-thumbnail ..}}
+    {{> assets-default-thumbnail ..}}
 {{/if}}

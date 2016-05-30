@@ -43,6 +43,32 @@ var popoverFunction = (function(){
     return returnObj;
 })();
 
+var currentPageFunction = (function(){
+    var returnObj = {};
+    returnObj.init = function(){
+        switch(store.publisher.currentPage) {
+            case "details":
+                $(".btn-overview").addClass("tab-selected");
+                break;
+            case "copy":
+                $(".btn-copy").addClass("tab-selected");
+                break;
+            case "update":
+                $(".btn-edit").addClass("tab-selected");
+                break;
+            case "delete":
+                $(".btn-delete").addClass("tab-selected");
+                break;
+            case "lifecycle":
+                $(".btn-lifecycle").addClass("tab-selected");
+                break;
+        }
+    };
+    return returnObj;
+})();
+
 $(function(){
     popoverFunction.init();
+    currentPageFunction.init();
+    $('[data-toggle="tooltip"]').tooltip();
 });

@@ -61,6 +61,7 @@ var ui = {};
                 tenantDomain:resolveTenantDomain(options.tenantId),
                 isSuperTenant:resolveSuperTenantDomain(options.tenantId)
             },
+            breadcrumb:createBreadcrumb(options.landingPage),
             assets: {},
             leftNav: [],
             ribbon: {},
@@ -216,5 +217,13 @@ var ui = {};
             version:app.version()
         });
         return page;
+    };
+    var createBreadcrumb = function(landingPage){
+        var breadcrumb = [];
+        var entry = {};
+        entry.label =  constants.BREADCRUMB_DEFAULT_ROOT;
+        entry.link = landingPage;
+        breadcrumb.push(entry);
+        return breadcrumb;
     };
 }(ui, core, asset, app, constants));

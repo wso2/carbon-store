@@ -144,7 +144,9 @@ body {
     font-family: 'Open Sans';
     padding-bottom: 40px;
 }
-
+html, body {
+    min-width: 530px;
+}
 footer {
     position: absolute;
     bottom: 0;
@@ -300,18 +302,19 @@ a.ast-name:after {
 
 }
 a.ast-name{
-    font-size: 16px !important;
+    font-size: 16px;
     font-weight: unset;
     color: #555;
-    margin-bottom: 3px;
-    max-height: 45px;
+    margin-bottom: 2px;
+    max-height: 30px;
     overflow: hidden;
     font-weight: 100;
     padding-top: 0px;
     margin-top: 0px;
     height: 32px;
-    word-wrap: break-word !important;
-    white-space: nowrap !important;
+    position: relative;
+    white-space: nowrap;
+    display: block;
 }
 
 a.ast-name:hover {
@@ -330,15 +333,37 @@ a.ast-name:hover {
     width: 100%;
     */
     height: 40px;
-    background-color: #fff;
+    background-color: #161616;
     padding-top: 5px;
-    color: #444;
+    color: #fff;
     font-weight: 100;
     padding-left: 20px;
     font-size: 12px;
     letter-spacing: 1px
 
 }
+
+.footer a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.footer p {
+    margin: 5px 0;
+}
+
+#logo-wso2 {
+    background: url("../img/wso2-logo-small.png") no-repeat scroll left top transparent;
+    font-size: 21px;
+    display: inline-block;
+    height: 17px;
+    width: 41px;
+}
+
+#logo-wso2:hover {
+    background-position: left -18px;
+}
+
 ::-webkit-input-placeholder {
     color: #333;
 }
@@ -516,15 +541,10 @@ a.ast-name:hover {
 }
 
 .bookmark-link{
-    display: block;
     color: #fff;
-    margin-top: 10px;
-    z-index: 1000;
-    width: 151px;
-    right: 31px;
-    /* top: -8px; */
-    margin-top: -3px;
-    height: auto;
+    position: relative;
+    line-height: 30px;
+    margin-right:10px;
 }
 .bookmark-link span{
     padding-right:4px;
@@ -534,6 +554,18 @@ a.ast-name:hover {
 }
 .bookmark-link i{
     line-height:30px;
+}
+.fw.store-bookmarked,.fw.store-bookmark{
+    font-size: 20px;
+}
+.ast-content a.btn{
+    padding: 0 5px 0 0;
+}
+.store-bookmarked{
+    color: #ff8100;
+}
+.store-bookmark{
+    color: #cccccc;
 }
 .register {
     width: auto;
@@ -664,7 +696,10 @@ a.login:focus {
     background: url('../img/store-stars.png') no-repeat bottom left;
     height: inherit;
 }
-
+.asset-type-separator{
+    border: solid 1px #ccc;
+    width: 100%;
+}
 /* sorting */
 .dropdown-asset-custom{
     position: relative;
@@ -676,7 +711,7 @@ a.login:focus {
     color: #fff;
     float: right;
     font-size: 14px;
-    left: 7px;
+    left: 6px;
     list-style: outside none none;
     margin: 0 0 0 -121px;
     width: 120px;
@@ -684,10 +719,11 @@ a.login:focus {
     padding: 5px 0;
     position: absolute;
     text-align: left;
-    top: 30px;
+    top: 24px;
     z-index: 1000;
     box-shadow: none;
     min-width:152px;
+    opacity: 0.9;
 }
 
 .dropdown-asset-custom ul.dropdown-menu a {
@@ -805,11 +841,10 @@ a.ast-type-item:hover {
     background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.9) 50%);
 }
 .title {
-    border-bottom: 3px solid #237bd5;
+    border-bottom: 2px solid #237bd5;
     float: left;
     font-size: 22px;
-    height: 59px;
-    padding: 27px 0px 0;
+    padding: 10px 0 0;
     width: auto;
     margin-bottom: 15px;
 }
@@ -847,6 +882,8 @@ a.ast-type-item:hover {
     float: left;
     height:44px;
     width: 54px;
+    left: 0;
+    position: absolute;
 }
 .wr-asset-type-switcher span.btn-asset {
     width: 54px;
@@ -1087,7 +1124,7 @@ a:hover, a:focus {
     line-height: 32px;
 }
 .dropdown-menu-content {
-    background-color: #e4e4e4;
+    background-color: #4F5050;
     padding: 10px 20px;
     color: #fff;
 }
@@ -1099,7 +1136,7 @@ a:hover, a:focus {
     border:none;
 }
 .dropdown-menu-content a {
-    color: #333;
+    color: #fff;
     cursor: pointer;
     display: block;
 
@@ -1115,6 +1152,16 @@ a:hover, a:focus {
 }
 .es-logout-menu {
     background: transparent !important;
+}
+
+.es-user-icon{
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.es-user-name{
+    display: inline-block;
+    margin-right: 5px;
 }
 
 .white{color: #f3f3f3;}
@@ -1325,6 +1372,7 @@ h2.app-title {
 }
 .ctrl-wr-asset .ast-content {
     background-color: #fff;
+    padding-bottom:10px;
 }
 
 .ctrl-wr-asset.selected {
@@ -1408,8 +1456,8 @@ span.advanced-search-icons{
         float: right;
     }
     .ro-text {
-        visibility: hidden;
-        display: none;
+    /*    visibility: hidden;
+        display: none;*/
     }
     #advanced-search{
         width: 100%;
@@ -1575,3 +1623,63 @@ a.ctrl-filter-category {
 .wr-filter-category .dropdown-menu li a:hover {
     background:#61a3e6;
 }
+
+.ctrl-wr-asset  {
+    margin-bottom: 15px !important;
+}
+
+/* ========================================================================
+ * data table styles
+ * ======================================================================== */
+
+ul.sort-list li a:before {
+    margin-right: 5px;
+    content: "\e673";
+    font-family: "font-wso2", serif;
+}
+
+ul.sort-list li a.sorting_asc:before {
+    content: "\e64b";
+    color: black;
+}
+
+ul.sort-list li a.sorting_asc:hover::before{
+    content: "\e64b";
+    color: #fff;
+}
+
+
+ul.sort-list li a.sorting_desc:before {
+    content: "\e663";
+    color: black;
+}
+
+
+ul.sort-list li a.sorting_desc:hover::before {
+    content: "\e663";
+    color: #fff;
+}
+
+
+ul.sort-list li a.active{
+    color: black;
+}
+
+ul.sort-list li a.active:hover{
+    color: #fff;
+}
+
+
+.sort-list > li > a {
+    color: black;
+}
+
+.dropdown-header {
+    display: block;
+    padding: 3px 20px;
+    font-size: 12px;
+    line-height: 1.42857;
+    /*color: currentColor;*/
+    white-space: nowrap;
+}
+

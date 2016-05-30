@@ -2,38 +2,39 @@
     <div class="well asset-well">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-1">
-                    <div class="ast-img setbgcolor" style="background: {{this.uniqueColor}}">
-                        <span class="ast-type-icon">
-                            <i class="{{icon}} fw-lg"></i>
-                        </span>
-                        <div class="ast-name-icon">{{this.nameToChar}}</div>
-                    </div>
+                <div class="col-lg-2 col-md-2 thumbnail-width-fixer">
+                    {{>asset-thumbnail .}}
                 </div>
-                <div class="col-lg-10 padding-left-double">
-                    <h4>{{name}}</h4>
+                <div class="col-lg-10 col-md-10">
+                    <h1 class="asset-name">{{name}}</h1>
                     {{#if version}}
-                        <p>Version : {{version}}</p>
+                        <h5 class="ast-ver ast-details">Version : {{version}}</h5>
                     {{/if}}
                     {{#if lifecycleState}}
-                        <p>{{lifecycle}} : {{lifecycleState}}</p>
+                        <h5 class="ast-lc ast-details">{{lifecycle}} : {{lifecycleState}}</h5>
                     {{/if}}
-                    <div class="well-description">{{tables.0.fields.createdtime.value}}</div>
+                    {{#if createdDate}}
+                    <div class="well-description padding-bottom-lg">{{createdDate}}</div>
+                    {{/if}}
                 </div>
             </div>
         </div>
     </div>
 {{/with}}
-<div class="delete" id="deleteModal" >
+<div class="delete" id="deleteModal">
     <div class="form-inline">
-          <p id="delete-msg">{{t "Do you want to delete "}}<b>{{assets.name}}</b>{{t " "}}{{rxt.singularLabel}}{{t "?"}}</p>
-          <input type="hidden" id="asset-id" value="{{assets.id}}">
-          <input type="hidden" id="asset-name" value="{{assets.name}}">
-          <input type="hidden" id="asset-type" value="{{assets.type}}">
-          <input type="hidden" id="landing-page" value="{{meta.landingPage}}">
-          <i class="fa fa-spinner fa-spin fa-3x hide" id="delete-loading"></i>
-          <br/>
-          <button type="button" id="btn-delete-con" class="btn btn-danger" >{{t "Delete"}}</button>
-          <button type="button" id="btn-cancel-con" class="btn btn-primary" >{{t "Cancel"}}</button>
+        <div class="message message-danger" style="display: none">
+            <h4><i class="icon fw fw-error"></i>Asset deletion</h4>
+            <p id="delete-msg">{{t "Do you want to delete "}}
+                <b>{{assets.name}}</b>{{t " "}}{{rxt.singularLabel}}{{t "?"}}</p>
+        </div>
+        <input type="hidden" id="asset-id" value="{{assets.id}}">
+        <input type="hidden" id="asset-name" value="{{assets.name}}">
+        <input type="hidden" id="asset-type" value="{{assets.type}}">
+        <input type="hidden" id="landing-page" value="{{meta.landingPage}}">
+        <i class="fa fa-spinner fa-spin fa-3x hide" id="delete-loading"></i>
+        <br/>
+        <button type="button" id="btn-delete-con" class="btn btn-danger">{{t "Delete"}}</button>
+        <button type="button" id="btn-cancel-con" class="btn btn-default">{{t "Cancel"}}</button>
     </div>
 </div>

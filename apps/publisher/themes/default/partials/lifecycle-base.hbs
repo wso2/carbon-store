@@ -4,31 +4,27 @@
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <div id='lifecycle-asset-details'>
             {{#with assets}}
-                <div class="well asset-well">
-                    <div class="container-fluid">
-                        <div class="row">
-                            <div class="col-lg-1">
-                                <div class="ast-img setbgcolor" style="background: {{this.uniqueColor}}">
-                        <span class="ast-type-icon">
-                            <i class="{{icon}} fw-lg"></i>
-                        </span>
-
-                                    <div class="ast-name-icon">{{this.nameToChar}}</div>
-                                </div>
-                            </div>
-                            <div class="col-lg-10 padding-left-double">
-                                <h4>{{name}}</h4>
-                                {{#if version}}
-                                    <p>Version : {{version}}</p>
-                                {{/if}}
-                                {{#if lifecycleState}}
-                                    <p>{{lifecycle}} : {{lifecycleState}}</p>
-                                {{/if}}
-                                <div class="well-description">{{tables.0.fields.createdtime.value}}</div>
-                            </div>
+            <div class="well asset-well">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 thumbnail-width-fixer">
+                            {{>asset-thumbnail .}}
+                        </div>
+                        <div class="col-lg-10 col-md-10">
+                            <h1 class="asset-name">{{name}}</h1>
+                            {{#if version}}
+                                <h5 class="ast-ver ast-details">Version : {{version}}</h5>
+                            {{/if}}
+                            {{#if lifecycleState}}
+                                <h5 class="ast-lc ast-details">{{lifecycle}} : {{lifecycleState}}</h5>
+                            {{/if}}
+                            {{#if createdDate}}
+                            <div class="well-description padding-bottom-lg">{{createdDate}}</div>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
+            </div>
             {{/with}}
         </div>
         {{> lifecycle-selection-area}}

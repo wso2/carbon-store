@@ -50,14 +50,17 @@ $(document).ready(function () {
 });
 
 var enableDelete = function () {
+    var deletePanel = $('.message.message-danger');
+    deletePanel.css('display','');
     $('#Delete').removeClass('not-active').removeAttr("title").unbind('click');
     $('#btn-delete-con').show();
 };
 
 var disableDelete = function (msg) {
-    $('#Delete').addClass('not-active').attr("title", msg).click(function (e) {
-        e.preventDefault()
-    });
+    var deletePanel = $('.message.message-danger');
+    deletePanel.removeClass('message-danger').addClass('message-warning');
+    deletePanel.find('.fw.fw-error').removeClass('fw-error').addClass('fw-warning');
+    deletePanel.css('display','');
 
     $('#btn-delete-con').hide();
     $('#delete-msg').text('Asset is not in a deletable state');

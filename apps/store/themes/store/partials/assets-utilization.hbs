@@ -5,11 +5,11 @@
 {{#if thisAsset.isSubscribed}}
   <a class="btn disabled" href="#modal-add-gadget"
                data-toggle="modal"
-               data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"> {{>processed-asset-text}}</a>
+               data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"><i class="fw fw-bookmark store-bookmarked"></i></a>
 {{else}}
     <a class="btn js_bookmark left"
                 href='#'
-                data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"> {{>process-asset-text }}</a>
+                data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"><i class="fw fw-bookmark store-bookmark"></i></a>
 
 {{/if}}
 

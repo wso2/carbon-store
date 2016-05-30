@@ -19,6 +19,8 @@
  */
 
 var e = request.getParameter('authFailure');
+var authFailiureMsg = request.getParameter('authFailureMsg');
+var isAuthFailed = authFailiureMsg != null ? true : false;
 
 var log = new Log();
 var relyingParty = request.getParameter('relyingParty');
@@ -68,17 +70,18 @@ if(RelayState){
                         <div class="clearfix"></div>
                         <div class="boarder-all ">
                             <div class="padding-double font-large">Sign in to continue </div>
-                            <!-- validation -->
-                            <div class="padding-double">
-                                <div class="error-msg" id="error-msg" <% if (!e) { %>style="display:none;"<% } %>>Username or password is invalid</div>
 
+                            <!-- validation -->
+                            <div class="wr-input-control padding-double">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
+                                <div class="alert alert-error form-group" id="error-msg" <% if (!isAuthFailed) { %>style="display:none;"<% } %>>The provided username and password combination is incorrect.
+</div>
                                     <label>Username</label>
-                                    <input id="username" name="username" type="text" class="form-control" tabindex="0" autocomplete="off">
+                                    <input id="username" name="username" type="text" aria-required="true" class="input-block-level form-control" tabindex="0" autocomplete="off">
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <label>Password</label>
-                                    <input id="password" name="password" type="password" class="form-control" autocomplete="off">
+                                    <input id="password" name="password" type="password" aria-required="true" class="input-block-level form-control" autocomplete="off">
                                 </div>
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <br/><br/>
@@ -105,22 +108,30 @@ if(RelayState){
  <% include(themeModule.getThemedUrl('includes/footer_file_imports.jag')); %>
 <script type="text/javascript">
     $(function () {
-        $('#loginForm').submit(function(){
-            var username = $('#username').val();
-            var password = $('#password').val();
-            if(username == "" || password == ""){
-                $('#error-msg').html("Username or Password can't be empty.").show();
-                return false;
-            }
-        });
-        var ENTER_KEY = 13;
-        $('#username').focus();
+
         jQuery.validator.addMethod("usrName", function (value, element) {
             return this.optional(element) || /^[a-zA-Z0-9\-]*$/.test(value);
         }, "Only alphanumeric characters and '-' allowed");
+
         jQuery.validator.addMethod("usrNameLength", function (value, element) {
             return value.length >= 3 && value.length <= 30;
         }, "username must contain minimum 3 characters and maximum 30 characters");
+
+        $("#loginForm").validate({
+            rules: {
+                username: "required",
+                password: "required"
+            },
+            messages: {
+                username: "Please provide a username",
+                password: "Please provide a password"
+            },
+            submitHandler: function(form) {
+                $("#error-msg").hide();
+                form.submit();
+            }
+        });
+        $('#username').focus();
 
     });
 </script>

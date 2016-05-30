@@ -27,6 +27,7 @@ var constants = {};
     constants.DEFAULT_TITLE = 'ES';
     constants.DEFAULT_DESCRIPTION = 'this is list of top assets';
     constants.MSG_PAGE_INFO_NOT_FOUND = 'Title not found';
+    constants.BREADCRUMB_DEFAULT_ROOT = 'HOME';
     constants.DEFAULT_TENANT = -1234;
     constants.RECENT_ASSET_COUNT = 7; //The default number of recent assets to be retrieved
     constants.POPULAR_ASSET_COUNT = 1;

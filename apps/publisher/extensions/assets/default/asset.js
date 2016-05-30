@@ -195,7 +195,7 @@ asset.configure = function() {
                 lifecycleEnabled: true
             },
             ui: {
-                icon: 'fw fw-resource'
+                icon: 'fw fw-web-app'
             },
             categories: {
                 categoryField: 'overview_category'
@@ -236,7 +236,6 @@ asset.renderer = function(ctx) {
         var navList = util.navList();
         if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_CREATE, ctx.assetType, ctx.session)) {
             navList.push('Add ', 'btn-add-new', util.buildUrl('create'));
-            navList.push('Statistics', 'btn-stats', '/assets/' + type + '/statistics');
         }
         //navList.push('Configuration', 'icon-dashboard', util.buildUrl('configuration'));
         return navList.list();
@@ -248,7 +247,7 @@ asset.renderer = function(ctx) {
         var isLCViewEnabled = ctx.rxtManager.isLifecycleViewEnabled(ctx.assetType);
         var user = require('store').server.current(session);
         var username = user? user.username : null;
-        navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
+        //navList.push('Overview', 'btn-overview', util.buildUrl('details') + '/' + id);
         if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session) && permissionAPI.hasAssetPagePermission(type,'update',user.tenantId,username)) {
             navList.push('Edit', 'btn-edit', util.buildUrl('update') + '/' + id);
         }
@@ -419,6 +418,9 @@ asset.renderer = function(ctx) {
                     return;
                 }
                 require('/modules/page-decorators.js').pageDecorators.hideEmptyTables(ctx,page,this);
+            },
+            populateBreadcrumb:function(page){
+                require('/modules/page-decorators.js').pageDecorators.populateAssetPageBreadcrumb(ctx,page,this);
             }
         }
     };

@@ -243,6 +243,10 @@ $(function() {
         $(id(container)).show();
     };
 
+    var renderServerWarning = function(message){
+        renderPartial(constants.CONTAINER_WARN_MESSAGE,constants.CONTAINER_LC_GLOBAL_NOTIFICATIONS_AREA,message);
+    };
+
     var renderLCActions = function() {
         var container = config(constants.CONTAINER_LC_ACTION_AREA);
         var impl = LifecycleAPI.lifecycle();
@@ -275,10 +279,7 @@ $(function() {
                 $(id(container)).removeClass('not-active').removeAttr("title").unbind('click');
                 return;
             }
-            $(id(container)).addClass('not-active').attr("title", "Asset is not in a deletable State!")
-                .click(function (e) {
-                    e.preventDefault()
-                });
+            $(id(container)).attr("title", "Asset is not in a deletable State!");
         }
     };
     var unrenderLCActions = function() {
@@ -422,6 +423,7 @@ $(function() {
                 type: constants.NOTIFICATION_WARN,
                 global: false
             });
+            renderServerWarning(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE));
             hideCommentInputArea();
             renderChecklistItems();
             return;

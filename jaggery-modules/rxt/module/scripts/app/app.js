@@ -212,6 +212,23 @@ var app = {};
         }
         return page;
     };
+
+    function Breadcrumb(parent){
+        this.entries = parent || [];
+    }
+    Breadcrumb.prototype.crumb = function(label,link){
+        var entry = {};
+        entry.label = label;
+        entry.link = link;
+        this.entries.push(entry);
+    };
+
+    Breadcrumb.prototype.build = function(){
+        return this.entries;
+    };
+
+    app.Breadcrumb = Breadcrumb;
+
     var getAppExtensionBasePath = function() {
         return '/extensions/app';
     };

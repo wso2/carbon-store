@@ -14,47 +14,50 @@
    ~ limitations under the License.
    -->
 <!-- secondary header - app bar -->
-<div id="nav" class="es-row row wr-app-bar">
-    <div class="col-md-12 wr-action-container">
-        <div class="wr-asset-type-switcher">
-            <div class="ctrl-asset-type-switcher">
-                <div class="left-menu">
-                    <nav class="navigation">
-                        <a href='{{tenantedUrl ""}}/pages/top-assets' class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}">
-                            <span class="icon"><i class="fw fw-store"></i></span> <span class="left-menu-item">ALL</span>
+<div class="wr-asset-type-switcher">
+    <div class="ctrl-asset-type-switcher">
+        <div class="left-menu">
+            <nav class="navigation">
+                <a href='{{tenantedUrl ""}}/pages/top-assets' class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}">
+                    <span class="icon"><i class="fw fw-store"></i></span> <span class="left-menu-item">ALL</span>
+                </a>
+                {{#with navigationBar}}
+                    {{#each types}}
+                        <a href='{{tenantedUrl ""}}{{this.listingUrl}}' class="{{ui.iconColor}} {{this.style}}">
+                            <span class="icon"><i class="{{ui.icon}}"></i></span> <span class="left-menu-item">{{pluralLabel}}</span>
                         </a>
-                        {{#with navigationBar}}
-                            {{#each types}}
-                                <a href='{{tenantedUrl ""}}{{this.listingUrl}}' class="{{ui.iconColor}} {{this.style}}">
-                                    <span class="icon"><i class="{{ui.icon}}"></i></span> <span class="left-menu-item">{{pluralLabel}}</span>
-                                </a>
-                            {{/each}}
-                        {{/with}}
-                    </nav>
-                    <div class="tags-wrapper">
-                        <div class="tag-title"> Tags </div>
-                        <div class="tag-content">
-                            {{#each tags}}
-                                    {{#if this.selected}}
-                                        {{#if ../../assetCategoryDetails.hasCategories}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
-                                        {{else}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
-                                        {{/if}}
-                                    {{else}}
-                                        {{#if ../../assetCategoryDetails.hasCategories}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span>{{this.value}}</span></a>
-                                        {{else}}
-                                            <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span>{{this.value}}</span></a>
-                                        {{/if}}
-                                    {{/if}}
-                            {{/each}}
-                            {{> categorization-entry .}}
-                        </div>
+                    {{/each}}
+                {{/with}}
+            </nav>
+            {{#if tags}}
+                <div class="tags-wrapper">
+                    <div class="tag-title"> Tags </div>
+                    <div class="tag-content">
+                        {{#each tags}}
+                            {{#if this.selected}}
+                                {{#if ../../assetCategoryDetails.hasCategories}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
+                                {{else}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
+                                {{/if}}
+                            {{else}}
+                                {{#if ../../assetCategoryDetails.hasCategories}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span>{{this.value}}</span></a>
+                                {{else}}
+                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span>{{this.value}}</span></a>
+                                {{/if}}
+                            {{/if}}
+                        {{/each}}
+                        {{> categorization-entry .}}
                     </div>
                 </div>
-            </div>
+            {{/if}}
         </div>
+    </div>
+</div>
+<div class="clear-both"></div>
+<div id="nav" class="es-row wr-app-bar">
+    <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
         <div id="the-basics" class="es-input-group input-group input-wrap">
             <div class="search-wrapper" style="float:left;width:80%;position:relative;left:0px;margin-left:-45px;">
                 {{#if rxt.pluralLabel}}
@@ -71,19 +74,16 @@
         </div>
         <!--search--->
         <nav-es style="float:left;width:100%;position:relative;left:5px ;">
-            <ul id="dropdown-taxonomy" >
-
-
+            <ul class="cf" id="dropdown-taxonomy" >
+                <>
             </ul>
         </nav-es>
     </div>
     {{#unless isUserDomainAndUrlDomainDifferent}}
-        <div class="site-wide-menu">
-            <div class="inline-block margin-top-sm">
-                {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
-                    <a href="{{tenantedUrl "/pages/my-items"}}" class="bookmark-link" title="{{t "My bookmarks "}}"><span class="bookmark-link-text">{{t "My bookmarks "}}</span><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i></a>
-                {{/hasAppPermission}}
-            </div>
+        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
+            {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
+                <a href="{{tenantedUrl "/pages/my-items"}}" class="bookmark-link pull-right" title="{{t "Navigate to your bookmarks list"}}"><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i> <span class="bookmark-link-text">{{t "My bookmarks "}}</span></a>
+            {{/hasAppPermission}}
         </div>
     {{/unless}}
 </div>
@@ -125,4 +125,3 @@
         {{/if}}
     </div>
 {{/if}}
-</br> </br> </br>

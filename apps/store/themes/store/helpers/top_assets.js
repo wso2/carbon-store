@@ -20,6 +20,7 @@ var resources = function (page, meta) {
     return {
         template: 'top-assets.hbs',
         js: ['asset-core.js', 'top-assets.js' ],
-        css: ['top-assets.css']
+        css: ['top-assets.css'],
+        code: ['search-history.hbs']
     };
 };
