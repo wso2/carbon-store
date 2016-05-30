@@ -112,6 +112,7 @@ $(function() {
             $(this).on('click', function(e) {
                 e.preventDefault();
                 var action = $(this).data('action');
+                action = action || '';
                 var inputs = {};
                 var commentContainer = config(constants.INPUT_TEXTAREA_LC_COMMENT);
                 var comment = $(id(commentContainer)).val() || null;
@@ -138,11 +139,11 @@ $(function() {
         //Check if the lifecycle has transition inputs for the action
         var transitionInputMap = impl.transitionInputs(action);
         //If there are no inputs do nothing
-        if ((!transitionInputMap)||(transitionInputMap.inputs.length>0)) {
+        if ((!transitionInputMap)||(transitionInputMap.inputs.length<=0)) {
             return false;
         }
         var actionData = {};
-        actionData.label = action.toUpperCase();
+        actionData.label = action;
         actionData.action = action;
         actionData.style = 'btn-default';
         var inputs = transitionInputMap.inputs;

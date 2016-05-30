@@ -2,9 +2,9 @@
 <form id='lifecycle-transition-inputs-field-form' class="form-horizontal">
 {{#each .}}
 	<div class="form-group">
-		<label class="col-sm-2 form-label">{{name}}</label>
+		<label class="col-sm-2 form-label">{{label}}</label>
 		<div class="col-sm-10">
-			<input class="form-control" type='{{type}}' name='{{name}}' />
+			<input class="form-control" type='{{type}}' name='{{name}}' placeholder="{{tooltip}}" {{#if required}}required{{/if}} />
 		</div>
 	</div>
 {{/each}}
