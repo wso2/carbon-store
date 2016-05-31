@@ -38,7 +38,7 @@
         relayState = (!ignoreReferer) ? relayState : context + '/login?ignoreReferer=true';
 
         log.debug("portal session index : " + sso_sessions[session.getId()]);
-        session.invalidate();
+        //session.invalidate();
         %>
         <div>
            <p>You are now redirected to Stratos Identity. If the
