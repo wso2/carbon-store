@@ -121,19 +121,6 @@ $(function() {
     };
 
     var wireTransitionInputActions = function(container) {
-        validator.showError = function(element,errorMessage){
-                $(element).notify(
-                        errorMessage,
-                        {
-                            position:"right",
-                            autoHide: false,
-                            clickToHide: false
-                        }
-                );
-        };
-        validator.hideError = function(element){
-                $(element).notify('notify-hide');
-        };
         $(id(container)).children('a').each(function() {
             $(this).on('click', function(e) {
                 e.preventDefault();
@@ -566,6 +553,21 @@ $(function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();
         LifecycleAPI.lifecycle(activeLC).fetchHistory();
+
+        validator.showError = function(element,errorMessage){
+                $(element).notify(
+                        errorMessage,
+                        {
+                            position:"right",
+                            autoHide: false,
+                            clickToHide: false
+                        }
+                );
+        };
+        validator.hideError = function(element){
+                $(element).notify('notify-hide');
+        };
+        
     };
     init();
 });

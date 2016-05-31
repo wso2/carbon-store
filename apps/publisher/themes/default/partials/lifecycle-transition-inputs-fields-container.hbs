@@ -4,7 +4,7 @@
 	<div class="form-group">
 		<label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 custom-form-label text-right">{{label}}</label>
 		<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">
-			<input class="form-control {{#if required}}validate-required{{/if}}" type='text'  name='{{name}}' placeholder="{{tooltip}}" />
+			<input class="form-control {{#if required}}validate-required{{/if}} {{#if regex}}validate-regexp{{/if}}" type='text' data-regexp='{{regex}}' name='{{name}}' placeholder="{{tooltip}}" />
 		</div>
 	</div>
 {{/each}}
