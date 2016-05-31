@@ -8,10 +8,12 @@ var asset = {};
         }
         $(elem).find('.sub-bookmark').addClass('fa fa-spinner fa-spin');
         $.ajax({
-            url: caramel.url('/apis/subscriptions') + '?type=' + type + '&asset=' + path + '&destination=' + encodeURIComponent(location.href),
-            method:'GET',
+            url: caramel.url('/apis/subscriptions'),
+            data: {type: type, asset: path, destination: encodeURIComponent(location.href)},
+            method:'POST',
             success: function (data) {
-                location.href = destination;
+                messages.alertSuccess("Successfully subscribed to asset");
+                $('i',elem).removeClass('store-bookmark').addClass('store-bookmarked');
             },
             error: function () {
                 $(elem).find('.sub-bookmark').removeClass('fa fa-spinner fa-spin');
