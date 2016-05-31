@@ -46,6 +46,9 @@
                 log.debug('Login URL: '+postUrl);
             }
     session.remove("Loged");
+    var log = new Log();
+    log.info("[STORE] LOGIN URL: " + postUrl);
+    log.info('[STORE] Initiating login request from ' + session.getId());
     if (!session.get("Loged")) {
         %>
 
