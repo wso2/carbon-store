@@ -22,6 +22,8 @@ LifecycleAPI.configs({
 	"lifecycleTransitionInputsFieldsArea":"lifecycle-transition-inputs-fields-container",
 	"lifecycleTransitionInputsActionsArea":"lifecycle-transition-inputs-actions-container",
 	"lifecycleTRansitionInputsFieldsForm":"lifecycle-transition-inputs-field-form",
+	"lifecycleTransitionInputUI":"lifecycle-transition-inputs-form",
+	"lifecycleTransitionInputUICancelBtn":"transition-inputs-cancel-btn",
 	"apiLCBase":"/apis/asset",
 	"apiChangeState":"/change-state",
 	"apiFetchState" :"/state",

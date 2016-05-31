@@ -50,6 +50,8 @@ var LifecycleUtils = {};
     constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA = 'lifecycleTransitionInputsFieldsArea';
     constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA = 'lifecycleTransitionInputsActionsArea';
     constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM = 'lifecycleTRansitionInputsFieldsForm';
+    constants.CONTAINER_LC_TRANSITION_INPUTS_UI="lifecycleTransitionInputUI";
+    constants.CONTAINER_LC_TRANSITION_INPUTS_UI_CANCEL = "lifecycleTransitionInputUICancelBtn";
     constants.CONTAINER_WARN_MESSAGE = 'serverWarningMessage';
     constants.TEMPLATE_NOTIFICATION_ERROR = 'lifecycleTemplateNotficationError';
     constants.TEMPLATE_NOTIFICATION_INFO = 'lifecycleTemplateNotificationInfo';
@@ -164,6 +166,22 @@ var LifecycleUtils = {};
             }
         }
     };
+    var processInput = function(stateDetails,datamodel){
+        debugger;
+        var inputs =  datamodel.inputs || [];
+        var input;
+        var mapping = {};
+        var forEvent;
+        stateDetails.transitionInputs = [];
+        for(var index = 0 ; index < inputs.length; index++ ){
+            input = inputs[index];
+            mapping = {};
+            forEvent = input.forEvent || '';
+            mapping.forAction = forEvent.toLowerCase();
+            mapping.inputs = input.input;
+            stateDetails.transitionInputs.push(mapping);
+        }
+    }
     var processDataModel = function(stateDetails, datamodel) {
         switch (datamodel.name) {
             case 'checkItems':
@@ -174,6 +192,9 @@ var LifecycleUtils = {};
                 break;
             case 'transitionExecution':
                 processTransitionInputs(stateDetails, datamodel);
+                break;
+            case 'transitionInput':
+                processInput(stateDetails,datamodel);
                 break;
             default:
                 break;
@@ -505,7 +526,7 @@ var LifecycleUtils = {};
      * if required state is not provided it is assumed to be current state
      * Note : as this method only returns pre-set allowed actions for the current state,
      * allowed actions should be set calling setAllowedActions(actions)
-     */																																																																													
+     */                                                                                                                                                                                                                                                                                                                 
     LifecycleImpl.prototype.actions = function() {
         //Assume that a state has not been provided
         var currentState = this.currentState;
@@ -766,20 +787,17 @@ var LifecycleUtils = {};
     LifecycleImpl.prototype.transitionInputs = function(action) {
         var currentState = this.currentState;
         var state = this.state(currentState);
-        var stateDataModel = state.datamodel || {};
-        var transitionInputs = stateDataModel.transitionInputs || {};
+        var transitionInputs = state.transitionInputs || {};
         var targetAction = action.toLowerCase();
-        if (transitionInputs.hasOwnProperty(targetAction)) {
-            return transitionInputs[targetAction];
+        var transitionInput;
+        debugger;
+        for(var index = 0; index < transitionInputs.length; index++){
+            transitionInput = transitionInputs[index];
+            if(transitionInput.forAction === targetAction){
+                return  transitionInput;
+            }
         }
-        return null;
-        // return {
-        //     "action": "Promote",
-        //     "inputs": [{
-        //         "name": "id",
-        //         "type": "text"
-        //     }]
-        // };
+        return transitionInput;
     };
     LifecycleImpl.prototype.highlightCurrentState = function() {
         var currentStateNode = this.stateNode(this.currentState);

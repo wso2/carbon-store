@@ -107,11 +107,25 @@ $(function() {
         }
         return data;
     };
+    var hideTransitionInputsUI = function(){
+        $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI))).hide();
+        //Show the lifecycle actions
+        $(id(config(constants.CONTAINER_LC_ACTION_AREA))).show();
+    };
+
+    var wireTransitionInputCancelBtn = function(){
+        $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI_CANCEL))).on('click',function(e){
+            e.preventDefault();
+            hideTransitionInputsUI();
+        })
+    };
+
     var wireTransitionInputActions = function(container) {
         $(id(container)).children('a').each(function() {
             $(this).on('click', function(e) {
                 e.preventDefault();
                 var action = $(this).data('action');
+                action = action || '';
                 var inputs = {};
                 var commentContainer = config(constants.INPUT_TEXTAREA_LC_COMMENT);
                 var comment = $(id(commentContainer)).val() || null;
@@ -138,20 +152,22 @@ $(function() {
         //Check if the lifecycle has transition inputs for the action
         var transitionInputMap = impl.transitionInputs(action);
         //If there are no inputs do nothing
-        if ((!transitionInputMap)||(transitionInputMap.inputs.length>0)) {
+        if ((!transitionInputMap)||(transitionInputMap.inputs.length<=0)) {
             return false;
         }
         var actionData = {};
-        actionData.label = action.toUpperCase();
+        actionData.label = action;
         actionData.action = action;
         actionData.style = 'btn-default';
         var inputs = transitionInputMap.inputs;
         //Hide the lifecycle actions
         $(id(config(constants.CONTAINER_LC_ACTION_AREA))).hide();
         //Render the inputs 
-        renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, inputs);
+        renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, inputs,wireTransitionInputCancelBtn);
         //Render the actions
         renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,actionData,wireTransitionInputActions);
+
+        $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI))).show();
         return true;
     };
     var renderStateInformation = function() {
@@ -454,6 +470,7 @@ $(function() {
     });
     LifecycleAPI.event(constants.EVENT_ACTION_SUCCESS, function() {
         //unrenderTransitionUI();
+        hideTransitionInputsUI();
         unblockLCActions();
         clearComments();
         LifecycleAPI.notify(config(constants.MSG_SUCCESS_STATE_CHANGE), {
