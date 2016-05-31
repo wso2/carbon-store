@@ -589,6 +589,13 @@ a.ctrl-filter-category:hover {
     color: #d9534f;
 }
 
+/* ========================================================================
+ * Lifecycle template styling
+ * ======================================================================== */
+
+ .transition-inputs-instructions {
+    padding-bottom: 10px;
+ }
 
 /* ========================================================================
  * Sorting template styling

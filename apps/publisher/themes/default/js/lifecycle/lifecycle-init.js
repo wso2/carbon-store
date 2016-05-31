@@ -131,7 +131,11 @@ $(function() {
                 var comment = $(id(commentContainer)).val() || null;
                 //Obtain the inputs from the transition input form
                 inputs = obtainTransitionInputs();
-                LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
+                if(validator.isValidForm(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM)))){
+                    //throw 'Stop';
+                    LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
+                }
+                
             });
         });
     };
@@ -152,7 +156,7 @@ $(function() {
         //Check if the lifecycle has transition inputs for the action
         var transitionInputMap = impl.transitionInputs(action);
         //If there are no inputs do nothing
-        if ((!transitionInputMap)||(transitionInputMap.inputs.length<=0)) {
+        if ((!transitionInputMap.hasOwnProperty('inputs'))||(transitionInputMap.inputs.length<=0)) {
             return false;
         }
         var actionData = {};
@@ -540,6 +544,21 @@ $(function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();
         LifecycleAPI.lifecycle(activeLC).fetchHistory();
+
+        validator.showError = function(element,errorMessage){
+                $(element).notify(
+                        errorMessage,
+                        {
+                            position:"right",
+                            autoHide: false,
+                            clickToHide: false
+                        }
+                );
+        };
+        validator.hideError = function(element){
+                $(element).notify('notify-hide');
+        };
+        
     };
     init();
 });
