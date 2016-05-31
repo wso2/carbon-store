@@ -121,6 +121,19 @@ $(function() {
     };
 
     var wireTransitionInputActions = function(container) {
+        validator.showError = function(element,errorMessage){
+                $(element).notify(
+                        errorMessage,
+                        {
+                            position:"right",
+                            autoHide: false,
+                            clickToHide: false
+                        }
+                );
+        };
+        validator.hideError = function(element){
+                $(element).notify('notify-hide');
+        };
         $(id(container)).children('a').each(function() {
             $(this).on('click', function(e) {
                 e.preventDefault();
@@ -131,7 +144,11 @@ $(function() {
                 var comment = $(id(commentContainer)).val() || null;
                 //Obtain the inputs from the transition input form
                 inputs = obtainTransitionInputs();
-                LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
+                if(validator.isValidForm(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM)))){
+                    //throw 'Stop';
+                    LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
+                }
+                
             });
         });
     };
