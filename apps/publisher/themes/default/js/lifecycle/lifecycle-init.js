@@ -152,7 +152,7 @@ $(function() {
         //Check if the lifecycle has transition inputs for the action
         var transitionInputMap = impl.transitionInputs(action);
         //If there are no inputs do nothing
-        if ((!transitionInputMap)||(transitionInputMap.inputs.length<=0)) {
+        if ((!transitionInputMap.hasOwnProperty('inputs'))||(transitionInputMap.inputs.length<=0)) {
             return false;
         }
         var actionData = {};
