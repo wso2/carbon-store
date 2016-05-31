@@ -1,10 +1,13 @@
+
+<form id='lifecycle-transition-inputs-field-form' class="form-horizontal well">
 <i>Please fill in the additional information to proceed or click </i><a id='transition-inputs-cancel-btn'>Cancel</a> <i> to abort.</i>
-<form id='lifecycle-transition-inputs-field-form' class="form-horizontal">
 {{#each .}}
 	<div class="form-group">
-		<label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 custom-form-label text-right">{{label}}</label>
+		<label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 custom-form-label text-right">{{label}} {{#if required}}<sup class="required-field">*</sup>{{/if}} :
+		</label>
 		<div class="custom-form-right col-lg-5 col-md-8 col-sm-8 col-xs-12">
 			<input class="form-control {{#if required}}validate-required{{/if}} {{#if regex}}validate-regexp{{/if}}" type='text' data-regexp='{{regex}}' name='{{name}}' placeholder="{{tooltip}}" />
+
 		</div>
 	</div>
 {{/each}}
