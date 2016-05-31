@@ -797,7 +797,7 @@ var LifecycleUtils = {};
                 return  transitionInput;
             }
         }
-        return transitionInput;
+        return {};
     };
     LifecycleImpl.prototype.highlightCurrentState = function() {
         var currentStateNode = this.stateNode(this.currentState);
