@@ -341,7 +341,7 @@ var engine = caramel.engine('handlebars', (function() {
                 }
                 switch (field.type) {
                     case 'options':
-                        out = elementPrefix + renderOptions(field.value, field.values[0].value, field, mode) + elementSuffix;
+                        out = elementPrefix + renderOptions(value, field.values[0].value, field, mode, field.count) + elementSuffix;
                         break;
                     case 'option-text':
                         var options = {
@@ -444,16 +444,28 @@ var engine = caramel.engine('handlebars', (function() {
                 return new Handlebars.SafeString(renderEditableHeadingField(table));
             });
             //If there is no rows then a single empty row with the fields should be rendererd
-            Handlebars.registerHelper('renderEditableUnboundTableRow', function(table) {
+            Handlebars.registerHelper('renderEditableUnboundTableRow', function (table, emptyRow) {
                 //Get the number of rows in the table
-
                 var fields = table.fields;
                 var out = '';
                 out += '<tr id="table_reference_'+table.name+'">';
+                var keyIndex = 0;
                 for (var key in fields) {
-                    fields[key].value = "";
-                    fields[key].renderInTable = true;
-                    out += renderTableField(fields[key]);
+                    if (fields.hasOwnProperty(key)) {
+                        if (fields[key].value && !emptyRow) {
+                            for (var i = 0; i < fields[key].value.length; i++) {
+                                fields[key].renderInTable = true;
+                                fields[key].valueActive = fields[key].value[i];
+                                fields[key].count = keyIndex;
+                                out += renderTableField(fields[key]);
+                                keyIndex++;
+                            }
+                        } else {
+                            fields[key].renderInTable = true;
+                            fields[key].value = "";
+                            out += renderTableField(fields[key]);
+                        }
+                    }
                 }
                 out += '<td><a class="js-remove-row"><i class="fa fa-trash"></i></a> </td>';
                 out += '</tr>';
