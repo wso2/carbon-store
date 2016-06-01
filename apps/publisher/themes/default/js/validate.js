@@ -59,13 +59,13 @@ validator.addDefaultMethods = function () {
                 "Doesn't satisfy regular expression:" + $(element).attr('data-regexp');
         }
 
-    })
+    });
 };
 /*
  The following can be use from an extension as follows.
  It's not bind to a specific field.
  Following method validate to check if at least one of the checkboxes are checked.
- Ex:
+ @example:
     validator.addCustomMethod(function () {
         var bronze = $('#tierAvailability_bronze');
         var unlimited = $('#tierAvailability_unlimited');
@@ -119,7 +119,7 @@ validator.validateCustom = function(){
  */
 validator.showErrors = function (elem, errorMessage) {
     var element;
-    if (typeof  elem == "object" && elem instanceof jQuery) {
+    if (typeof  elem === "object" && elem instanceof jQuery) {
         element = elem;
     } else {
         element = $(elem);
@@ -175,7 +175,7 @@ validator.validate = function (element) {
  */
 validator.removeValidationEvents = function(form){
     var mainForm;
-    if (typeof  form == "object" && form instanceof jQuery) {
+    if (typeof  form === "object" && form instanceof jQuery) {
         mainForm = form;
     } else {
         mainForm = $(form);
@@ -190,19 +190,14 @@ validator.removeValidationEvents = function(form){
  @submitCallback: execute a custom method to override the behavior when form submitting.
  */
 validator.initValidationEvents = function (form, submitCallback) {
-    var mainForm;
-    if (typeof  form == "object" && form instanceof jQuery) {
-        mainForm = form;
-    } else {
-        mainForm = $(form);
-    }
-    mainForm.on('blur keyup change', 'input[type="text"],input[type="file"],input[type="password"],textarea', function (e) {
+    var $form = typeof form === "string" ? $('#' + form) : form; 
+    $form.on('blur keyup change', 'input[type="text"],input[type="file"],input[type="password"],textarea', function (e) {
         var element = e.target;
         validator.validate(element);
     });
     if(!submitCallback){
-        mainForm.submit(function (e) {
-            var formIsValid = validator.isValidForm(mainForm);
+        $form.submit(function (e) {
+            var formIsValid = validator.isValidForm($form);
             if (!formIsValid) {
                 window.scrollTo(0, 0);
                 e.preventDefault();
@@ -218,14 +213,9 @@ validator.initValidationEvents = function (form, submitCallback) {
  @return: returns true or false where true implies the form is valid.
  */
 validator.isValidForm = function (form) {
-    var mainForm;
-    if (typeof  form == "object" && form instanceof jQuery) {
-        mainForm = form;
-    } else {
-        mainForm = $(form);
-    }
+    var $form = typeof form === "string" ? $('#' + form) : form;
     var formIsValid = true;
-    $('input[type="text"],input[type="file"],input[type="password"],textarea,select', mainForm).each(function () {
+    $('input[type="text"],input[type="file"],input[type="password"],textarea,select', $form).each(function () {
         var fieldValid = validator.validate(this);
         formIsValid = formIsValid && fieldValid;
     });
