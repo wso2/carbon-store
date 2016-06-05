@@ -109,6 +109,8 @@ var pageDecorators = {};
             var lifecycle;
             var modifiedLifecycles = [];
             var entry;
+            var lifecycleAPI = require('lifecycle').api;
+            var possibleLifecycles = lifecycleAPI.getLifecycleList(ctx.tenantId);
             for (var index = 0; index < lifecycles.length; index++) {
                 lifecycle = lifecycles[index];
                 entry = {};
@@ -119,6 +121,15 @@ var pageDecorators = {};
                 }
                 modifiedLifecycles.push(entry);
             }
+            var filtered = possibleLifecycles.filter(function(lifecycle) {
+                for (var index = 0;index < modifiedLifecycles.length; index++) {
+                    if (modifiedLifecycles[index].name == lifecycle) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+            page.assets.possibleLifecycles = filtered;
             page.assets.availableLifecycles = modifiedLifecycles;
             page.assets.hasMultipleLifecycles = (lifecycles.length > 1) ? true : false;
         }

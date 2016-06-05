@@ -135,7 +135,7 @@ $(function() {
                     //throw 'Stop';
                     LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
                 }
-                
+
             });
         });
     };
@@ -166,7 +166,7 @@ $(function() {
         var inputs = transitionInputMap.inputs;
         //Hide the lifecycle actions
         $(id(config(constants.CONTAINER_LC_ACTION_AREA))).hide();
-        //Render the inputs 
+        //Render the inputs
         renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, inputs,wireTransitionInputCancelBtn);
         //Render the actions
         renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,actionData,wireTransitionInputActions);
@@ -287,7 +287,7 @@ $(function() {
             }
             if(actions.length > 0){
                 showCommentInputArea();
-            } 
+            }
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
@@ -331,7 +331,7 @@ $(function() {
         //         return;
         //     }
         //     data.href =transitionUI.href;
-        //     renderPartial(constants.CONTAINER_TRANSITION_UI_AREA,constants.CONTAINER_TRANSITION_UI_AREA,data); 
+        //     renderPartial(constants.CONTAINER_TRANSITION_UI_AREA,constants.CONTAINER_TRANSITION_UI_AREA,data);
         // }
     };
     var unrenderTransitionUI = function() {
@@ -358,7 +358,7 @@ $(function() {
         container.html('');
         container.attr('style', '');
     }
-    //Blocks user interaction with the check list 
+    //Blocks user interaction with the check list
     var blockChecklist = function() {
         var checklistContainer = config(constants.CONTAINER_CHECKLIST_OVERLAY);
         var container = $(id(checklistContainer));
@@ -549,11 +549,37 @@ $(function() {
         appendHistory(historyStart,historyEnd);
     });
 
+    var initLifecycleManagement = function(){
+      $('#lcMngAttachBtn').on('click',function(e){
+        e.preventDefault();
+        var selectedLifecycle = $('#lcPossibleLifecyclesSelect').val();
+        var data = {};
+        data.lifecycles = [];
+        data.lifecycles.push(selectedLifecycle);
+        var id = LifecycleUtils.currentAsset().id;
+        var type = LifecycleUtils.currentAsset().type;
+        var url = caramel.url('/apis/asset/'+id+'/add-lifecycles?type='+type);
+        $.ajax({
+          type:'POST',
+          url:url,
+          data:JSON.stringify(data),
+          contentType:'application/json',
+          success:function(){
+            //alert('Success');
+            window.location.reload(false);
+          },
+          error:function(){
+            alert('Failed');
+          }
+        });
+      });
+    };
+
     var init = function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();
         LifecycleAPI.lifecycle(activeLC).fetchHistory();
-
+        initLifecycleManagement();
         validator.showError = function(element,errorMessage){
                 $(element).notify(
                         errorMessage,
@@ -567,7 +593,7 @@ $(function() {
         validator.hideError = function(element){
                 $(element).notify('notify-hide');
         };
-        
+
     };
     init();
 });

@@ -24,6 +24,9 @@ var api = {};
     var ACTION_CHECKLIST = 'checklist';
     var ACTION_UPDATE_CHECKLIST = 'update-checklist';
     var ACTION_LC_HISTORY = 'lifecycle-history';
+    var ACTION_LC_VIEW = 'lifecycles';
+    var ACTION_LC_ADD =  'add-lifecycles';
+    var ACTION_LC_REMOVE = 'remove-lifecycles';
     var ACTION_ADD_TAGS = 'add-tags';
     var ACTION_REMOVE_TAGS = 'remove-tags';
     var ACTION_RETRIEVE_TAGS = 'tags';
@@ -36,7 +39,7 @@ var api = {};
     var rxtModule = require('rxt');
     var es = require("store").server;
     var tagsAPI = require('/modules/tags-api.js').api;
-    var assetAPI = require('/modules/asset-api.js').api;        
+    var assetAPI = require('/modules/asset-api.js').api;
     var utility = require('/modules/utility.js').rxt_utility();
     var exceptionModule = utils.exception;
     var constants = rxtModule.constants;
@@ -281,6 +284,27 @@ var api = {};
             return errorMsg(msg(500, 'New version of asset of id :'+ options.id + ' could not be created.'));
         }
     };
+    api.attachLifecycles = function(req, res, session, options) {
+        if (req.getMethod() !== 'POST') {
+            return errorMsg(msg(405, 'Lifecycles should be attached with a POST'));
+        }
+        var result = lifecycleAPI.attachLifecycles(options, req, res, session);
+        return successMsg(msg(200, 'Lifecycles attached', result));
+    };
+    api.removeLifecycles = function(req, res, session, options) {
+        if (req.getMethod() !== 'POST') {
+            return errorMsg(msg(405, 'Lifecycles should be removed with a POST'));
+        }
+        var result = lifecycleAPI.removeLifecycles(options, req, res, session);
+        return successMsg(msg(200, 'Lifecycles removed', result));
+    };
+    api.lifecycles = function(req, res, session, options) {
+        if (req.getMethod() !== 'GET') {
+            return errorMsg(msg(405, 'Attached lifecycles should be retrieved with a GET'));
+        }
+        var lifecycles = lifecycleAPI.listAllAttachedLifecycles(options, req, res, session);
+        return successMsg(msg(200, lifecycles, lifecycles));
+    };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
         var result = errorMsg(msg(HTTP_ERROR_NOT_IMPLEMENTED, MSG_ERROR_NOT_IMPLEMENTED));
@@ -308,6 +332,15 @@ var api = {};
                 break;
             case ACTION_CREATE_VERSION:
                 result = api.createVersion(req, res, session, options);
+                break;
+            case ACTION_LC_VIEW:
+                result = api.lifecycles(req,res,session,options);
+                break;
+            case ACTION_LC_ADD:
+                result = api.attachLifecycles(req,res,session,options);
+                break;
+            case ACTION_LC_REMOVE:
+                result = api.removeLifecycles(req,res,session,options);
                 break;
             default:
                 break;
