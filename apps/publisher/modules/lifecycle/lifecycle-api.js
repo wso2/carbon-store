@@ -652,7 +652,7 @@ var error = '';
         });
         return status;
     };
-    api.removeLifecycles = function(options, req, res, session) {
+    api.detachLifecycles = function(options, req, res, session) {
         var payload = processLCActionPayload(req);
         var lifecycles = payload.lifecycles || [];
         var am = getAssetManager(options,session);

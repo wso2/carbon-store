@@ -565,6 +565,7 @@ $(function() {
                 window.location.reload(false);
             },
             error: function() {
+              $(this).attr('disabled',false);
               LifecycleAPI.notify(config(constants.MSG_ERROR_LC_ATTACH), {
                   type: constants.NOTIFICATION_ERROR,
                   global: false
@@ -589,6 +590,7 @@ $(function() {
                 window.location.reload(false);
             },
             error: function() {
+              $(this).attr('disabled',false);
               LifecycleAPI.notify(config(constants.MSG_ERROR_LC_DETACH), {
                   type: constants.NOTIFICATION_ERROR,
                   global: false
@@ -601,8 +603,11 @@ $(function() {
         $('#lcMngAttachBtn').on('click', function(e) {
             e.preventDefault();
             //Disable the attach button
-            $(this).attr('disabled');
+            $(this).attr('disabled',true);
             $(this).html('Attaching lifecycle ....');
+            var tid = setTimeout(function(){
+
+            },3000);
             var lifecycle = $('#lcPossibleLifecyclesSelect').val();
             attachLifecycle(lifecycle);
         });
@@ -612,7 +617,7 @@ $(function() {
             $(this).on('click', function(e) {
                 e.preventDefault();
                 //Disable the remove button
-                $(this).attr('disabled');
+                $(this).attr('disabled',true);
                 $(this).html('Removing lifecycle ...');
                 var lifecycle = $(that).data('lifecycle');
                 detachLifecycle(lifecycle);

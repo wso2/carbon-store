@@ -288,22 +288,49 @@ var api = {};
         if (req.getMethod() !== 'POST') {
             return errorMsg(msg(405, 'Lifecycles should be attached with a POST'));
         }
-        var result = lifecycleAPI.attachLifecycles(options, req, res, session);
-        return successMsg(msg(200, 'Lifecycles attached', result));
+        var result;
+        try {
+            result = lifecycleAPI.attachLifecycles(options, req, res, session);
+        } catch (e) {
+            log.error('Failure to attach lifecycles');
+            log.error(e);
+        }
+        if (result) {
+            return successMsg(msg(200, 'Lifecycles attached', result));
+        }
+        return errorMsg(msg(500, 'Lifecycles not attached'));
     };
-    api.removeLifecycles = function(req, res, session, options) {
+    api.detachLifecycles = function(req, res, session, options) {
         if (req.getMethod() !== 'POST') {
             return errorMsg(msg(405, 'Lifecycles should be removed with a POST'));
         }
-        var result = lifecycleAPI.removeLifecycles(options, req, res, session);
-        return successMsg(msg(200, 'Lifecycles removed', result));
+        var result;
+        try {
+            result = lifecycleAPI.detachLifecycles(options, req, res, session);
+        } catch (e) {
+            log.error('Failure to detach lifecycles ');
+            log.error(e);
+        }
+        if (result) {
+            return successMsg(msg(200, 'Lifecycles removed', result));
+        }
+        return errorMsg(msg(500, 'Lifecycles not removed'));
     };
     api.lifecycles = function(req, res, session, options) {
         if (req.getMethod() !== 'GET') {
             return errorMsg(msg(405, 'Attached lifecycles should be retrieved with a GET'));
         }
-        var lifecycles = lifecycleAPI.listAllAttachedLifecycles(options, req, res, session);
-        return successMsg(msg(200, lifecycles, lifecycles));
+        var lifecycles;
+        try {
+            lifecycles = lifecycleAPI.listAllAttachedLifecycles(options, req, res, session);
+        } catch (e) {
+            log.error('Failure to retrieve attached lifecycles ');
+            log.error(e);
+        }
+        if (lifecycles) {
+            return successMsg(msg(200, lifecycles, lifecycles));
+        }
+        return errorMsg(msg(500, 'Could not retrieve lifecycles'));
     };
     api.resolve = function(req, res, session, options) {
         var action = options.action;
@@ -340,7 +367,7 @@ var api = {};
                 result = api.attachLifecycles(req,res,session,options);
                 break;
             case ACTION_LC_REMOVE:
-                result = api.removeLifecycles(req,res,session,options);
+                result = api.detachLifecycles(req,res,session,options);
                 break;
             default:
                 break;
