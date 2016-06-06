@@ -9,6 +9,14 @@ $(function () {
         asset.unsubscribeBookmark(elem.data('type'), elem.data('aid'), location.href, elem);
     });
 
+    $('#btn-remove-subscribe').hover(
+        function () {
+            $(this).find("i").removeClass().addClass("fa fa-remove");
+        },
+        function () {
+            $(this).find("i").removeClass().addClass("fw fw-bookmark");
+        });
+
     $("a[data-toggle='tooltip']").tooltip();
 
     $('.embed-snippet').hide();
