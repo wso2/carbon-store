@@ -596,7 +596,10 @@ a.ctrl-filter-category:hover {
  .transition-inputs-instructions {
     padding-bottom: 10px;
  }
-
+ .disable-lcmgt-btns {
+   pointer-events: none;
+   cursor: default;
+ }
 /* ========================================================================
  * Sorting template styling
  * ======================================================================== */

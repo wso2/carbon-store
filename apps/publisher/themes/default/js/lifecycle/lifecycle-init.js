@@ -549,7 +549,7 @@ $(function() {
         appendHistory(historyStart,historyEnd);
     });
 
-    var attachLifecycle = function(lifecycle) {
+    var attachLifecycle = function(lifecycle,btn) {
         var data = {};
         data.lifecycles = [];
         data.lifecycles.push(lifecycle);
@@ -565,7 +565,8 @@ $(function() {
                 window.location.reload(false);
             },
             error: function() {
-              $(this).attr('disabled',false);
+              $(btn).html('<i class="fw fw-add"></i> <span>Attach Lifecycle</span>');
+              $(btn).removeClass('disable-lcmgt-btns');
               LifecycleAPI.notify(config(constants.MSG_ERROR_LC_ATTACH), {
                   type: constants.NOTIFICATION_ERROR,
                   global: false
@@ -574,7 +575,7 @@ $(function() {
         });
     };
 
-    var detachLifecycle = function(lifecycle) {
+    var detachLifecycle = function(lifecycle,btn) {
         var data = {};
         data.lifecycles = [];
         data.lifecycles.push(lifecycle);
@@ -590,7 +591,9 @@ $(function() {
                 window.location.reload(false);
             },
             error: function() {
-              $(this).attr('disabled',false);
+              $(btn).html('<i class="fw fw-delete"></i><span>Remove</span>');
+              $(btn).removeClass('disable-lcmgt-btns');
+              //$(this).attr('disabled',false);
               LifecycleAPI.notify(config(constants.MSG_ERROR_LC_DETACH), {
                   type: constants.NOTIFICATION_ERROR,
                   global: false
@@ -603,24 +606,22 @@ $(function() {
         $('#lcMngAttachBtn').on('click', function(e) {
             e.preventDefault();
             //Disable the attach button
-            $(this).attr('disabled',true);
+            //$(this).attr('disabled',true);
             $(this).html('Attaching lifecycle ....');
-            var tid = setTimeout(function(){
-
-            },3000);
+            $(this).addClass('disable-lcmgt-btns');
             var lifecycle = $('#lcPossibleLifecyclesSelect').val();
-            attachLifecycle(lifecycle);
+            attachLifecycle(lifecycle,this);
         });
 
         $('#attachedLifecyclesTable').find('.lc-mng-remove-btn').each(function() {
-            var that = this;
             $(this).on('click', function(e) {
                 e.preventDefault();
                 //Disable the remove button
-                $(this).attr('disabled',true);
+                //$(this).attr('disabled',true);
                 $(this).html('Removing lifecycle ...');
-                var lifecycle = $(that).data('lifecycle');
-                detachLifecycle(lifecycle);
+                $(this).addClass('disable-lcmgt-btns');
+                var lifecycle = $(this).data('lifecycle');
+                detachLifecycle(lifecycle,this);
             });
         });
     };
