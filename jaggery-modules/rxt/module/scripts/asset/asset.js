@@ -1493,7 +1493,8 @@ var asset = {};
           return success;
       }
       try {
-          this.am.detachLifecycle(asset,lifecycle);
+          GovernanceUtils.removeAspect(asset.path,lifecycle,this.registry.registry);
+          //this.am.detachLifecycle(asset,lifecycle);
           success = true;
       } catch (e) {
           log.error('Failed to detatach lifecycle: ' + lifecycle + ' from the asset: ' + stringify(asset) + '.The following exception was throw: ' + e);

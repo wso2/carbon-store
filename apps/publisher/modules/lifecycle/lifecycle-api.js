@@ -644,11 +644,8 @@ var error = '';
         var asset = getAsset(options,am);
         var status = [];
         var result;
-        log.info(payload.lifecycles);
-        log.info('Lifecycles to attach ' + stringify(lifecycles));
         lifecycles.forEach(function(lifecycle) {
             result = {};
-            log.info('Attaching lifecycle : ' +  lifecycle);
             result.success = am.attachLifecycle(asset, lifecycle);
             result.lifecycle = lifecycle;
             status.push(result);

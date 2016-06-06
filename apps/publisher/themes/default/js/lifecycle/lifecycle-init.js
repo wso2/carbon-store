@@ -36,7 +36,7 @@ $(function() {
     };
     var spinnerURL = function() {
         return caramel.url('/themes/default/img/preloader-40x40.gif');
-    }
+    };
     var renderPartial = function(partialKey, containerKey, data, fn) {
         fn = fn || function() {};
         var partialName = config(partialKey);
@@ -117,7 +117,7 @@ $(function() {
         $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI_CANCEL))).on('click',function(e){
             e.preventDefault();
             hideTransitionInputsUI();
-        })
+        });
     };
 
     var wireTransitionInputActions = function(container) {
@@ -357,7 +357,7 @@ $(function() {
         var container = $(id(checklistContainer));
         container.html('');
         container.attr('style', '');
-    }
+    };
     //Blocks user interaction with the check list
     var blockChecklist = function() {
         var checklistContainer = config(constants.CONTAINER_CHECKLIST_OVERLAY);
@@ -549,30 +549,75 @@ $(function() {
         appendHistory(historyStart,historyEnd);
     });
 
-    var initLifecycleManagement = function(){
-      $('#lcMngAttachBtn').on('click',function(e){
-        e.preventDefault();
-        var selectedLifecycle = $('#lcPossibleLifecyclesSelect').val();
+    var attachLifecycle = function(lifecycle) {
         var data = {};
         data.lifecycles = [];
-        data.lifecycles.push(selectedLifecycle);
+        data.lifecycles.push(lifecycle);
         var id = LifecycleUtils.currentAsset().id;
         var type = LifecycleUtils.currentAsset().type;
-        var url = caramel.url('/apis/asset/'+id+'/add-lifecycles?type='+type);
+        var url = caramel.url('/apis/asset/' + id + '/attach-lifecycles?type=' + type);
         $.ajax({
-          type:'POST',
-          url:url,
-          data:JSON.stringify(data),
-          contentType:'application/json',
-          success:function(){
-            //alert('Success');
-            window.location.reload(false);
-          },
-          error:function(){
-            alert('Failed');
-          }
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function() {
+                window.location.reload(false);
+            },
+            error: function() {
+              LifecycleAPI.notify(config(constants.MSG_ERROR_LC_ATTACH), {
+                  type: constants.NOTIFICATION_ERROR,
+                  global: false
+              });
+            }
         });
-      });
+    };
+
+    var detachLifecycle = function(lifecycle) {
+        var data = {};
+        data.lifecycles = [];
+        data.lifecycles.push(lifecycle);
+        var id = LifecycleUtils.currentAsset().id;
+        var type = LifecycleUtils.currentAsset().type;
+        var url = caramel.url('/apis/asset/' + id + '/detach-lifecycles?type=' + type);
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function() {
+                window.location.reload(false);
+            },
+            error: function() {
+              LifecycleAPI.notify(config(constants.MSG_ERROR_LC_DETACH), {
+                  type: constants.NOTIFICATION_ERROR,
+                  global: false
+              });
+            }
+        });
+    };
+
+    var initLifecycleManagement = function() {
+        $('#lcMngAttachBtn').on('click', function(e) {
+            e.preventDefault();
+            //Disable the attach button
+            $(this).attr('disabled');
+            $(this).html('Attaching lifecycle ....');
+            var lifecycle = $('#lcPossibleLifecyclesSelect').val();
+            attachLifecycle(lifecycle);
+        });
+
+        $('#attachedLifecyclesTable').find('.lc-mng-remove-btn').each(function() {
+            var that = this;
+            $(this).on('click', function(e) {
+                e.preventDefault();
+                //Disable the remove button
+                $(this).attr('disabled');
+                $(this).html('Removing lifecycle ...');
+                var lifecycle = $(that).data('lifecycle');
+                detachLifecycle(lifecycle);
+            });
+        });
     };
 
     var init = function() {

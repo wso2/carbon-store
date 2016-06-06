@@ -27,8 +27,11 @@
             </div>
             {{/with}}
         </div>
-        <div class="">
-          {{>lifecycle-management .}}
+        <!-- Lifecycle Management UI -->
+        <div>
+          {{#if meta.lifecycleMgtViewEnabled}}
+            {{>lifecycle-management .}}
+          {{/if}}
         </div>
         {{> lifecycle-selection-area}}
     </div>

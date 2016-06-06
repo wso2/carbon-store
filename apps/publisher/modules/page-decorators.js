@@ -131,7 +131,9 @@ var pageDecorators = {};
             });
             page.assets.possibleLifecycles = filtered;
             page.assets.availableLifecycles = modifiedLifecycles;
+            page.assets.hasPossibleLifecycles = (filtered.length > 0) ? true : false;
             page.assets.hasMultipleLifecycles = (lifecycles.length > 1) ? true : false;
+            page.meta.lifecycleMgtViewEnabled = ctx.rxtManager.isLifecycleMgtViewEnabled(ctx.assetType);
         }
     };
     pageDecorators.populateAssetVersionDetails = function(ctx, page, utils) {
