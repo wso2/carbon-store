@@ -280,13 +280,13 @@ var user = {};
 
     };
 
-    user.emitLogin = function (username){
+    user.emitLogin = function (username) {
         var event = require('event');
-        var usr = carbon.server.tenantUser(username);
+        var usr = carbon.server.tenantUser(username.toLowerCase());
         var um = server.userManager(usr.tenantId);
         var usr = um.getUser(usr.username);
         event.emit('login', usr.tenantId, usr, session);
-    }
+    };
 
     user.loginWithSAML = function (username) {
         return user.permitted(username, session);
