@@ -600,6 +600,20 @@ a.ctrl-filter-category:hover {
    pointer-events: none;
    cursor: default;
  }
+ .lifecycles-list {
+   table-layout: fixed;
+   width: 500px;
+ }
+ .lifecycles-mgt-icon {
+   display: inline-block;
+   margin-right: 10px;
+   margin-top: -5px;
+ }
+ .lifecycles-mgt-remove-icon {
+   display: inline-block;
+   margin-right: 10px;
+   margin-top: -5px;
+ }
 /* ========================================================================
  * Sorting template styling
  * ======================================================================== */

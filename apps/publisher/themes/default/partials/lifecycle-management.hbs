@@ -1,5 +1,5 @@
-<div class="well">
-    <h4><i class="fw fw-settings"></i><span>Lifecycle Management</span><hr/></h4>
+<div>
+    <h4><i class="fw fw-settings lifecycles-mgt-icon"></i><span>Lifecycle Management</span><hr/></h4>
     <div>
         {{#if assets.hasPossibleLifecycles}}
             <!-- UI for attaching new lifecycles -->
@@ -24,7 +24,7 @@
         <!-- List available Lifecycles -->
         <div>
             <span class="help-block">The following lifecycles have been attached to this asset:</span>
-            <table id='attachedLifecyclesTable' class="table">
+            <table id='attachedLifecyclesTable' class="table lifecycles-list">
                 <thead>
                     <tr>
                         <th>
@@ -41,7 +41,7 @@
                             </td>
                             <td>
                                 <a class='lc-mng-remove-btn' data-lifecycle="{{name}}">
-                                  <i class="fw fw-delete"></i><span>Remove</span></a>
+                                  <i class="fw fw-delete lifecycles-mgt-remove-icon"></i><span>Remove</span></a>
                             </td>
                         </tr>
                     {{/each}}
