@@ -193,7 +193,7 @@ asset.configure = function() {
                 deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
                 lifecycleEnabled: true,
-                lifecycleMgtViewEnabled:true
+                lifecycleMgtViewEnabled:false
             },
             ui: {
                 icon: 'fw fw-web-app'

@@ -528,6 +528,7 @@ $(function() {
      */
     $(constants.UI_LIFECYCLE_SELECT_ID).change(function() {
         var selectedLC = $(this).val();
+        debugger;
         //Call unload to make sure that the UI elements can de render
         LifecycleAPI.unloadActiveLifecycle();
         //Load the new lifecycle
@@ -536,6 +537,7 @@ $(function() {
     });
     $(constants.UI_LIFECYCLE_SELECT_BOX).click(function(e) {
         e.preventDefault();
+        debugger;
         var selectedLC = $(this).text();
         //Call unload to make sure that the UI elements can de render
         LifecycleAPI.unloadActiveLifecycle();
