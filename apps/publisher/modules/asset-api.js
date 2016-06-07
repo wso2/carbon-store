@@ -219,7 +219,13 @@ var result;
             return [];
         }
     };
-
+    var processTaxa = function (assetReq) {
+        if (assetReq._taxa) {
+            return assetReq._taxa.split(',');
+        } else {
+            return [];
+        }
+    };
     var validateEditableFeilds = function (type, assetReq) {
         //Obtain the field definitions for each of the fields
         var rxtManager = rxtModule.core.rxtManager(user.tenantId);
@@ -361,6 +367,7 @@ var result;
         var ctx = rxtModule.core.createUserAssetContext(session, options.type);
         var createdAsset;
         assetReq = processRequestBody(req, assetReq);
+        var taxa = processTaxa(assetReq);
         tags = processTags(assetReq);
         if (request.getParameter("asset")) {
             asset = parse(request.getParameter("asset"));
@@ -396,6 +403,13 @@ var result;
         if (tags.length > 0) {
             am.addTags(asset.id, tags);
         }
+
+        if (taxa.length > 0) {
+            for (var i = 0; i < taxa.length; i++) {
+                am.addTaxa(asset.id, taxa[i]);
+            }
+        }
+
         //Check if lifecycles are enabled
         isLCEnabled = rxtManager.isLifecycleEnabled(options.type);
         if (!isLCEnabled) {
@@ -436,12 +450,15 @@ var result;
         var user = server.current(session);
         var result;
         var assetReq = req.getAllParameters('UTF-8');
+        var taxa;
 
         //TODO this code should be improve for each and every content type
-        if(req.getContentType() === "application/json"){
+        if (req.getContentType() === "application/json") {
             assetReq = processRequestBody(req, assetReq);
+            taxa = processTaxa(assetReq);
         }
-
+        assetReq = processRequestBody(req, assetReq);
+        taxa = processTaxa(assetReq);
         //assetReq = validateEditableFeilds(options.type, assetReq);
 
         var asset = null;
@@ -492,6 +509,19 @@ var result;
             } finally {
                 metrics.stop();
             }
+            // This will get current taxa for an asset. It will remove all current taxa list and re apply new list.
+            //TODO:Try to improve here performance
+            var currentTaxa = am.getTaxa(asset.id);
+            for (var i = 0; i < currentTaxa.length; i++) {
+                am.removeTaxa(asset.id, currentTaxa[i]);
+            }
+
+            if (taxa.length > 0) {
+                for (var j = 0; j < taxa.length; j++) {
+                    am.addTaxa(asset.id, taxa[j]);
+                }
+            }
+
         }
         metrics.stop();
         return result || asset;

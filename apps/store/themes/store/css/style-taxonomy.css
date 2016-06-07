@@ -1,0 +1,130 @@
+
+
+nav-es ul {
+    background: #ffffff;
+    font-size: 0;
+    list-style: none;
+    margin-top: -4px;
+    padding: 0;
+    text-align: left;
+    width: 100%;
+    padding-left: 12px; /*first left element possition */
+    margin-left: 200px;
+    cursor:pointer;
+}
+
+nav-es li {
+    border-color: #d5d5d5;
+    margin-left: 5px;
+    display: inline-block;
+    position: relative;
+    min-width: 200px;
+    cursor:pointer;
+}
+
+nav-es a {
+    cursor:pointer;
+    text-decoration: none;
+    background: whitesmoke;
+    color: #0a0a0a;
+    display: block;
+    font: 16px/36px open sans;
+    text-align: center;
+    -webkit-transition: all .25s ease;
+    -moz-transition: all .25s ease;
+    -ms-transition: all .25s ease;
+    -o-transition: all .25s ease;
+    transition: all .25s ease;
+}
+
+nav-es .dropdown:after {
+
+    font: 12px font-wso2;
+    word-spacing:20px;
+    content: "  \e685";
+
+}
+
+nav-es .dropdown.hide-after:after {
+    content: '';
+}
+
+nav-es .dropdown {
+
+    left: 0px;
+
+}
+
+nav-es li:hover a {
+    background: #e4e4e4;
+    color: #333333;
+}
+
+nav-es li:hover a.selected {
+    color: #ffffff;
+    background: #1a78d8;
+}
+
+nav-es li:hover .dropdown:after {
+    font: 12px font-wso2;
+    word-spacing: 20px;
+    /*margin-top: 20px;*/
+    content: "  \e684";
+    text-align: right;
+}
+
+nav-es li:hover .dropdown.hide-after:after {
+    content: '';
+}
+
+nav-es li ul {
+    /*background-color: transparent;*/
+    left: -200px;
+    margin-left: 183px; /* drop down  elements*/
+    opacity: 0;
+    position: absolute;
+    top: 50px;
+    visibility: hidden;
+    z-index: 1;
+    margin-top: -15px;
+
+    -webkit-transition: all .25s ease;
+    -moz-transition: all .25s ease;
+    -ms-transition: all .25s ease;
+    -o-transition: all .25s ease;
+    transition: all .25s ease;
+
+}
+
+nav-es li:hover ul {
+    background-color: transparent;
+    color: #ffffff;
+    opacity: 1;
+    top: 50px;
+    visibility: visible;
+    margin-left: 183px; /* drop down  elements*/
+    z-index: 2;
+
+}
+
+nav-es li ul a:hover {
+    color: #ffffff;
+    background: #1a78d8;
+    opacity: 1;
+}
+
+nav-es li ul li {
+    color: #ffffff;
+    background: #1a78d8;
+}
+
+@media only screen and (max-width: 768px) {
+    nav-es ul {
+        margin-left: 45px;
+    }
+
+    .es-input-group .es-form-control {
+        margin-left: 55px;
+    }
+}
+

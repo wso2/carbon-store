@@ -54,7 +54,52 @@ app.server = function(ctx) {
         configs: {
             disabledAssets: ['ebook', 'api', 'wsdl', 'service','policy','proxy','schema','sequence','servicex','uri','wadl','endpoint','swagger','restservice','comments','soapservice'],
             uiDisabledAssets: [],
-            title : "WSO2 Enterprise Store"
+            title : "WSO2 Enterprise Store",
+            defaultSearchSplit: function(term, searchTemplate){
+                var terms ;
+                var newStr = "";
+                if(term.indexOf("\"") > -1){
+                    terms = term.split("\" \"");
+                    for(var i=0; i<terms.length; i++){
+                        if(i == 0){
+                            terms[i] = terms[i] + "\"";
+                        } else if(i == terms.length-1){
+                            terms[i] = "\"" + terms[i];
+                        } else {
+                            terms[i] = "\"" + terms[i] + "\"";
+                        }
+                    }
+                } else {
+                    terms = term.split(" ");
+                }
+
+                if(terms.length == 1){
+                    if(term.indexOf("\"") > -1){
+                        newStr = searchTemplate.replace(/\*\$input\*/g,function(){
+                            return term;
+                        });
+                    } else {
+                        newStr = searchTemplate.replace(/\$input/g,function(){
+                            return term;
+                        });
+                    }
+                } else {
+                    var orString = "(";
+                    for(var i=0; i<terms.length; i++){
+                        if(orString != "("){
+                            orString = orString + " OR ";
+                        }
+                        orString = orString + terms[i];
+                    }
+                    orString = orString + ")";
+                    newStr = searchTemplate.replace(/\*\$input\*/g,function(){
+                        return orString;
+                    });
+                }
+
+                return newStr;
+            }
+
         }
     }
 };
@@ -93,7 +138,10 @@ app.renderer = function(ctx) {
             },
             searchHistory: function (page, meta) {
                 return decoratorApi.searchHistory(ctx, page, this);
+            }, taxonomy: function(page) {
+                require('/modules/page-decorators.js').pageDecorators.taxonomyAvailability(ctx, page, this);
             }
+
         }
     }
 };
