@@ -78,17 +78,17 @@ var themeModule = require('/modules/theme.js');
                                     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                         <label>Username</label>
                                         <sup class="sup-required">*</sup>
-                                        <input id="reg-username" name="reg-username" type="text" class="form-control required usrName usrNameLength">
+                                        <input id="reg-username" name="reg-username" type="text" class="form-control required usrName usrNameLength" autocomplete="off">
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 form-group">
                                         <label>Password</label>
                                         <sup class="sup-required">*</sup>
-                                        <input id="reg-password" name="reg-password" type="password" class="form-control required passwordLength">
+                                        <input id="reg-password" name="reg-password" type="password" class="form-control required passwordLength" autocomplete="off">
                                     </div>
                                     <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6 form-group">
                                         <label>Confirm password</label>
                                         <sup class="sup-required">*</sup>
-                                        <input id="reg-password2" name="password2" type="password" class="form-control required" equalTo="#reg-password">
+                                        <input id="reg-password2" name="password2" type="password" class="form-control required" equalTo="#reg-password" autocomplete="off">
                                     </div>
 
                                 <%
