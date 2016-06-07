@@ -14,7 +14,7 @@ $(function () {
             $(this).find("i").removeClass().addClass("fa fa-remove");
         },
         function () {
-            $(this).find("i").removeClass().addClass("fw fw-bookmark");
+            $(this).find("i").removeClass().addClass("fa fa-star");
         });
 
     $("a[data-toggle='tooltip']").tooltip();
