@@ -17,10 +17,6 @@ var asset = {};
                 messages.alertSuccess("Successfully subscribed to asset");
                 $(elem).find("i").removeClass().addClass('fa fa-star');
                 $(elem).find('#main-bookmark').html("Bookmarked");
-                $(elem).click(function () {
-                    var elem = $(this);
-                    asset.unsubscribeBookmark(elem.data('type'), elem.data('aid'), location.href, elem);
-                });
                 $(elem).attr('id', 'btn-remove-subscribe');
             },
             error: function () {
@@ -46,16 +42,10 @@ var asset = {};
                 messages.alertSuccess("Successfully un-subscribed to asset");
                 $(elem).find("i").removeClass().addClass('fw fw-bookmark');
                 $(elem).find('#main-bookmark').html("Bookmark");
-                $(elem).click(function () {
-                    var elem = $(this);
-                    asset.process(elem.data('type'), elem.data('aid'), location.href, elem);
-                }).attr('id', 'btn-add-gadget');
+                $(elem).attr('id', 'btn-add-gadget');
             },
             error: function (data) {
                 messages.alertError("Failed to un-bookmark this asset!");
-                $(elem).find('i').removeClass();
-                $(elem).unbind('click').css("background-color", "rgba(213, 35, 35, 0.78)");
-                $(elem).find('#main-bookmark').html("Error!");
             }
         });
     };
