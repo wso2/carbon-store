@@ -44,6 +44,15 @@ var error = '';
         return asset;
     };
     /**
+     * Extracts request data needed to perform lifecycle operations
+     * @param  {[type]} req [description]
+     * @return {[type]}     [description]
+     */
+    var processLCActionPayload = function(req) {
+        var content = req.getContent();
+        return content || {};
+    };
+    /**
      * Validate asset type
      * @param  options Object contains asset type
      */
@@ -261,7 +270,7 @@ var error = '';
 
 
                     replaceCheckItems[item.getOrder()] = checkItem;
-            } 
+            }
 
             checkItems = replaceCheckItems;
         } catch (e) {
@@ -299,7 +308,7 @@ var error = '';
         //Check if a user can edit the asset since, they will not be able to perform the lifecycle actions
         //if they do not have this permission
         var permissionAPI = require('rxt').permissions;
-        var isAuthorized =   permissionAPI.hasActionPermissionforPath(asset.path, 'write', session);        
+        var isAuthorized =   permissionAPI.hasActionPermissionforPath(asset.path, 'write', session);
         approvedActions = isAuthorized ? approvedActions: [];
         return approvedActions;
     };
@@ -627,5 +636,35 @@ var error = '';
     var isLCPermitted = function (asset, session) {
         var permissions = require('/modules/lifecycle/permissions.js').permissions;
         return permissions.isLCPermitted(asset.type, session);
+    };
+    api.attachLifecycles = function(options, req, res, session) {
+        var payload = processLCActionPayload(req);
+        var lifecycles = payload.lifecycles || [];
+        var am = getAssetManager(options,session);
+        var asset = getAsset(options,am);
+        var status = [];
+        var result;
+        lifecycles.forEach(function(lifecycle) {
+            result = {};
+            result.success = am.attachLifecycle(asset, lifecycle);
+            result.lifecycle = lifecycle;
+            status.push(result);
+        });
+        return status;
+    };
+    api.detachLifecycles = function(options, req, res, session) {
+        var payload = processLCActionPayload(req);
+        var lifecycles = payload.lifecycles || [];
+        var am = getAssetManager(options,session);
+        var asset = getAsset(options,am);
+        var status = [];
+        var result;
+        lifecycles.forEach(function(lifecycle) {
+            result = {};
+            result.success = am.detachLifecycle(asset, lifecycle);
+            result.lifecycle = lifecycle;
+            status.push(result);
+        });
+        return status;
     };
 }(api));

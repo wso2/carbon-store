@@ -85,6 +85,8 @@ var LifecycleUtils = {};
     constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
     constants.MSG_ERROR_CHECKLIST_UPDATE = 'msgChecklistUpdateError';
+    constants.MSG_ERROR_LC_DETACH = 'msgDetachLcError';
+    constants.MSG_ERROR_LC_ATTACH = 'msgAttachLcError';
     constants.CONTAINER_DELETE_ACTION_AREA = 'deleteActionArea';
     constants.LIFECYCLE_HISTORY_LOADMORE_BUTTON = "#load-more-btn";
     constants.LIFECYCLE_HISTORY_PAGING_SIZE = 8;
@@ -526,7 +528,7 @@ var LifecycleUtils = {};
      * if required state is not provided it is assumed to be current state
      * Note : as this method only returns pre-set allowed actions for the current state,
      * allowed actions should be set calling setAllowedActions(actions)
-     */                                                                                                                                                                                                                                                                                                                 
+     */
     LifecycleImpl.prototype.actions = function() {
         //Assume that a state has not been provided
         var currentState = this.currentState;

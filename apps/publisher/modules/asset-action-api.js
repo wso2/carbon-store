@@ -24,6 +24,9 @@ var api = {};
     var ACTION_CHECKLIST = 'checklist';
     var ACTION_UPDATE_CHECKLIST = 'update-checklist';
     var ACTION_LC_HISTORY = 'lifecycle-history';
+    var ACTION_LC_VIEW = 'lifecycles';
+    var ACTION_LC_ADD =  'attach-lifecycles';
+    var ACTION_LC_REMOVE = 'detach-lifecycles';
     var ACTION_ADD_TAGS = 'add-tags';
     var ACTION_REMOVE_TAGS = 'remove-tags';
     var ACTION_RETRIEVE_TAGS = 'tags';
@@ -37,7 +40,7 @@ var api = {};
     var rxtModule = require('rxt');
     var es = require("store").server;
     var tagsAPI = require('/modules/tags-api.js').api;
-    var assetAPI = require('/modules/asset-api.js').api;        
+    var assetAPI = require('/modules/asset-api.js').api;
     var utility = require('/modules/utility.js').rxt_utility();
     var taxonomyAPI = require('/modules/taxonomy-api.js').api;
     var exceptionModule = utils.exception;
@@ -283,6 +286,54 @@ var api = {};
             return errorMsg(msg(500, 'New version of asset of id :'+ options.id + ' could not be created.'));
         }
     };
+    api.attachLifecycles = function(req, res, session, options) {
+        if (req.getMethod() !== 'POST') {
+            return errorMsg(msg(405, 'Lifecycles should be attached with a POST'));
+        }
+        var result;
+        try {
+            result = lifecycleAPI.attachLifecycles(options, req, res, session);
+        } catch (e) {
+            log.error('Failure to attach lifecycles');
+            log.error(e);
+        }
+        if (result) {
+            return successMsg(msg(200, 'Lifecycles attached', result));
+        }
+        return errorMsg(msg(500, 'Lifecycles not attached'));
+    };
+    api.detachLifecycles = function(req, res, session, options) {
+        if (req.getMethod() !== 'POST') {
+            return errorMsg(msg(405, 'Lifecycles should be removed with a POST'));
+        }
+        var result;
+        try {
+            result = lifecycleAPI.detachLifecycles(options, req, res, session);
+        } catch (e) {
+            log.error('Failure to detach lifecycles ');
+            log.error(e);
+        }
+        if (result) {
+            return successMsg(msg(200, 'Lifecycles removed', result));
+        }
+        return errorMsg(msg(500, 'Lifecycles not removed'));
+    };
+    api.lifecycles = function(req, res, session, options) {
+        if (req.getMethod() !== 'GET') {
+            return errorMsg(msg(405, 'Attached lifecycles should be retrieved with a GET'));
+        }
+        var lifecycles;
+        try {
+            lifecycles = lifecycleAPI.listAllAttachedLifecycles(options, req, res, session);
+        } catch (e) {
+            log.error('Failure to retrieve attached lifecycles ');
+            log.error(e);
+        }
+        if (lifecycles) {
+            return successMsg(msg(200, lifecycles, lifecycles));
+        }
+        return errorMsg(msg(500, 'Could not retrieve lifecycles'));
+    };
     /**
      * resolve the http methods and call related function for REST request
      * @param  options Object containing asset id, type, new version
@@ -339,6 +390,15 @@ var api = {};
                 break;
             case ACTION_TAXA:
                 result = api.taxaMethodsResolver(req, res, session, options);
+                break;
+            case ACTION_LC_VIEW:
+                result = api.lifecycles(req,res,session,options);
+                break;
+            case ACTION_LC_ADD:
+                result = api.attachLifecycles(req,res,session,options);
+                break;
+            case ACTION_LC_REMOVE:
+                result = api.detachLifecycles(req,res,session,options);
                 break;
             default:
                 break;

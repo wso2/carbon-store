@@ -44,7 +44,7 @@ var core = {};
         var mutatedTables = rxtMutation.table || {};
         var rxtTables = rxtDefinition.content.table;
         for (var tableName in mutatedTables) {
-            //Check if the rxt table has a table name similar to the 
+            //Check if the rxt table has a table name similar to the
             if (rxtTables[tableName]) {
                 rxtDefinition.content.table[tableName] = applyTableMutation(rxtTables[tableName], mutatedTables[tableName]);
             }
@@ -149,7 +149,7 @@ var core = {};
                 name = createCamelCaseName(field.name.name);
             }
             rxtTable.fields[name] = field;
-            //Determine if there is a label which has been defined 
+            //Determine if there is a label which has been defined
             if (!field.name.label) {
                 field.name.label = field.name.name;
             }
@@ -254,7 +254,7 @@ var core = {};
         var def = this.rxtMap[rxtType];
         if(!def){
             log.debug('Unable to locate rxt definition for ' + rxtType);
-            return null;         
+            return null;
         }
         if(!def.hasNamespace) {
             return null;
@@ -780,6 +780,20 @@ var core = {};
         }
         //log.warn('Unable to locate the  meta property to determine whether lifecycles are enabled for' + type + '.Make sure the meta property is present in the configuratio callback of the asset.js');
         return isLCViewEnabled;
+    };
+    RxtManager.prototype.isLifecycleMgtViewEnabled = function(type){
+
+      var rxtDefinition = this.rxtMap[type];
+      var isLCEnabled = this.isLifecycleEnabled(type);
+      var isLCMgtViewEnabled = false;
+      if (!rxtDefinition) {
+          log.error('Unable to locate the rxt definition for type: ' + type);
+          throw 'Unable to locate the rxt definition for type: ' + type + ' in order to determine if lifecycles are enabled';
+      }
+      if ((rxtDefinition.meta) && (rxtDefinition.meta.lifecycle)) {
+        isLCMgtViewEnabled = rxtDefinition.meta.lifecycle.lifecycleMgtViewEnabled;
+      }
+      return isLCMgtViewEnabled&&isLCEnabled;
     };
     RxtManager.prototype.groupingAttributes = function(type) {
         var rxtDefinition = this.rxtMap[type];
@@ -1324,7 +1338,7 @@ var core = {};
         var arr = path.split('/');
         var file = arr[arr.length-1] || '';
         return file.split('.')[0];
-    }; 
+    };
     core.assetTypeDeploymentTimeMap = function(tenantId){
         var server = require('store').server;
         var systemRegistry = server.systemRegistry(tenantId);
@@ -1441,7 +1455,7 @@ var core = {};
      * @param  {String} type     The type of asset
      * @param tenantID
      * @return {Object}         An object which acts as bag for properties and classes @see createAssetContext
-     
+
      */
     core.createAnonAssetContext = function(session, type, tenantID) {
         var server = require('store').server;

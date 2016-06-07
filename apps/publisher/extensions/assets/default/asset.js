@@ -192,7 +192,8 @@ asset.configure = function() {
                 defaultAction: '',
                 deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
-                lifecycleEnabled: true
+                lifecycleEnabled: true,
+                lifecycleMgtViewEnabled:false
             },
             ui: {
                 icon: 'fw fw-resource'
@@ -309,7 +310,7 @@ asset.renderer = function(ctx) {
         if (permissionAPI.hasActionPermissionforPath(path, 'delete', ctx.session)) {
                     navList.push('Delete', 'btn-delete', util.buildUrl('delete') + '/' + id);
         }
-        //Only render the view if the asset has a 
+        //Only render the view if the asset has a
         if ((isLCViewEnabled) && (isAssetWithLifecycle(page.assets))) {
             if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_LIFECYCLE, ctx.assetType, ctx.session)) {
                 navList.push('Lifecycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);

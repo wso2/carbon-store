@@ -170,8 +170,8 @@ text {
 .wr-lifecycle-selection .dropdown-menu {
     border: 0px solid #787777;
     background: #8a8a8a;
-    top: 232px;
-    left: 133px;
+    top: 246px;
+    left: 143px;
     width: 202px;
     padding-top: 0;
     padding-bottom: 0;
@@ -217,4 +217,33 @@ a.ctrl-filter-lc-category {
 
 #lifecycle-comments label{
     font-weight:500;
+}
+
+/**********************************************************
+* Transition UI
+***********************************************************/
+.transition-inputs-instructions {
+   padding-bottom: 10px;
+}
+
+/**********************************************************
+* Lifecycles Management UI
+***********************************************************/
+.disable-lcmgt-btns {
+  pointer-events: none;
+  cursor: default;
+}
+.lifecycles-list {
+  table-layout: fixed;
+  width: 500px;
+}
+.lifecycles-mgt-icon {
+  display: inline-block;
+  margin-right: 10px;
+  margin-top: -5px;
+}
+.lifecycles-mgt-remove-icon {
+  display: inline-block;
+  margin-right: 10px;
+  margin-top: -5px;
 }

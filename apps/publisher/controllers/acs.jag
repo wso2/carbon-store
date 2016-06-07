@@ -79,10 +79,9 @@
 
                         //sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId;
 
-                        log.debug("session index :: " + sessionObj.sessionIndex);
-                        log.debug("session :: " + sessionObj.sessionId);
-
-                        log.debug("real session :: " + session.getId());
+                        log.info("[PUB] session index :: " + sessionObj.sessionIndex);
+                        log.info("[PUB] session :: " + sessionObj.sessionId);
+                        log.info("[PUB] real session :: " + session.getId());
 
 
                         //sso_sessions[sso_sessions[sessionObj.sessionIndex] = sessionObj.sessionId] = sessionObj.sessionIndex;
@@ -100,6 +99,7 @@
                         var modifiedUsername = user.removeTenantDomainFromUsername(username);
                         var hasPublisherLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
                                 modifiedUsername);
+                        sso.client.login(sessionObj.sessionIndex,'publisher',session);
 
                         if (hasPublisherLoginPermission) {
                             user.emitLogin(username)
@@ -117,24 +117,27 @@
             }
 
         } else {
-            session.invalidate();
+            log.info(' [PUB] PUB SAML LOGOUT RESPONSE, LOCAL SESSION ' + session.getId());
+            //session.invalidate();
+            sso.client.logout(session,'publisher');
             response.sendRedirect(context);
         }
     }
 
     // if saml request is a log out request, then invalidate session.
     if (samlRequest != null) {
+
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
-        log.debug('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+        log.info('PUB BACKEND LOGOUT RECIEVED FROM IDP THE INDEX IS ######' + index + ', LOCAL SESSION: ' + session.getId());
 
         var jSessionId = application.get('sso_sessions')[index];
 
         delete application.get('sso_sessions')[index];
 
-
-        log.debug('portal Session Id :::' + jSessionId);
-
-        session.invalidate();
+        //sso.client.logout(index);
+        //log.debug('portal Session Id :::' + jSessionId);
+        //session.invalidate();
+        sso.client.logout(index, new java.lang.String('publisher'));
     }
 }());
 %>

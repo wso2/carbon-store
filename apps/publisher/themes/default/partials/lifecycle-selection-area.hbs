@@ -1,23 +1,17 @@
 <div class="lifecycle-selection-area">
     {{#if assets.hasMultipleLifecycles}}
-    <label class="float-left"><h3>Lifecycle : </h3></label>
-    <div>
-       <div id='current-selected-lifecycle-div' class="form-group wr-lifecycle-selection">
-        <a id='current-selected-lifecycle' href="#" class="ico-filter ctrl-filter-lc-category dropdown-toggle" data-toggle="dropdown" aria-expanded="true"><span>Other Lifecycles</span>
-          <span class="fa fa-angle-down pull-right"></span>
-      </a>
-      <ul id='lifecycle-selection' class="dropdown-menu lifecycle-dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-       {{#each assets.availableLifecycles}}
-       <li><a tabindex="-1" href="#">{{name}}</a></li>
-       {{/each}}
-   </ul>
-</div>
-</div>
-{{/if}}
+        <h4><i class="fw fw-settings lifecycles-mgt-icon"></i> Switch Lifecycles</h4><hr/>
 
+        <div>
+            <span class='help-block'> Select a lifecycle </span>
+            <div id='current-selected-lifecycle-div' class="form-group wr-lifecycle-selection">
+
+                <select id='lifecycle-selector' class='form-control'>
+                    {{#each assets.availableLifecycles}}
+                        <option>{{name}}</option>
+                    {{/each}}
+                </select>
+            </div>
+        </div>
+    {{/if}}
 </div>
-{{!--
-    <option>SampleLifeCycle2</option>
-    <option>MobileAppLifeCycle</option>
-    <option>ServiceLifeCycle</option>
-    --}}

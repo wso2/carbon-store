@@ -84,6 +84,10 @@
                         session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
                         session.put("Loged", "true");
 
+                        log.info('[STORE] session index :: ' + sessionObj.sessionIndex);
+                        log.info('[STORE] session :: ' + sessionObj.sessionId);
+                        log.info('[STORE] real session :: ' + session.getId());
+
                         sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
 
                         var user = require('store').user;
@@ -97,6 +101,8 @@
                         var modifiedUsername = user.removeTenantDomainFromUsername(username);
                         var hasStoreLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
                                 modifiedUsername);
+                        
+                        sso.client.login(sessionObj.sessionIndex,'store',session);
 
                         if (hasStoreLoginPermission) {
                             user.emitLogin(username)
@@ -114,7 +120,9 @@
             }
 
         } else {
-            session.invalidate();
+            log.info('[STORE] SAML LOGOUT RESPONSE , LOCAL SESSION: ' + session.getId());
+            //session.invalidate();
+            sso.client.logout(session,'store');
             response.sendRedirect(relayState);
         }
     }
@@ -122,16 +130,17 @@
     // if saml request is a log out request, then invalidate session.
     if (samlRequest != null) {
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
-        log.debug('BACKEND LOGOUT RECIEVED FROM STORE THE INDEX IS ######' + index);
+        log.info('STORES BACKEND LOGOUT RECIEVED FROM IDP THE INDEX IS ######' + index + ', LOCAL SESSION: ' + session.getId());
 
         var jSessionId = application.get('sso_sessions')[index];
 
         delete application.get('sso_sessions')[index];
+        //sso.client.logout(index);
+        //log.debug('store Session Id :::' + jSessionId);
 
-
-        log.debug('store Session Id :::' + jSessionId);
-
-        session.invalidate();
+        //session.invalidate();
+        sso.client.logout(index, new java.lang.String('store'));
+        log.info('[STORE] Successfully logged out.');
     }
 }());
 %>

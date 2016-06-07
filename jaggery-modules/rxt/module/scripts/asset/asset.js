@@ -1640,6 +1640,37 @@ var asset = {};
         }
         return success;
     };
+    /**
+     * Removes the provided lifecycle from the given asset
+     * @param  {[type]} asset     [description]
+     * @param  {[type]} lifecycle [description]
+     * @return {[type]}           [description]
+     */
+    AssetManager.prototype.detachLifecycle = function(asset,lifecycle){
+      lifecycle = lifecycle || '';
+      var success = false;
+      if (!asset) {
+          log.error('Failed to attach a lifecycle as an asset object was not provided.');
+          return success;
+      }
+      //Check if a lifecycle was provided,if not check if it is provided in the
+      //configuration
+      if (lifecycle === '') {
+          lifecycle = this.rxtManager.getLifecycleName(this.type);
+      }
+      //if the lifecycle is not present, then abort the operation
+      if (lifecycle === '') {
+          return success;
+      }
+      try {
+          GovernanceUtils.removeAspect(asset.path,lifecycle,this.registry.registry);
+          //this.am.detachLifecycle(asset,lifecycle);
+          success = true;
+      } catch (e) {
+          log.error('Failed to detatach lifecycle: ' + lifecycle + ' from the asset: ' + stringify(asset) + '.The following exception was throw: ' + e);
+      }
+      return success;
+    };
     AssetManager.prototype.invokeDefaultLcAction = function(asset) {
         var success = false;
 //        var lifecycleName = resolveLCName(arguments, asset, 1);
