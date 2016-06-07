@@ -27,6 +27,12 @@
             </div>
             {{/with}}
         </div>
+        <!-- Lifecycle Management UI -->
+        <div>
+          {{#if meta.lifecycleMgtViewEnabled}}
+            {{>lifecycle-management .}}
+          {{/if}}
+        </div>
         {{> lifecycle-selection-area}}
     </div>
     <div id='lifecycle-information' class="lifecycle-information-area col-xs-12 col-sm-12 col-md-12 col-lg-12">

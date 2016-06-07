@@ -1,0 +1,52 @@
+<div>
+    <h4><i class="fw fw-settings lifecycles-mgt-icon"></i><span>Lifecycle Management</span><hr/></h4>
+    <div>
+        {{#if assets.hasPossibleLifecycles}}
+            <!-- UI for attaching new lifecycles -->
+            <div class="">
+                <span class="help-block">Attach a new Lifecycle</span>
+                <form class="form-inline">
+                    <div class="form-group">
+                        <select id="lcPossibleLifecyclesSelect" class="form-control">
+                            {{#each assets.possibleLifecycles}}
+                                <option>{{this}}</option>
+                            {{/each}}
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <div class="">
+                            <a id="lcMngAttachBtn" class="btn btn-default" href="#"><i class="fw fw-add"></i> <span>Attach Lifecycle</span></a>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        {{/if}}
+        <!-- List available Lifecycles -->
+        <div>
+            <span class="help-block">The following lifecycles have been attached to this asset:</span>
+            <table id='attachedLifecyclesTable' class="table lifecycles-list">
+                <thead>
+                    <tr>
+                        <th>
+                        </th>
+                        <th>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each assets.availableLifecycles}}
+                        <tr>
+                            <td>
+                                {{name}}
+                            </td>
+                            <td>
+                                <a class='lc-mng-remove-btn' data-lifecycle="{{name}}">
+                                  <i class="fw fw-delete lifecycles-mgt-remove-icon"></i><span>Remove</span></a>
+                            </td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

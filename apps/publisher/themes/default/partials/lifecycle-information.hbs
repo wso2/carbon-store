@@ -1,5 +1,16 @@
+<h4>
+  <i class="fw fw-settings lifecycles-mgt-icon"></i> <span>Lifecycle Information</span>
+  <span>
 {{#if hasMultipleLifecycles}}
+<h6> Active:
+<span id='current-selected-lifecycle' href="#">
+  <span>Other Lifecycles</span>
+</span>
+</h6>
 {{else}}
-      <h3>Lifecycle: <span class="text-muted">{{currentLifecycle}}</span></h3>
+      <h6>Active: <span class="text-muted">{{currentLifecycle}}</span>
 {{/if}}
-<h4>State: <span class="text-muted">{{currentState}}</span></h4>
+<h6>State: <span class="text-muted">{{currentState}}</span></h6>
+</span>
+<hr/>
+</h4>

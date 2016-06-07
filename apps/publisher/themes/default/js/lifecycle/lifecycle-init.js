@@ -36,7 +36,7 @@ $(function() {
     };
     var spinnerURL = function() {
         return caramel.url('/themes/default/img/preloader-40x40.gif');
-    }
+    };
     var renderPartial = function(partialKey, containerKey, data, fn) {
         fn = fn || function() {};
         var partialName = config(partialKey);
@@ -117,7 +117,7 @@ $(function() {
         $(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_UI_CANCEL))).on('click',function(e){
             e.preventDefault();
             hideTransitionInputsUI();
-        })
+        });
     };
 
     var wireTransitionInputActions = function(container) {
@@ -135,7 +135,7 @@ $(function() {
                     //throw 'Stop';
                     LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
                 }
-                
+
             });
         });
     };
@@ -166,7 +166,7 @@ $(function() {
         var inputs = transitionInputMap.inputs;
         //Hide the lifecycle actions
         $(id(config(constants.CONTAINER_LC_ACTION_AREA))).hide();
-        //Render the inputs 
+        //Render the inputs
         renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_AREA, inputs,wireTransitionInputCancelBtn);
         //Render the actions
         renderPartial(constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,constants.CONTAINER_LC_TRANSITION_INPUTS_ACTIONS_AREA,actionData,wireTransitionInputActions);
@@ -287,7 +287,7 @@ $(function() {
             }
             if(actions.length > 0){
                 showCommentInputArea();
-            } 
+            }
             renderPartial(constants.CONTAINER_LC_ACTION_AREA, constants.CONTAINER_LC_ACTION_AREA, data, wireLCActionHandlers);
         }
     };
@@ -331,7 +331,7 @@ $(function() {
         //         return;
         //     }
         //     data.href =transitionUI.href;
-        //     renderPartial(constants.CONTAINER_TRANSITION_UI_AREA,constants.CONTAINER_TRANSITION_UI_AREA,data); 
+        //     renderPartial(constants.CONTAINER_TRANSITION_UI_AREA,constants.CONTAINER_TRANSITION_UI_AREA,data);
         // }
     };
     var unrenderTransitionUI = function() {
@@ -357,8 +357,8 @@ $(function() {
         var container = $(id(checklistContainer));
         container.html('');
         container.attr('style', '');
-    }
-    //Blocks user interaction with the check list 
+    };
+    //Blocks user interaction with the check list
     var blockChecklist = function() {
         var checklistContainer = config(constants.CONTAINER_CHECKLIST_OVERLAY);
         var container = $(id(checklistContainer));
@@ -528,6 +528,7 @@ $(function() {
      */
     $(constants.UI_LIFECYCLE_SELECT_ID).change(function() {
         var selectedLC = $(this).val();
+        debugger;
         //Call unload to make sure that the UI elements can de render
         LifecycleAPI.unloadActiveLifecycle();
         //Load the new lifecycle
@@ -536,6 +537,7 @@ $(function() {
     });
     $(constants.UI_LIFECYCLE_SELECT_BOX).click(function(e) {
         e.preventDefault();
+        debugger;
         var selectedLC = $(this).text();
         //Call unload to make sure that the UI elements can de render
         LifecycleAPI.unloadActiveLifecycle();
@@ -549,11 +551,88 @@ $(function() {
         appendHistory(historyStart,historyEnd);
     });
 
+    var attachLifecycle = function(lifecycle,btn) {
+        var data = {};
+        data.lifecycles = [];
+        data.lifecycles.push(lifecycle);
+        var id = LifecycleUtils.currentAsset().id;
+        var type = LifecycleUtils.currentAsset().type;
+        var url = caramel.url('/apis/asset/' + id + '/attach-lifecycles?type=' + type);
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function() {
+                window.location.reload(false);
+            },
+            error: function() {
+              $(btn).html('<i class="fw fw-add"></i> <span>Attach Lifecycle</span>');
+              $(btn).removeClass('disable-lcmgt-btns');
+              LifecycleAPI.notify(config(constants.MSG_ERROR_LC_ATTACH), {
+                  type: constants.NOTIFICATION_ERROR,
+                  global: false
+              });
+            }
+        });
+    };
+
+    var detachLifecycle = function(lifecycle,btn) {
+        var data = {};
+        data.lifecycles = [];
+        data.lifecycles.push(lifecycle);
+        var id = LifecycleUtils.currentAsset().id;
+        var type = LifecycleUtils.currentAsset().type;
+        var url = caramel.url('/apis/asset/' + id + '/detach-lifecycles?type=' + type);
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: JSON.stringify(data),
+            contentType: 'application/json',
+            success: function() {
+                window.location.reload(false);
+            },
+            error: function() {
+              $(btn).html('<i class="fw fw-delete"></i><span>Remove</span>');
+              $(btn).removeClass('disable-lcmgt-btns');
+              //$(this).attr('disabled',false);
+              LifecycleAPI.notify(config(constants.MSG_ERROR_LC_DETACH), {
+                  type: constants.NOTIFICATION_ERROR,
+                  global: false
+              });
+            }
+        });
+    };
+
+    var initLifecycleManagement = function() {
+        $('#lcMngAttachBtn').on('click', function(e) {
+            e.preventDefault();
+            //Disable the attach button
+            //$(this).attr('disabled',true);
+            $(this).html('Attaching lifecycle ....');
+            $(this).addClass('disable-lcmgt-btns');
+            var lifecycle = $('#lcPossibleLifecyclesSelect').val();
+            attachLifecycle(lifecycle,this);
+        });
+
+        $('#attachedLifecyclesTable').find('.lc-mng-remove-btn').each(function() {
+            $(this).on('click', function(e) {
+                e.preventDefault();
+                //Disable the remove button
+                //$(this).attr('disabled',true);
+                $(this).html('Removing lifecycle ...');
+                $(this).addClass('disable-lcmgt-btns');
+                var lifecycle = $(this).data('lifecycle');
+                detachLifecycle(lifecycle,this);
+            });
+        });
+    };
+
     var init = function() {
         var activeLC = LifecycleUtils.currentAsset().activeLifecycle;
         LifecycleAPI.lifecycle(activeLC).load();
         LifecycleAPI.lifecycle(activeLC).fetchHistory();
-
+        initLifecycleManagement();
         validator.showError = function(element,errorMessage){
                 $(element).notify(
                         errorMessage,
@@ -567,7 +646,7 @@ $(function() {
         validator.hideError = function(element){
                 $(element).notify('notify-hide');
         };
-        
+
     };
     init();
 });
