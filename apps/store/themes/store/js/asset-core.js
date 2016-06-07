@@ -25,9 +25,6 @@ var asset = {};
             },
             error: function () {
                 messages.alertError("Failed to bookmark this asset!");
-                $(elem).find('i').removeClass();
-                $(elem).unbind('click').css("background-color", "rgba(213, 35, 35, 0.78)");
-                $(elem).find('#main-bookmark').html("Error!");
             }
         });
         //location.href = caramel.context + '/apis/subscriptions?type=' + type + '&asset=' + path + '&destination=' + encodeURIComponent(location.href);
