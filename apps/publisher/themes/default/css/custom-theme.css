@@ -221,9 +221,9 @@ a.ctrl-filter-category:hover {
 /* ============================================================ */
 
 .ast-img {
-    width: 100%;
     background: #ffffff;
     height:145px;
+    width: 145px;
     overflow-y: hidden;
 }
 
@@ -271,6 +271,7 @@ a.ctrl-filter-category:hover {
     /* Overriding styles, applies from bootstrap .img-thumbnail class */
     border: none;
     border-radius: 0;
+    padding: 0;
 }
 
 
