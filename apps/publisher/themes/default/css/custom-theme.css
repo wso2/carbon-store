@@ -114,7 +114,7 @@ a.ctrl-filter-category:hover {
     border:0px solid #237bd5;
     background:#237bd5;
     top:55px;
-    left:5px;
+    left:15px;
     width:160px;
     padding-top:0;
     padding-bottom:0;
@@ -320,7 +320,9 @@ a.ctrl-filter-category:hover {
 .advanced-search-icons i.fa-wrench{
     position: absolute;
 }
-
+.app-title-responsive{
+    display: none;
+}
 @media all and (max-width: 992px) {
     #inp_searchAsset{
         width: 251px;
@@ -403,6 +405,15 @@ a.ctrl-filter-category:hover {
         text-align: left;
         font-weight: bold;
     }
+    .wr-filters div.wr-search{
+        clear:left;
+    }
+    .app-title{
+        display: none;
+    }
+    .app-title-responsive{
+        display: inline;
+    }
 }
 @media all and (max-width: 480px){
     #assetSearchForm{
@@ -424,7 +435,6 @@ a.ctrl-filter-category:hover {
         width:305px;
     }
 }
-
 
 /* auth dropdown menu override */
 

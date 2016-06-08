@@ -227,7 +227,7 @@ a.collapsing-h2{
     text-decoration: none;
 }
 
-h2.app-title {
+h2.app-title, h2.app-title-responsive {
     font-weight:500;
     font-size:17px;
     margin:0;
@@ -576,7 +576,11 @@ i.cu-btn-exp-col {
 .collapsed .btn-collapsed {
     background:url('../img/icons/ico-collapsed.png') no-repeat;
 }
-
+.sort-wrapper{
+    position: absolute;
+    right: 0;
+    margin-right: 10px;
+}
 .sort-asset-info{
     color: #a5a5a5;
     font-size: 11px;
