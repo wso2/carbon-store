@@ -57,7 +57,7 @@ require('/modules/store.js').exec(function(ctx) {
             type: type
         });
         if (success) {
-            //response.sendRedirect(redirect);
+            response = responseProcessor.buildSuccessResponse(response, 200, "success");
         } else {
             response.sendError(500);
         }
