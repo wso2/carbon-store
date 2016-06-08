@@ -73,7 +73,7 @@ require('/modules/publisher.js').exec(function (ctx) {
         if (!updatedAsset) {
             return responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on update api', res, 'No matching asset found by id : ' + options.id, 'this is more information', []);
         }
-        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.ACCEPTED, res, updatedAsset);
+        response = responseProcessor.buildSuccessResponseDefault(constants.STATUS_CODES.OK, res, updatedAsset);
     };
     var getAsset = function (options, req, res, session) {
         var asset = assetApi.get(options, req, res, session);
