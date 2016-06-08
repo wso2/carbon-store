@@ -15,12 +15,16 @@ var asset = {};
             method: 'POST',
             success: function (data) {
                 messages.alertSuccess("Successfully subscribed to asset");
-                $(elem).find("i").removeClass().addClass('fa fa-star');
-                $(elem).find('#main-bookmark').html("Bookmarked");
-                $(elem).attr('id', 'btn-remove-subscribe');
+                $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmarked');
+                if ($(elem).find('#main-bookmark').length > 0) {
+                    $(elem).find("i").removeClass().addClass('fa fa-star');
+                    $(elem).find('#main-bookmark').html("Bookmarked");
+                    $(elem).attr('id', 'btn-remove-subscribe');
+                }
             },
             error: function () {
                 messages.alertError("Failed to bookmark this asset!");
+                $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
             }
         });
         //location.href = caramel.context + '/apis/subscriptions?type=' + type + '&asset=' + path + '&destination=' + encodeURIComponent(location.href);
@@ -40,12 +44,16 @@ var asset = {};
             dataType: 'text json',
             success: function (data) {
                 messages.alertSuccess("Successfully un-subscribed to asset");
-                $(elem).find("i").removeClass().addClass('fw fw-bookmark');
-                $(elem).find('#main-bookmark').html("Bookmark");
-                $(elem).attr('id', 'btn-add-gadget');
+                $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
+                if ($(elem).find('#main-bookmark').length > 0) {
+                    $(elem).find("i").removeClass().addClass('fw fw-bookmark');
+                    $(elem).find('#main-bookmark').html("Bookmark");
+                    $(elem).attr('id', 'btn-add-gadget');
+                }
             },
             error: function (data) {
                 messages.alertError("Failed to un-bookmark this asset!");
+                $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmarked');
             }
         });
     };
