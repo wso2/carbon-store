@@ -1679,3 +1679,33 @@ ul.sort-list li a.active:hover{
 .margin-bottom-align{
     margin-bottom: -10px;
 }
+/* ========================================================================
+ * Store my-items bookmark styling
+ * ======================================================================== */
+.confirmation-popup-container {
+    position: absolute;
+    z-index: 9999;
+    background: rgba(255, 239, 239, 0.87);
+    height: 105%;
+    display: none;
+}
+.confirmation-popup-container p {
+    position: relative;
+    top: 20%;
+    text-align: center;
+    color: rgb(159, 12, 12);
+}
+.confirmation-popup-container .btn-group {
+    bottom: 10px;
+    position: absolute;
+    margin-left: 25%;
+    display: block;
+}
+.confirmation-popup-container .yes-bookmark {
+    border: 0px;
+}
+.confirmation-popup-container .no-bookmark {
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
+}
