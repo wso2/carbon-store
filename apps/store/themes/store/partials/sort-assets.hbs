@@ -20,7 +20,7 @@
                                         <li><a
                                                 data-column="@index"
                                                 class="{{#if active}}{{sortIcon}} active {{/if}} {{sortBy.label}}"
-                                                href='{{tenantedUrl ""}}/assets/{{../rxt.shortName}}/list?sortBy={{sortBy.name}}&sort={{sortNext}}'
+                                                href='{{tenantedUrl ""}}/assets/{{../rxt.shortName}}/list?sortBy={{sortBy.name}}&sort={{sortNext}}&{{query}}'
                                         >
                                             {{sortBy.label}}
                                         </a>

@@ -189,7 +189,7 @@ asset.configure = function() {
                 name: 'SampleLifeCycle2',
                 commentRequired: false,
                 defaultLifecycleEnabled: true,
-                defaultAction: '',
+                defaultAction: 'Promote',
                 deletableStates: ['Unpublished'],
                 publishedStates: ['Published'],
                 lifecycleEnabled: true,

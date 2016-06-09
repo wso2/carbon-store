@@ -545,6 +545,7 @@ var pageDecorators = {};
         }
         var sortBy = ctx.rxtManager.getTimeStampAttribute(ctx.assetType);
         var sort = "DESC";
+        var query;
         var sortingList = [];
         var sortingListSelected = {};
 
@@ -555,6 +556,8 @@ var pageDecorators = {};
             sortBy = match ? match[1] : sortBy;
             match = queryString.match(/sort=([^&;]+)/);
             sort = match ? match[1] : sort;
+            match = queryString.match(/q=([^&;]+)/);
+            query = match ? match[0] : match;
         }
         for (var attribute in attributes) {
             if (attributes.hasOwnProperty(attribute)) {
@@ -585,6 +588,7 @@ var pageDecorators = {};
                     sortObj.sortNext = "ASC";
                     sortObj.sortIcon = "sorting_asc";
                 }
+                sortObj.query = query;
                 sortingList.push(sortObj);
             }
         }
