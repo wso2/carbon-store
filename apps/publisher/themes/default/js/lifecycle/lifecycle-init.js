@@ -131,7 +131,7 @@ $(function() {
                 var comment = $(id(commentContainer)).val() || null;
                 //Obtain the inputs from the transition input form
                 inputs = obtainTransitionInputs();
-                if(validator.isValidForm(id(config(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM)))){
+                if(validator.isValidForm(config(constants.CONTAINER_LC_TRANSITION_INPUTS_FIELDS_FORM))){
                     //throw 'Stop';
                     LifecycleAPI.lifecycle().invokeAction(action, comment,inputs);
                 }
