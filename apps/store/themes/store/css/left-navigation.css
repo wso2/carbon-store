@@ -593,16 +593,14 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
   left:2px;
   opacity:1;
 }
-
-.ast-img .ast-type-icon{
-    display:block;
-    background:rgba(0, 0, 0, .3);
-    color:#fff;
-    width:40px;
-    height:40px;
-    position:absolute;
-    top:110px;
-    z-index: 999;
+.ast-img .ast-type-icon {
+    display: block;
+    background: rgba(0, 0, 0, .3);
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    top: 110px;
 }
 .asset-details-header .ast-img .ast-type-icon{
     top:120px;
