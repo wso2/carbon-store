@@ -18,14 +18,6 @@
 
 package org.wso2.carbon.social.sql;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.namespace.QName;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMXMLBuilderFactory;
 import org.apache.commons.logging.Log;
@@ -33,9 +25,16 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.social.core.SocialActivityException;
-import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserRealmService;
+import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.utils.CarbonUtils;
+
+import javax.xml.namespace.QName;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class SocialUtil {
 	private static final Log log = LogFactory.getLog(SocialUtil.class);
@@ -53,7 +52,7 @@ public class SocialUtil {
 			UserRealmService realmService = (UserRealmService) PrivilegedCarbonContext.getThreadLocalCarbonContext().
 					getOSGiService(UserRealmService.class);
 			org.wso2.carbon.user.api.TenantManager tenantManager = realmService.getTenantManager();
-			tenantDomainName = tenantManager.getTenant(tenantId).getDomain();
+			tenantDomainName = tenantManager.getDomain(tenantId);
 		} catch (UserStoreException e) {
 			log.error("Error occurred while retrieving the tenant from tenant id : " + tenantId);
 			throw new SocialActivityException(e.getMessage(), e);
