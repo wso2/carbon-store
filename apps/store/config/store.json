@@ -30,7 +30,7 @@
                 "attributes": {
                     "issuer": "store",
                     "identityProviderURL": "%https.host%/samlsso",
-                    "responseSigningEnabled": "true",
+                    "responseSigningEnabled": true,
                     "acs": "%https.host%/store/acs",
                     "identityAlias": "wso2carbon",
                     "useTenantKey": false

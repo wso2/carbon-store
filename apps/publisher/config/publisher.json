@@ -53,7 +53,7 @@
                 "attributes": {
                     "issuer": "publisher",
                     "identityProviderURL": "%https.host%/samlsso",
-                    "responseSigningEnabled": "true",
+                    "responseSigningEnabled": true,
                     "acs": "%https.host%/publisher/acs",
                     "identityAlias": "wso2carbon",
                     "useTenantKey": false
