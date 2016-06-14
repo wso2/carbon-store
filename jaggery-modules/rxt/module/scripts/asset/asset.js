@@ -2618,4 +2618,17 @@ var asset = {};
         modPath = appExtensionMediator.resolveCaramelResources(modPath);
         return modPath;
     };
+    /**
+     * Check whether the value of the mediaType attribute contains the media type of the asset in current context
+     * @param {Object} q Associate array contains query sent by user
+     * @param {String} type Current asset type of the context
+     */
+    asset.isValidMediaTypeQuery = function (q, type) {
+        var isSameMediaType = true;
+        if (!q.hasOwnProperty('mediaType') || q.mediaType !== type) {
+            isSameMediaType = !isSameMediaType;
+        }
+        log.info("tmkasun debug: isSameMediaType = " + stringify(isSameMediaType));
+        return isSameMediaType;
+    };
 }(asset, core))
