@@ -35,7 +35,7 @@
                 sessionId = session.getId(),
                 idpSessionIndex = sso_sessions[session.getId()],
                 carbon = require('carbon'),
-                superTenant = carbon.server.superTenant(),
+                superTenant = carbon.server.superTenant,
                 attr = config.authentication.methods.sso.attributes,
                 encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], attr.issuer),
                 postUrl = attr.identityProviderURL;

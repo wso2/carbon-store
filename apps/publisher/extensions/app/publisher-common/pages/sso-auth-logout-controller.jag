@@ -33,7 +33,7 @@
                 encodedSAMLLogoutRequest = null,
                 idpSessionIndex = sso_sessions[session.getId()],
                 carbon = require('carbon'),
-                superTenant = carbon.server.superTenant(),
+                superTenant = carbon.server.superTenant,
                 postUrl = attr.identityProviderURL,
                 ignoreReferer = request.getParameter("ignoreReferer"),
                 relayState = request.getHeader('referer') ? request.getHeader('referer') : caramel.configs().context;

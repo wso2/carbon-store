@@ -29,7 +29,7 @@
     var encodedSAMLAuthRequest;
     var log = new Log();
     var carbon = require('carbon');
-    var superTenant = carbon.server.superTenant();
+    var superTenant = carbon.server.superTenant;
     if (referer) {
         var host = referer.split('/')[2];
         referer = referer.split(host)[1];

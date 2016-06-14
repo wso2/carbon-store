@@ -27,7 +27,7 @@
     var attr = config.authentication.methods.sso.attributes;
     var log = new Log();
     var carbon = require('carbon');
-    var superTenant = carbon.server.superTenant();
+    var superTenant = carbon.server.superTenant;
     var encodedSAMLAuthRequest;
     if (attr.responseSigningEnabled) {
         encodedSAMLAuthRequest = sso.client.getEncodedSignedSAMLAuthRequest(attr.issuer,
