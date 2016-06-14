@@ -2624,11 +2624,10 @@ var asset = {};
      * @param {String} type Current asset type of the context
      */
     asset.isValidMediaTypeQuery = function (q, type) {
-        var isSameMediaType = true;
-        if (!q.hasOwnProperty('mediaType') || q.mediaType !== type) {
-            isSameMediaType = !isSameMediaType;
+        var valid = false;
+        if (!q.hasOwnProperty('mediaType') || q.mediaType === type) {
+            valid = !valid;
         }
-        log.info("tmkasun debug: isSameMediaType = " + stringify(isSameMediaType));
-        return isSameMediaType;
+        return valid;
     };
 }(asset, core))
