@@ -25,8 +25,18 @@
     var referer=require('utils').request.getReferer(request);//request.getHeader('referer');
     var ignoreReferer = request.getParameter("ignoreReferer");
     var attr = config.authentication.methods.sso.attributes;
-    var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(attr.issuer);
     var log = new Log();
+    var carbon = require('carbon');
+    var superTenant = carbon.server.superTenant();
+    var encodedSAMLAuthRequest;
+    if (attr.responseSigningEnabled) {
+        encodedSAMLAuthRequest = sso.client.getEncodedSignedSAMLAuthRequest(attr.issuer,
+            attr.identityProviderURL, attr.acs, attr.isPassive,
+            superTenant.tenantId, superTenant.domain, attr.defaultNameIDPolicy);
+    } else {
+        encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(attr.issuer);
+    }
+
     var postUrl = attr.identityProviderURL;
     if(log.isDebugEnabled()) {
         log.debug('Login URL: '+postUrl);

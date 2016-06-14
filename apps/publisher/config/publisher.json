@@ -56,7 +56,9 @@
                     "responseSigningEnabled": true,
                     "acs": "%https.host%/publisher/acs",
                     "identityAlias": "wso2carbon",
-                    "useTenantKey": false
+                    "defaultNameIDPolicy": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
+                    "useTenantKey": false,
+                    "isPassive":false
                 }
             },
             "basic": {
