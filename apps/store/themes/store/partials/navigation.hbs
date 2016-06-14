@@ -48,7 +48,6 @@
                                 {{/if}}
                             {{/if}}
                         {{/each}}
-                        {{> categorization-entry .}}
                     </div>
                 </div>
             {{/if}}
@@ -56,44 +55,41 @@
     </div>
 </div>
 <div class="clear-both"></div>
-<div id="nav" class="es-row wr-app-bar">
-    <div class="col-lg-10 col-md-9 col-sm-8 col-xs-7">
-        <div id="the-basics" class="es-input-group input-group input-wrap">
-            <div class="search-wrapper" style="float:left;width:80%;position:relative;left:0px;margin-left:-45px;">
-                {{#if rxt.pluralLabel}}
-                    <input  id="search"  type="text" class="typeahead es-form-control form-control" placeholder="Search in {{rxt.pluralLabel}}" value="{{searchQuery}}">
-                {{else}}
-                    <input  id="search"  type="text" class="typeahead es-form-control form-control" placeholder="Search in all asset types" value="{{searchQuery}}">
-                {{/if}}
-                <div class="es-input-group-btn input-group-btn">
-                    <button class="btn btn-default wrap-input-right" id="search-button" type="button" title="Search">
-                        <i class="fw fw-search" aria-hidden="true"></i>
-                    </button>
-                </div>
+<div id="nav" class="wr-app-bar">
+    <div class="col-lg-12 search-row">
+        <div class="search-wrapper" id="the-basics">
+            <div class="input-group">
+                <input  id="search"  type="text" class="typeahead es-form-control form-control"
+                    {{#if rxt.pluralLabel}}
+                        placeholder="Search in {{rxt.pluralLabel}}"
+                    {{else}}
+                        placeholder="Search in all asset types"
+                    {{/if}}
+                        value="{{searchQuery}}">
+                <span class="input-group-btn">
+                   <button class="btn btn-secondary" id="search-button" type="button"><i class="fw fw-search" aria-hidden="true"></i></button>
+                </span>
             </div>
         </div>
-        <!--search--->
-        <nav-es style="float:left;width:100%;position:relative;left:5px ;">
-            <ul class="cf" id="dropdown-taxonomy" >
-                <>
-            </ul>
-        </nav-es>
-    </div>
-    {{#unless isUserDomainAndUrlDomainDifferent}}
-        <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5">
-            {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
-                <a href="{{tenantedUrl "/pages/my-items"}}" class="bookmark-link pull-right" title="{{t "Navigate to your bookmarks list"}}"><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i> <span class="bookmark-link-text">{{t "My bookmarks "}}</span></a>
-            {{/hasAppPermission}}
+        <div class="float-right store-bookmark-link">
+            {{#unless isUserDomainAndUrlDomainDifferent}}
+                    {{#hasAppPermission . key="APP_MYITEMS" username=cuser.username tenantId=cuser.tenantId}}
+                        <a href="{{tenantedUrl "/pages/my-items"}}" title="{{t "Navigate to your bookmarks list"}}"><i class="fw fw-bookmark fw-inverse fw-lg bookmark-link-icon"></i> <span class="bookmark-link-text">{{t "My bookmarks "}}</span></a>
+                    {{/hasAppPermission}}
+            {{/unless}}
         </div>
-    {{/unless}}
+
+
+
+        <!--search--->
+    </div>
 </div>
 <!-- secondary header - app bar -->
 {{> action-bar .}}
 {{#if assetCategoryDetails.hasCategories}}
-    <div class="col-md-12 category-wrapper">
+    <div class="category-wrapper">
         {{#if assetCategoryDetails.hasCategories}}
-            <div class="col-xs-1 col-sm-2 col-md-1 col-lg-1 left-col"></div>
-            <div class="col-xs-10 col-sm-8 col-md-4 col-lg-10">
+            <div class="col-lg-12 category-content">
                 <div class="category padding-top">
                     <a href="#" class="ico-filter ctrl-filter-category dropdown-toggle" data-toggle="dropdown"
                        aria-expanded="true" id="categoryDropDown" title="All Categories">
@@ -125,3 +121,4 @@
         {{/if}}
     </div>
 {{/if}}
+
