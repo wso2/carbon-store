@@ -44,7 +44,7 @@
           encodedSAMLLogoutRequest = sso.client.getEncodedSignedSAMLLogoutRequest(user, idpSessionIndex, attr.issuer,
             superTenant.tenantId, superTenant.domain, attr.identityProviderURL, attr.defaultNameIDPolicy);
         } else {
-          encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, idpSessionIndex, attr.issuer)
+          encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, idpSessionIndex, attr.issuer);
         }
         log.debug("portal session index : " + sso_sessions[session.getId()]);
         //session.invalidate();
