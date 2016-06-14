@@ -30,7 +30,11 @@ require('/modules/publisher.js').exec(function(ctx) {
     ctx.response.addHeader('Cache-Control' ,'no-cache, no-store, must revalidate');
     ctx.response.addHeader('Expires' ,'0');
     var options = uriMatcher.match('/{context}/assets/{type}/{pageName}');
-    //var q = ctx.request.getParameter('query');
+    var q = ctx.request.getParameter('q');
+    if (q) {
+        var qString = '{' + q + '}';
+        q = parse(qString);
+    }
     //var sortBy = ctx.request.getParameter('sortby');
     //var sort = ctx.request.getParameter('sort');
     var category = ctx.request.getParameter('category');
@@ -40,7 +44,10 @@ require('/modules/publisher.js').exec(function(ctx) {
     var page = ui.buildPage(ctx.session, ctx.request);
     var assets;
     //Do an advanced search
-    assets  = assetApi.advanceSearch(options,ctx.request,ctx.response,ctx.session)||[];
+    assets = assetApi.advanceSearch(options, ctx.request, ctx.response, ctx.session) || [];
+    if (q) {
+        assets = asset.isValidMediaTypeQuery(q, type) ? assets : [];
+    }
     try {
         metrics.start("org.wso2.publisher.default.list.app-manager.render");
         var output = am.render(assets, page).list();
