@@ -200,9 +200,6 @@ h2.app-title {
     width: 100%;
     opacity: 0.8;
 }
-.assets-container{
-    margin-top:20px;
-}
 .es-nav > li.advanced-search-link{
     position: absolute;
     right: 0;
@@ -539,7 +536,15 @@ a.ast-name:hover {
 .advance-search-btn:hover {
     color:#fff;
 }
-
+.store-bookmark-link{
+    width: 154px;
+    position: absolute;
+    right: 0;
+    top:10px
+}
+.store-bookmark-link a{
+    color:#fff;
+}
 .bookmark-link{
     color: #fff;
     position: relative;
@@ -846,7 +851,6 @@ a.ast-type-item:hover {
     font-size: 22px;
     padding: 10px 0 0;
     width: auto;
-    margin-bottom: 15px;
 }
 
 .title a {
@@ -960,7 +964,7 @@ a.more:focus {
 
 
 .top-assets-empty-assert{
-    padding:20px;
+    padding:57px 12px;
     border:solid 1px #ccc;
     background: rgba(48, 162, 249, 0.06);
     margin:10px 10px 10px 2px;
