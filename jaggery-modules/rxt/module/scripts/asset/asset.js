@@ -2618,4 +2618,16 @@ var asset = {};
         modPath = appExtensionMediator.resolveCaramelResources(modPath);
         return modPath;
     };
+    /**
+     * Check whether the value of the mediaType attribute contains the media type of the asset in current context
+     * @param {Object} q Associate array contains query sent by user
+     * @param {String} type Current asset type of the context
+     */
+    asset.isValidMediaTypeQuery = function (q, type) {
+        var valid = false;
+        if (!q.hasOwnProperty('mediaType') || q.mediaType === type) {
+            valid = !valid;
+        }
+        return valid;
+    };
 }(asset, core))

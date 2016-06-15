@@ -140,7 +140,7 @@ require('/modules/store.js').exec(function(ctx) {
         }
         try {
             metrics.start("org.wso2.es.store.extensions.assets.list.advanceSearch");
-            assets = am.advanceSearch(query, PAGING);
+            assets = asset.isValidMediaTypeQuery(query,type) ? am.advanceSearch(query, PAGING) : [];
         } finally {
             metrics.stop();
         }
