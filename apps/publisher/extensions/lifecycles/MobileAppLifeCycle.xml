@@ -60,7 +60,7 @@
 
                                 <parameter name="STATE_RULE1:Approved"
                                            value="Internal/private_{asset_author}:+get,+add,-delete,+authorize"/>
-                                <parameter name="STATE_RULE2:Approved" value="Internal/reviewer:-add,-delete,-authorize"/>
+                                <parameter name="STATE_RULE2:Approved" value="Internal/reviewer:+get,+add,-delete,+authorize"/>
                             </execution>
                             <execution forEvent="Reject" class="org.wso2.jaggery.scxml.generic.GenericExecutor">
                                 <parameter name="PERMISSION:get"
@@ -102,6 +102,9 @@
                                 <parameter name="STATE_RULE4:Published"
                                            value="system/wso2.anonymous.role:+get,-add,-delete,-authorize"/>
                             </execution>
+                        </data>
+                        <data name="transitionPermission">
+                            <permission forEvent="Publish" roles="Internal/reviewer,admin"/>
                         </data>
                     </datamodel>
                     <transition event="Publish" target="Published"/>
