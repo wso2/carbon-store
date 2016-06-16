@@ -54,7 +54,7 @@
                     "issuer": "publisher",
                     "identityProviderURL": "%https.host%/samlsso",
                     "responseSigningEnabled": true,
-                    "acs": "%https.host%/publisher/acs",
+                    "acs": "https://localhost:9443/publisher/acs",
                     "identityAlias": "wso2carbon",
                     "defaultNameIDPolicy": "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified",
                     "useTenantKey": false,
