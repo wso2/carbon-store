@@ -69,76 +69,66 @@
         sso_sessions = application.get('sso_sessions');
     }
 
-    if (samlResponse != null) {
+    if (samlResponse) {
         samlRespObj = sso.client.getSamlObject(samlResponse);
+        //If response signing is enabled we  to validate it before performing
+        //login or logout operations
+        if (attr.responseSigningEnabled && !sso.client.validateSignature(samlRespObj, keyStoreProps)) {
+            log.error('SAML response object validation failure.');
+            response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
+            return;
+        }
         if (!sso.client.isLogoutResponse(samlRespObj)) {
 
-            // validating the signature
-            if (attr.responseSigningEnabled) {
+            var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
-                if (sso.client.validateSignature(samlRespObj, keyStoreProps)) {
-                    var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
-
-                    if (sessionObj.sessionIndex != null || sessionObj.sessionIndex != 'undefined') {
-                        loadTenant(sessionObj.loggedInUser);
-                        session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
-                        session.put("Loged", "true");
-
-                        log.info('[STORE] session index :: ' + sessionObj.sessionIndex);
-                        log.info('[STORE] session :: ' + sessionObj.sessionId);
-                        log.info('[STORE] real session :: ' + session.getId());
-
-                        sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
-
-                        var user = require('store').user;
-
-                        var username = sessionObj.loggedInUser;
-                        user.loadTenant(username)
-
-                        var permissionAPI = require('rxt').permissions;
-                        var carbon = require('carbon');
-                        var usr = carbon.server.tenantUser(username);
-                        var modifiedUsername = user.removeTenantDomainFromUsername(username);
-                        var hasStoreLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
-                                modifiedUsername);
-                        
-                        sso.client.login(sessionObj.sessionIndex,'store',session);
-
-                        if (hasStoreLoginPermission) {
-                            user.emitLogin(username)
-                            log.debug('user is set :::' + username);
-                            response.sendRedirect(relayState);
-                        }
-                        else{
-                            //session.invalidate();
-                            log.warn('User '+sessionObj.loggedInUser+' does not have permission to access the store application.Make sure the user has the store role.');
-                            response.sendError(401,'You do not have permission to login to this application.Please contact your administrator and request permission.');
-                        }
-
-                    }
-                }
+            if ((!sessionObj) && (!sessionObj.sessionIndex)) {
+                log.error('Unable to locate sessionIndex in SAML session object');
+                response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
+                return;
             }
+            loadTenant(sessionObj.loggedInUser);
+            session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
+            session.put("Loged", "true");
 
+            log.info('[STORE] session index :: ' + sessionObj.sessionIndex);
+            log.info('[STORE] session :: ' + sessionObj.sessionId);
+            log.info('[STORE] real session :: ' + session.getId());
+
+            sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
+            var user = require('store').user;
+            var username = sessionObj.loggedInUser;
+            user.loadTenant(username);
+
+            var permissionAPI = require('rxt').permissions;
+            var carbon = require('carbon');
+            var usr = carbon.server.tenantUser(username);
+            var modifiedUsername = user.removeTenantDomainFromUsername(username);
+            var hasStoreLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
+                modifiedUsername);
+            sso.client.login(sessionObj.sessionIndex, 'store', session);
+
+            if (hasStoreLoginPermission) {
+                user.emitLogin(username);
+                log.debug('user is set :::' + username);
+                response.sendRedirect(relayState);
+            } else {
+                log.warn('User ' + sessionObj.loggedInUser + ' does not have permission to access the store application.Make sure the user has the store role.');
+                response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
+            }
         } else {
             log.info('[STORE] SAML LOGOUT RESPONSE , LOCAL SESSION: ' + session.getId());
-            //session.invalidate();
-            sso.client.logout(session,'store');
+            sso.client.logout(session, 'store');
             response.sendRedirect(relayState);
         }
     }
 
-    // if saml request is a log out request, then invalidate session.
-    if (samlRequest != null) {
+    //Handle SLO  requests
+    if (samlRequest) {
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
-        log.info('STORES BACKEND LOGOUT RECIEVED FROM IDP THE INDEX IS ######' + index + ', LOCAL SESSION: ' + session.getId());
-
+        log.info('[STORE] BACKEND LOGOUT RECIEVED FROM IDP THE INDEX IS ######' + index + ', LOCAL SESSION: ' + session.getId());
         var jSessionId = application.get('sso_sessions')[index];
-
         delete application.get('sso_sessions')[index];
-        //sso.client.logout(index);
-        //log.debug('store Session Id :::' + jSessionId);
-
-        //session.invalidate();
         sso.client.logout(index, new java.lang.String('store'));
         log.info('[STORE] Successfully logged out.');
     }
