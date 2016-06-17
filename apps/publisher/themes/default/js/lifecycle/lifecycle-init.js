@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -182,8 +182,6 @@ $(function() {
             data.currentLifecycle = LifecycleAPI.currentLifecycle();
             data.currentState = impl.state(impl.currentState).label;
             data.hasMultipleLifecycles = LifecycleUtils.currentAsset().hasMultipleLifecycles;
-            data.currentLCStateDuration = impl.getCurrentLCStateDuration();
-            data.currentLCStateDurationColour = impl.getCurrentLCStateDurationColour();
             renderPartial(constants.CONTAINER_INFORMATION_AREA, constants.CONTAINER_INFORMATION_AREA, data);
         }
         $("#current-selected-lifecycle span:first-child").text(data.currentLifecycle);
