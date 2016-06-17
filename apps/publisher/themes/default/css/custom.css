@@ -559,6 +559,14 @@ i.cu-btn-exp-col {
     background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;
 }
 
+.btn-association {
+    background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;
+}
+
+.btn-permission {
+    background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;
+}
+
 .btn-copy {
     background:url('../img/icons/ico-copy.png') 0.8em 1em no-repeat;
 }

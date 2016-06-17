@@ -76,6 +76,8 @@ store.init(configs);
 rxt.server.init(configs);
 //get the app version from store.json
 rxt.app.version(config.version);
+//get the search template from the store.json
+rxt.app.defaultSearchTemplate(config.search.defaultSearchTemplate);
 rxt.permissions.init();
 metricsAPI.init(context,configs);
 

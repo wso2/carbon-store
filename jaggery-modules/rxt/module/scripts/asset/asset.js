@@ -587,7 +587,8 @@ var asset = {};
                 var queryWithQuots = value.match(/"(.*?)"/g);
                 value = decodeURIComponent(value);
                 //Check if wildcard search is enabled
-                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots) {
+                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots
+                    && !(value.indexOf('(') > -1)) {
                     value = '*'+value+'*';
                 }
                 queryString.push(key + '=' + encodeURIComponent(value));
@@ -711,7 +712,7 @@ var asset = {};
             log.debug('[pagination-context] successfully destroyed context')
         }
     };
-    var buildQuery = function(query){
+    var buildQuery = function(type, rxtManager, app, query){
         var q = '';
         var options = {};
         options.wildcard = true; //Assume that wildcard is enabled
@@ -721,6 +722,10 @@ var asset = {};
             delete query[constants.Q_PROP_GROUP];
         }
         options.wildcard = resolveWildcard(query);
+        if(query.hasOwnProperty("_default")){
+            query = buildDefaultSearchString(type, rxtManager, app, query);
+            return query;
+        }
         q  = buildQueryString(query, options);
         return q;
     };
@@ -754,7 +759,8 @@ var asset = {};
             if (log.isDebugEnabled()) {
                 log.debug('[advance search] building query ');
             }
-            q = buildQuery(query);
+            q = buildQuery(type, rxtManager, app, query);
+            //log.info(q);
             if (log.isDebugEnabled()) {
                 log.debug('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);
             }
@@ -769,6 +775,65 @@ var asset = {};
         }
         return assets;
     };
+    /**
+     * This function is used to retrieve the search template from store.json or publisher.json
+     * @param type
+     * @param rxtManager
+     * @param app
+     * @returns {string}
+     */
+    var getSearchTemplate = function(type, rxtManager, app){
+        var template = rxtManager.defaultSearchString(type);
+        if(template){
+            return template;
+        } else {
+            template = app.defaultSearchTemplate();
+            if(template){
+                return template;
+            } else {
+                return defaultSearchTemplateImpl();
+            }
+        }
+    };
+
+    /**
+     * This function is used to build the default search query retrieved from store.json or publisher.json
+     * @param type
+     * @param rxtManager
+     * @param app
+     * @param query
+     * @returns {*}
+     */
+    var buildDefaultSearchString = function(type, rxtManager, app, query){
+        var splitFunc = rxtManager.defaultSearchSplit(type);
+        var searchTemplate = getSearchTemplate(type, rxtManager, app);
+        var newStr = splitFunc(query._default, searchTemplate);
+        //Append the rest of the query
+        var keys = Object.keys(query);
+        if(keys.length > 1){
+            for(var j=0; j<keys.length; j++){
+                if(keys[j].toString() != "_default"){
+                    if(keys[j].toString() == "taxonomy"){
+                        newStr = newStr + "&" + keys[j] + "=*" + encodeURIComponent(query[keys[j]]) +  "*";
+                    } else {
+                        newStr = newStr + "&" + keys[j].replace("_", ":") + "=" + encodeURIComponent(query[keys[j]]);
+                    }
+                }
+            }
+        }
+
+        return newStr;
+
+    };
+    /***
+     *
+     * @param term
+     * @returns {string}
+     */
+    var defaultSearchTemplateImpl = function(){
+        return constants.DEFAULT_SEARCH_ATTRIBUTE+":$input";
+    };
+
     AssetManager.prototype.advanceSearch = function(query,paging) {
         try {
             metrics.start(this.constructor.name,'advanceSearch');
@@ -783,7 +848,7 @@ var asset = {};
             paging = paging || null;
             assets =  doAdvanceSearch(type,query,paging,registry,rm);
             //assets is a set that must be converted to a JSON array
-            assets  = assets? processAssets(type,assets,rm) : [];
+            assets  = assets ? processAssets(type,assets,rm) : [];
             //Add additional meta data
             addAssetsMetaData(assets,this);
             return assets;
@@ -822,7 +887,7 @@ var asset = {};
             log.debug('[advance search] about to process result set');
         }
         if(assets){
-            assets = processAssets(null,assets,rxtManager,tenantId);
+            assets  = assets ? processAssets(null,assets,rxtManager,tenantId) : [];
             addMetaDataToGenericAssets(assets,session,tenantId);
         }
         return assets;
@@ -1161,6 +1226,7 @@ var asset = {};
         var asset = this.get(id);
         var tagged; //Assume that the tag will not be applied
         var utilsAPI = require('utils');
+        var tag;
         //If the user has provided a single tag then it should be
         //assigned to an array to keep the registry invocation uniform
         if (typeof tags === 'string') {
@@ -1175,8 +1241,14 @@ var asset = {};
         }
         try {
             metrics.start(this.constructor.name,'addTags');
-            this.registry.tag(asset.path, tags);
-            tagged = true;
+            for(var index =0; index< tags.length; index++){
+                tag = tags[index];
+                // not allow to add '/' symbol contains text
+                if (tag.indexOf(constants.FILTER_CHAR) < 0) {
+                    this.registry.tag(asset.path, tag);
+                    tagged = true;
+                }
+            }
         } catch (e) {
             log.error('Unable to add tags: ' + stringify(tags), e);
         }
@@ -1203,7 +1275,10 @@ var asset = {};
         try{
             for(var index =0; index< tags.length; index++){
                 tag = tags[index];
-                this.registry.untag(asset.path,tag);
+                if (tag && tag.indexOf(constants.FILTER_CHAR) < 0) {
+                    this.registry.untag(asset.path, tag);
+                    untagged = true;
+                }
             }
             //TODO: Make the untagging process atomic
             untagged = true;
@@ -1220,7 +1295,7 @@ var asset = {};
      */
     AssetManager.prototype.getTags = function(id){
         var asset = this.get(id);
-        var tags;
+        var tags = [];
         if (!asset) {
             log.error('Unable to retrieve tags of asset: ' + id + ' as it was not located.');
             return tagged;
@@ -1230,13 +1305,108 @@ var asset = {};
         }
         try{
             metrics.start(this.constructor.name,'getTags');
-            tags = this.registry.tags(asset.path)||[];
+            var allTags = this.registry.tags(asset.path) || [];
+            for (var i = 0; i < allTags.length; i++) {
+                var tempTag = allTags[i];
+                // filter tags which not contains forward slash '/'
+                if (tempTag && tempTag.indexOf(constants.FILTER_CHAR) < 0) {
+                    tags.push(allTags[i]);
+                }
+            }
         } catch(e){
             log.error('Unable to retrieve the tags of the provided asset ',e);
-        } finally {
-            metrics.stop();
         }
         return tags;
+    };
+    /**
+     * Returns the categories applied to an asset from tags list
+     * @param  {String} id A UUID representing an asset instance
+     * @return {Object}  taxa for an asset
+     */
+    AssetManager.prototype.getTaxa = function (id) {
+        var asset = this.get(id);
+        var taxa = [];
+        if (!asset) {
+            log.error('Unable to retrieve taxa of asset: ' + id + ' as it was not located.');
+            return false;
+        }
+        if (!asset.path) {
+            log.error('Unable to retrieve the taxa of the asset : ' + id + ' as the asset path was not located');
+            return false;
+        }
+        try {
+            var allTags = this.registry.tags(asset.path) || [];
+            for (var i = 0; i < allTags.length; i++) {
+                var tempTag = allTags[i];
+                // filter taxa from tags which contains forward slash
+                if (tempTag.indexOf(constants.FILTER_CHAR) >= 0) {
+                    taxa.push(allTags[i]);
+                }
+            }
+        } catch (e) {
+            log.error('Unable to retrieve the taxa of the provided asset ', e);
+        }
+
+        return taxa;
+    };
+    /***
+     * Add a taxa to given asset
+     *
+     * @param id An UUID representing an asset instance
+     * @param taxa name of the taxa
+     * @returns boolean Status of the operation
+     */
+
+    AssetManager.prototype.addTaxa = function (id,taxa) {
+        var asset = this.get(id);
+        var addState = false;
+
+        if (!asset) {
+            log.error('Unable to add taxa: ' + taxa + ' to asset id: ' + id + ' as it was not located.');
+            return addState;
+        }
+        if (!asset.path) {
+            log.error('Unable to add taxa ' + taxa + ' to asset id: ' + id +
+                ' as the asset path was not located');
+            return addState;
+        }
+        try {
+            this.registry.tag(asset.path, taxa);
+            addState = true;
+        } catch (e) {
+            log.error('Unable to add taxa: ' + taxa, e);
+        }
+
+        return addState;
+    };
+    /***
+     * Remove the given taxa from given asset
+     * @param id An UUID representing an asset instance
+     * @param taxa name of the taxa
+     * @returns boolean Status of the operation
+     */
+    AssetManager.prototype.removeTaxa = function (id, taxa) {
+        var asset = this.get(id);
+        var removeState = false;
+
+        if (!asset) {
+            log.error('Unable to remove taxa: ' + stringify(categories) + ' to asset id: ' + id +
+                ' as it was not located.');
+            return removeState;
+        }
+        if (!asset.path) {
+            log.error('Unable to remove taxa ' + stringify(categories) + ' to asset id: ' + id +
+                ' as the asset path was not located');
+            return removeState;
+        }
+        try {
+            this.registry.untag(asset.path, taxa);
+            removeState = true;
+        } catch (e) {
+            log.error('Unable to remove taxa: ' + taxa, e);
+        }
+
+        return removeState;
     };
     /**
      * The method returns the rating value of a given asset
@@ -1836,6 +2006,8 @@ var asset = {};
         modAsset.type = asset.type;
         modAsset.path = asset.path;
         modAsset.name = asset.name;
+        modAsset.currentLCStateDuration = asset.currentLCStateDuration;
+        modAsset.currentLCStateDurationColour = asset.currentLCStateDurationColour;
         var tables = this.rxtManager.listRxtTypeTables(this.type);
         var table;
         var fields;

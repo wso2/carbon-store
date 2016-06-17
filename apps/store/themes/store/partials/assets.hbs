@@ -17,18 +17,18 @@
     <!-- <h3 class="asset-type-default asset-title-separator asset-type-{{rxt.shortName}}">
         <div class="pagination top-asset-slideshow-pag assetSliderPag" id="top-asset-slideshow-pag-{{rxt.shortName}}"></div>
     </h3> -->
-    {{#if assets}}
-        <section>
+    <section>
+        {{#if assets}}
             {{> loading ../../../.}}
             {{>assets-thumbnails .}}
-        </section>
-    {{else}}
-        {{#if cuser.isAnon}}
-            <div class="top-assets-empty-assert">{{t "There are no publicly available assets. Please login to access your assets"}}</div>
         {{else}}
-            <div class="top-assets-empty-assert">{{t "There are no assets available."}}</div>
+            {{#if cuser.isAnon}}
+                <div class="top-assets-empty-assert">{{t "There are no publicly available assets. Please login to access your assets"}}</div>
+            {{else}}
+                <div class="top-assets-empty-assert">{{t "There are no assets available."}}</div>
+            {{/if}}
         {{/if}}
-    {{/if}}
+    </section>
 </div>
 
 

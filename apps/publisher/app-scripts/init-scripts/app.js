@@ -70,6 +70,8 @@ metricsAPI.init(context,pubConfig);
 
 //get the version from publisher.json and set it.
 rxt.app.version(config.version);
+//get the search template from the publisher.json
+rxt.app.defaultSearchTemplate(config.search.defaultSearchTemplate);
 
 
 //var SUPER_TENANT_ID=-1234;
