@@ -30,13 +30,22 @@
                 sso_sessions = application.get('sso_sessions'),
                 sessionId = session.getId(),
                 attr = config.authentication.methods.sso.attributes,
-                encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, sso_sessions[session.getId()], attr.issuer),
+                encodedSAMLLogoutRequest = null,
+                idpSessionIndex = sso_sessions[session.getId()],
+                carbon = require('carbon'),
+                superTenant = carbon.server.superTenant,
                 postUrl = attr.identityProviderURL,
                 ignoreReferer = request.getParameter("ignoreReferer"),
                 relayState = request.getHeader('referer') ? request.getHeader('referer') : caramel.configs().context;
 
         relayState = (!ignoreReferer) ? relayState : context + '/login?ignoreReferer=true';
 
+        if(attr.responseSigningEnabled) {
+          encodedSAMLLogoutRequest = sso.client.getEncodedSignedSAMLLogoutRequest(user, idpSessionIndex, attr.issuer,
+            superTenant.tenantId, superTenant.domain, attr.identityProviderURL, attr.defaultNameIDPolicy);
+        } else {
+          encodedSAMLLogoutRequest = sso.client.getEncodedSAMLLogoutRequest(user, idpSessionIndex, attr.issuer);
+        }
         log.debug("portal session index : " + sso_sessions[session.getId()]);
         //session.invalidate();
         %>
