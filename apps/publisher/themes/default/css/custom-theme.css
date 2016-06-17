@@ -649,10 +649,3 @@ ul.sort-list li a.active:hover{
 .margin-bottom-align{
     margin-bottom: -10px;
 }
-.colorbar{
-    height: 13px;
-    margin-top: 3px;
-    margin-right: 2px;
-    width: 15px;
-    float:left;
-}
