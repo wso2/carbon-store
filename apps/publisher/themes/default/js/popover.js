@@ -62,6 +62,12 @@ var currentPageFunction = (function(){
             case "lifecycle":
                 $(".btn-lifecycle").addClass("tab-selected");
                 break;
+            case "associations":
+                $(".btn-association").addClass("tab-selected");
+                break;
+            case "permissions":
+                $(".btn-permission").addClass("tab-selected");
+                break;
         }
     };
     return returnObj;
