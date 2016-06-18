@@ -1,7 +1,7 @@
 var messages = {};
 messages.alertSuccess = function(value){
     $.notify.addStyle('happygreen', {
-        html: "<div><i class='icon fw fw-info'></i> <strong>Success! </strong><span data-notify-html/></div>",
+        html: "<div><i class='icon fa fa-check-circle'></i> <strong>Success! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
@@ -50,12 +50,12 @@ messages.alertError = function(value){
     });
 };
 messages.alertInfo = function(value){
-        $.notify.addStyle('happygreen', {
-        html: "<div><i class='icon fw fw-info'></i> <strong>Success! </strong><span data-notify-html/></div>",
+    $.notify.addStyle('infoblue', {
+        html: "<div><i class='icon fw fw-info'></i> <strong>Info! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "#5CB85C",
+                "background-color": "#009DA7",
                 "padding": "10px",
                 "font-family":"Open Sans",
                 "color":"white",
@@ -63,7 +63,7 @@ messages.alertInfo = function(value){
             },
             supergreen: {
                 "color": "white",
-                "background-color": "#5CB85C"
+                "background-color": "#009DA7"
             }
         }
     });
@@ -71,16 +71,16 @@ messages.alertInfo = function(value){
     $.notify(value, {
         globalPosition: 'top center',
         className: 'info',
-        style:'happygreen'
+        style:'infoblue'
     });
 };
 messages.alertInfoLoader = function(value){
-    $.notify.addStyle('happygreen', {
+    $.notify.addStyle('infoloaderblue', {
         html: "<div><strong></strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "#5CB85C",
+                "background-color": "#009DA7",
                 "padding": "10px",
                 "font-family":"Open Sans",
                 "color":"white",
@@ -96,13 +96,13 @@ messages.alertInfoLoader = function(value){
         globalPosition: 'top center',
         className: 'info',
         autoHide: false,
-        style: 'happygreen'
+        style: 'infoloaderblue'
     });
 
 };
 messages.alertWarn = function(value){
     $.notify.addStyle('happyyellow', {
-        html: "<div><i class='icon fw fw-info'></i> <strong>Warning! </strong><span data-notify-html/></div>",
+        html: "<div><i class='icon fw fw-warning'></i> <strong>Warning! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",

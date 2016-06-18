@@ -1,7 +1,7 @@
 var messages = {};
 messages.alertSuccess = function(value){
     $.notify.addStyle('happygreen', {
-        html: "<div><i class='icon fw fw-info'></i> <strong>Success! </strong><span data-notify-html/></div>",
+        html: "<div><i class='icon fa fa-check-circle'></i> <strong>Success! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
@@ -50,9 +50,28 @@ messages.alertError = function(value){
     });
 };
 messages.alertInfo = function(value){
+    $.notify.addStyle('infoblue', {
+        html: "<div><i class='icon fw fw-info'></i> <strong>Info! </strong><span data-notify-html/></div>",
+        classes: {
+            base: {
+                "white-space": "nowrap",
+                "background-color": "#009DA7",
+                "padding": "10px",
+                "font-family":"Open Sans",
+                "color":"white",
+                "font-weight":300
+            },
+            supergreen: {
+                "color": "white",
+                "background-color": "#009DA7"
+            }
+        }
+    });
+
     $.notify(value, {
         globalPosition: 'top center',
-        className: 'info'
+        className: 'info',
+        style:'infoblue'
     });
 };
 messages.alertInfoLoader = function(value){
@@ -61,12 +80,12 @@ messages.alertInfoLoader = function(value){
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "lightblue",
+                "background-color": "009DA7",
                 "padding": "10px"
             },
             superblue: {
                 "color": "white",
-                "background-color": "blue"
+                "background-color": "009DA7"
             }
         }
     });
@@ -81,7 +100,7 @@ messages.alertInfoLoader = function(value){
 };
 messages.alertWarn = function(value){
     $.notify.addStyle('happyyellow', {
-        html: "<div><span data-notify-html/></div>",
+        html: "<div><i class='icon fw fw-warning'></i> <strong>Warning! </strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
