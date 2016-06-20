@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -358,6 +358,8 @@ var LifecycleUtils = {};
         this.dagreD3GraphObject = null;
         this.renderingSite;
         this.history = [];
+        this.currentLCStateDuration;
+        this.currentLCStateDurationColour;
     }
     LifecycleImpl.prototype.load = function() {
         var promise;
@@ -523,6 +525,12 @@ var LifecycleUtils = {};
             return datamodel.checkItems ? datamodel.checkItems : [];
         }
     };
+    LifecycleImpl.prototype.getCurrentLCStateDuration = function () {
+        return this.currentLCStateDuration;
+    };
+    LifecycleImpl.prototype.getCurrentLCStateDurationColour = function () {
+        return this.currentLCStateDurationColour;
+    };
     /**
      * This method returns the available actions of a given lifecycle state
      * if required state is not provided it is assumed to be current state
@@ -674,6 +682,8 @@ var LifecycleUtils = {};
                 }
                 that.checklist(data.checkItems);
                 that.setAllowedActions(data.approvedActions);
+                that.currentLCStateDurationColour = data.currentLCStateDurationColour;
+                that.currentLCStateDuration = data.currentLCStateDuration;
                 LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS);
             },
             error: function() {

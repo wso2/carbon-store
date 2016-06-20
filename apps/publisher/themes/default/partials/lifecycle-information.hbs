@@ -1,5 +1,6 @@
 <h4>
   <i class="fw fw-settings lifecycles-mgt-icon"></i> <span>Lifecycle Information</span>
+</h4>
   <span>
 {{#if hasMultipleLifecycles}}
 <h6> Active:
@@ -8,9 +9,11 @@
 </span>
 </h6>
 {{else}}
-      <h6>Active: <span class="text-muted">{{currentLifecycle}}</span>
+      <h6>Active: <span class="text-muted">{{currentLifecycle}}</span></h6>
 {{/if}}
 <h6>State: <span class="text-muted">{{currentState}}</span></h6>
-</span>
+      <h6>Current State Duration: <span class="text-muted"
+                                        style="color:{{currentLCStateDurationColour}}">
+          {{currentLCStateDuration}}</span></h6>
+  </span>
 <hr/>
-</h4>

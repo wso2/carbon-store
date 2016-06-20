@@ -2006,6 +2006,8 @@ var asset = {};
         modAsset.type = asset.type;
         modAsset.path = asset.path;
         modAsset.name = asset.name;
+        modAsset.currentLCStateDuration = asset.currentLCStateDuration;
+        modAsset.currentLCStateDurationColour = asset.currentLCStateDurationColour;
         var tables = this.rxtManager.listRxtTypeTables(this.type);
         var table;
         var fields;
