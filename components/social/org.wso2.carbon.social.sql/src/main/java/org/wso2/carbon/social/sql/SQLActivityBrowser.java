@@ -64,9 +64,15 @@ public class SQLActivityBrowser implements ActivityBrowser {
 
 	public static final String TOP_COMMENTS_SELECT_SQL = "SELECT "
 			+ Constants.BODY_COLUMN + " FROM "
-			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + "WHERE "
+			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
 			+ Constants.LIKES_COLUMN + " > ?";
+
+	public static final String IS_REVIEWED_SELECT_SQL = "SELECT "
+			+ Constants.BODY_COLUMN + " FROM "
+			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
+			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
+			+ Constants.USER_COLUMN + " = ?";
 
 	public static final String SELECT_LIKE_STATUS = "SELECT "
 			+ Constants.ID_COLUMN + " FROM "
@@ -586,6 +592,40 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			return null;
 		}
 
+	}
+
+	/**
+	 * Check whether the given user has already reviewed on the given targetId (AssetType + UUID)
+	 * @param targetId AssetType + UUID delimited by colon
+	 * @param userId Username with tenant domain i:e admin@carbon.super
+	 * @return Boolean whether user has already reviewed or not
+	 */
+	public boolean isReviewed(String targetId, String userId) throws SocialActivityException {
+		boolean reviewed = false;
+		Connection connection = null;
+		PreparedStatement statement;
+		ResultSet resultSet;
+		String errorMsg = "Unable to retrieve comments for the user : " + userId;
+
+		try {
+			if (log.isDebugEnabled()) {
+				log.debug("Executing: " + IS_REVIEWED_SELECT_SQL);
+			}
+			connection = DSConnection.getConnection();
+			statement = connection.prepareStatement(IS_REVIEWED_SELECT_SQL);
+			statement.setString(1, targetId);
+			statement.setString(2, userId);
+			resultSet = statement.executeQuery();
+			reviewed = resultSet.next();
+			resultSet.close();
+		} catch (SQLException | DataSourceException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} finally {
+			DSConnection.closeConnection(connection);
+		}
+		return reviewed;
 	}
 
 }
