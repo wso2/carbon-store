@@ -7,10 +7,10 @@
     <div class="com-right">
         <div class="clear">
             <strong class="com-author">{{actor.id}}</strong>
-            <div class="com-rating">
+            <div class="com-rating" data-rating="{{object.rating}}">
                 <div class="com-rating-{{object.rating}}star"></div>
             </div>
-            <p>
+            <p class="com-content">
                 {{object.content}}
             </p>
         </div>
@@ -19,19 +19,24 @@
             <div class="com-thumbs">
                 <ul>
                     <li>
-                        <a href="#"><i class="icon icon-thumbs-up {{#if iLike}}selected{{/if}}"></i><span class="com-like-count">{{#if object.likes.totalItems}} {{object.likes.totalItems}} {{/if}}</span></a>
+                        <a href="#"><i class="icon icon-thumbs-up {{#if iLike}}selected{{/if}}"></i><span
+                                class="com-like-count">{{#if object.likes.totalItems}} {{object.likes.totalItems}} {{/if}}</span></a>
                     </li>
                     <li>
-                        <a href="#"><i class="icon icon-thumbs-down {{#if iDislike}}selected{{/if}}"></i><span class="com-dislike-count">{{#if object.dislikes.totalItems}} {{object.dislikes.totalItems}} {{/if}}</span></a>
+                        <a href="#"><i class="icon icon-thumbs-down {{#if iDislike}}selected{{/if}}"></i><span
+                                class="com-dislike-count">{{#if object.dislikes.totalItems}} {{object.dislikes.totalItems}} {{/if}}</span></a>
                     </li>
                 </ul>
             </div>
-            {{#if isMyComment}} 
-            <div class="com-delete txt-right">
-                <button id="btn-delete">
-                    Delete
-                </button>
-            </div>
+            {{#if isMyComment}}
+                <div class="com-delete txt-right">
+                    <button id="btn-delete">
+                        Delete
+                    </button>
+                    <button id="btn-edit">
+                        Edit
+                    </button>
+                </div>
             {{/if}}
         </div>
 
