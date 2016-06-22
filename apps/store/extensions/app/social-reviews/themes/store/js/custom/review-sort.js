@@ -52,6 +52,11 @@ var redrawReviews = function(sortBy, callback) {
         });
     })
 };
+var notifyError = function (error) {
+    messages.alertError(error);
+    $('#btn-post.disabled').removeClass('disabled');
+    showLoading(false)
+};
 /**
  * IE 11 caches AJAX requests, in order to by pass this behaviour
  * the request URIs must be unique.This is achieved by generating 
