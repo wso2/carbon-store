@@ -21,17 +21,26 @@ var render = function (theme, data, meta, require) {
     data.stream.isAuthorized = data.isAuthorized;
     data.stream.urlDomain = data.urlDomain;
     data.stream.message = data.message;
+    data.input = {
+        'type': data.stream.id.split(':')[0],
+        'param': data.input_param,
+        'myReview': data.stream.myReview,
+        'ratings': Array.apply(0, new Array(5)) //Generates an array [5,4,3,2,1] | else register handlebar helper
+            .map(function (element, index) {
+                return 5 - index;
+            })
+    };
     if (data.isLogged && data.isAuthorized) {
         theme('simple', {
             body: [
-                { partial: 'comment-input', context: data.input_param},
-                { partial: 'stream', context: data.stream}
+                {partial: 'comment-input', context: data.input},
+                {partial: 'stream', context: data.stream}
             ]
         });
     } else {
         theme('simple', {
             body: [
-                { partial: 'stream', context: data.stream}
+                {partial: 'stream', context: data.stream}
             ]
         });
     }
