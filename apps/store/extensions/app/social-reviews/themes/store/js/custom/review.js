@@ -16,19 +16,25 @@
  *  under the License.
  *
  */
-var $radio = $('.auto-submit-star');
-var $btn = $('#btn-post');
-var $textArea = $('#com-body');
+var $container = $(".com-container");
+var getTextArea = function () {
+    return $('.com-container #com-body');
+};
+var getMyReviewElement = function () {
+    return $('.com-container .my-review');
+};
 var $stream = $('#stream');
 var $firstReview = $('.com-first-review');
-var $alert = $('.com-alert');
+var getAlertElement = function () {
+    return $container.find('.com-alert');
+};
+var $loading = $('.com-container .row.com-add div[class^="loading-"]');
 var $sort = $('.com-sort');
 var $lastReview = $('.load-more');
 var $more = $('#more');
 var $empty_list = $('#empty_list');
-var $reviews_frame = $("html");
 var windowProxy;
-var publish = function(activity, onSuccess) {
+var publish = function (activity, onSuccess, onError) {
     if (activity.target) {
         activity.context = {
             "id": target
@@ -38,45 +44,47 @@ var publish = function(activity, onSuccess) {
             "id": target
         };
     }
-    debugger;
     var url = caramel.url('/apis/user-reviews');
     $.ajax({
         url: url,
         type: 'POST',
         contentType: 'application/json',
         data: JSON.stringify(activity),
-        success: onSuccess
+        success: onSuccess,
+        error: onError
     });
     /*$.post(url, {
         activity: JSON.stringify(activity)
     }, onSuccess)*/
 };
-var showAlert = function(msg) {
-    $alert.html(msg).fadeIn("fast").css('display', 'inline-block');
+var showAlert = function (msg) {
+    getAlertElement().html(msg).fadeIn("fast");
 };
-var showLoading = function(status) {
+var showLoading = function (status) {
     if (status) {
-        $alert.html('').css('display', 'inline-block').addClass('com-alert-wait');
+        getAlertElement().html('').css('display', 'inline-block').addClass('com-alert-wait');
+        $loading.fadeIn();
     } else {
-        $alert.hide().removeClass('com-alert-wait');
+        getAlertElement().hide().removeClass('com-alert-wait');
+        $loading.fadeOut();
     }
 };
-$radio.rating({
-    callback: function(value) {}
-});
-$btn.click(function(e) {
+$container.on('click', '#btn-post', function (e) {
     e.preventDefault();
-    var rating = Number($('input.star-rating-applied:checked').val());
-    var review = $textArea.val();
-    if (!review && !rating) {
-        showAlert("Please add your Review and Rating");
-    } else if (!review) {
-        showAlert("Please add your Review");
-    } else if (!rating) {
-        showAlert("Please add your Rating");
+    var disabled = $(this).hasClass('disabled');
+    if (disabled) {
+        showAlert("Rating required");
+        return false;
+    }
+    var rating = $('.user-rating > .selected-rating').data();
+    var review = getTextArea().val().trim();
+    if (!rating) {
+        showAlert("Rating required");
     } else {
+        rating = rating.rating;
         var activity = {
             "verb": "post",
+            "isMyComment": true,
             "object": {
                 "objectType": "review",
                 "content": review,
@@ -89,24 +97,22 @@ $btn.click(function(e) {
                 }
             }
         };
-        $btn.attr('disabled', 'disabled');
+        $container.find('#btn-post').attr('disabled', 'disabled');
         showLoading(true);
         var pos = target.indexOf(':');
         var aid = target.substring(pos + 1);
         var type = target.substring(0, pos);
-        var addAndRenderNew = function(successCallback) {
+        var addAndRenderNew = function (successCallback, onError) {
             $('#newest').addClass('selected');
-            publish(activity, function(published) {
+            publish(activity, function (published) {
                 if ($firstReview.length) {
                     $firstReview.hide();
                     $sort.removeClass('com-sort-hidden');
                 }
-                $btn.removeAttr('disabled');
                 if (published.success) {
                     showLoading(false);
-                    $radio.rating('select', null);
-                    $textArea.val('');
                     activity.id = published.id;
+                    activity.object.id = published.id;
                     //Remove carbon.super tenant domain from username
                     var pieces = user.split(/[\s@]+/);
                     if (pieces[pieces.length - 1] == 'carbon.super') {
@@ -115,20 +121,25 @@ $btn.click(function(e) {
                     activity.actor = {
                         id: user
                     };
-                    usingTemplate(function(template) {
+                    usingTemplate(function (template) {
                         var newComment = template(activity);
-                        $stream.prepend(newComment);
+                        getMyReviewElement().html('').html(newComment);
                         successCallback && successCallback();
                     });
                 }
-            });
+            }, onError);
         };
-        addAndRenderNew(function() {
+        addAndRenderNew(function () {
             redrawReviews();
+        }, function (error) {
+            var errorMessage = JSON.parse(error.responseText).error;
+            $('#btn-post[disabled]').removeAttr('disabled');
+            $('.user-rating > .selected-rating').removeClass('selected-rating');
+            notifyError(errorMessage);
         });
     }
 });
-$stream.on('click', '.icon-thumbs-down', function(e) {
+$stream.on('click', '.icon-thumbs-down', function (e) {
     e.preventDefault();
     var $tDownBtn = $(e.target);
     var $review = $tDownBtn.parents('.com-review');
@@ -150,26 +161,26 @@ $stream.on('click', '.icon-thumbs-down', function(e) {
         };
         var $likeCount = $review.find('.com-like-count');
         ulikeActivity.verb = 'unlike';
-        publish(ulikeActivity, function() {
+        publish(ulikeActivity, function () {
             $likeCount.text((Number($likeCount.text()) - 1) || '');
         });
         $opposite.removeClass('selected');
     }
     if ($tDownBtn.hasClass('selected')) {
         activity.verb = 'undislike';
-        publish(activity, function() {
+        publish(activity, function () {
             $tDownCount.text((Number($tDownCount.text()) - 1) || '');
         });
         $tDownBtn.removeClass('selected');
     } else {
         activity.verb = 'dislike';
-        publish(activity, function() {
+        publish(activity, function () {
             $tDownCount.text(Number($tDownCount.text()) + 1);
         });
         $tDownBtn.addClass('selected');
     }
 });
-$stream.on('click', '.icon-thumbs-up', function(e) {
+$stream.on('click', '.icon-thumbs-up', function (e) {
     e.preventDefault();
     var $tUpBtn = $(e.target);
     var $review = $tUpBtn.parents('.com-review');
@@ -191,26 +202,26 @@ $stream.on('click', '.icon-thumbs-up', function(e) {
         };
         var $uDislikeCount = $review.find('.com-dislike-count');
         uDislikeActivity.verb = 'undislike';
-        publish(uDislikeActivity, function() {
+        publish(uDislikeActivity, function () {
             $uDislikeCount.text((Number($uDislikeCount.text()) - 1) || '');
         });
         $opposite.removeClass('selected');
     }
     if ($tUpBtn.hasClass('selected')) {
         activity.verb = 'unlike';
-        publish(activity, function() {
+        publish(activity, function () {
             $likeCount.text((Number($likeCount.text()) - 1) || '');
         });
         $tUpBtn.removeClass('selected');
     } else {
         activity.verb = 'like';
-        publish(activity, function() {
+        publish(activity, function () {
             $likeCount.text(Number($likeCount.text()) + 1);
         });
         $tUpBtn.addClass('selected');
     }
 });
-$more.on('click', '.load-more', function(e) {
+$more.on('click', '.load-more', function (e) {
     e.preventDefault();
     var offset = parseInt($('.load-more').attr("value"));
     var url = caramel.url('/apis/user-reviews');
@@ -219,13 +230,13 @@ $more.on('click', '.load-more', function(e) {
         sortBy: $('.com-sort .selected').attr('id'),
         offset: offset,
         limit: 10
-    }, function(obj) {
+    }, function (obj) {
         var reviews = obj || [];
         if (jQuery.isEmptyObject(reviews) || reviews.length < 10) {
             $more.hide();
             $empty_list.text("No more activities to retrieve.");
         }
-        usingTemplate(function(template) {
+        usingTemplate(function (template) {
             var str = "";
             for (var i = 0; i < reviews.length; i++) {
                 var review = reviews[i];
@@ -238,7 +249,7 @@ $more.on('click', '.load-more', function(e) {
         });
     });
 });
-$stream.on('click', '#btn-delete', function(e) {
+$stream.on('click', '#btn-delete', function (e) {
     e.preventDefault();
     var $deleteBtn = $(e.target);
     var $review = $deleteBtn.parents('.com-review');
@@ -247,11 +258,93 @@ $stream.on('click', '#btn-delete', function(e) {
     $.ajax({
         url: url,
         type: 'DELETE',
-        success: function(obj) {
+        success: function (obj) {
             if (obj.success) {
                 $review.remove();
             }
         }
     });
 });
-$reviews_frame.niceScroll();
+$container.on('click', '#btn-delete', function (e) {
+    showLoading(true);
+    e.preventDefault();
+    var $deleteBtn = $(e.target);
+    var $review = $deleteBtn.parents('.com-review');
+    var id = $review.attr('data-target-id');
+    var url = caramel.url('/apis/user-review/' + id);
+    $.ajax({
+        url: url,
+        type: 'DELETE',
+        success: function () {
+            $('.com-review[data-target-id="' + id + '"]').fadeOut();
+            caramel.partials({
+                comment: '/extensions/app/social-reviews/themes/' + caramel.themer + '/partials/comment-input.hbs'
+            }, function () {
+                var template = Handlebars.partials['comment'];
+                var commentInput = template({myReview: null, type: target.split(':')[0], ratings: [5, 4, 3, 2, 1]});
+                $(".row.com-add").replaceWith(commentInput);
+            });
+        }
+    });
+});
+$container.on('click', '#btn-update', function (e) {
+    showLoading(true);
+    e.preventDefault();
+    var rating = $('.user-rating > .selected-rating').data().rating;
+    var review = getTextArea().val().trim();
+    var id = $(this).data('id');
+    var url = caramel.url('/apis/user-review/' + id);
+    var target = target;
+    var data = {
+        rating: rating,
+        review: review,
+        id: id,
+        target: target
+    };
+    $.ajax({
+        url: url,
+        type: 'PUT',
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function (response) {
+            /*Placeholder for update method*/
+            return false;
+        }
+    });
+});
+$container.on('click', '#btn-edit', function (e) {
+    showLoading(true);
+    var myReview = getMyReviewElement();
+    var rating = myReview.find('.com-rating').data('rating');
+    var review = myReview.find('.com-content').html().trim();
+    var id = myReview.find('.com-review').data('target-id');
+    var editable = {
+        rating: rating,
+        review: review,
+        id: id
+    };
+    e.preventDefault();
+    $('.com-review[data-target-id="' + id + '"]').fadeOut();
+    caramel.partials({
+        comment: '/extensions/app/social-reviews/themes/' + caramel.themer + '/partials/comment-input.hbs'
+    }, function () {
+        var template = Handlebars.partials['comment'];
+        var commentInput = template(
+            {myReview: null, type: target.split(':')[0], ratings: [5, 4, 3, 2, 1], editable: editable});
+        $(".row.com-add").replaceWith(commentInput);
+    });
+});
+$container.on('click', '#btn-cancel', function (e) {
+    var id = $(this).data('id');
+    var activity = $('.com-review[data-target-id="' + id + '"]');
+    activity.show();
+    getMyReviewElement().empty();
+    getMyReviewElement().append(activity.clone());
+});
+$container.on('click', '.rating-star', function () {
+    getAlertElement().html('').fadeOut("fast");
+    $('#btn-post.disabled').removeClass('disabled');
+    $(this).siblings().removeClass("selected-rating");
+    $(this).addClass("selected-rating");
+});
+$stream.niceScroll();
