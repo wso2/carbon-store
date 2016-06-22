@@ -77,6 +77,16 @@ Handlebars.registerHelper('if', function(context, options) {
   }
 });
 
+Handlebars.registerHelper('if_equal', function (lvalue, rvalue, options) {
+    if (arguments.length < 3)
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+    if (lvalue != rvalue) {
+        return options.inverse(this);
+    } else {
+        return options.fn(this);
+    }
+});
+
 Handlebars.registerHelper('unless', function(context, options) {
   var fn = options.fn, inverse = options.inverse;
   options.fn = inverse;
@@ -92,7 +102,7 @@ Handlebars.registerHelper('with', function(context, options) {
 Handlebars.registerHelper('log', function(context) {
   Handlebars.log(context);
 });
-;
+
 // lib/handlebars/compiler/parser.js
 /* Jison generated parser */
 var handlebars = (function(){
@@ -498,7 +508,7 @@ if (typeof module !== 'undefined' && require.main === module) {
   exports.main(typeof process !== 'undefined' ? process.argv.slice(1) : require("system").args);
 }
 };
-;
+
 // lib/handlebars/compiler/base.js
 Handlebars.Parser = handlebars;
 
