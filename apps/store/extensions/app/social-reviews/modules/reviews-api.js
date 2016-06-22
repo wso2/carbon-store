@@ -44,7 +44,7 @@ var api = {};
         var target = opts.target; 
         var reviews = ReviewUtils.listReviews(target, user, opts);
         res.addHeader("Content-Type", "application/json");
-        print(reviews);
+        print(reviews.allReviews);
     };
 
     var resolvePOST = function(req, res, session) {
@@ -72,14 +72,20 @@ var api = {};
         var actor = review.actor = {};
         actor.id = ReviewUtils.formatUsername(user);
         actor.objectType = 'person';
+        res.addHeader("Content-Type", "application/json");
 
         try {
             var result = ReviewUtils.createUserReview(review);
-            res.addHeader("Content-Type", "application/json");
-            print(result);
+            if(!result.success){
+                res = ResponseProcessor.buildErrorResponse(res, 400,
+                    'User has already reviewed on the asset , Multiple reviews are not allowed.');
+            }
+            else {
+                print(result);
+            }
         } catch (e) {
             log.error('[user-reviews-api] Unable to create the review', e);
-            res = ResponseProcessor.buildErrorResponse(res, 500, 'An error has occured while creating the review,please check the server logs for more details');
+            res = ResponseProcessor.buildErrorResponse(res, 500, 'An error has occurred while creating the review,please check the server logs for more details');
         }
     };
 

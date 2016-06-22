@@ -29,7 +29,7 @@ var ReviewUtils = {};
     };
     var cleanUsername = function(username) {
         return username.replace("@carbon.super", "");
-    }
+    };
     var formatUsername = function(user) {
         var domain = user ? carbon.server.tenantDomain({
             tenantId: user.tenantId
@@ -43,8 +43,9 @@ var ReviewUtils = {};
         paging.limit = paging.limit ? paging.limit : REVIEW_PAGE_LIMIT;
         return paging;
     };
-    var processUserReviews = function(socialSvc, user, reviews) {
+    var processUserReviews = function (socialSvc, user, reviews) {
         var review;
+        var myReview = false;
         var formattedUsername = formatUsername(user);
         var usernameOnReview;
         for (var index = 0; index < reviews.length; index++) {
@@ -54,12 +55,15 @@ var ReviewUtils = {};
             //Only populate review details if there is a logged in
             //user
             if (user) {
-                review.iLike = socialSvc.isUserliked(formattedUsername, review.object.id, 1);;
-                review.iDislike = socialSvc.isUserliked(formattedUsername, review.object.id, 0);;
-                review.isMyComment = (usernameOnReview === formatUsername(user)) ? true : false;
+                review.iLike = socialSvc.isUserliked(formattedUsername, review.object.id, 1);
+                review.iDislike = socialSvc.isUserliked(formattedUsername, review.object.id, 0);
+                review.isMyComment = (usernameOnReview === formatUsername(user));
+                if (review.isMyComment) {
+                    myReview = review;
+                }
             }
         }
-        return reviews;
+        return {'allReviews': reviews, 'myReview': myReview};
     };
     ReviewUtils.listReviews = function(target, user, userPagination) {
         var socialSvc = getSocialSvc();
@@ -67,13 +71,19 @@ var ReviewUtils = {};
         var obj = JSON.parse(String(socialSvc.getSocialObjectJson(target, paging.sortBy, paging.offset, paging.limit)));
         return processUserReviews(socialSvc, user, obj.attachments || []);
     };
-    ReviewUtils.createUserReview = function(review) {
+    ReviewUtils.createUserReview = function (review) {
         var socialSvc = getSocialSvc();
         var reviewJSON = JSON.stringify(review);
-        var id = socialSvc.publish(reviewJSON);
+        var username = review.actor.id;
+        var target = review.target.id;
+        var reviewed = socialSvc.isReviewed(target, username);
         var result = {};
+        var id = -1;
+        if (!reviewed) {
+            id = socialSvc.publish(reviewJSON);
+        }
         result.id = id;
-        result.success = (id > -1) ? true : false;
+        result.success = (id > -1);
         return result;
     };
     ReviewUtils.removeUserReview = function(reviewId, username) {
