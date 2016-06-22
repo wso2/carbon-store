@@ -438,6 +438,8 @@ var error = '';
         state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates,asset,session);
         state.isLCActionsPermitted = isLCActionsPermitted(state.approvedActions); //(state.approvedActions.length > 0 ) ? true : false;//isLCActionsPermitted(asset, options, req, res, session);
         state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
+        state.currentLCStateDurationColour = lcCheckedStates.getLifeCycleCurrentStateDurationColour();
+        state.currentLCStateDuration = lcCheckedStates.getLifeCycleCurrentStateDuration();
         return state;
     };
     /**
