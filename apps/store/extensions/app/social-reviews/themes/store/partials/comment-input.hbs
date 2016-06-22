@@ -1,39 +1,58 @@
 <div class="row com-add">
-
-<!--
+    <div class="loading-bg">
+    </div>
+    <div class="loading-animation">
+        <i class="fw fw-loader5 fw-spin fw-3x custom-loader"></i></div>
+    <!--
 	<div class="com-left">
 		<img class="img-avatar" src="{{url "/themes/default/img/avatar.png"}}">
 	</div>-->
+    <span class="my-review-topic">MY REVIEW</span>
+    <div class="com-body-cont my-review">
 
-	<div class="com-body-cont">
-		<form method="post" id="com-form-post" />
-		<div class="clear com-body-wrapper">
-			<textarea id="com-body"></textarea>
-		</div>
-		<div class="row">
-			<div class="com-rating-user">
-				<span>Rate this asset</span>
+        {{#if myReview }}
+            {{> activity myReview }}
+        {{else}}
+
+            <form method="post" id="com-form-post"/>
+            <div class="clear com-body-wrapper">
+                {{#if editable}}
+                    <textarea id="com-body">{{editable.review}}</textarea>
+                {{ else }}
+                    <textarea
+                            id="com-body"
+                            placeholder="Tell others what you think about this {{ type }}."></textarea>
+                {{/if}}
+            </div>
+            <div class="row">
+                <div class="com-rating-user">
 				<span class="user-rating" data-rating="2">
-					<input class="auto-submit-star" name="star2" type="radio" class="star"
-					value="1"/>
-					<input class="auto-submit-star" name="star2" type="radio" class="star"
-					value="2"/>
-					<input class="auto-submit-star" name="star2" type="radio" class="star"
-					value="3"/>
-					<input class="auto-submit-star" name="star2" type="radio" class="star"
-					value="4"/>
-					<input class="auto-submit-star" name="star2" type="radio" class="star"
-					value="5"/>
+                    {{#each ratings}}
+                        <i class="fw fw-star fw-2x rating-star {{#if_equal this ../editable.rating}}selected-rating{{/if_equal}}"
+                           data-rating="{{ this }}"></i>
+                    {{/each}}
+                    <div class="com-alert"></div>
 				</span>
-			</div>
-			<div class="txt-right com-post-as">
-				<div class="com-alert"></div>
-				<button id="btn-post">
-					Post Review
-				</button>
+                </div>
+                <div class="txt-right com-post-as">
+                    {{#if editable}}
+                        <button id="btn-update" data-id="{{ editable.id }}">
+                            Update
+                        </button>
+                        <button id="btn-cancel" data-id="{{ editable.id }}">
+                            Cancel
+                        </button>
+                    {{ else }}
+                        <button id="btn-post" class="disabled">
+                            Submit
+                        </button>
+                    {{/if}}
 
-			</div>
-		</div>
-		</form>
-	</div>
+                </div>
+            </div>
+            </form>
+
+        {{/if}}
+
+    </div>
 </div>
