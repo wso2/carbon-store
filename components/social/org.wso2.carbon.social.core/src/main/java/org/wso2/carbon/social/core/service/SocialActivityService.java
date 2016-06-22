@@ -193,11 +193,28 @@ public abstract class SocialActivityService {
 	public boolean isUserliked(String userId, int targetId, int like) throws SocialActivityException {
 		return getActivityBrowser().isUserlikedActivity(userId, targetId, like);
 	}
-	
+
+	/**
+	 * Check for existing reviews for the targetId given username
+	 *
+	 * @param targetId Asset type and asset UUID delimited by colon i:e - gadget:03e25109-02d6-40c8-9994-6292737599a4
+	 * @param userId Username with the tenant domain i:e - admin@carbon.super
+	 *
+	 */
+	public boolean isReviewed(String targetId, String userId) throws SocialActivityException {
+		return getActivityBrowser().isReviewed(targetId, userId);
+	}
+
+	/**
+	 * Rating cache keep the pre-calculated average rating value for individual asset so that
+	 * it saves computation when listing asset details with rating values
+	 * @param targetId Asset type and asset UUID delimited by semicolon i:e 'gadget:213213-214-2141A-212FA221B'
+	 * @return
+	 * @throws SocialActivityException
+	 */
 	public int warmUpRatingCache(String targetId) throws SocialActivityException {
 		return getActivityPublisher().warmUpRatingCache(targetId);
 	}
-
 
 	public abstract ActivityBrowser getActivityBrowser();
 

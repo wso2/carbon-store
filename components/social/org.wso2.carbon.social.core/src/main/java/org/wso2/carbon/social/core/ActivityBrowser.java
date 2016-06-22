@@ -23,6 +23,7 @@ import com.google.gson.JsonObject;
 import java.util.List;
 
 public interface ActivityBrowser {
+
 	JsonObject getRating(String targetId) throws SocialActivityException;
 
 	JsonObject getSocialObject(String targetId, String order, int offset,
@@ -39,9 +40,10 @@ public interface ActivityBrowser {
 
 	boolean isUserlikedActivity(String userId, int targetId, int like) throws SocialActivityException;
 
+	boolean isReviewed(String targetId, String userId) throws SocialActivityException;
+
 	JsonObject pollNewestComments(String targetId, int timestamp) throws SocialActivityException;
 
 	JsonObject getPopularAssets(String type, String tenantId, int limit,
 			int offset) throws SocialActivityException;
-
 }
