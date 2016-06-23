@@ -103,11 +103,9 @@ $container.on('click', '#btn-post', function (e) {
         var aid = target.substring(pos + 1);
         var type = target.substring(0, pos);
         var addAndRenderNew = function (successCallback, onError) {
-            $('#newest').addClass('selected');
             publish(activity, function (published) {
                 if ($firstReview.length) {
                     $firstReview.hide();
-                    $sort.removeClass('com-sort-hidden');
                 }
                 if (published.success) {
                     showLoading(false);
@@ -124,13 +122,14 @@ $container.on('click', '#btn-post', function (e) {
                     usingTemplate(function (template) {
                         var newComment = template(activity);
                         getMyReviewElement().html('').html(newComment);
-                        successCallback && successCallback();
+                        var sortBy = 'newest';
+                        successCallback && successCallback(sortBy);
                     });
                 }
             }, onError);
         };
-        addAndRenderNew(function () {
-            redrawReviews();
+        addAndRenderNew(function (sortBy) {
+            redrawReviews(sortBy);
         }, function (error) {
             var errorMessage = JSON.parse(error.responseText).error;
             $('#btn-post[disabled]').removeAttr('disabled');
@@ -249,22 +248,6 @@ $more.on('click', '.load-more', function (e) {
         });
     });
 });
-$stream.on('click', '#btn-delete', function (e) {
-    e.preventDefault();
-    var $deleteBtn = $(e.target);
-    var $review = $deleteBtn.parents('.com-review');
-    var id = $review.attr('data-target-id');
-    var url = caramel.url('/apis/user-review/' + id);
-    $.ajax({
-        url: url,
-        type: 'DELETE',
-        success: function (obj) {
-            if (obj.success) {
-                $review.remove();
-            }
-        }
-    });
-});
 $container.on('click', '#btn-delete', function (e) {
     showLoading(true);
     e.preventDefault();
@@ -283,6 +266,17 @@ $container.on('click', '#btn-delete', function (e) {
                 var template = Handlebars.partials['comment'];
                 var commentInput = template({myReview: null, type: target.split(':')[0], ratings: [5, 4, 3, 2, 1]});
                 $(".row.com-add").replaceWith(commentInput);
+                if(!$stream.find('.row.com-review').length){
+                    $firstReview.show().removeClass('message-success').addClass('message-info');
+                    var assetType = target.split(':')[0];
+                    var msg = " Be the first one to review! ";
+                    var icon = $("<i/>", {
+                        class: "fw fw-info"
+                    });
+                    $firstReview.find('h4').empty().append(icon).append(msg);
+                    msg = "Tell others what you think about this " + assetType;
+                    $firstReview.find('p').html(msg);
+                }
             });
         }
     });

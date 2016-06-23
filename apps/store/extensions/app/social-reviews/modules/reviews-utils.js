@@ -60,6 +60,7 @@ var ReviewUtils = {};
                 review.isMyComment = (usernameOnReview === formatUsername(user));
                 if (review.isMyComment) {
                     myReview = review;
+                    reviews.splice(index, 1);
                 }
             }
         }

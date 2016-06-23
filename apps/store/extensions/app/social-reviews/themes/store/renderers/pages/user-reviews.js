@@ -21,8 +21,10 @@ var render = function (theme, data, meta, require) {
     data.stream.isAuthorized = data.isAuthorized;
     data.stream.urlDomain = data.urlDomain;
     data.stream.message = data.message;
+    var type = data.stream.id.split(':')[0];
+    data.stream.type = type;
     data.input = {
-        'type': data.stream.id.split(':')[0],
+        'type': type,
         'param': data.input_param,
         'myReview': data.stream.myReview,
         'ratings': Array.apply(0, new Array(5)) //Generates an array [5,4,3,2,1] | else register handlebar helper

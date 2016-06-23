@@ -283,7 +283,7 @@ button:hover {
 .com-first-review {
     margin-top: 10% !important;
 }
-.com-first-review h4 {
+.com-first-review h4 i {
     margin-right: 10px;
 }
 .com-alert {
@@ -303,7 +303,6 @@ button:hover {
     overflow-y: scroll;
     max-height: 400px;
     min-height: 200px;
-    background-color: rgba(227, 227, 227, 0.16);
 }
 .com-alert-wait {
     background: url("../img/preloader-40x40.gif") no-repeat scroll 0 0 /cover rgba(0, 0, 0, 0);

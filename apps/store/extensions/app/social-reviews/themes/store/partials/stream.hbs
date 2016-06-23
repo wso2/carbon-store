@@ -14,7 +14,6 @@
 {{/if}}
 
 <div class="row com-stream">
-	
 	<div class="row com-sort {{#unless reviews}}com-sort-hidden{{/unless}}">
 		<ul>
 			<li>
@@ -35,10 +34,16 @@
 				{{> activity}}
 			{{/each}}
 		{{else}}
+            {{#if myReview}}
+                    <div class="com-first-review message message-success" style="display: block;">
+                        <h4><i class="fw fw-success"></i>You are the first to review this {{type}}</h4>
+                    </div>
+            {{else}}
             <div class="com-first-review message message-info">
                 <h4><i class="fw fw-info"></i>Be the first one to review!</h4>
-                <p>Tell others what you think about this.</p>
+                <p>Tell others what you think about this {{type}}</p>
             </div>
+            {{/if}}
 		{{/if}}
 	</div>
 	{{#if more}}
