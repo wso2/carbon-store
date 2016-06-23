@@ -52,12 +52,12 @@ var ReviewUtils = {};
             review = reviews[index];
             usernameOnReview = review.actor.id;
             review.actor.id = cleanUsername(review.actor.id);
+            review.isMyComment = (usernameOnReview === formatUsername(user));
             //Only populate review details if there is a logged in
             //user
             if (user) {
                 review.iLike = socialSvc.isUserliked(formattedUsername, review.object.id, 1);
                 review.iDislike = socialSvc.isUserliked(formattedUsername, review.object.id, 0);
-                review.isMyComment = (usernameOnReview === formatUsername(user));
                 if (review.isMyComment) {
                     myReview = review;
                     reviews.splice(index, 1);

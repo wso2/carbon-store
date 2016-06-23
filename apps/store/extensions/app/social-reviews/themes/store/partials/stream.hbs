@@ -1,8 +1,9 @@
 <script>var target = '{{id}}'; var user = '{{user}}';</script>
-
 {{#unless isLogged}}
 <div class="com-guest">
-    {{message}}
+    <div class="message message-info">
+        <h4><i class="fw fw-info"></i> {{message}}</h4>
+    </div>
 </div>
 {{/unless}}
 {{#if isLogged}}

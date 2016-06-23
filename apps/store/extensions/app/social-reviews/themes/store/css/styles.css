@@ -276,8 +276,7 @@ button:hover {
 }
 
 .com-guest {
-    background: none repeat scroll 0 0 #F7F9F9;
-    border: 1px solid #EEEEEE;
+    width: 40%;
     padding: 20px;
 }
 .com-first-review {

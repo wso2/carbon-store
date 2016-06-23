@@ -51,8 +51,8 @@ require('//modules/store.js').exec(function(ctx){
             message = 'You don\'t have permission to add a Review';
         }
         try {
-            reviews = ReviewUtils.listReviews(target,user,{
-                sortBy:'POPULAR'
+            reviews = ReviewUtils.listReviews(target, user, {
+                sortBy: 'POPULAR'
             });
             more = ReviewUtils.hasMoreReviews(reviews.allReviews);
         } catch (e) {
