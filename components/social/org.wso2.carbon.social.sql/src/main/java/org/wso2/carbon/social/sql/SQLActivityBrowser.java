@@ -57,6 +57,13 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			+ Constants.SOCIAL_RATING_CACHE_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + "= ?";
 
+	public static final String USER_COMMENT_SELECT_SQL = "SELECT "
+			+ Constants.BODY_COLUMN + ","
+			+ Constants.ID_COLUMN + " FROM "
+			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
+			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
+			+ Constants.USER_COLUMN + " = ? ";
+
 	public static final String TOP_ASSETS_SELECT_SQL = "SELECT "
 			+ Constants.RATING_TOTAL + "," + Constants.RATING_COUNT + ","
 			+ Constants.CONTEXT_ID_COLUMN + "  FROM "
@@ -402,6 +409,39 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		} else {
 			return null;
 		}
+	}
+
+	public JsonObject getUserComment(String userId, String targetId) throws SocialActivityException {
+		JsonObject userComment = new JsonObject();
+		Connection connection = null;
+		PreparedStatement statement;
+		ResultSet resultSet;
+		String errorMsg = "Unable to retrieve comment for the user : " + userId;
+
+		try {
+			if (log.isDebugEnabled()) {
+				log.debug("Executing: " + USER_COMMENT_SELECT_SQL);
+			}
+			connection = DSConnection.getConnection();
+			statement = connection.prepareStatement(USER_COMMENT_SELECT_SQL);
+			statement.setString(1, targetId);
+			statement.setString(2, userId);
+			resultSet = statement.executeQuery();
+			if (resultSet.next()) {
+				JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+				int activityId = resultSet.getInt(Constants.ID_COLUMN);
+				Activity activity = new SQLActivity(body);
+				activity.setId(activityId);
+				userComment = activity.getBody();
+			}
+			resultSet.close();
+		} catch (SQLException | DataSourceException e) {
+			String message = errorMsg + e.getMessage();
+			throw new SocialActivityException(message, e);
+		} finally {
+			DSConnection.closeConnection(connection);
+		}
+		return userComment;
 	}
 
 	@Override

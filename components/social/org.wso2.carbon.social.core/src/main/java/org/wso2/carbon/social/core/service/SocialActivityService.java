@@ -154,6 +154,23 @@ public abstract class SocialActivityService {
 	}
 
 	/**
+	 * Return springfield JSON object of the user review , for the given asset by given username.
+	 *
+	 * @param userId   User name with the tenant domain i:e = admin@carbon.super
+	 * @param targetId Asset type with asset UUID separated by colon.
+	 * @return springfield JSON object of user review
+	 * @throws SocialActivityException
+	 */
+	public String getUserComment(String userId, String targetId) throws SocialActivityException {
+		JsonObject userCommentObject = getActivityBrowser().getUserComment(userId, targetId);
+		if (userCommentObject != null) {
+			return userCommentObject.toString();
+		} else {
+			return "{}";
+		}
+	}
+
+	/**
 	 * 
 	 * @param targetId
 	 * @param timestamp

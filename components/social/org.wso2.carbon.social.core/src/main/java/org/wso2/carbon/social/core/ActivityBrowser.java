@@ -38,6 +38,8 @@ public interface ActivityBrowser {
 
 	JsonObject getTopComments(String targetId, int likes) throws SocialActivityException;
 
+	JsonObject getUserComment(String userId, String targetId) throws SocialActivityException;
+
 	boolean isUserlikedActivity(String userId, int targetId, int like) throws SocialActivityException;
 
 	boolean isReviewed(String targetId, String userId) throws SocialActivityException;
