@@ -25,10 +25,12 @@ var getMyReviewElement = function () {
 };
 var $stream = $('#stream');
 var $firstReview = $('.com-first-review');
+var getLoadingElement = function () {
+    return $('.com-container .row.com-add div[class^="loading-"]');
+};
 var getAlertElement = function () {
     return $container.find('.com-alert');
 };
-var $loading = $('.com-container .row.com-add div[class^="loading-"]');
 var $sort = $('.com-sort');
 var $lastReview = $('.load-more');
 var $more = $('#more');
@@ -53,9 +55,6 @@ var publish = function (activity, onSuccess, onError) {
         success: onSuccess,
         error: onError
     });
-    /*$.post(url, {
-        activity: JSON.stringify(activity)
-    }, onSuccess)*/
 };
 var showAlert = function (msg) {
     getAlertElement().html(msg).fadeIn("fast");
@@ -63,10 +62,10 @@ var showAlert = function (msg) {
 var showLoading = function (status) {
     if (status) {
         getAlertElement().html('').css('display', 'inline-block').addClass('com-alert-wait');
-        $loading.fadeIn();
+        getLoadingElement().fadeIn();
     } else {
         getAlertElement().hide().removeClass('com-alert-wait');
-        $loading.fadeOut();
+        getLoadingElement().fadeOut();
     }
 };
 $container.on('click', '#btn-post', function (e) {
@@ -122,7 +121,7 @@ $container.on('click', '#btn-post', function (e) {
                     usingTemplate(function (template) {
                         var newComment = template(activity);
                         getMyReviewElement().html('').html(newComment);
-                        var sortBy = 'newest';
+                        var sortBy = 'popular';
                         successCallback && successCallback(sortBy);
                     });
                 }
@@ -266,7 +265,7 @@ $container.on('click', '#btn-delete', function (e) {
                 var template = Handlebars.partials['comment'];
                 var commentInput = template({myReview: null, type: target.split(':')[0], ratings: [5, 4, 3, 2, 1]});
                 $(".row.com-add").replaceWith(commentInput);
-                if(!$stream.find('.row.com-review').length){
+                if (!$stream.find('.row.com-review').length) {
                     $firstReview.show().removeClass('message-success').addClass('message-info');
                     var assetType = target.split(':')[0];
                     var msg = " Be the first one to review! ";
@@ -288,21 +287,30 @@ $container.on('click', '#btn-update', function (e) {
     var review = getTextArea().val().trim();
     var id = $(this).data('id');
     var url = caramel.url('/apis/user-review/' + id);
-    var target = target;
-    var data = {
-        rating: rating,
-        review: review,
-        id: id,
-        target: target
+    var activityData = {
+        verb: 'review',
+        isMyComment: true,
+        object: {
+            objectType: 'review',
+            id: id,
+            rating: rating,
+            content: review
+        },
+        target: {
+            id: target
+        }
     };
     $.ajax({
         url: url,
         type: 'PUT',
         contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function (response) {
-            /*Placeholder for update method*/
-            return false;
+        data: JSON.stringify(activityData),
+        success: function (updatedActivity) {
+            usingTemplate(function (template) {
+                var newComment = template(updatedActivity);
+                getMyReviewElement().html('').html(newComment);
+            });
+            showLoading(false);
         }
     });
 });
@@ -329,11 +337,12 @@ $container.on('click', '#btn-edit', function (e) {
     });
 });
 $container.on('click', '#btn-cancel', function (e) {
-    var id = $(this).data('id');
-    var activity = $('.com-review[data-target-id="' + id + '"]');
-    activity.show();
-    getMyReviewElement().empty();
-    getMyReviewElement().append(activity.clone());
+    showLoading(true);
+    usingTemplate(function (template) {
+        var newComment = template(myReview);
+        getMyReviewElement().html('').html(newComment);
+    });
+    showLoading(false);
 });
 $container.on('click', '.rating-star', function () {
     getAlertElement().html('').fadeOut("fast");
