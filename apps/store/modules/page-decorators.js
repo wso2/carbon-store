@@ -155,6 +155,7 @@ var pageDecorators = {};
             var childValues = [];
             var childFields = [];
             updatedCategorizationField.text = categorizationField.name.label;
+            updatedCategorizationField.order = categorizationField.order;
             updatedCategorizationField.id = parentId;
             updatedCategorizationField.divId = parentId + index;
             if (ctx.rxtManager.isSolarFacetsEnabled(ctx.assetType)) {
@@ -187,6 +188,11 @@ var pageDecorators = {};
                 isVisible = true;
             }
         }
+
+        updatedCategorizationFields.sort(function(field1, field2) {
+            return parseInt(field1.order) - parseInt(field2.order);
+        });
+
         page.assetCategoryFilterDetails = updatedCategorizationFields;
         page.isVisible = isVisible;
     };
@@ -683,10 +689,6 @@ var pageDecorators = {};
     var doTermSearch = function (ctx, facetField, paging, authRequired) {
         var terms = [];
         var results;
-        var categoryField;
-        if(ctx.assetType) {
-            categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
-        }
         var selectedTag;
         var map = HashMap();
         var mediaType;
@@ -714,13 +716,7 @@ var pageDecorators = {};
         var q = request.getParameter("q");
         if (q) {
             var options = parse("{" + q + "}");
-            if (options.category) {
-                var list = new ArrayList();
-                list.add(options.category);
-                if(categoryField) {
-                    map.put(categoryField, list);
-                }
-            }
+            map = buildQueryMap(ctx, options);
             if (options.tags) {
                 selectedTag = options.tags;
             }
@@ -750,6 +746,50 @@ var pageDecorators = {};
             }
         }
         return terms;
+    };
+
+    /**
+     * Builds the criteria map to do the facet search.
+     *
+     * @param ctx           context
+     * @param options       query options
+     * @returns {HashMap}   map of criteria
+     */
+    var buildQueryMap = function (ctx, options) {
+        var possibleKeys = ['taxonomy', '_default', 'name', 'version', 'tags', 'tags', 'lcName', 'lcState'];
+        var map = HashMap();
+        var list;
+        var keys = Object.keys(options);
+        keys.forEach(function (key) {
+            var searchKey = key;
+            if (searchKey === 'name' || searchKey === '_default') {
+                searchKey = 'overview_name';
+            } else if (searchKey === 'version') {
+                searchKey = 'overview_version';
+            }
+
+            list = ArrayList();
+            if (possibleKeys.indexOf(key) > -1) {
+                list.add('*' + options[key] + '*');
+            } else {
+                list.add(options[key]);
+            }
+
+            map.put(searchKey, list);
+        });
+
+        if (options.category) {
+            var categoryField;
+            if (ctx.assetType) {
+                categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
+            }
+            list = new ArrayList();
+            list.add(options.category);
+            if (categoryField) {
+                map.put(categoryField, list);
+            }
+        }
+        return map;
     };
 
     var selectedTag = function (ctx) {
