@@ -71,6 +71,17 @@ public abstract class SocialActivityService {
 	}
 
 	/**
+	 * Update an activity given new activity
+	 *
+	 * @param activity
+	 * @throws SocialActivityException
+	 * @throws JsonSyntaxException
+	 */
+	public String update(String activity) throws SocialActivityException {
+		return getActivityPublisher().update(activity);
+	}
+
+	/**
 	 * Allows asset id to be passed into the service and retrieve average rating
 	 * for the given asset
 	 * 

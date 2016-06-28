@@ -57,9 +57,23 @@ public abstract class ActivityPublisher {
 		return publishActivity(jsonObject);
 	}
 
+	public String update(String activity) throws SocialActivityException {
+		JsonObject jsonActivity;
+		try {
+			jsonActivity = (JsonObject) parser.parse(activity);
+		} catch (JsonSyntaxException e) {
+			String message = "Malformed JSON element found: " + e.getMessage();
+			throw new SocialActivityException(message, e);
+		}
+		JsonObject updatedActivity = updateActivity(jsonActivity);
+		return updatedActivity.toString();
+	}
+
 	protected abstract long publishActivity(JsonObject activity) throws SocialActivityException;
 
 	public abstract boolean remove(int activityId, String userId) throws SocialActivityException;
 
 	public abstract int warmUpRatingCache(String targetId) throws SocialActivityException;
+
+	public abstract JsonObject updateActivity(JsonObject activity) throws SocialActivityException;
 }

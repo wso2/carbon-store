@@ -89,6 +89,12 @@ public class SQLActivity implements Activity {
 	}
 
 	@Override
+	public String getComment() {
+		JsonObject object = (JsonObject) this.body.get("object");
+		return object.get("content").getAsString();
+	}
+
+	@Override
 	public void setLikeCount(int likeCount) {
 		JsonObject object = (JsonObject) this.body.get("object");
 		JsonObject likes = (JsonObject) object.get("likes");
@@ -108,5 +114,15 @@ public class SQLActivity implements Activity {
 	public void setId(int id) {
 		JsonObject object = (JsonObject) this.body.get("object");
 		object.addProperty("id", id);
+	}
+
+	public void setRating(int rating) {
+		JsonObject object = (JsonObject) this.body.get("object");
+		object.addProperty("rating", rating);
+	}
+
+	public void setComment(String comment) {
+		JsonObject object = (JsonObject) this.body.get("object");
+		object.addProperty("content", comment);
 	}
 }
