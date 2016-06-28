@@ -59,6 +59,7 @@ var ReviewUtils = {};
             myReview = false;
         }
         var usernameOnReview;
+        var myIndex;
         for (var index = 0; index < reviews.length; index++) {
             review = reviews[index];
             usernameOnReview = review.actor.id;
@@ -67,8 +68,11 @@ var ReviewUtils = {};
             //Only populate review details if there is a logged in
             //user
             if (user && review.isMyComment) {
-                reviews.splice(index, 1);
+                myIndex = index;
             }
+        }
+        if (myIndex) {
+            reviews.splice(myIndex, 1);
         }
         return {'allReviews': reviews, 'myReview': myReview};
     };

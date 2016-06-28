@@ -9,8 +9,12 @@
 	</div>-->
     <span class="my-review-topic">MY REVIEW</span>
     <div class="com-body-cont my-review">
-
         {{#if myReview }}
+            <script>
+                var txt = document.createElement("textarea");
+                txt.innerHTML = "{{dump myReview}}";
+                myReview = JSON.parse(txt.textContent);
+            </script>
             {{> activity myReview }}
         {{else}}
 
@@ -35,9 +39,19 @@
 				</span>
                 </div>
                 <div class="txt-right com-post-as">
-                    <button id="btn-post" class="disabled">
-                        Submit
-                    </button>
+                    {{#if editable}}
+                        <button id="btn-update" data-id="{{ editable.id }}">
+                            Update
+                        </button>
+                        <button id="btn-cancel" data-id="{{ editable.id }}">
+                            Cancel
+                        </button>
+                    {{ else }}
+                        <button id="btn-post" class="disabled">
+                            Submit
+                        </button>
+                    {{/if}}
+
                 </div>
             </div>
             </form>

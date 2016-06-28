@@ -351,10 +351,10 @@ button:hover {
     display: none;
 }
 #btn-update {
-    background: none repeat scroll 0 0 rgb(255, 202, 87);
+    background: #3a9ecf;
 }
 #btn-update:hover {
-    background: none repeat scroll 0 0 rgb(255, 196, 5);
+    background: #3786b5;
 }
 .loading-bg {
     width: 100%;
@@ -386,4 +386,24 @@ button:hover {
 }
 .review-body {
     overflow: hidden
+}
+.change-review {
+    float: right;
+}
+.change-review .fw {
+    color: gray;
+    cursor: pointer;
+    -o-transition: .5s;
+    -ms-transition: .5s;
+    -moz-transition: .5s;
+    -webkit-transition: .5s;
+    transition: .5s;
+}
+.change-review #btn-delete:hover {
+    color: rgba(217, 21, 0, 0.78);
+    text-shadow: 1px 1px 1px rgba(255, 21, 0, 0.53);
+}
+.change-review #btn-edit:hover {
+    color: rgba(206, 182, 6, 0.82);
+    text-shadow: 1px 1px 1px #e5df00;
 }
