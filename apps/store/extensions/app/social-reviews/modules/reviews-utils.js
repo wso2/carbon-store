@@ -23,6 +23,9 @@ var ReviewUtils = {};
     var REVIEW_PAGE_OFFSET = 0;
     var log = new Log('reviews-api');
     var carbon = require('carbon');
+    var isEmpty = function (object) {
+        return Object.keys(object).length === 0;
+    };
     var getSocialSvc = function() {
         var carbon = require('carbon');
         return carbon.server.osgiService(SOCIAL_OSGI_SERVICE);
@@ -43,10 +46,18 @@ var ReviewUtils = {};
         paging.limit = paging.limit ? paging.limit : REVIEW_PAGE_LIMIT;
         return paging;
     };
-    var processUserReviews = function (socialSvc, user, reviews) {
+    var processUserReviews = function (socialSvc, user, reviews, target) {
         var review;
-        var myReview = false;
-        var formattedUsername = formatUsername(user);
+        var myReview;
+        var socialSvc = getSocialSvc();
+        var username = formatUsername(user);
+        myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
+        if (!isEmpty(myReview)) {
+            myReview.actor.id = cleanUsername(myReview.actor.id);
+        }
+        else {
+            myReview = false;
+        }
         var usernameOnReview;
         for (var index = 0; index < reviews.length; index++) {
             review = reviews[index];
@@ -55,13 +66,8 @@ var ReviewUtils = {};
             review.isMyComment = (usernameOnReview === formatUsername(user));
             //Only populate review details if there is a logged in
             //user
-            if (user) {
-                review.iLike = socialSvc.isUserliked(formattedUsername, review.object.id, 1);
-                review.iDislike = socialSvc.isUserliked(formattedUsername, review.object.id, 0);
-                if (review.isMyComment) {
-                    myReview = review;
-                    reviews.splice(index, 1);
-                }
+            if (user && review.isMyComment) {
+                reviews.splice(index, 1);
             }
         }
         return {'allReviews': reviews, 'myReview': myReview};
@@ -70,7 +76,17 @@ var ReviewUtils = {};
         var socialSvc = getSocialSvc();
         var paging = buildPagination(userPagination || {});
         var obj = JSON.parse(String(socialSvc.getSocialObjectJson(target, paging.sortBy, paging.offset, paging.limit)));
-        return processUserReviews(socialSvc, user, obj.attachments || []);
+        return processUserReviews(socialSvc, user, obj.attachments || [], target);
+    };
+    ReviewUtils.updateUserReview = function (review) {
+        var socialSvc = getSocialSvc();
+        var reviewJSON = JSON.stringify(review);
+        var updatedReview = JSON.parse(String(socialSvc.update(reviewJSON)));
+        updatedReview = isEmpty(updatedReview) ? null : updatedReview;
+        if (updatedReview) {
+            updatedReview.actor.id = cleanUsername(updatedReview.actor.id);
+        }
+        return updatedReview;
     };
     ReviewUtils.createUserReview = function (review) {
         var socialSvc = getSocialSvc();
