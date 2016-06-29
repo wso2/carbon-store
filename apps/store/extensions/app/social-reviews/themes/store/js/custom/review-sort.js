@@ -52,8 +52,7 @@ var redrawReviews = function (sortBy, callback) {
                 $('.load-more').attr("value", 10);
                 $more.show();
                 $empty_list.text("");
-            }
-            else {
+            } else {
                 $firstReview.show().removeClass('message-info').addClass('message-success');
                 var assetType = target.split(':')[0];
                 var msg = "You are the first to review this " + assetType;

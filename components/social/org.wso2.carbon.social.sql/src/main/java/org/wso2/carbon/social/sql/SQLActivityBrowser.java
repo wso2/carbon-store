@@ -411,38 +411,38 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		}
 	}
 
-	public JsonObject getUserComment(String userId, String targetId) throws SocialActivityException {
-		JsonObject userComment = new JsonObject();
-		Connection connection = null;
-		PreparedStatement statement;
-		ResultSet resultSet;
-		String errorMsg = "Unable to retrieve comment for the user : " + userId;
+    public JsonObject getUserComment(String userId, String targetId) throws SocialActivityException {
+        JsonObject userComment = new JsonObject();
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String errorMsg = "Unable to retrieve comment for the user : " + userId;
 
-		try {
-			if (log.isDebugEnabled()) {
-				log.debug("Executing: " + USER_COMMENT_SELECT_SQL);
-			}
-			connection = DSConnection.getConnection();
-			statement = connection.prepareStatement(USER_COMMENT_SELECT_SQL);
-			statement.setString(1, targetId);
-			statement.setString(2, userId);
-			resultSet = statement.executeQuery();
-			if (resultSet.next()) {
-				JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
-				int activityId = resultSet.getInt(Constants.ID_COLUMN);
-				Activity activity = new SQLActivity(body);
-				activity.setId(activityId);
-				userComment = activity.getBody();
-			}
-			resultSet.close();
-		} catch (SQLException | DataSourceException e) {
-			String message = errorMsg + e.getMessage();
-			throw new SocialActivityException(message, e);
-		} finally {
-			DSConnection.closeConnection(connection);
-		}
-		return userComment;
-	}
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Executing: " + USER_COMMENT_SELECT_SQL);
+            }
+            connection = DSConnection.getConnection();
+            statement = connection.prepareStatement(USER_COMMENT_SELECT_SQL);
+            statement.setString(1, targetId);
+            statement.setString(2, userId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+                int activityId = resultSet.getInt(Constants.ID_COLUMN);
+                Activity activity = new SQLActivity(body);
+                activity.setId(activityId);
+                userComment = activity.getBody();
+            }
+            resultSet.close();
+        } catch (SQLException | DataSourceException e) {
+            String message = errorMsg + e.getMessage();
+            throw new SocialActivityException(message, e);
+        } finally {
+            DSConnection.closeConnection(connection);
+        }
+        return userComment;
+    }
 
 	@Override
 	/**
@@ -640,32 +640,32 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	 * @param userId Username with tenant domain i:e admin@carbon.super
 	 * @return Boolean whether user has already reviewed or not
 	 */
-	public boolean isReviewed(String targetId, String userId) throws SocialActivityException {
-		boolean reviewed = false;
-		Connection connection = null;
-		PreparedStatement statement;
-		ResultSet resultSet;
-		String errorMsg = "Unable to retrieve comments for the user : " + userId;
+    public boolean isReviewed(String targetId, String userId) throws SocialActivityException {
+        boolean reviewed = false;
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String errorMsg = "Unable to retrieve comments for the user : " + userId;
 
-		try {
-			if (log.isDebugEnabled()) {
-				log.debug("Executing: " + IS_REVIEWED_SELECT_SQL);
-			}
-			connection = DSConnection.getConnection();
-			statement = connection.prepareStatement(IS_REVIEWED_SELECT_SQL);
-			statement.setString(1, targetId);
-			statement.setString(2, userId);
-			resultSet = statement.executeQuery();
-			reviewed = resultSet.next();
-			resultSet.close();
-		} catch (SQLException | DataSourceException e) {
-			String message = errorMsg + e.getMessage();
-			log.error(message, e);
-			throw new SocialActivityException(message, e);
-		} finally {
-			DSConnection.closeConnection(connection);
-		}
-		return reviewed;
-	}
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Executing: " + IS_REVIEWED_SELECT_SQL);
+            }
+            connection = DSConnection.getConnection();
+            statement = connection.prepareStatement(IS_REVIEWED_SELECT_SQL);
+            statement.setString(1, targetId);
+            statement.setString(2, userId);
+            resultSet = statement.executeQuery();
+            reviewed = resultSet.next();
+            resultSet.close();
+        } catch (SQLException | DataSourceException e) {
+            String message = errorMsg + e.getMessage();
+            log.error(message, e);
+            throw new SocialActivityException(message, e);
+        } finally {
+            DSConnection.closeConnection(connection);
+        }
+        return reviewed;
+    }
 
 }

@@ -47,7 +47,7 @@ var api = {};
         print(reviews.allReviews);
     };
 
-    var resolvePOST = function(req, res, session) {
+    var resolvePOST = function (req, res, session) {
         var review;
         var tenantApi = require('/modules/tenant-api.js').api;
         var tenantContext = tenantApi.tenantContext(session);
@@ -76,7 +76,7 @@ var api = {};
 
         try {
             var result = ReviewUtils.createUserReview(review);
-            if(!result.success){
+            if (!result.success) {
                 res = ResponseProcessor.buildErrorResponse(res, 400,
                     'User has already reviewed on the asset , Multiple reviews are not allowed.');
             }

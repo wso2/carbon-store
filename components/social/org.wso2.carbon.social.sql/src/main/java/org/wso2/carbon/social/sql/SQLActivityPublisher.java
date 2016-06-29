@@ -682,54 +682,54 @@ public class SQLActivityPublisher extends ActivityPublisher {
     }
 
 	public JsonObject updateActivity(JsonObject activity) throws SocialActivityException {
-		Connection connection = null;
-		PreparedStatement selectActivityStatement;
-		PreparedStatement updateActivityStatement;
-		ResultSet resultSet;
-		String errorMessage = "Error while updating the social activity.";
-		SQLActivity currentActivity;
-		SQLActivity updatedActivity = new SQLActivity(activity);
-		try {
-			connection = DSConnection.getConnection();
-			connection.setAutoCommit(false);
-			String commentID = updatedActivity.getId();
+        Connection connection = null;
+        PreparedStatement selectActivityStatement;
+        PreparedStatement updateActivityStatement;
+        ResultSet resultSet;
+        String errorMessage = "Error while updating the social activity.";
+        SQLActivity currentActivity;
+        SQLActivity updatedActivity = new SQLActivity(activity);
+        try {
+            connection = DSConnection.getConnection();
+            connection.setAutoCommit(false);
+            String commentID = updatedActivity.getId();
 
-			if (log.isDebugEnabled()) {
-				log.debug("Executing: " + COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
-			}
+            if (log.isDebugEnabled()) {
+                log.debug("Executing: " + COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
+            }
 
-			selectActivityStatement = connection.prepareStatement(COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
-			selectActivityStatement.setString(1, commentID);
-			resultSet = selectActivityStatement.executeQuery();
-			if (!resultSet.next()) {
-				String message = "Invalid comment ID: Unable to update comment for : " + commentID;
-				throw new SocialActivityException(message);
-			} else {
-				JsonObject currentBody;
-				currentBody = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
-				currentActivity = new SQLActivity(currentBody);
-			}
+            selectActivityStatement = connection.prepareStatement(COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
+            selectActivityStatement.setString(1, commentID);
+            resultSet = selectActivityStatement.executeQuery();
+            if (!resultSet.next()) {
+                String message = "Invalid comment ID: Unable to update comment for : " + commentID;
+                throw new SocialActivityException(message);
+            } else {
+                JsonObject currentBody;
+                currentBody = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+                currentActivity = new SQLActivity(currentBody);
+            }
 
-			if (log.isDebugEnabled()) {
-				log.debug("Executing: " + COMMENT_ACTIVITY_UPDATE_SQL);
-			}
-			int updatedRating = updatedActivity.getRating();
-			String updatedComment = updatedActivity.getComment();
-			currentActivity.setRating(updatedRating);
-			currentActivity.setComment(updatedComment);
+            if (log.isDebugEnabled()) {
+                log.debug("Executing: " + COMMENT_ACTIVITY_UPDATE_SQL);
+            }
+            int updatedRating = updatedActivity.getRating();
+            String updatedComment = updatedActivity.getComment();
+            currentActivity.setRating(updatedRating);
+            currentActivity.setComment(updatedComment);
 
-			updateActivityStatement = connection.prepareStatement(COMMENT_UPDATE_SQL);
-			updateActivityStatement.setString(1, currentActivity.getBody().toString());
-			updateActivityStatement.setString(2, commentID);
-			updateActivityStatement.executeUpdate();
-			connection.commit();
-		} catch (SQLException | DataSourceException | JsonSyntaxException e) {
-			throw new SocialActivityException(errorMessage, e);
-		} finally {
-			DSConnection.closeConnection(connection);
-		}
-		return updatedActivity.getBody();
-	}
+            updateActivityStatement = connection.prepareStatement(COMMENT_UPDATE_SQL);
+            updateActivityStatement.setString(1, currentActivity.getBody().toString());
+            updateActivityStatement.setString(2, commentID);
+            updateActivityStatement.executeUpdate();
+            connection.commit();
+        } catch (SQLException | DataSourceException | JsonSyntaxException e) {
+            throw new SocialActivityException(errorMessage, e);
+        } finally {
+            DSConnection.closeConnection(connection);
+        }
+        return updatedActivity.getBody();
+    }
 
 
 }

@@ -54,8 +54,7 @@ var ReviewUtils = {};
         myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
         if (!isEmpty(myReview)) {
             myReview.actor.id = cleanUsername(myReview.actor.id);
-        }
-        else {
+        } else {
             myReview = false;
         }
         var usernameOnReview;
