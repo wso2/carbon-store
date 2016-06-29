@@ -82,15 +82,23 @@ var init = function (options) {
     });
 };
 
-
-var buildURL = function(path) {
-    if(path.indexOf('/') != 0) {
+/**
+ * This method is used to build complete url.
+ * @param path  sub context url path.
+ * @return build url with server url + proxy context path.
+ */
+var buildURL = function (path) {
+    if (path.indexOf('/') != 0) {
         path = "/" + path;
     }
     return application.get(SERVER_URL) + application.get(PROXY_CONTEXT_PATH) + path;
 };
 
-var getProxyContextPath = function() {
+/**
+ * This method is used to get proxy context path defined in carbon.xml.
+ * @return proxy context path.
+ */
+var getProxyContextPath = function () {
     return application.get(PROXY_CONTEXT_PATH);
 };
 

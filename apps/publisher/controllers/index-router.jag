@@ -24,9 +24,7 @@
  */
 
 var caramel = require('caramel');
-var config = require('/config/publisher.js').config();
 var server = require('store').server;
-var rxt = require('rxt').server;
 
 if (server.current(session) == null) {
     response.sendRedirect(caramel.configs().context+'/login');

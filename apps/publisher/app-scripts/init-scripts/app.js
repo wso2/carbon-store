@@ -45,7 +45,7 @@ var metricsAPI = require('carbon-metrics').metrics;
 
 
 caramel.configs({
-    context: rxt.app.calculateContext(pubConfig.server.context),
+    context: rxt.app.buildContext(pubConfig.server.context),
     cache: false,
     negotiation: true,
     themer: function () {

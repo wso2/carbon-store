@@ -67,10 +67,10 @@ var server = {};
      * @param  sub context url.
      * @return complete url with server url + proxy context path.
      */
-    server.buildURL = function(path) {
-        if(path.indexOf('/') != 0) {
+    server.buildURL = function (path) {
+        if (path.indexOf('/') != 0) {
             path = "/" + path;
         }
         return application.get(constants.SERVER_URL) + application.get(constants.PROXY_CONTEXT_PATH) + path;
     };
-}(server, core))
+}(server, core));

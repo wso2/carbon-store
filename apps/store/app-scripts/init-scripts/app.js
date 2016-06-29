@@ -38,7 +38,7 @@ process.setProperty('proxy.context.path', String(proxyContextPath));
 Finished the parsing stuff
  */
 caramel.configs({
-    context: rxt.app.calculateContext(config.server.context),
+    context: rxt.app.buildContext(config.server.context),
     cache: true,
     negotiation: true,
     themer: function () {

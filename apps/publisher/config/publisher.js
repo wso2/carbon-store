@@ -14,7 +14,7 @@ var config;
             carbonLocalIP = process.getProperty('carbon.local.ip'),
             httpPortPart, httpsPortPart;
 
-        var resolveContext = function(value){
+        var resolveContext = function (value) {
             var rxt = require('rxt');
             var context = rxt.app.getContext();
             return value.replace('/%context%', context);
@@ -48,7 +48,7 @@ var config;
             } else if ((typeof value === 'string') && value.indexOf('%http.carbon.local.ip%') > -1) {
                 return resolveContext(value.replace('%http.carbon.local.ip%', 'http://' + carbonLocalIP + ':' + httpPort));
             }
-            return  value;
+            return value;
         });
         return config;
     };

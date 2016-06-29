@@ -556,7 +556,7 @@ var app = {};
      * @param   publisher context from publisher.json
      * @return {String} The context of the application (e.g. publisher or gregserver/publisher)
      */
-    app.calculateContext = function (publisherContext) {
+    app.buildContext = function (publisherContext) {
         var CarbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
         var proxyContextPath = CarbonUtils.getProxyContextPath(true);
         return proxyContextPath + publisherContext;

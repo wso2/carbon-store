@@ -14,7 +14,7 @@ var config;
             carbonLocalIP = process.getProperty('carbon.local.ip'),
             httpPortPart, httpsPortPart;
 
-        var resolveProxyContext = function(value){
+        var resolveProxyContext = function (value) {
             var server = require('/modules/server.js');
             var context = server.getProxyContextPath();
             return value.replace('/%context%', context);
