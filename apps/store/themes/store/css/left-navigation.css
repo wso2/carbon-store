@@ -291,12 +291,15 @@ a.ctrl-filter-category {
     background-color: #f5f5f5;
     border: 1px solid #cbcbcb;
     border-top: 0px;
+    left: 0;
     position: absolute;
-    left: 14px;
     top: 39px;
     box-shadow: none;
-    -webkit-box-shadow:none;}
-
+    -webkit-box-shadow:none;
+}
+.category{
+    position: relative;
+}
 a.ctrl-filter-category:hover,a.ctrl-filter-category:active   {
     background-color:#e3e3e3;
     color:#333;
@@ -542,10 +545,13 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 .ast-img {
     width: 100%;
-    background: #ffffff;
     overflow-y: hidden;
+    position: relative;
+    display: block;
 }
-
+.ctrl-wr-asset .ast-img{
+    height: 150px;
+}
 .ast-img img{
     width:100%;
     height: auto;
@@ -586,7 +592,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 .ast-type-icon {
   position:absolute;
-  bottom:2px;
+  top:2px;
   left:2px;
   opacity:1;
 }
@@ -600,6 +606,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     text-align: center;
     vertical-align: middle;
     line-height: 25px;
+    z-index: 1;
 }
 .ast-img .ast-type-icon {
     display: block;
@@ -608,10 +615,10 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     width: 40px;
     height: 40px;
     position: absolute;
-    top: 110px;
 }
 .asset-details-header .ast-img .ast-type-icon{
-    top:120px;
+    bottom:0;
+    left: 0;
 }
 .ast-img .ast-type-icon i{
     font-size:2.2em;
@@ -638,7 +645,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 }
 
 .details-container {
-    margin-top: 30px;
+    margin-top: 0;
 }
 .details-image {
     margin-top: 15px;
@@ -800,17 +807,6 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     .more-list {
         margin-top: -34px !important;
     }
-
-    .ctrl-wr-asset {
-        width: 100%;
-        height: auto;
-        margin-left: 15px;
-    }
-
-    .wr-content {  padding: 0; }
-    .ast-img{width: 50% !important; float: none;}
-    .ast-title{width: 50% !important; float: left;}
-    .itm-ast{width: auto !important;}
 }
 
 /* Custom, iPhone Retina */

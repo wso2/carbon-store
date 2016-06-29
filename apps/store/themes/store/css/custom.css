@@ -668,7 +668,13 @@ a.login:focus {
     border: 0px;
     margin-left: -12px;
 }
-
+.search-wrapper #search-button{
+    border-radius: 0;
+    background: #fff;
+}
+.assetp-properties .nav-tabs > li > a:hover, .assetp-properties .nav-tabs > li > a:focus{
+    color: #000;
+}
 .wr-action-container .search .advanced-search-btn {
     height: 42px;
     background: url("../img/icons/advance-search.png") no-repeat scroll center center #fff;
@@ -1172,6 +1178,12 @@ a:hover, a:focus {
 #sortDropdown:hover {
     background: transparent;
 }
+.ast-name-icon{
+    color:#fff;
+    text-transform: uppercase;
+    text-align: center;
+    font-size: 6.5em;
+}
 #ul-sort-assets li a {
     color: #888;
     opacity: 1;
@@ -1355,14 +1367,6 @@ h2.app-title {
     line-height: 14px;
     font-size: 12px;
     height: 28px;
-    overflow: hidden;
-}
-.ctrl-wr-asset .ast-img {
-    width: 100%;
-    display: block;
-    min-height: 150px;
-    max-height: 150px;
-    min-width: 150px;
     overflow: hidden;
 }
 .ctrl-wr-asset {
