@@ -13,7 +13,8 @@
     },
     "server": {
         "https": "%https.host%",
-        "http": "%http.host%"
+        "http": "%http.host%",
+        "context" : "/store"
     },
     "lifeCycleBehaviour": {
         "visibleIn": ["Published"]
@@ -40,7 +41,7 @@
             },
             "basic": {
                 "attributes": {
-                    "loginURL":"%https.host%/store/pages/basic-auth-login"
+                    "loginURL":"%https.host%/%context%/pages/basic-auth-login"
                 }
             }
         }

@@ -4,6 +4,7 @@ var carbon = require('carbon');
 var process = require('process');
 var config = require('/config/store.json');
 var conf = carbon.server.loadConfig('carbon.xml');
+var rxt=require('rxt');
 var offset = conf.*::['Ports'].*::['Offset'].text();
 var hostName = conf.*::['HostName'].text().toString();
 
@@ -13,6 +14,7 @@ var configCtx = configurationContextService.getServerConfigContext();
 
 var httpPort = carbonUtils.getTransportPort(configCtx,"http");
 var httpsPort = carbonUtils.getTransportPort(configCtx,"https");
+var proxyContextPath = carbonUtils.getProxyContextPath(true);
 
 if (hostName === null || hostName === '') {
     hostName = process.getProperty('carbon.local.ip');
@@ -21,6 +23,7 @@ if (hostName === null || hostName === '') {
 process.setProperty('server.host', hostName);
 process.setProperty('http.port', httpPort.toString());
 process.setProperty('https.port', httpsPort.toString());
+process.setProperty('proxy.context.path', String(proxyContextPath));
 
 
 /*
@@ -35,7 +38,7 @@ process.setProperty('https.port', httpsPort.toString());
 Finished the parsing stuff
  */
 caramel.configs({
-    context: '/store',
+    context: rxt.app.calculateContext(config.server.context),
     cache: true,
     negotiation: true,
     themer: function () {
@@ -62,7 +65,6 @@ var mod = require('store');
 mod.server.init(configs);
 
 mod.user.init(configs);
-var rxt=require('rxt');
 var lifecycle=require('lifecycle');
 var metricsAPI = require('carbon-metrics').metrics;
 rxt.core.init();

@@ -20,11 +20,16 @@
 var caramel;
 require('/modules/store.js').exec(function(ctx){
 	caramel = require('caramel');
+    var config = require('/config/store.js').config();
+    var server = require('rxt').server;
 	var log = new Log('basic-auth-login');
 	var ui = require('rxt').ui;
 	var refererHeader = ctx.request.getHeader('referer');
+    var referer = require('utils').request.getURLPath(refererHeader);
 	var page = ui.buildPage(ctx.session,ctx.request);
-	page.meta.referer = require('utils').request.getURLPath(refererHeader);
+    if(referer && referer.indexOf(config.server.context) ==0) {
+        page.meta.referer = server.buildURL(referer);
+    }
 	caramel.render(page);
 },request,response,session);
 %>

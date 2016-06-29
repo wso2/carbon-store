@@ -18,10 +18,15 @@
  *
  */
 var caramel;
+var rxt;
 caramel = require('caramel');
+rxt = require('rxt').server;
 var log = new Log('basic-auth-login');
 var ui = require('rxt').ui;
 var page = ui.buildPage(session,request);
-page.meta.referer = require('utils').request.getReferer(request);
+var referer = require('utils').request.getReferer(request);
+if(referer && referer.length > 0 ) {
+    page.meta.referer = rxt.buildURL(referer);
+}
 caramel.render(page);
 %>

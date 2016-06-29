@@ -12,6 +12,10 @@ var SERVER_EVENTS = 'server.events';
 
 var TENANT_CONFIGS = 'tenant.configs';
 
+var PROXY_CONTEXT_PATH = 'proxyContextPath';
+
+var SERVER_URL = 'serverURL';
+
 /**
  * Initializes the server for the first time. This should be called when app is being deployed.
  * @param options
@@ -23,6 +27,10 @@ var init = function (options) {
             tenanted: options.tenanted,
             url: options.server.https
         });
+    var carbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+    var proxyContextPath = carbonUtils.getProxyContextPath(true);
+    application.put(PROXY_CONTEXT_PATH, proxyContextPath);
+    application.put(SERVER_URL, options.server.https);
     application.put(SERVER, srv);
     application.put(SERVER_OPTIONS, options);
 
@@ -72,6 +80,18 @@ var init = function (options) {
             });
         loginManager.triggerEvent(configReg, user.username, tenantId, domain);
     });
+};
+
+
+var buildURL = function(path) {
+    if(path.indexOf('/') != 0) {
+        path = "/" + path;
+    }
+    return application.get(SERVER_URL) + application.get(PROXY_CONTEXT_PATH) + path;
+};
+
+var getProxyContextPath = function() {
+    return application.get(PROXY_CONTEXT_PATH);
 };
 
 /**

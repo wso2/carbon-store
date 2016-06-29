@@ -77,7 +77,7 @@ store.infiniteScroll.getItems = function (from, to) {
     var path = window.location.href; //current page path
     var param = '&&paginationLimit=' + to + '&&start=' + from + '&&count=' + count + setSortingParams(path) + setQueryParams(path);
     var assetType = store.publisher.type; //load type from store global object
-    var url = '/publisher/apis/assets?type=' + assetType + param; // build url for the endpoint call
+    var url = caramel.context + '/apis/assets?type=' + assetType + param; // build url for the endpoint call
     if(!firstRun){
         caramel.render('loading','Loading assets', function( info , content ){
             $('.loading-animation-big').remove();
@@ -122,7 +122,7 @@ store.infiniteScroll.getItems = function (from, to) {
         loadAssets();
         return;
     }
-    var initialUrl = '/publisher/assets/' + assetType + '/list';
+    var initialUrl = caramel.context + '/assets/' + assetType + '/list';
     caramel.data({
         "title": null,
         "listassets": ["list-assets"]

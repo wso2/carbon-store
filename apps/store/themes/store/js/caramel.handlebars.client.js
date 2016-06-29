@@ -82,12 +82,12 @@
         var context, domain, output;
 
         if (uri.match(tenantedRegex)) { //if matches to tenanted url pattern
-            context = uri.match(tenantedRegex)[1];
+            context = caramel.context;
             domain = uri.match(tenantedRegex)[2];
-            output = '/' + context + '/t/' + domain;
+            output = context + '/t/' + domain;
         } else if (uri.match(regex)){ //otherwise
-            context = uri.match(regex)[2];
-            output = '/' + context;
+            context = caramel.context;
+            output = context;
         }
         return output + path;
     });

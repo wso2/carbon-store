@@ -32,6 +32,10 @@ var server = {};
      * @param  {Object} options system configuration object
      */
     server.init = function(options) {
+        var carbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+        var proxyContextPath = carbonUtils.getProxyContextPath(true);
+        application.put(constants.PROXY_CONTEXT_PATH, proxyContextPath);
+        application.put(constants.SERVER_URL, options.server.https);
         var event = require('event');
         event.on('login', function(tenantId, user, session) {
             var rxtManager = core.rxtManager(tenantId);
@@ -56,5 +60,17 @@ var server = {};
                 }
             }
         });
+    };
+
+    /**
+     * Method used to build complete server url appending proxy context path given the sub context of the url
+     * @param  sub context url.
+     * @return complete url with server url + proxy context path.
+     */
+    server.buildURL = function(path) {
+        if(path.indexOf('/') != 0) {
+            path = "/" + path;
+        }
+        return application.get(constants.SERVER_URL) + application.get(constants.PROXY_CONTEXT_PATH) + path;
     };
 }(server, core))
