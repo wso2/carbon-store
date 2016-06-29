@@ -208,9 +208,16 @@ h4{font-weight: 400px;}
     right: -1px;
     background: #fff;
 }*/
-.details-image{padding: 0; width:27%; float: left; transition:all 0.5s ease; margin-bottom: 15px;}
-.details-container{ float: left; transition:all 0.5s ease; width:73%; padding-left: 10px; }
-.action-container{width:auto;padding:15px 0 15px 15px ; display:inline-block;min-width: 211px;}
+.details-image {
+    padding: 0;
+    width: 150px;
+    float: left;
+    transition: all 0.5s ease;
+    margin-bottom: 15px;
+}
+
+.details-container{ float: left; transition:all 0.5s ease;  padding-left: 10px; }
+.action-container{width:auto;padding:10px 0 0 0 ; display:inline-block;min-width: 211px;}
 .action-sub-container{width: auto; height: auto; float: left; vertical-align:middle; padding-right: 6px;}
 .action-lable{width:85px; height: auto;}
 .blue-button {

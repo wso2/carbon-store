@@ -10,9 +10,8 @@
         {{#with attributes}}
             <div class="asset-description-header">
                 <div class="es-col-lg-12 col-lg-12 white-bg left ">
-                    <h3 >{{../../rxt.singularLabel}} Details</h3>
+                    <h3 >{{overview_name}}</h3>
                     <div class="clear"></div>
-                    <hr>
                 </div>
             </div>
             <!-- asset details folder-->
@@ -24,15 +23,12 @@
                 </div>
                 <div class="details-container">
                     <div class="pull-left">
-                        <h4 class="margin-none ">{{overview_name}}</h4>
                         <p class="grey padding-none margin-none">{{t "Version"}} {{overview_version}}</p>
                         <p class="light-blue padding-none margin-none">{{t "by"}} {{overview_provider}}</p>
-                    </div>
-                    <div class="pull-right">
-                        <span class = "pull-right rating-count"> ( <i class="fa fa-users"></i> {{../count}} )</span>
-                        <span class="asset-rating pull-right">
+                        <span class="pull-left asset-rating">
                         <div style="width:{{../ratingPx}}px"></div>
                         </span>
+                        <span class = "pull-left rating-count"> ( <i class="fa fa-users"></i> {{../count}} )</span>
                         <div class="clearfix"></div>
                         {{#hasAssetPermission . key="ASSET_BOOKMARK" type=../../rxt.shortName username=../../cuser.username tenantId=../../cuser.tenantId}}
                         {{>asset-utilization ../../..}}
@@ -43,13 +39,16 @@
              </div>
                 <!-- end of asset details-->
             </div>
-            <div class="white-bg asset-details-wrapper ">
-                <div class="col-xs-12 col-sm-12 col-md-12 es-col-lg-12 col-lg-12">
-                    <h4>Summary</h4>
-                    <p>{{>overview .}}</p>
-                    <hr>
-                    {{>tags ../../.}}
-            </div><!-- description column-->
+                <div class="white-bg asset-details-wrapper ">
+                    <div class="col-xs-12 col-sm-12 col-md-12 es-col-lg-12 col-lg-12">
+                        {{#if overview_description}}
+                            <h4>Summary</h4>
+                            <p>{{>overview .}}</p>
+                            <hr>
+                        {{/if}}
+                        {{>tags ../../.}}
+                    </div><!-- description column-->
+
         </div>
         </div>
             <div>
