@@ -89,7 +89,7 @@ require('/modules/store.js').exec(function(ctx) {
     };
 
     //search history dropdown updates
-    if (count && q) {
+    if (q) {
         var updatedQuery = removeCategorizationFromHistory(ctx, options);
         var searchQuery = decodeURIComponent(utilsRequest.formatSearchQuery(updatedQuery));
         userApi.updateSearchHistory(ctx.session, searchQuery, type);
