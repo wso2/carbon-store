@@ -152,7 +152,7 @@ var constants = {};
     constants.DEFAULT_TAG_PAGIN = {
         start: 0,
         count: 10,
-        sortBy: 'overview_createdtime',
+        sortBy: 'createdDate',
         sortOrder: 'DESC'
     };
 
