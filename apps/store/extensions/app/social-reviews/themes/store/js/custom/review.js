@@ -103,6 +103,7 @@ $container.on('click', '#btn-post', function (e) {
         var type = target.substring(0, pos);
         var addAndRenderNew = function (successCallback, onError) {
             publish(activity, function (published) {
+                myReview = published.myReview;
                 if ($firstReview.length) {
                     $firstReview.hide();
                 }
@@ -306,6 +307,7 @@ $container.on('click', '#btn-update', function (e) {
         contentType: 'application/json',
         data: JSON.stringify(activityData),
         success: function (updatedActivity) {
+            myReview = updatedActivity;
             usingTemplate(function (template) {
                 var newComment = template(updatedActivity);
                 getMyReviewElement().html('').html(newComment);
@@ -316,10 +318,10 @@ $container.on('click', '#btn-update', function (e) {
 });
 $container.on('click', '#btn-edit', function (e) {
     showLoading(true);
-    var myReview = getMyReviewElement();
-    var rating = myReview.find('.com-rating').data('rating');
-    var review = myReview.find('.com-content').html().trim();
-    var id = myReview.find('.com-review').data('target-id');
+    var myComment = getMyReviewElement();
+    var rating = myComment.find('.com-rating').data('rating');
+    var review = myComment.find('.com-content').html().trim();
+    var id = myComment.find('.com-review').data('target-id');
     var editable = {
         rating: rating,
         review: review,

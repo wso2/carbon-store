@@ -104,6 +104,13 @@ var ReviewUtils = {};
         }
         result.id = id;
         result.success = (id > -1);
+        var myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
+        if (!isEmpty(myReview)) {
+            myReview.actor.id = cleanUsername(myReview.actor.id);
+        } else {
+            myReview = false;
+        }
+        result.myReview = myReview;
         return result;
     };
     ReviewUtils.removeUserReview = function(reviewId, username) {

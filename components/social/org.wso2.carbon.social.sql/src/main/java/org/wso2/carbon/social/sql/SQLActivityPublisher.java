@@ -59,7 +59,8 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			+ " =?";
 
 	private static final String COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL = "SELECT "
-			+ Constants.BODY_COLUMN
+			+ Constants.BODY_COLUMN + " , "
+			+ Constants.ID_COLUMN
 			+ " FROM "
 			+ Constants.SOCIAL_COMMENTS_TABLE_NAME
 			+ " WHERE "
@@ -708,6 +709,8 @@ public class SQLActivityPublisher extends ActivityPublisher {
                 JsonObject currentBody;
                 currentBody = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
                 currentActivity = new SQLActivity(currentBody);
+                int currentId = resultSet.getInt(Constants.ID_COLUMN);
+                currentActivity.setId(currentId);
             }
 
             if (log.isDebugEnabled()) {
@@ -728,7 +731,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
         } finally {
             DSConnection.closeConnection(connection);
         }
-        return updatedActivity.getBody();
+        return currentActivity.getBody();
     }
 
 

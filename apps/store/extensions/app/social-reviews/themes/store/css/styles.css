@@ -309,18 +309,13 @@ button:hover {
     width: 20px;
     opacity: .5;
 }
-
 .com-sort-hidden {
     display: none;
-}
-#btn-post {
-    background-color: #3a9ecf;
-    padding: 15px;
-    color: #fff;
 }
 #btn-post.disabled {
     cursor: default;
     background-color: #a9aeb0;
+    border-color: #a9aeb0;
 }
 .user-rating .fw-star:before {
     cursor: pointer;
@@ -349,12 +344,6 @@ button:hover {
 }
 .row.com-add div[class^="loading-"] {
     display: none;
-}
-#btn-update {
-    background: #3a9ecf;
-}
-#btn-update:hover {
-    background: #3786b5;
 }
 .loading-bg {
     width: 100%;

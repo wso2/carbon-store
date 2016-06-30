@@ -40,14 +40,14 @@
                 </div>
                 <div class="txt-right com-post-as">
                     {{#if editable}}
-                        <button id="btn-update" data-id="{{ editable.id }}">
+                        <button id="btn-update" class="btn btn-primary" data-id="{{ editable.id }}">
                             Update
                         </button>
-                        <button id="btn-cancel" data-id="{{ editable.id }}">
+                        <button id="btn-cancel" class="btn btn-default" data-id="{{ editable.id }}">
                             Cancel
                         </button>
                     {{ else }}
-                        <button id="btn-post" class="disabled">
+                        <button id="btn-post" class="disabled btn btn-primary">
                             Submit
                         </button>
                     {{/if}}
