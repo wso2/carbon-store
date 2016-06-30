@@ -70,7 +70,7 @@ var ReviewUtils = {};
                 myIndex = index;
             }
         }
-        if (myIndex) {
+        if (myIndex !== undefined) {
             reviews.splice(myIndex, 1);
         }
         return {'allReviews': reviews, 'myReview': myReview};

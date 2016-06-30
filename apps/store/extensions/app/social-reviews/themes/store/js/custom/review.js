@@ -260,6 +260,7 @@ $container.on('click', '#btn-delete', function (e) {
         type: 'DELETE',
         success: function () {
             $('.com-review[data-target-id="' + id + '"]').fadeOut();
+            $('.row.com-sort ').hide();
             caramel.partials({
                 comment: '/extensions/app/social-reviews/themes/' + caramel.themer + '/partials/comment-input.hbs'
             }, function () {

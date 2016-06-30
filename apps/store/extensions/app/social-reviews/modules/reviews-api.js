@@ -79,8 +79,7 @@ var api = {};
             if (!result.success) {
                 res = ResponseProcessor.buildErrorResponse(res, 400,
                     'User has already reviewed on the asset , Multiple reviews are not allowed.');
-            }
-            else {
+            } else {
                 print(result);
             }
         } catch (e) {

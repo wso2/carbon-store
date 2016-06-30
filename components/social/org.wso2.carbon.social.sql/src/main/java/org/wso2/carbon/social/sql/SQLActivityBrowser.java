@@ -132,9 +132,12 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				resultSet.close();
 				if (total != 0) {
 					JsonObject object = new JsonObject();
-					object.addProperty(Constants.RATING, (double) total / count);
+					double average = (double) total / count;
+					object.addProperty(Constants.RATING, average);
 					object.addProperty(Constants.COUNT, count);
-					return object;
+					if (!Double.isInfinite(average)) {
+						return object;
+					}
 				}
 			}
 
