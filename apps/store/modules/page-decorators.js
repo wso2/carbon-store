@@ -42,6 +42,7 @@ var pageDecorators = {};
         page.isUserDomainAndUrlDomainDifferent = tenantAppResources.isUserDomainAndUrlDomainDifferent;
         page.navigationBar = {};
         var isLandingPage = true;
+        var noTypeSelected = true;
         for (var index in availableTypes) {
             type = availableTypes[index];
             if (permissionsAPI.hasAssetPermission(permissionsAPI.ASSET_LIST, type, ctx.tenantId, ctx.username)) {
@@ -53,10 +54,12 @@ var pageDecorators = {};
                     currentType.selected = true;
                     currentType.style = "active home top-item";
                     isLandingPage = false;
+                    noTypeSelected = false;
                 }
                 types.push(currentType);
             }
         }
+        page.navigationBar.noTypeSelected = noTypeSelected;
         page.navigationBar.types = types;
         page.navigationBar.landingPage = isLandingPage;
         return page;
@@ -221,7 +224,7 @@ var pageDecorators = {};
             'count': 8,
             'sortOrder': 'desc',
             'sortBy': 'createdDate',
-            'paginationLimit': 8 
+            'paginationLimit': 8
         };
 
         // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
