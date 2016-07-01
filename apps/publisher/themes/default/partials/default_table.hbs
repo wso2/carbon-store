@@ -21,8 +21,9 @@
                         {{renderCheckbox value}}
                     {{else}}
                         {{#if_equal this.type "file"}}
-                            <img alt="thumbnail"
+                            <img alt="thumbnail" onerror="this.dataset.error = true"
                                  data-noImage="No {{label}}"
+                                 data-error="false"
                                  class="image-display no-image"
                                  src="{{url ""}}/storage/{{this.assetType}}/{{this.assetId}}/{{this.name.tableQualifiedName}}">
                         {{else}}
