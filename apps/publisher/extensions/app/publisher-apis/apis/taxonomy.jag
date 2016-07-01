@@ -17,64 +17,205 @@
 require('/modules/publisher.js').exec(function (ctx) {
     var log = new Log('asset_api_categories');
     var taxa = require('taxonomy');
+    var rxtModule = require('rxt');
     var responseProcessor = require('utils').response;
     var res = ctx.response;
     var req = ctx.request;
     var uriMatcher = new URIMatcher(req.getRequestURI());
-    var TAXA = '/{context}/apis/taxonomies';
     var method = req.getMethod();
     var response;
     var constants = require('rxt').constants;
     var acceptHeader, jsonHeaderAccept;
     var utils = require('utils');
     var ref = utils.request;
+    var store = require('store');
+    var carbon = require('carbon');
+    var user = store.server.current(session);
+    var MultiTenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
+    var username = user ? user.username : carbon.user.anonUser;
+    var tenantId;
+    var taxaPathList = [];
 
-        switch (method) {
-            case 'GET':// GET endpoints
+    var taxonomyPatternDefault = '/{context}/apis/taxonomies';
+    var taxonomyPatternAssetType = '/{context}/apis/taxonomies/{name}';
+    var taxonomyPatternTerm = '/{context}/apis/taxonomies/{name}/{+term}';
 
-                if (uriMatcher.match(TAXA)) {
-                    acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
-                    jsonHeaderAccept = acceptHeader.indexOf('application/json');
-                    try {
-                        if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
-                            var taxaPathList;
-                            var options = ref.getQueryOptions(req.getQueryString());
-                            if (options['terms']) {
-                                taxaPathList = taxa.taxonomy.getNodesList(options['terms'],
-                                        ( options['startnode']) ? options['startnode'] : 0,
-                                        (options['endnode']) ? options['endnode'] : 5);
+
+    uriMatcher.match(taxonomyPatternDefault);
+    var taxonomyDefaultOptions = uriMatcher.elements() || {};
+    uriMatcher.match(taxonomyPatternAssetType);
+    var taxonomyAssetTypeOptions = uriMatcher.elements() || {};
+    uriMatcher.match(taxonomyPatternTerm);
+    var taxonomyTermOptions = uriMatcher.elements() || {};
+
+    switch (method) {
+        case 'GET':// GET endpoints
+            var options = ref.getQueryOptions(req.getQueryString());
+
+            acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
+            jsonHeaderAccept = acceptHeader.indexOf('application/json');
+
+            var tenantDomains = options.tenant ? options.tenant : MultiTenantConstants.SUPER_TENANT_DOMAIN_NAME;
+            tenantId = carbon.server.tenantId({domain: tenantDomains});
+            options.tenantId = tenantId;
+            options.username = username;
+
+            if (uriMatcher.match(taxonomyPatternDefault)) {
+                try {
+                    if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
+
+                        if (options['assetType']) {
+                            var coreApi = rxtModule.core;
+                            var rxtManager = coreApi.rxtManager(tenantId);
+                            var taxonomies = rxtManager.getTaxonomies(options['assetType']);
+                            var jsonArray = [];
+                            var taxonomyArray;
+                            if (taxonomies.indexOf(',')) {
+                                taxonomyArray = taxonomies.split(',');
                             } else {
-                                taxaPathList = taxa.taxonomy.getNodesList("/*",
-                                        ( options['startnode']) ? options['startnode'] : 0,
-                                        (options['endnode']) ? options['endnode'] : 5);
+                                taxonomyArray = taxonomies;
                             }
+                            for (var i = 0; i < taxonomyArray.length; i++) {
+                                var taxonomyObj = {};
+                                taxonomyObj.name = taxonomyArray[i];
+                                jsonArray.push(taxonomyObj);
+                            }
+                            response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                    jsonArray);
+                            return;
+                        }
 
+                    } else {
+                        response = responseProcessor.buildErrorResponse(res,
+                                constants.STATUS_CODES.UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
+                        return;
+                    }
+
+
+                } catch (e) {
+
+                    if (e.toString().indexOf("TaxonomyException") > 0) {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
+                                "Bad syntax. Please provide correct syntax.");
+                        log.error('Bad syntax. Please provide correct syntax.', e);
+                    } else {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                INTERNAL_SERVER_ERROR, "Error on retrieving taxonomy.Server is unable to process " +
+                                "the request.Please check your have entered a correct query");
+                        log.error('Error on retrieving taxonomy.Server is unable to process the request.Please check ' +
+                                'your have entered a correct query', e);
+                    }
+
+                    return;
+                }
+
+
+            } else if (uriMatcher.match(taxonomyPatternAssetType)) {
+                try {
+                    if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
+
+                        if (taxonomyAssetTypeOptions.name) {
+
+                            taxaPathList = taxa.taxonomy.getNodesList("/*",
+                                    ( options['startnode']) ? options['startnode'] : 0,
+                                    (options['endnode']) ? options['endnode'] : 200, taxonomyAssetTypeOptions.name);
 
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
                                     taxaPathList);
                             return;
-                        } else {
-                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
-                                    UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
-                            return;
                         }
-                    } catch (e) {
 
-                        log.error('error on retrieving all taxa', e);
-                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.INTERNAL_SERVER_ERROR,
-                                "error on retrieving all taxa");
+                    } else {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
+
+
+                } catch (e) {
+
+                    if (e.toString().indexOf("TaxonomyException") > 0) {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
+                                "Bad syntax. Please provide correct syntax.");
+                        log.error('Bad syntax. Please provide correct syntax.', e);
+                    } else {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                INTERNAL_SERVER_ERROR,
+                                "Error on retrieving taxonomy.Server is unable to process the request. Please check " +
+                                "your have entered a correct query");
+                        log.error('Error on retrieving taxonomy.Server is unable to process the request.Please check ' +
+                                'your have entered a correct query', e);
+                    }
+
+                    return;
                 }
 
-                break;
-            default:
-                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_IMPLEMENTED,
-                        'Not Implemented API endpoints', res,
-                        'The endpoint that you have requested is not implemented for the ' + method +
-                        ' method.Try making the request with the appropriate verb', []);
+            } else if (uriMatcher.match(taxonomyPatternTerm)) {
+                try {
+                    if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
 
-        }
+                        if (taxonomyTermOptions.term) {
+
+                            if (options['children']) {
+
+
+                                taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term + "/children",
+                                        ( options['startnode']) ? options['startnode'] : 0,
+                                        (options['endnode']) ? options['endnode'] : 200, taxonomyTermOptions.name);
+
+                            } else {
+
+
+                                taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term,
+                                        ( options['startnode']) ? options['startnode'] : 0,
+                                        (options['endnode']) ? options['endnode'] : 200, taxonomyTermOptions.name);
+
+                            }
+
+                            response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                    taxaPathList);
+
+                            return;
+
+                        }
+
+                    } else {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
+                        return;
+                    }
+
+
+                } catch (e) {
+
+                    if (e.toString().indexOf("TaxonomyException") > 0) {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
+                                "Bad syntax. Please provide correct syntax.");
+                        log.error('Bad syntax. Please provide correct syntax.', e);
+                    } else {
+                        response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
+                                INTERNAL_SERVER_ERROR,
+                                "Error on retrieving taxonomy. Server is unable to process the request.Please check " +
+                                "your have entered a correct query");
+                        log.error('Error on retrieving taxonomy.Server is unable to process the request.Please check ' +
+                                'your have entered a correct query', e);
+                    }
+
+                    return;
+                }
+
+            } else {
+
+            }
+
+            break;
+        default:
+            response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_IMPLEMENTED,
+                    'Not Implemented API endpoints', res,
+                    'The endpoint that you have requested is not implemented for the ' + method +
+                    ' method.Try making the request with the appropriate verb', []);
+
+    }
 
 }, request, response, session);
 

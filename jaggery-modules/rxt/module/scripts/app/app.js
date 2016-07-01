@@ -1017,7 +1017,7 @@ var app = {};
     };
 
     app.isTaxonomyEnabled = function () {
-        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.TaxonomyService');
+       /* var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.TaxonomyService');
         var availability = TaxonomyService.getTaxonomyAvailability();
         availability = String(availability);
         availability = (availability == "true");
@@ -1025,7 +1025,8 @@ var app = {};
             return true;
         } else {
             return false;
-        }
+        }*/
+        return true;
     };
 
     /**

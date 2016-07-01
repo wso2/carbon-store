@@ -154,6 +154,7 @@ footer {
     /* Set the fixed height of the footer here */
     height: 60px;
     background-color: #f5f5f5;
+    z-index: 100000;
 }
 
 .wrapper {
@@ -199,6 +200,9 @@ h2.app-title {
     text-align: left;
     width: 100%;
     opacity: 0.8;
+}
+.assets-container{
+    margin-top:20px;
 }
 .es-nav > li.advanced-search-link{
     position: absolute;
@@ -536,15 +540,7 @@ a.ast-name:hover {
 .advance-search-btn:hover {
     color:#fff;
 }
-.store-bookmark-link{
-    width: 154px;
-    position: absolute;
-    right: 0;
-    top:10px
-}
-.store-bookmark-link a{
-    color:#fff;
-}
+
 .bookmark-link{
     color: #fff;
     position: relative;
@@ -668,13 +664,7 @@ a.login:focus {
     border: 0px;
     margin-left: -12px;
 }
-.search-wrapper #search-button{
-    border-radius: 0;
-    background: #fff;
-}
-.assetp-properties .nav-tabs > li > a:hover, .assetp-properties .nav-tabs > li > a:focus{
-    color: #000;
-}
+
 .wr-action-container .search .advanced-search-btn {
     height: 42px;
     background: url("../img/icons/advance-search.png") no-repeat scroll center center #fff;
@@ -857,6 +847,7 @@ a.ast-type-item:hover {
     font-size: 22px;
     padding: 10px 0 0;
     width: auto;
+    margin-bottom: 15px;
 }
 
 .title a {
@@ -970,7 +961,7 @@ a.more:focus {
 
 
 .top-assets-empty-assert{
-    padding:57px 12px;
+    padding:20px;
     border:solid 1px #ccc;
     background: rgba(48, 162, 249, 0.06);
     margin:10px 10px 10px 2px;
@@ -1006,13 +997,21 @@ a.more:focus {
 .action-img-icon{ width:40px; height: 40px;  margin-left: 18px; background: url("../img/icons/ico-lock.png") no-repeat scroll left top transparent; opacity: 0.5; cursor: pointer; float: left; }
 .action-title{ text-align: center; font-weight:400; font-size: 14px; line-height: 13px; cursor: pointer; text-transform: uppercase; padding: 15px 2px 2px; float: left;   }
 
-.btn-primary{
+.btn-primary, .btn-secondary{
     border:0px;
     border-radius: 0px;
     color: #fff;
     text-decoration: none;
     outline: 0;
     text-align: left;
+}
+.btn-secondary {
+    background-color: #404651;
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+    color: #fff;
+    background-color: #2C313B;
 }
 .btn-add-new {
     background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
@@ -1177,12 +1176,6 @@ a:hover, a:focus {
 .white{color: #f3f3f3;}
 #sortDropdown:hover {
     background: transparent;
-}
-.ast-name-icon{
-    color:#fff;
-    text-transform: uppercase;
-    text-align: center;
-    font-size: 6.5em;
 }
 #ul-sort-assets li a {
     color: #888;
@@ -1369,6 +1362,14 @@ h2.app-title {
     height: 28px;
     overflow: hidden;
 }
+.ctrl-wr-asset .ast-img {
+    width: 100%;
+    display: block;
+    min-height: 150px;
+    max-height: 150px;
+    min-width: 150px;
+    overflow: hidden;
+}
 .ctrl-wr-asset {
     position: relative;
     height: 255px;
@@ -1464,8 +1465,8 @@ span.advanced-search-icons{
         float: right;
     }
     .ro-text {
-    /*    visibility: hidden;
-        display: none;*/
+        /*    visibility: hidden;
+            display: none;*/
     }
     #advanced-search{
         width: 100%;
@@ -1632,6 +1633,10 @@ a.ctrl-filter-category {
     background:#61a3e6;
 }
 
+.ctrl-wr-asset  {
+    margin-bottom: 15px !important;
+}
+
 /* ========================================================================
  * data table styles
  * ======================================================================== */
@@ -1682,34 +1687,4 @@ ul.sort-list li a.active:hover{
 }
 .margin-bottom-align{
     margin-bottom: -10px;
-}
-/* ========================================================================
- * Store my-items bookmark styling
- * ======================================================================== */
-.confirmation-popup-container {
-    position: absolute;
-    z-index: 9999;
-    background: rgba(255, 239, 239, 0.87);
-    height: 105%;
-    display: none;
-}
-.confirmation-popup-container p {
-    position: relative;
-    top: 20%;
-    text-align: center;
-    color: rgb(159, 12, 12);
-}
-.confirmation-popup-container .btn-group {
-    bottom: 10px;
-    position: absolute;
-    margin-left: 25%;
-    display: block;
-}
-.confirmation-popup-container .yes-bookmark {
-    border: 0px;
-}
-.confirmation-popup-container .no-bookmark {
-    border-top: 0px;
-    border-right: 0px;
-    border-bottom: 0px;
 }

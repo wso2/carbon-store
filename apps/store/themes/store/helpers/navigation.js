@@ -25,8 +25,8 @@ var format = function(context, data, page, area, meta) {
 var resources = function(page, meta) {
 	return {
 
-		js : ['asset-helpers.js', 'navigation.js', 'popover.js', 'jquery.validate.js', 'jquery.cookie.js', 'search.js', 'list_assets.js', 'categorization.js'],
-		css : ['navigation.css','style-taxonomy.css', 'categorization.css', 'theme-categorization.min.css']
+		js : [  'asset-helpers.js', 'navigation.js', 'popover.js', 'jquery.validate.js', 'jquery.cookie.js', 'search.js', 'list_assets.js', 'categorization.js' , 'refresh-categorization.js', 'taxonomy_view.js','wso2-visual-elements.js'],
+		css : [ 'navigation.css','style-taxonomy.css', 'categorization.css', 'theme-categorization.min.css']
 
 	};
 };
@@ -42,4 +42,4 @@ var currentPage = function(navigation, type, search) {
 	}
 	navigation.search = search;
 	return navigation;
-}
+};
