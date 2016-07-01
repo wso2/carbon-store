@@ -1405,3 +1405,6 @@ sup.required-field{
     height: 100%;
     background-color: #fff;
 }
+#deleteModal .form-inline .message {
+    display: none;
+}

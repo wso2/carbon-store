@@ -23,10 +23,10 @@
 {{/with}}
 <div class="delete" id="deleteModal">
     <div class="form-inline">
-        <div class="message message-danger" style="display: none">
+        <div class="message message-danger">
             <h4><i class="icon fw fw-error"></i>Asset deletion</h4>
             <p id="delete-msg">{{t "Do you want to delete "}}
-                <b>{{assets.name}}</b>{{t " "}}{{rxt.singularLabel}}{{t "?"}}</p>
+                <b>{{t assets.name}}</b>{{t " "}}{{t rxt.singularLabel}} ?</p>
         </div>
         <input type="hidden" id="asset-id" value="{{assets.id}}">
         <input type="hidden" id="asset-name" value="{{assets.name}}">
