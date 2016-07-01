@@ -155,7 +155,7 @@ var pageDecorators = {};
             var childValues = [];
             var childFields = [];
             updatedCategorizationField.text = categorizationField.name.label;
-            updatedCategorizationField.order = categorizationField.order;
+            updatedCategorizationField.priority = categorizationField.priority;
             updatedCategorizationField.id = parentId;
             updatedCategorizationField.divId = parentId + index;
             if (ctx.rxtManager.isSolarFacetsEnabled(ctx.assetType)) {
@@ -189,8 +189,8 @@ var pageDecorators = {};
             }
         }
 
-        updatedCategorizationFields.sort(function(field1, field2) {
-            return parseInt(field1.order) - parseInt(field2.order);
+        updatedCategorizationFields.sort(function (field1, field2) {
+            return parseInt(field1.priority) - parseInt(field2.priority);
         });
 
         page.assetCategoryFilterDetails = updatedCategorizationFields;
@@ -690,7 +690,7 @@ var pageDecorators = {};
         var terms = [];
         var results;
         var selectedTag;
-        var map = HashMap();
+        var map = new HashMap();
         var mediaType;
         var searchPage = '/pages/top-assets';
         var rxtManager = ctx.rxtManager;
@@ -756,19 +756,21 @@ var pageDecorators = {};
      * @returns {HashMap}   map of criteria
      */
     var buildQueryMap = function (ctx, options) {
-        var possibleKeys = ['taxonomy', '_default', 'name', 'version', 'tags', 'tags', 'lcName', 'lcState'];
-        var map = HashMap();
+        var possibleKeys = ['taxonomy', '_default', 'name', 'version', 'tags', 'lcName', 'lcState'];
+        var rxtManager = ctx.rxtManager;
+        var assetType = ctx.assetType;
+        var map = new HashMap();
         var list;
         var keys = Object.keys(options);
         keys.forEach(function (key) {
             var searchKey = key;
             if (searchKey === 'name' || searchKey === '_default') {
-                searchKey = 'overview_name';
+                searchKey = rxtManager.getNameAttribute(assetType);
             } else if (searchKey === 'version') {
-                searchKey = 'overview_version';
+                searchKey = rxtManager.getVersionAttribute(assetType);
             }
 
-            list = ArrayList();
+            list = new ArrayList();
             if (possibleKeys.indexOf(key) > -1) {
                 list.add('*' + options[key] + '*');
             } else {
@@ -781,7 +783,7 @@ var pageDecorators = {};
         if (options.category) {
             var categoryField;
             if (ctx.assetType) {
-                categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
+                categoryField = rxtManager.getCategoryField(assetType);
             }
             list = new ArrayList();
             list.add(options.category);

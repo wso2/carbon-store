@@ -292,6 +292,6 @@ var categorization = function() {
     }
 };
 
-$(function(){
+$(function() {
     categorization();
 });
