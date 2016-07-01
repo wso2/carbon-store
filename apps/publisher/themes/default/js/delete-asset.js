@@ -17,6 +17,7 @@
  *
  */
 $(document).ready(function () {
+    deleteMessage = $('#delete-msg').html();
     if (store && store.publisher && store.publisher.lifecycle) {
         if ((!store.publisher.lifecycle.activeLifecycle) || (store.publisher.lifecycle.activeLifecycle.length == '')) {
             enableDelete();
@@ -49,19 +50,19 @@ $(document).ready(function () {
     }
 });
 
+var deleteMessage;
+var deletePanel = $('#deleteModal').find('.form-inline .message');
 var enableDelete = function () {
-    var deletePanel = $('.message.message-danger');
-    deletePanel.css('display','');
+    deletePanel.removeClass('message-warning').addClass('message-danger');
     $('#Delete').removeClass('not-active').removeAttr("title").unbind('click');
     $('#btn-delete-con').show();
+    $('#delete-msg').html(deleteMessage);
+    deletePanel.show();
 };
-
 var disableDelete = function (msg) {
-    var deletePanel = $('.message.message-danger');
     deletePanel.removeClass('message-danger').addClass('message-warning');
     deletePanel.find('.fw.fw-error').removeClass('fw-error').addClass('fw-warning');
-    deletePanel.css('display','');
-
     $('#btn-delete-con').hide();
     $('#delete-msg').text('Asset is not in a deletable state');
+    deletePanel.show();
 };
