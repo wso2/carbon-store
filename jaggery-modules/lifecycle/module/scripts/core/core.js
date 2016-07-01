@@ -111,6 +111,25 @@ var core = {};
             }
         }
     };
+    /*
+     Reloads a lifecycle if the lifecycle canot be found in the lcmap.
+     This method is needed when working with a mounted setup.
+     @lifecycleName: name of the lifecycle which needs to be forcefully loaded
+     @tenantId: tenant id
+     */
+    var forceReloadLifeCycles = function(lifecycleName,tenantId){
+        var server = require('store').server;
+        var sysRegistry = server.systemRegistry(tenantId);
+        var configReg = getConfigRegistry(sysRegistry);
+        if (CommonUtil.lifeCycleExists(lifecycleName, configReg)) {
+            CommonUtil.generateAspect(CommonUtil.getContextRoot() + lifecycleName, configReg);
+            var content = CommonUtil.getLifecycleConfiguration(lifecycleName, configReg);
+            addRawLifecycle(lifecycleName, content, tenantId);
+            var jsonLifecycle = parseLifeycle(new String(content));
+            jsonLifecycle = transformJSONLifecycle(jsonLifecycle);
+            addJsonLifecycle(lifecycleName, jsonLifecycle, tenantId);
+        }
+    };
     var init = function(tenantId) {
         var server = require('store').server;
         var sysRegistry = server.systemRegistry(tenantId);
@@ -186,8 +205,11 @@ var core = {};
         if (!lcMap.json[lifecycleName]) {
             core.force(tenantId);
             lcMap = core.configs(tenantId);
-            if (!lcMap.json[lifecycleName]){
-                throw 'There is no lifecycle information for ' + lifecycleName;
+            if (!lcMap.json[lifecycleName]) {
+                forceReloadLifeCycles(lifecycleName, tenantId);
+                if (!lcMap.json[lifecycleName]) {
+                    throw 'There is no lifecycle information for ' + lifecycleName;
+                }
             }
         }
         return lcMap.json[lifecycleName];
