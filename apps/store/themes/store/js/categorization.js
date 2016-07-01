@@ -1,5 +1,23 @@
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ */
+
 var categorizationArray = [];
-$(function() {
+var categorization = function() {
 
     var updateFilters = function (url){
         var queryArray = url.split("=")[1].split(",");
@@ -23,7 +41,7 @@ $(function() {
             }
 
             for(var i in queryObjArray){
-                $('#categorization :checkbox').each(function() {
+                $('.categorization-checkbox:checkbox').each(function() {
                     var $this = $(this);
                     if($this.attr('name') == queryObjArray[i].queryKey){
                         for(var k in queryObjArray[i].queryValue){
@@ -32,8 +50,6 @@ $(function() {
                                 $this.attr('checked', true);
                                 $("#"+$this.attr('name')).collapse('show');
                                 var icon = $("#"+$this.attr('name')).prev().find('.status').children();
-                                icon.removeClass('fw-down');
-                                icon.addClass('fw-up');
                             }
                         }
                     }
@@ -221,6 +237,9 @@ $(function() {
      */
     var removeUnrelatedKeys = function(url){
         var searchQuery = url.split("q=")[1];
+        if(!searchQuery) {
+            return '';
+        }
         var keyValues = searchQuery.split(",");
         for(var i in keyValues){
             var data = {};
@@ -251,7 +270,7 @@ $(function() {
         store.infiniteScroll.recalculateRowsAdded();
     };
 
-    $('#categorization :checkbox').click(function() {
+    $('.categorization-checkbox:checkbox').click(function() {
         var $this = $(this);
         var data = {};
         data.parent = $this.attr('name');
@@ -266,25 +285,7 @@ $(function() {
         }
     });
 
-    $('div[data-toggle="collapse"]').on('click',function(){
-        var objectID=$(this).attr('href');
-        var icon = $(objectID).prev().find('.status').children();
-
-        if($(objectID).hasClass('in'))
-        {
-            $(objectID).collapse('hide');
-            icon.removeClass('fw-up');
-            icon.addClass('fw-down');
-        }
-
-        else{
-            $(objectID).collapse('show');
-            icon.removeClass('fw-down');
-            icon.addClass('fw-up');
-        }
-    });
-
-    $('#categorization :checkbox').each(function() {
+    $('.categorization-checkbox:checkbox').each(function() {
         var $this = $(this);
         categorizationArray.push($this.attr('name'));
     });
@@ -307,5 +308,8 @@ $(function() {
             updateFilters(url);
         }
     }
+};
 
+$(function() {
+    categorization();
 });
