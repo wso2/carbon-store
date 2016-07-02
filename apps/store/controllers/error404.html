@@ -16,6 +16,17 @@
     <i class="icon-unlink error-icon"></i>
     <h1>Error 404</h1>
     <h3>I can't find what you are looking for.</h3>
-    <h4><a href="/store">Visit store</a></h4>
+    <h4><a id="storeURL">Visit store</a></h4>
 </body>
 </html>
+
+<script>
+    var a = document.getElementById('storeURL');
+    var requestedURI = window.location.href;
+    if (requestedURI.split('store').length > 0 ) {
+        a.href = requestedURI.split('store')[0] + "store";
+    } else {
+        a.href = "/store";
+    }
+
+</script>

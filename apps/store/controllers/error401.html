@@ -16,6 +16,17 @@
 <i class="icon-unlink error-icon"></i>
 <h1>Error 401</h1>
 <h3>You do not have permission to login to this application.Please contact your administrator and request permission.</h3>
-<h4><a href="/store/logout?ignoreReferer=true">Go to Login Page</a></h4>
+<h4><a id="storeURL">Go to Login Page</a></h4>
 </body>
 </html>
+
+<script>
+    var a = document.getElementById('storeURL');
+    var requestedURI = window.location.href;
+    if (requestedURI.split('store').length > 0 ) {
+        a.href = requestedURI.split('store')[0] + "store/logout?ignoreReferer=true";
+    } else {
+        a.href = "/store/logout?ignoreReferer=true";
+    }
+
+</script>

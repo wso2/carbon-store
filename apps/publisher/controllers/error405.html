@@ -17,7 +17,18 @@
 <i class="icon-unlink error-icon"></i>
 <h1>Error 405</h1>
 <h3>Method not allowed.</h3>
-<h4><a href="/publisher/logout?ignoreReferer=true">Go to Login Page</a></h4>
+<h4><a id="publisherURL">Go to Login Page</a></h4>
 </body>
 </html>
+
+<script>
+    var a = document.getElementById('publisherURL');
+    var requestedURI = window.location.href;
+    if (requestedURI.split('publisher').length > 0 ) {
+        a.href = requestedURI.split('publisher')[0] + "publisher/logout?ignoreReferer=true";
+    } else {
+        a.href = "/publisher/logout?ignoreReferer=true";
+    }
+
+</script>
 
