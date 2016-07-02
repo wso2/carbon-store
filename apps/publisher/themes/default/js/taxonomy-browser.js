@@ -52,14 +52,14 @@ var initWindowColumns = function () {
 
 /**
  * Updates taxonomy browser data window visibility based on the click event.
- * @param window    current window that the click event occurred
+ * @param dataWindow    current window that the click event occurred
  */
-var updateTaxonomyWindow = function (window) {
-    if ($('[data-window=' + ( window + 1 ) + ']').length > 0) {
-        $('[data-window]:gt(' + ( window + 1 ) + ')').hide();
-        $('[data-window=' + ( window + 1 ) + ']').fadeIn();
+var updateTaxonomyWindow = function (dataWindow) {
+    if ($('[data-window=' + ( dataWindow + 1 ) + ']').length > 0) {
+        $('[data-window]:gt(' + ( dataWindow + 1 ) + ')').hide();
+        $('[data-window=' + ( dataWindow + 1 ) + ']').fadeIn();
 
-        var windowToHide = ( (window + 1) - columnsCount );
+        var windowToHide = ( (dataWindow + 1) - columnsCount );
 
         if (windowToHide >= 0) {
             $('[data-window]:lt(' + ( windowToHide + 1 ) + ')').hide();
@@ -93,7 +93,7 @@ var loadTaxonomies = function () {
 
 /**
  * Loads the root level children for the given taxonomy name.
- * @param taxonomyName name of the taxonomy
+ * @param taxonomyName  name of the taxonomy
  */
 var loadTaxonomyRoot = function (taxonomyName) {
     $.ajax({
@@ -129,16 +129,16 @@ var loadTaxonomyRoot = function (taxonomyName) {
 /**
  * Loads the children of a given element.
  * @param taxonomyName  name of the taxonomy
- * @param element   current element
- * @param window    window of the current element
+ * @param element       current element
+ * @param dataWindow    window of the current element
  */
-var loadTaxonomyChildren = function (taxonomyName, element, window) {
+var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
     $.ajax({
         type: 'GET',
         url: BASE_URL + '/' + taxonomyName + '/' + element + "?children=true",
         success: function (results) {
             var html = '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 taxonomy-select-window" data-root="'
-                + taxonomyName + '" data-parent="' + element + '" data-window="' + (window + 1) + '"><ul>' + BACK_LINK;
+                + taxonomyName + '" data-parent="' + element + '" data-window="' + (dataWindow + 1) + '"><ul>' + BACK_LINK;
 
             for (var key in results) {
                 if (results.hasOwnProperty(key)) {
@@ -153,7 +153,7 @@ var loadTaxonomyChildren = function (taxonomyName, element, window) {
             }
             html += '</ul></div>';
             $(TAXONOMY_SELECT).append(html);
-            updateTaxonomyWindow(window);
+            updateTaxonomyWindow(dataWindow);
         }
     });
 };
@@ -225,7 +225,7 @@ $(function () {
         e.preventDefault();
         var element = $(this).attr('href');
         var root = $(this).closest('div').data('root');
-        var window = parseInt($(this).closest('div').data('window'));
+        var dataWindow = parseInt($(this).closest('div').data('window'));
 
         $(this).closest('li').siblings().siblings().each(function () {
             $(this).removeClass('active');
@@ -233,7 +233,7 @@ $(function () {
         });
         $(this).closest('li:not(.back)').addClass('active');
 
-        $('[data-window]:gt(' + window + ')').each(function () {
+        $('[data-window]:gt(' + dataWindow + ')').each(function () {
             $(this).find('li').removeClass('active');
             windowObject[$(this).data('parent')] = $(this);
             $(this).remove();
@@ -242,9 +242,9 @@ $(function () {
         if (windowObject[element]) {
             $(TAXONOMY_SELECT).append(windowObject[element].first());
             delete windowObject[element];
-            updateTaxonomyWindow(window);
+            updateTaxonomyWindow(dataWindow);
         } else {
-            loadTaxonomyChildren(root, element, window);
+            loadTaxonomyChildren(root, element, dataWindow);
         }
 
         // Updating taxonomy breadcrumb
@@ -259,13 +259,13 @@ $(function () {
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.back > a', function (e) {
         e.preventDefault();
 
-        var id = $(this).closest(COLUMN_SELECTOR).data('window'),
-            windowsToHide = ( (id - 1) + columnsCount );
+        var dataWindow = $(this).closest(COLUMN_SELECTOR).data('window'),
+            windowsToHide = ( (dataWindow - 1) + columnsCount );
 
         // Hide windows that are overflowing
         $('[data-window]:gt(' + (windowsToHide - 1) + ')').hide();
-        $('[data-window=' + id + '] > ul > li.back').hide();
-        $('[data-window=' + ( id - 1 ) + ']').fadeIn();
+        $('[data-window=' + dataWindow + '] > ul > li.back').hide();
+        $('[data-window=' + ( dataWindow - 1 ) + ']').fadeIn();
     });
 
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > a', function (e) {
