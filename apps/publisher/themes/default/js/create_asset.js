@@ -193,145 +193,19 @@ $(function () {
             $('.field-title').eq(index).addClass("collapsed");
         }
     });
+   
+    initTaxonomyBrowser(null);
 
-    /**
-     * This method will store user selected nodes values into a hidden html text input field before submit
-     * From the backend read this data as text field values
-     */
-    $("#btn-create-asset").click(function () {
-        var jsTree = $('#jstree-taxonomy').jstree(true);
-        var checkedNodesList = jsTree.get_checked(true);
-        var pathFromRoot = "";
-        for (var i = 0; i < checkedNodesList.length; i++) {
-            if (jsTree.is_leaf(checkedNodesList[i])) {
-
-                pathFromRoot += checkedNodesList[i].id + ",";
-            }
-        }
-        $("#taxonomy-list")[0].value = pathFromRoot;
-    });
-
-    /**
-     * This method will render the jstree using lazy loading. There is one specific call url for root node.
-     * Other Url will dynamically generated while getting user clicked values and load the rest of nodes
-     * @type {*|jQuery|HTMLElement}
-     */
-
-    var currentNode;
-    var currentNodeAry = [];
-    var jsTreeView = $('#jstree-taxonomy');
-    jsTreeView.jstree({
-        conditionalselect: function (node, event) {
-            var tree = $('#jstree-taxonomy').jstree(true);
-            if (tree.is_leaf(node) || $(event.originalEvent.target).attr("class") == "jstree-icon jstree-checkbox" || $(event.originalEvent.target).attr("class") == "jstree-icon jstree-checkbox jstree-undetermined") {
-                if (!tree.is_leaf(node)) {
-                    tree.open_all(node);
-                }
-                return true;
-
-            } else {
-                /// tree.open_node(node);
-                if (tree.is_open(node)) {
-                    tree.close_node(node);
-                }else {
-                    tree.open_node(node);
-                }
-                return false;
-            }
-            return true;
-        },
-        plugins: ["checkbox", "conditionalselect"],
-        checkbox: {
-
-
-        },
-
-        core: {
-            data: {
-                animation: 0,
-
-                url: function (node) {
-
-                    if (node.id === '#') {
-                        return caramel.context + '/apis/taxonomies';
-                    } else {
-                        return caramel.context + '/apis/taxonomies?terms=' + node.id + '/children';
-                    }
-                },
-                data: function (node) {
-                    currentNode = node;
-                    if (node.id != "#") {
-                        currentNodeAry.push(node);
-                    }
-
-                },
-                success: function (data) {
-                    //modify the REST API return data
-                    var children;
-                    try {
-                        children = Array.isArray(data[0].children);
-                    } catch (e) {
-
-                    }
-
-                    if (children) {
-                        data[0].id = data[0].elementName;
-                        if (data[0].text == "") {
-                            data[0].text = data[0].elementName;
-                        }
-                        for (var i = 0; i < data[0].children.length; i++) {
-                            data[0].children[i].id = data[0].elementName + "/" + data[0].children[i].elementName;
-                            if (data[0].children[i].text == "") {
-                                data[0].children[i].text = data[0].children[i].elementName;
-                            }
-                        }
-                    } else {
-                        for (var j = 0;j<currentNodeAry.length;j++) {
-                            for (var i = 0; i < (data.length); i++) {
-                                data[i].id = currentNodeAry[j].original.id + "/" + data[i].elementName;
-                                if (data[i].text == "") {
-                                    data[i].text = data[i].elementName;
-                                }
-                            }
-                            currentNodeAry = [];
-                        }
-                    }
-
-                }
-
-            },
-            themes: {
-                dots: true,
-                icons: false
-            }
-        }
-
-    });
-
-    /**
-     * This method will open root node by default
-     */
-    $("#jstree-taxonomy").on("ready.jstree", function (e, data) {
-        // try to improve using data parameter
-        var tree = $('#jstree-taxonomy').jstree(true);
-        tree.open_node(tree.get_node("#").children);
-        $("#" + tree.get_node("#").children[0]).find('.jstree-ocl').first().remove();
-        $("#" + tree.get_node("#").children[0]).find('> a > .jstree-checkbox').remove()
-
-    });
-
-    $("#tree").bind("select_node.jstree", function (e, data) {
-        $("#jstree-taxonomy").jstree("toggle_node", data.node);
-        $("#jstree-taxonomy").jstree("deselect_node", data.node);
-    });
     String.prototype.replaceAll = function (find, replace) {
         var str = this;
         return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
     };
 
-    $("button[type='reset']").on("click", function(event){
-        var jsTree = $('#jstree-taxonomy').jstree(true);
-        jsTree.uncheck_all();
+    $('#btn-create-asset').click(function (e) {
+        $('#taxonomy-list')[0].value = selectedTaxonomy.join(',');
     });
 
+    $('button[type=reset]').click(function (e) {
+        initTaxonomyBrowser(null);
+    });
 });

@@ -1,0 +1,129 @@
+.taxonomy-select {
+    overflow: hidden;
+    border: 2px solid #eee;
+    border-right-width: 1px;
+    border-left-width: 1px;
+    margin: 0;
+}
+
+.taxonomy-select, .taxonomy-select > .taxonomy-select-window {
+    height: 300px;
+}
+
+.taxonomy-select > .taxonomy-select-window {
+    padding: 15px;
+    border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
+    overflow-y: auto;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul, .taxonomy-select > .taxonomy-select-window > ul li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li > a {
+    display: block;
+    padding: 5px 8px;
+    color: #444;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li.active > a, .taxonomy-select > .taxonomy-select-window > ul li.active:hover > a {
+    background: #444;
+    color: #fff;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li > a > .icon {
+    margin-left: 15px;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li > a:hover {
+    background: #eee;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li.back {
+    margin-bottom: 10px;
+}
+
+.taxonomy-breadcrumb {
+    min-height: 40px;
+    background: #eee;
+    padding: 0 15px;
+}
+
+.taxonomy-breadcrumb > ol {
+    margin: 0;
+    padding: 0;
+}
+
+.taxonomy-breadcrumb > ol > li {
+    list-style: none;
+    padding: 0;
+    display: inline-block;
+    margin-right: 5px;
+    line-height: 40px;
+}
+
+.leaf {
+    display: flex;
+}
+
+.leaf a {
+    width: 100%;
+}
+
+.leaf button {
+    display: inline-block;
+    padding: 0;
+    background: #828282;
+    color: #eee;
+}
+
+.selected-taxonomy-container {
+    float: left;
+    clear: left;
+    background: #c1c1c1;
+    margin-bottom: 20px;
+    white-space: nowrap;
+}
+
+.selected-taxonomy-container > label {
+    display: inline-block;
+    padding: 10px;
+    font-weight: 300;
+}
+
+.selected-taxonomy-content {
+    display: inline-block;
+    padding: 5px;
+}
+
+.selected-taxonomy-content div {
+    background-color: #5a5e66;
+    color: #fff;
+    display: inline-block;
+    font-size: 11px;
+    text-transform: uppercase;
+    line-height: 11px;
+    margin-right: 10px;
+    text-decoration: none;
+}
+
+.selected-taxonomy-content span {
+    padding: 5px;
+}
+
+.selected-taxonomy-content button {
+    padding: 1px 6px;
+}
+
+.taxonomy-dropdown-button {
+    display: inline-block;
+    float: right;
+}
+
+#taxonomy-dropdown-menu {
+    width: 100%;
+}
+

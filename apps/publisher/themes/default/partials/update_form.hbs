@@ -22,50 +22,39 @@
         </div>
     </div>
     {{/if}}
-     <div id='tag-ui-container'>
-         <h2 class="field-title">
-             <a href="#collapseTags" aria-expanded="false" class="collapsing-h2" >
-                 <i class="cu-btn-exp-col btn-collapsed">{{t "Tags"}}</i>
-             </a>
-         </h2>
-         <div class="responsive-form-container" id="collapseTags">
-             {{> tag-ui-container .}}
-         </div>
-     </div>
-     {{#if taxonomyAvailability}}
-     <div id='taxonomy'>
-         <h2 class="field-title">
-             <a href="#collapseTaxa" aria-expanded="false" class="collapsing-h2">
-                 <i class="cu-btn-exp-col btn-collapsed">{{t "Taxonomy"}}</i>
-             </a>
-         </h2>
-
-         <div class="responsive-form-container" id="collapseTaxa">
-             <div id="main-container">
-                 <input type="hidden" value="values" name="_taxa" id="taxonomy-list" placeholder="taxonomy"
-                        class="form-control ">
-
-                 <div id="jstree-taxonomy" class="demo"></div>
-
-             </div>
-
-         </div>
-     </div>
-     {{/if}}
-     <div class="clearfix"></div>
-     <div id="updateButtons" class="form-actions">
-     <input type="hidden" id="asset-id" value="{{assets.id}}">
-     <input type="hidden" id="asset-type" value="{{assets.type}}">
-     <div class="form-group">
-         <div class="col-sm-offset-2 col-sm-10">
-             <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
-             <input type="reset" value="Reset" class="btn btn-default">
-             <button type="button" id="btn-cancel-update" class="btn btn-default" >{{t "Cancel"}}</button>
-             <input type="hidden" value="{{rxt.shortName}}" name="{{rxt.shortName}}" id="meta-asset-type">
-         </div>
-     </div>
-     </div>
-
-
-
+    <div id='tag-ui-container'>
+        <h2 class="field-title">
+            <a href="#collapseTags" aria-expanded="false" class="collapsing-h2">
+                <i class="cu-btn-exp-col btn-collapsed">{{t "Tags"}}</i>
+            </a>
+        </h2>
+        <div class="responsive-form-container" id="collapseTags">
+            {{> tag-ui-container .}}
+        </div>
+    </div>
+    {{#if taxonomyAvailability}}
+        <div id='taxonomy'>
+            <h2 class="field-title">
+                <a href="#collapseTaxa" aria-expanded="false" class="collapsing-h2">
+                    <i class="cu-btn-exp-col btn-collapsed">{{t "Taxonomy"}}</i>
+                </a>
+            </h2>
+            <div class="responsive-form-container" id="collapseTaxa">
+                {{> taxonomy-browser .}}
+            </div>
+        </div>
+    {{/if}}
+    <div class="clearfix"></div>
+    <div id="updateButtons" class="form-actions">
+        <input type="hidden" id="asset-id" value="{{assets.id}}">
+        <input type="hidden" id="asset-type" value="{{assets.type}}">
+        <div class="form-group">
+            <div class="col-sm-10">
+                <input type="submit" value="Update" class="btn btn-primary" name="editAssetButton" id="editAssetButton">
+                <input type="reset" value="Reset" class="btn btn-default">
+                <button type="button" id="btn-cancel-update" class="btn btn-default">{{t "Cancel"}}</button>
+                <input type="hidden" value="{{rxt.shortName}}" name="{{rxt.shortName}}" id="meta-asset-type">
+            </div>
+        </div>
+    </div>
 </form>

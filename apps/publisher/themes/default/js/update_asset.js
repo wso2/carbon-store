@@ -17,13 +17,10 @@
  *
  */
 
+var appliedTaxonomy = [];
 $(function() {
-    var programmatically = false;
     var URL = caramel.context + '/apis/asset/' + store.publisher.assetId + '/taxonomies?type=' + store.publisher.type;
 
-    var selectedTaxa = [];
-    var originalPath = "";
-    var originalPathAry = [];
     $.ajax({
         url: URL,
         type: 'GET',
@@ -32,31 +29,8 @@ $(function() {
             Accept: "application/json"
         },
         success: function (response) {
-
-            selectedTaxa = response.data;
-
-            for (var i = 0; i < selectedTaxa.length; i++) {
-                var pathList = selectedTaxa[i].split("/");
-                for (var j = 0; j < pathList.length - 1; j++) {
-                    try {
-                        if (j == 0) {
-                            originalPath = pathList[0];
-                            if (originalPathAry.length == 0) {
-                                originalPathAry.push(originalPath);
-                            }
-                        } else {
-                            originalPath += "/" + pathList[j];
-                            originalPathAry.push(originalPath);
-                        }
-                    } catch (e) {
-
-                    }
-                }
-            }
-            originalPathAry = unique(originalPathAry);
-            originalPathAry = originalPathAry.reverse();
-        },
-        error: function () {
+            appliedTaxonomy = response.data;
+            initTaxonomyBrowser(appliedTaxonomy);
         }
     });
 
@@ -68,157 +42,6 @@ $(function() {
         });
         return result;
     }
-
-    var currentNode;
-    var jsTreeView = $('#jstree-taxonomy');
-
-    jsTreeView.jstree({
-        conditionalselect : function (node, event) {
-            var tree = $('#jstree-taxonomy').jstree(true);
-            if (tree.is_leaf(node) || event.toElement.className == "jstree-icon jstree-checkbox" || event.toElement.className == "jstree-icon jstree-checkbox jstree-undetermined") {
-                if (!tree.is_leaf(node)) {
-                    tree.open_all(node);
-                }
-                return true;
-
-            } else {
-                //tree.open_node(node);
-                if (tree.is_open(node)) {
-                    tree.close_node(node);
-                }else {
-                    tree.open_node(node);
-                }
-                return false;
-            }
-
-        },
-        plugins: ["checkbox", "conditionalselect"],
-        core: {
-            data: {
-                animation: 0,
-                check_callback: true,
-                url: function (node) {
-                    // modify url when clicking on tree nodes to load children
-                    if (node.id === '#') {
-                        return caramel.context + '/apis/taxonomies';
-                    } else {
-                        return caramel.context + '/apis/taxonomies?terms=' + node.id + '/children';
-                    }
-                },
-                data: function (node) {
-                    currentNode = node;
-                },
-                success: function (data) {
-
-                    var children;
-                    try {
-                        children = Array.isArray(data[0].children);
-                    } catch (e) {
-
-                    }
-
-                    if (children) {
-                        data[0].id = data[0].elementName;
-                        if (data[0].text == "") {
-                            data[0].text = data[0].elementName;
-                        }
-                        for (var i = 0; i < data[0].children.length; i++) {
-                            data[0].children[i].id = data[0].elementName + "/" + data[0].children[i].elementName;
-                            if (data[0].children[i].text == "") {
-                                data[0].children[i].text = data[0].children[i].elementName;
-                            }
-                        }
-                    } else {
-                        for (var i = 0; i < (data.length); i++) {
-                            data[i].id = currentNode.original.id + "/" + data[i].elementName;
-                            if (data[i].text == "") {
-                                data[i].text = data[i].elementName;
-                            }
-
-                        }
-                    }
-
-                }
-
-            },
-            themes: {
-                dots: true,
-                icons: false
-            }
-        }
-
-    });
-
-
-
-
-    $("#jstree-taxonomy").on("click.jstree", function (e, datax) {
-        programmatically = false;
-
-    });
-    /**
-     * recursively open nodes. finally required nodes are opened, we will check required leaf nodes
-     */
-    $("#jstree-taxonomy").on("after_open.jstree", function (e, datax) {
-        if (programmatically) {
-            datax.instance.open_node(originalPathAry.pop());
-            if (originalPathAry.length == 0) {
-                for (var i = 0; i < selectedTaxa.length; i++) {
-                    datax.instance.check_node(selectedTaxa[i]);
-                }
-            }
-        }
-
-    });
-
-    /**
-     * This method will open root node by default
-     */
-    $("#jstree-taxonomy").on("ready.jstree", function (e, data) {
-        // try to improve using data parameter
-        var tree = $('#jstree-taxonomy').jstree(true);
-        tree.open_node(tree.get_node("#").children);
-        $("#" + tree.get_node("#").children[0]).find('.jstree-ocl').first().remove();
-        $("#" + tree.get_node("#").children[0]).find('> a > .jstree-checkbox').remove()
-
-    });
-
-
-
-    /**
-     * This method will invoked on first load of (root) jstree
-     */
-    $("#jstree-taxonomy").on("loaded.jstree", function (e, datax) {
-        programmatically = true;
-        datax.instance.open_node(originalPathAry.pop());
-
-
-    });
-
-
-    $("#editAssetButton").click(function () {
-        var jsTree = $('#jstree-taxonomy').jstree(true);
-        var checkedNodesList = jsTree.get_checked(true);
-        var pathFromRoot = "";
-        for (var i = 0; i < checkedNodesList.length; i++) {
-            if (jsTree.is_leaf(checkedNodesList[i])) {
-
-                pathFromRoot += checkedNodesList[i].id + ",";
-            }
-        }
-        $("#taxonomy-list")[0].value = pathFromRoot;
-        // var checkedNodes = $('#data').jstree("get_all_checked");
-
-    });
-
-    $("input[type='reset']").on("click", function(event){
-        var jsTree = $('#jstree-taxonomy').jstree(true);
-        jsTree.uncheck_all();
-        for (var i = 0; i < selectedTaxa.length; i++) {
-            jsTree.check_node(selectedTaxa[i]);
-        }
-
-    });
 
     validator.initValidationEvents('form-asset-update',function(){});
     $('#editAssetButton').removeAttr('disabled');
@@ -383,7 +206,16 @@ $(function() {
             }
         });
     });
+
+    $('#editAssetButton').click(function (e) {
+        $('#taxonomy-list')[0].value = selectedTaxonomy.join(',');
+    });
+
+    $('input[type=reset]').click(function (e) {
+        initTaxonomyBrowser(appliedTaxonomy);
+    });
 });
-var showImageFull = function(img){
+
+var showImageFull = function (img) {
     $(img).next().trigger('click');
 };
