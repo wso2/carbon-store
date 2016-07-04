@@ -86,6 +86,7 @@ var loadTaxonomies = function () {
             $(TAXONOMY_DROPDOWN).html(html);
             if ($('#dropdown-button').children().length === 0) {
                 $('#taxonomy-dropdown').clone(true, true).appendTo('#dropdown-button');
+                $('#dropdown-button').find('button').removeClass('btn-default');
             }
         }
     });
@@ -164,7 +165,9 @@ var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
  */
 var initTaxonomyBrowser = function (appliedTaxonomy) {
     $(TAXONOMY_BROWSER).hide();
-    $('#taxonomy-list')[0].value = '';
+    if ($('#taxonomy-list')[0]) {
+        $('#taxonomy-list')[0].value = '';
+    }
     $(SELECTED_CONTENT).empty();
     selectedTaxonomy.length = 0;
 
@@ -282,34 +285,58 @@ $(function () {
         $(BREADCRUMB_SELECTOR).html($(BREADCRUMB_SELECTOR + ' > li').first());
         $(COLUMN_SELECTOR + ' ul > li').each(function () {
             if ($(this).hasClass('active')) {
-                displayValue.push($('a', this).text());
+                // displayValue.push($('a', this).text());
                 $(BREADCRUMB_SELECTOR).append('<li>' + $('a', this).html() + '</li>');
             }
         });
 
         //Appending the add button to leaf nodes
         if (selectedTaxonomy.indexOf($(this).attr('href')) < 0) {
-            elemParent.append(' <button class="btn btn-add"><span>Add</span>'
-                + '<span class="icon fw fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
-                + '<i class="fw fw-circle-outline fw-stack-2x"></i></span></button>');
+            elemParent.append(' <button class="btn btn-add">'
+                + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
+                + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
+        } else {
+            elemParent.append(' <button class="btn btn-remove">'
+                + '<span class="icon fw-stack"><i class="fw fw-minus fw-stack-1x"></i>'
+                + '<i class="fw fw-ring fw-stack-2x"></i></span>  Remove</button>');
         }
     });
 
-    $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button', function (e) {
+    $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button.btn-add', function (e) {
         e.preventDefault();
         var selectedValue = $(this).prev('a').attr('href');
+        $(BREADCRUMB_SELECTOR + ' li').each(function () {
+            displayValue.push($(this).text());
+        });
+
         if (selectedTaxonomy.indexOf(selectedValue) < 0) {
             selectedTaxonomy.push(selectedValue);
             $(SELECTED_CONTENT).append(
                 '<div data-value="' + selectedValue + '"><span>' + displayValue.join(' > ') + '</span>'
                 + '<button type="button" class="btn btn-danger btn-remove">'
                 + '<i class="fw fw-cancel"></i></span></button></div>');
+            displayValue.length = 0;
         }
 
         if (selectedTaxonomy.length === 1) {
             $('.message-info').hide();
             $(SELECTED_CONTAINER).show();
         }
+        $(this).closest('li').append(' <button class="btn btn-remove">'
+            + '<span class="icon fw-stack"><i class="fw fw-minus fw-stack-1x"></i>'
+            + '<i class="fw fw-ring fw-stack-2x"></i></span>  Remove</button>');
+        $(this).remove();
+
+    });
+
+    $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button.btn-remove', function (e) {
+        e.preventDefault();
+        var selectedValue = $(this).prev('a').attr('href');
+        $('[data-value="' + selectedValue + '"] > button').trigger('click');
+
+        $(this).closest('li').append(' <button class="btn btn-add">'
+            + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
+            + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
         $(this).remove();
     });
 
