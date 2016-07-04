@@ -443,7 +443,7 @@ var displayPaths = function (element) {
     }
 
     setSelectedPath(pathArray[pathArray.length - 1], breadcrumbTaxonomy, breadcrumbIdsTaxonomy, DIV_HIDDEN_PREFIX +
-        $(element).closest('a').attr('data-taxonomyId'), element,taxonomyName);
+        $(element).closest('a').attr('data-taxonomyId'), element,taxonomyName,pathArray.length);
 
     breadcrumbTaxonomy = "";
     breadcrumbIdsTaxonomy = "";
@@ -463,7 +463,7 @@ var displayPaths = function (element) {
 
 
     $(element).parents('.has-sub').last().addClass("disabled");
-    $(element).parents('.has-sub').last().find('a').attr('onclick', 'onclickNothing();return false;');
+    // $(element).parents('.has-sub').last().find('a').attr('onclick', 'onclickNothing();return false;');
     $(element).parents('.has-sub').last().removeClass("has-sub");
 };
 
@@ -576,6 +576,7 @@ var editClickedElement = function (element) {
  * This will invoke query update method
  * @param element
  */
+var updated = false;
 var updateTaxonomy = function (element) {
 
     var updateData = {
@@ -605,17 +606,31 @@ var updateTaxonomy = function (element) {
     }
 
 
-    var tempEle = generateExpandedElements(breadcrumbTaxonomy);
+    var tempEle = generateExpandedElements(breadcrumbTaxonomy,'-');
+
 
     $(element).closest('.filter-tag').attr('id', breadcrumbIdsTaxonomy);
     $(element).closest('.filter-tag').attr('idpath', breadcrumbTaxonomy);
-    $(element).closest('.filter-tag').find('.value-expand').html(tempEle);
+    $(element).closest('.filter-tag').find('.value-expand').html(tempEle.find('ul').first());
     $(element).closest('.filter-tag').find('.value-full').html(breadcrumbTaxonomy.replaceAll('-', '/'));
     $(element).closest('.filter-tag').find('.value-truncate').html(pathArray[pathArray.length - 1]);
+    if (pathArray.length > 2) {
+        $(element).closest('.filter-tag').find('.value-truncate').text("../" + pathArray[pathArray.length - 1]);
+    } else {
+        $(element).closest('.filter-tag').find('.value-truncate').text(pathArray[pathArray.length - 1]);
+    }
+
+    $(element).closest('.filter-tag').find('.value-truncate').attr('data-original-title',  breadcrumbTaxonomy.replaceAll('-', '/'));
 
     breadcrumbIdsTaxonomy = "";
     breadcrumbTaxonomy = "";
-    // $(element).closest('.filter-tag').removeClass("edit");
+    updated =true;
+
+
+    $(element).closest('.filter-tag').removeClass("edit");
+    $(element).closest('.filter-tag').find('.value-edit').find('ul').first().remove();
+
+    return false;
 };
 
 /**
@@ -623,12 +638,12 @@ var updateTaxonomy = function (element) {
  * @param breadcrumbTaxonomy
  * @returns html element
  */
-var generateExpandedElements = function (breadcrumbTaxonomy) {
+var generateExpandedElements = function (breadcrumbTaxonomy,parameter) {
     var newUl, newLi, tempEle;
-    var pathArray = breadcrumbTaxonomy.split('-');
+    var pathArray = breadcrumbTaxonomy.split(parameter);
     // creating ul,li markup - already selected
     for (var k = pathArray.length - 1; k >= 0; k--) {
-        newLi = $('<li/>').append(pathArray[k]);
+        newLi = $('<li/>').attr({'data-value':pathArray[k]}).append(pathArray[k]);
         tempEle = newLi.append(tempEle);
         newUl = $('<ul/>').append(tempEle);
         tempEle = newUl;
@@ -644,7 +659,7 @@ var generateExpandedElements = function (breadcrumbTaxonomy) {
  * @param taxonomyId
  * @param originalElement
  */
-var setSelectedPath = function (element, breadcrumbTaxonomy, breadcrumbIdsTaxonomy, taxonomyId, originalElement,taxonomyName) {
+var setSelectedPath = function (element, breadcrumbTaxonomy, breadcrumbIdsTaxonomy, taxonomyId, originalElement,taxonomyName,pathArrayLength) {
 
     var divFilterTag = $('<div/>').attr({
         id: breadcrumbIdsTaxonomy,
@@ -653,7 +668,8 @@ var setSelectedPath = function (element, breadcrumbTaxonomy, breadcrumbIdsTaxono
         class: 'filter-tag'
     });
 
-    var tempEle = generateExpandedElements(breadcrumbTaxonomy);
+    var tempEle = generateExpandedElements(breadcrumbTaxonomy,'-');
+    var elementText = (pathArrayLength > 2) ? ".. /" + element : "&emsp;" + element;
 
     divFilterTag.append('<span class="value value-name">' + taxonomyName + '</span><span class="actions">'
         + '<button type="button" class="btn btn-secondary btn-cancel" onclick="onClickHideBock(this);" data-placement="left" data-toggle="tooltip" title="" data-original-title="Cancel">'
@@ -673,7 +689,7 @@ var setSelectedPath = function (element, breadcrumbTaxonomy, breadcrumbIdsTaxono
         + '</span>'
         + '</button>'
         + '</span>'
-        + '<span class="value value-truncate" data-placement="top" data-toggle="tooltip" title=' + breadcrumbTaxonomy.replaceAll('-', '/') + ' data-original-title="">' + ".. /" + element + '</span>'
+        + '<span class="value value-truncate" data-placement="top" data-toggle="tooltip" data-original-title="' + breadcrumbTaxonomy.replaceAll('-', '/') + '" data-original-title="">' + elementText + '</span>'
         + '<span class="value value-full">' + breadcrumbTaxonomy.replaceAll('-', '/') + '</span>'
         + '<span class="value value-expand"> <ul>' + $(tempEle).html() + "</ul>"
         + '</span>');
@@ -703,13 +719,9 @@ var onClickMenuGenerate = function (element) {
     var url;
     if ($(element).attr('children') || isFirstLevel(element)) {
         if (isFirstLevel(element)) {
-            /*url = caramel.context + '/apis/taxonomies?name=' + $(element).attr('taxonomy') +
-             '&artifactType=' + assetType + resolveDomain();*/
             url = caramel.context + '/apis/taxonomies/' + $(element).attr('taxonomy') + '?' + resolveDomain();
 
         } else {
-            /*  url = caramel.context + '/apis/taxonomies?name=' + $(element).attr('taxonomy') +
-             '&artifactType=' + assetType + '&terms=' + $(element).attr('id').replaceAll('-', '/') + "/children" + resolveDomain();*/
             url = caramel.context + '/apis/taxonomies/' + $(element).attr('taxonomy') + '/' +
                 $(element).attr('id').replaceAll('-', '/')  + '?children=true' + '&' +  resolveDomain();
         }
@@ -737,7 +749,10 @@ var onClickMenuGenerate = function (element) {
             }
         });
     }
+
+
     collapseAndExpandElements(element);
+
 };
 
 /**
@@ -763,7 +778,6 @@ var collapseAndExpandElements = function (element) {
 var recursiveTaxonomyLoad = function (child, data) {
     var ulTag = $('<ul/>').attr({id: $(child).attr('elementName')});
     var liTag = $('<li/>');
-
     for (var i = 0; i < data.length; i++) {
 
         liTag = $('<li/>');
@@ -793,28 +807,47 @@ var recursiveTaxonomyLoad = function (child, data) {
             });
         }
 
-        var addButton = $('<button/>').attr({
-            type: 'button',
-            class: 'btn btn-primary btn-add',
-            'data-toggle': 'tooltip',
-            title: 'Add Filter',
-            onclick: 'displayPaths(this);return false;'
-        });
+        // if this is update process
+        if ($(child).closest('span').length > 0) {
+            var updateButton = $('<button/>').attr({
+                type: 'button',
+                class: 'btn btn-primary btn-update',
+                'data-toggle': 'tooltip',
+                title: 'Update Filter',
+                onclick: 'updateTaxonomy(this);return false;'
+            });
+
+            var updateButtonSpan = $('<span/>').attr({class: 'icon fw fw-stack'});
+            var ispan1xUpdate = $('<i/>').attr({class: 'fw fw-stack-1x fw-refresh'});
+            var ispan2xUpdate = $('<i/>').attr({class: 'fw fw-circle-outline fw-stack-2x'});
+            updateButtonSpan.append(ispan1xUpdate);
+            updateButtonSpan.append(ispan2xUpdate);
+            updateButton.append(updateButtonSpan);
+
+            innerAnchorTag.append(updateButton);
+        } else {
+            var addButton = $('<button/>').attr({
+                type: 'button',
+                class: 'btn btn-primary btn-add',
+                'data-toggle': 'tooltip',
+                title: 'Add Filter',
+                onclick: 'displayPaths(this);return false;'
+            });
 
 
-        var buttonSpan = $('<span/>').attr({class: 'icon fw fw-stack'});
-        var ispan1x = $('<i/>').attr({class: 'fw fw-add fw-stack-1x'});
-        var ispan2x = $('<i/>').attr({class: 'fw fw-circle-outline fw-stack-2x'});
-        buttonSpan.append(ispan1x);
-        buttonSpan.append(ispan2x);
+            var buttonSpan = $('<span/>').attr({class: 'icon fw fw-stack'});
+            var ispan1x = $('<i/>').attr({class: 'fw fw-add fw-stack-1x'});
+            var ispan2x = $('<i/>').attr({class: 'fw fw-circle-outline fw-stack-2x'});
+            buttonSpan.append(ispan1x);
+            buttonSpan.append(ispan2x);
 
-        addButton.append(buttonSpan);
+            addButton.append(buttonSpan);
 
-        innerAnchorTag.append(addButton);
+            innerAnchorTag.append(addButton);
+        }
+
         innerAnchorTag.append(data[i].label);
         liTag.append(innerAnchorTag);
-
-
         ulTag.append(liTag);
         $(child).parent().append(ulTag);
 
@@ -829,53 +862,53 @@ var affixOffset = 50,
     taxonomyExpandView = $('#taxonomy-expand-view');
 
 $(document).ready(function () {
-    //TODO : remove this
+    
+    (parseInt(store.listAssetsCount) || parseInt(store.assetCount) ) ? assetAvailability = true :
+        assetAvailability = false;
+    
     if (window.location.href.indexOf("list") < 0 && window.location.href.indexOf("top-assets") < 0) {
         $("#taxonomy-section").hide();
     }
 
-    if (store.taxonomyAvailability) {
-        {
-            (store.asset) ? assetType = store.asset.type : assetType = 'all';
-            // first load of basic taxonomies
-            $.ajax({
-                url: caramel.context + '/apis/taxonomies?assetType=' + assetType + '&' + resolveDomain(),
-                type: 'GET',
-                async: false,
-                headers: {
-                    Accept: "application/json"
-                },
-                success: function (data) {
-                    if (!data[0].name) {
-                        $("#taxonomy-section").hide();
-                    }
-                    formatTaxonomyData(data);
-                },
-                error: function () {
+    if (store.taxonomyAvailability && assetAvailability) {
 
+        $("#taxonomy-section").show();
+
+        (store.asset) ? assetType = store.asset.type : assetType = 'all';
+        // first load of basic taxonomies
+        $.ajax({
+            url: caramel.context + '/apis/taxonomies?assetType=' + assetType + '&' + resolveDomain(),
+            type: 'GET',
+            async: false,
+            headers: {
+                Accept: "application/json"
+            },
+            success: function (data) {
+                if (!data[0].name) {
+                    $("#taxonomy-section").hide();
+                }
+                formatTaxonomyData(data);
+            },
+            error: function () {
+
+            }
+        });
+
+        $("[data-toggle=popover]").popover();
+        if ($(document).height() - $(window).height() > affixOffset) {
+            $(document).scroll(function () {
+                if ($(document).scrollTop() >= ( affixOffset + 20)) {
+                    $('#navigation-container').addClass("affix");
+                } else {
+                    $('#navigation-container').removeClass("affix");
                 }
             });
-
-            $("[data-toggle=popover]").popover();
-            if ($(document).height() - $(window).height() > affixOffset) {
-                $(document).scroll(function () {
-                    if ($(document).scrollTop() >= ( affixOffset + 20)) {
-                        $('#navigation-container').addClass("affix");
-                    } else {
-                        $('#navigation-container').removeClass("affix");
-                    }
-                });
-            }
-
-            glbTaxoInstance = $(".taxonomy #accordion1").clone();
         }
-    }
 
-    if (store.assetCount > 0) {
-        assetAvailability = true;
-    } else {
-        assetAvailability = false;
+        glbTaxoInstance = $(".taxonomy #accordion1").clone();
     }
+    
+    (store.assetCount > 0) ? assetAvailability = true : assetAvailability = false;
 
 });
 
@@ -904,15 +937,57 @@ $('body').on('click', '#contract-taxonomy', function () {
 
 $('body').on('click', '.taxonomy ul.nav li a', function () {
     $(this).closest('.taxonomy').find('li.active').removeClass('active');
-    $(this).closest('li').addClass('active');
+
+    if (!isFirstLevel($(this))) {
+        $(this).closest('li').addClass('active');
+    }
 });
 
 
 $('body').on('click', '.taxonomy .filter-tag .value', function (e) {
     if (!$(this).closest('.filter-tag').hasClass('edit')) {
-        $(this).closest('.filter-tag').toggleClass('expand');
+        var truncateElement = $(e.currentTarget).closest('div').attr('idpath').split('-');
+
+        if ($("#taxonomy-section").is(':visible')) {
+            if (truncateElement.length > 2) { // restrict expanda more than 2 levels
+                $(this).closest('.filter-tag').toggleClass('expand');
+            }
+        } else {
+            $(this).closest('.filter-tag').toggleClass('expand');
+        }
+
+        if ($("#taxonomy-section").is(':visible')) {
+            var valText;
+            if ($(this).hasClass("value-truncate")) {
+                valText = $(this).siblings(".value-name").text();
+            } else {
+                valText = $(this).text();
+            }
+
+            if ($($(this).siblings('.value-expand').find('li').first()[0]).attr('data-value') === valText) {
+                var newHtml;
+                //since has class not working here
+                if ($(this).attr('class').indexOf('value-name') > 0) {
+                    newHtml = $($(this).siblings('.value-expand').find('li').first()[0]).html().split($(this).
+                    text())[1];
+
+                } else {
+                    newHtml = $($(this).siblings('.value-expand').find('li').first()[0]).html().split($(this).
+                    siblings('.value-name').text())[1];
+                }
+
+                $($(this).siblings('.value-expand').find('li').first()[0]).html(newHtml);
+            }
+        } else {
+            if (!updated) {
+                $($(this).siblings('.value-expand')).html(generateExpandedElements($(this).html(), "/"));
+            }
+            updated = false;
+        }
+
     }
 });
+
 
 $('.taxonomy ul.nav li a').each(function () {
     if ($(this).closest('li').hasClass('active')) {
