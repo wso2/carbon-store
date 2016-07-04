@@ -26,11 +26,11 @@ var format = function(data){
 		data.artifacts[i].attributes['overview_createdtime'] = newDate.toUTCString();
 	}
 	return data;
-}
+};
 
 var resources = function(){
 	return {
-		js:['select2.min.js','tags/tags-common.js','tags/tags-init-view-asset.js','view-asset.js','taxonomy/jstree.min.js','taxonomy-view-asset.js'],
-		css:['select2.min.css','taxonomy/style.min.css']
+		js:['select2.min.js','tags/tags-common.js','tags/tags-init-view-asset.js','view-asset.js','taxonomy-view-asset.js'],
+		css:['select2.min.css','taxonomy-browser.css']
 	}
 };

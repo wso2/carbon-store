@@ -18,8 +18,8 @@
  */
 var resources = function (page, meta) {
 	return {
-		js:['libs/jquery.form.min.js','publisher-utils.js','update_asset.js','date_picker/datepicker.js','select2.min.js','tags/tags-common.js','tags/tags-init-update-asset.js','taxonomy/jstree.min.js'],
-		css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css','select2.min.css','taxonomy/style.min.css'],
+		js:['libs/jquery.form.min.js','publisher-utils.js','taxonomy-browser.js','update_asset.js','date_picker/datepicker.js','select2.min.js','tags/tags-common.js','tags/tags-init-update-asset.js'],
+		css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css','select2.min.css', 'taxonomy-browser.css'],
 		code: ['publisher.assets.hbs','publisher.lifecycle.meta.hbs']
 	};
 };

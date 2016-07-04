@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2005-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -19,8 +19,8 @@
 
 var resources = function (page, meta) {
     return {
-       	js:['libs/jquery.form.min.js','publisher-utils.js','create_asset.js','jquery.cookie.js','date_picker/datepicker.js','select2.min.js','tags/tags-common.js','tags/tags-init-create-asset.js','taxonomy/jstree.min.js'],
-       	css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css','select2.min.css','taxonomy/style.min.css'],
+       	js:['libs/jquery.form.min.js','publisher-utils.js','taxonomy-browser.js','create_asset.js','jquery.cookie.js','date_picker/datepicker.js','select2.min.js','tags/tags-common.js','tags/tags-init-create-asset.js'],
+       	css:['bootstrap-select.min.css','datepick/smoothness.datepick.css','date_picker/datepicker/base.css', 'date_picker/datepicker/clean.css','select2.min.css','taxonomy-browser.css'],
        	code: ['publisher.assets.hbs']
     };
 };
