@@ -288,6 +288,7 @@ var register = function (username, password, claims) {
     if (opts.register) {
         opts.register(user, password, session);
     }
+    event.emit('userRegister', usr.tenantId, user);
     //login(username, password);
 };
 /**
