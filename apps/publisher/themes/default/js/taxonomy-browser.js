@@ -165,7 +165,7 @@ var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
  */
 var initTaxonomyBrowser = function (appliedTaxonomy) {
     $(TAXONOMY_BROWSER).hide();
-    if($('#taxonomy-list')[0]) {
+    if ($('#taxonomy-list')[0]) {
         $('#taxonomy-list')[0].value = '';
     }
     $(SELECTED_CONTENT).empty();
