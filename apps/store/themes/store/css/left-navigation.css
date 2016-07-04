@@ -281,7 +281,8 @@ nav.navigation .second_level > .left-menu-item {
 }
 
 .taxonomy ul.nav {
-    padding: 0 10px;
+    margin-top: 10px;
+    /*padding: 0 10px;*/
 }
 
 .taxonomy ul.nav li {
@@ -295,7 +296,21 @@ nav.navigation .second_level > .left-menu-item {
 }
 
 .taxonomy ul.nav > li {
-    margin-bottom: 5px !important;
+    margin: 3px 5px;
+}
+
+.taxonomy ul.nav > li.disabled {
+    background: #555555;
+    cursor: default;
+    margin: 3px 10px;
+}
+
+.taxonomy ul.nav > li.disabled > a,
+.taxonomy ul.nav > li.active.disabled > a,
+.taxonomy ul.nav > li.active.disabled:hover > a {
+    background: #555555;
+    color: #fff !important;
+    display: none;
 }
 
 .taxonomy ul.nav > li ul {
@@ -307,13 +322,13 @@ nav.navigation .second_level > .left-menu-item {
 }
 
 .taxonomy ul.nav > li .filter-tag .value-expand ul,
-.taxonomy ul.nav > li .filter-tag .value-edit ul {
+.taxonomy ul.nav > li .filter-tag .value-edit > ul {
     display: block;
 }
 
 .taxonomy ul.nav > li[aria-expanded="true"] {
-    background: #222731;
-    padding: 5px 0;
+    /*background: #222731;*/
+    /*    padding: 5px 0;*/
 }
 
 .taxonomy ul.nav > li a {
@@ -341,11 +356,11 @@ nav.navigation .second_level > .left-menu-item {
 }
 
 .taxonomy ul.nav > li.has-sub > a {
-    padding: 3px 55px 3px 7px;
+    padding: 3px 55px 3px 5px;
 }
 
 .taxonomy ul.nav li > a > .btn {
-    padding: 0px 3px 2px;
+    padding: 1px 3px 3px;
     position: absolute;
     right: 0;
     top: 0;
@@ -382,7 +397,7 @@ nav.navigation .second_level > .left-menu-item {
     content: "\e685";
     vertical-align: text-top;
     display: inline-block;
-    top: 4px;
+    top: 3px;
     right: 26px;
     position: absolute;
 }
@@ -425,7 +440,6 @@ nav.navigation .second_level > .left-menu-item {
 }
 
 .taxonomy .filter-tag {
-    background-color: #868686;
     margin-bottom: 5px;
     cursor: pointer;
     position: relative;
@@ -440,7 +454,8 @@ nav.navigation .second_level > .left-menu-item {
 .taxonomy .filter-tag.expand > .value-expand,
 .taxonomy .filter-tag.edit > .value-full,
 .taxonomy .filter-tag > .value-truncate,
-.sidebar-wrapper.taxonomy-expand-view .taxonomy .filter-tag > .value-full {
+.sidebar-wrapper.taxonomy-expand-view .taxonomy .filter-tag > .value-full,
+.taxonomy .filter-tag .value-name {
     display: block;
 }
 
@@ -452,12 +467,15 @@ nav.navigation .second_level > .left-menu-item {
 .taxonomy .filter-tag.expand > .value-full,
 .sidebar-wrapper.taxonomy-expand-view .taxonomy .filter-tag.expand > .value-full,
 .taxonomy .filter-tag.expand > .value-truncate,
-.taxonomy .filter-tag.edit > .value-edit a > .btn-remove {
+.taxonomy .filter-tag.edit > .value-edit a > .btn-remove,
+.sidebar-wrapper.taxonomy-expand-view .taxonomy .filter-tag .value-name {
     display: none;
 }
 
 .taxonomy .filter-tag:hover,
-.taxonomy .filter-tag[aria-expanded="true"] {
+.taxonomy .filter-tag[aria-expanded="true"],
+.taxonomy .filter-tag.edit > .value-edit,
+.taxonomy .filter-tag > .value-name {
     background-color: #555555;
 }
 
@@ -481,7 +499,7 @@ nav.navigation .second_level > .left-menu-item {
 
 .taxonomy .filter-tag > .actions > .btn {
     font-size: 7px;
-    padding: 5px;
+    padding: 6px 5px 4px;
 }
 
 .sidebar-wrapper.taxonomy-expand-view {
@@ -506,7 +524,7 @@ nav.navigation .second_level > .left-menu-item {
     margin-left: 15px;
 }
 
-.taxonomy .filter-tag .btn-edit,
+.taxonomy .filter-tag.edit .btn-edit,
 .taxonomy .filter-tag .btn-cancel,
 .sidebar-wrapper.taxonomy-expand-view .taxonomy .filter-tag.edit .btn-edit {
     display: none;
@@ -712,8 +730,6 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 }
 .tags-wrapper{margin-top: 15px;}
 .tag-title {
-    background-color: #f4f4f4;
-    border: 1px solid #e9e9e9;
     height: 40px;
     padding-top: 5px;
     width: 200px;
@@ -727,10 +743,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     width: 200px;
     padding-left: 10px;
     line-height: 30px;
-    border-right: 1px solid #e9e9e9;
-    border-bottom: 2px solid #e9e9e9;
     padding-bottom: 15px;
-    background-color: #FDFDFD;
     padding-top: 10px;
     float:left;
 }
@@ -742,14 +755,15 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     margin-right: 5px;
     margin-bottom: 5px;
     cursor: pointer;
-    border: 1px solid #E4E3E3;
+    border: 1px solid #2C313B;
+    background: #2C313B;
     font-size: 12px;
-    color: #333;
+    color: #EFEFEF;
 }
 
 .tag-content > a > span:hover {
-    background-color: #C9E4FF;
-    border: 1px solid #C9E4FF;
+    background-color: #535B6B;
+    border: 1px solid #2C313B;
 }
 
 .tag-more {

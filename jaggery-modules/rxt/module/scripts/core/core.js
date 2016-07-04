@@ -593,7 +593,23 @@ var core = {};
         return '';
     };
     /**
-     * Returns the name of the taxoomy that is attached to assets of a given RXT type
+     * Returns the  taxonomy availability that is attached to assets of a given RXT type
+     * If no taxonomy is specified then an empty string is returned.
+     * Note: This property is specific to the ES and is defined in the configuration callback
+     * @param  {String} type  The RXT type
+     * @return {String}      The name of a taxonomy which is attached to all asset instances of an RXT type
+     */
+    RxtManager.prototype.getTaxonomyAvailability = function(type) {
+        var rxtDefinition = this.rxtMap[type];
+        if (rxtDefinition) {
+            if (rxtDefinition.taxonomies) {
+                return 'true';
+            }
+        }
+        return '';
+    };
+    /**
+     * Returns the name of the taxonomy that is attached to assets of a given RXT type
      * If no taxonomy is specified then an empty string is returned.
      * Note: This property is specific to the ES and is defined in the configuration callback
      * @param  {String} type  The RXT type
@@ -602,17 +618,20 @@ var core = {};
      */
     RxtManager.prototype.getTaxonomies = function (type) {
         var rxtDefinition = this.rxtMap[type];
-        /*   if (!rxtDefinition) {
-         log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ');
-         throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ';
-         }*/
-        // this used to identify is there any taxonomy available for asset type
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ');
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ';
+        }
         if (rxtDefinition) {
             if (rxtDefinition.taxonomies && (rxtDefinition.taxonomies[0]) && (rxtDefinition.taxonomies[0].taxonomies)) {
                 return rxtDefinition.taxonomies[0].taxonomies || '';
             }
         }
+        if (log.isDebugEnabled()) {
+            log.debug('Unable to locate a taxonomy property in RXT in order retrieve default taxonomy name for ' + type);
+        }
         return '';
+
     };
     /**
      * Returns the action that is invoked when a lifecycle is first attached to an asset of a given RXT type.

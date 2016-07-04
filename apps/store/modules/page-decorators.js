@@ -611,13 +611,19 @@ var pageDecorators = {};
         page.searchHistory = {};
         page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
     };
-    pageDecorators.taxonomyAvailability = function(ctx, page, utils) {
-        var app = require('rxt').app;
-        if (app.isTaxonomyEnabled()) {
+    /**
+     * This method will check for taxonomies availability in rxt definition
+     * @param ctx request meta data
+     * @param page page data
+     */
+    pageDecorators.taxonomyAvailability = function (ctx, page) {
+        var rxtModule = require('rxt');
+        var coreApi = rxtModule.core;
+        var rxtManager = coreApi.rxtManager(ctx.tenantId);
+
+        (!rxtManager.getTaxonomyAvailability(ctx.assetType)) ? page.taxonomyAvailability = false :
             page.taxonomyAvailability = true;
-        } else {
-            page.taxonomyAvailability = false;
-        }
+
     };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;

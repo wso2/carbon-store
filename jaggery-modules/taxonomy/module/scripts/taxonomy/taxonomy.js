@@ -42,7 +42,23 @@ var paginationBean = Packages.org.wso2.carbon.governance.taxonomy.beans.Paginati
             paginationBean.setEndNode(endNode);
             return JSON.parse(TaxonomyService.query(queryBean,paginationBean));
         } catch (e) {
-            log.error('error while initializing taxonomy osigi service through store taxonomy module', e);
+            log.error('error while quering taxonomy osigi service through store taxonomy module', e);
+        }
+    };
+    /**
+     * This method is use to get the taxonomy by rootId.
+     * @param query search query : asset Type
+     * @param assetType asset Type name
+     * @returns  Returns the set of taxonomy list which admin defined
+     */
+    taxonomy.getTaxonomyName = function (query,assetType) {
+        try {
+            queryBean = new queryBean();
+            queryBean.setAssetType(assetType);
+            queryBean.setQuery(query);
+            return JSON.parse(TaxonomyService.getTaxonomyName(queryBean));
+        } catch (e) {
+            log.error('error while quering taxonomy name taxonomy osigi service through store taxonomy module', e);
         }
     };
 
