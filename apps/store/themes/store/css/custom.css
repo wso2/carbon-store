@@ -1040,6 +1040,11 @@ a.more:focus {
 .btn-collapsed {
     background:url('../img/icons/wso2-logo-small.png') no-repeat;
 }
+
+.es-content-block{
+    padding-left: 200px;
+}
+
 .es-nav-tabs > li.active > a, .es-nav-tabs > li.active > a:hover, .es-nav-tabs > li.active > a:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
