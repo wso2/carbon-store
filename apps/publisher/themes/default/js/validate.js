@@ -19,6 +19,8 @@
 var validator = {};
 validator.validateMethods = {};
 validator.customMethods = [];
+validator.VALIDATED_ELEMENTS = 'input[type="text"],input[type="file"],input[type="password"],input[type="checkbox"],textarea,select';
+validator.VALIDATED_EVENTS ="focus blur keyup change";
 /*
  The function add a method to the validation queue
  @validation: key for the method
@@ -42,7 +44,14 @@ validator.addCustomMethod = function (callback) {
 validator.addDefaultMethods = function () {
     //Add required field validation to text, password and textarea elements.
     validator.addMethod('required', function (element) {
-        if ($(element).val().length > 0) {
+        var elementType = $(element).attr('type');
+        var requirementFilled = false;
+        if (elementType == "checkbox") {
+            requirementFilled = $(element).is(":checked");
+        } else if (elementType == "text" || elementType == "textarea" || elementType == "password" || $(element).prop("tagName") === "SELECT") {
+            requirementFilled = $(element).val().length > 0;
+        }
+        if (requirementFilled) {
             return "";
         } else {
             return $(element).attr('data-validate-required') || "Please enter a value.";
@@ -58,7 +67,6 @@ validator.addDefaultMethods = function () {
             return $(element).attr('data-validate-regexp') ||
                 "Doesn't satisfy regular expression:" + $(element).attr('data-regexp');
         }
-
     });
 };
 /*
@@ -91,9 +99,9 @@ validator.addDefaultMethods = function () {
         }
     });
  */
-validator.validateCustom = function(){
+validator.validateCustom = function () {
     var noErrors = true;
-    for (var i = 0; i < validator.customMethods.length; i++){
+    for (var i = 0; i < validator.customMethods.length; i++) {
         var validationResult = validator.customMethods[i]();
         var elem = validationResult.element;
         var element;
@@ -103,9 +111,9 @@ validator.validateCustom = function(){
             element = $(elem);
         }
         if (validationResult.message != "") {
-            validator.showErrors(element,validationResult.message);
+            validator.showErrors(element, validationResult.message);
             noErrors = false;
-        } else{
+        } else {
             element.removeClass("error-field");
             element.next().remove();
         }
@@ -166,21 +174,21 @@ validator.validate = function (element) {
             }
         }
     }
-    validator.showErrors(element,errorMessage);
+    validator.showErrors(element, errorMessage);
     return errorMessage.length <= 0;
 };
 /*
  The function removes the validation events. ( Not use within the validate object. It can be use externally. )
  @form: form to do the validations on
  */
-validator.removeValidationEvents = function(form){
+validator.removeValidationEvents = function (form) {
     var mainForm;
     if (typeof  form === "object" && form instanceof jQuery) {
         mainForm = form;
     } else {
         mainForm = $(form);
     }
-    mainForm.off('focus blur keyup change', '**');
+    mainForm.off(validator.VALIDATED_EVENTS, '**');
     $('.error').remove();
     $('.error-field').removeClass("error-field");
 };
@@ -190,12 +198,12 @@ validator.removeValidationEvents = function(form){
  @submitCallback: execute a custom method to override the behavior when form submitting.
  */
 validator.initValidationEvents = function (form, submitCallback) {
-    var $form = typeof form === "string" ? $('#' + form) : form; 
-    $form.on('blur keyup change', 'input[type="text"],input[type="file"],input[type="password"],textarea', function (e) {
+    var $form = typeof form === "string" ? $('#' + form) : form;
+    $form.on(validator.VALIDATED_EVENTS, validator.VALIDATED_ELEMENTS, function (e) {
         var element = e.target;
         validator.validate(element);
     });
-    if(!submitCallback){
+    if (!submitCallback) {
         $form.submit(function (e) {
             var formIsValid = validator.isValidForm($form);
             if (!formIsValid) {
@@ -203,7 +211,7 @@ validator.initValidationEvents = function (form, submitCallback) {
                 e.preventDefault();
             }
         });
-    }else{
+    } else {
         submitCallback();
     }
 };
@@ -215,7 +223,7 @@ validator.initValidationEvents = function (form, submitCallback) {
 validator.isValidForm = function (form) {
     var $form = typeof form === "string" ? $('#' + form) : form;
     var formIsValid = true;
-    $('input[type="text"],input[type="file"],input[type="password"],textarea,select', $form).each(function () {
+    $(validator.VALIDATED_ELEMENTS, $form).each(function () {
         var fieldValid = validator.validate(this);
         formIsValid = formIsValid && fieldValid;
     });
