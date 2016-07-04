@@ -24,7 +24,13 @@ require('/modules/store.js').exec(function(ctx){
 	var ui = require('rxt').ui;
 	var refererHeader = ctx.request.getHeader('referer');
 	var page = ui.buildPage(ctx.session,ctx.request);
-	page.meta.referer = require('utils').request.getURLPath(refererHeader);
+	ignoreReferer = request.getParameter("ignoreReferer");
+
+	if (!ignoreReferer) {
+		page.meta.referer = require('utils').request.getURLPath(refererHeader);
+	} else {
+		page.meta.referer = null;
+	}
 	caramel.render(page);
 },request,response,session);
 %>
