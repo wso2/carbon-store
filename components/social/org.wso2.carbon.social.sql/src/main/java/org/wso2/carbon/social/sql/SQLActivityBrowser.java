@@ -57,6 +57,13 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			+ Constants.SOCIAL_RATING_CACHE_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + "= ?";
 
+	public static final String USER_COMMENT_SELECT_SQL = "SELECT "
+			+ Constants.BODY_COLUMN + ","
+			+ Constants.ID_COLUMN + " FROM "
+			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
+			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
+			+ Constants.USER_COLUMN + " = ? ";
+
 	public static final String TOP_ASSETS_SELECT_SQL = "SELECT "
 			+ Constants.RATING_TOTAL + "," + Constants.RATING_COUNT + ","
 			+ Constants.CONTEXT_ID_COLUMN + "  FROM "
@@ -64,9 +71,15 @@ public class SQLActivityBrowser implements ActivityBrowser {
 
 	public static final String TOP_COMMENTS_SELECT_SQL = "SELECT "
 			+ Constants.BODY_COLUMN + " FROM "
-			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + "WHERE "
+			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
 			+ Constants.LIKES_COLUMN + " > ?";
+
+	public static final String IS_REVIEWED_SELECT_SQL = "SELECT "
+			+ Constants.BODY_COLUMN + " FROM "
+			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
+			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
+			+ Constants.USER_COLUMN + " = ?";
 
 	public static final String SELECT_LIKE_STATUS = "SELECT "
 			+ Constants.ID_COLUMN + " FROM "
@@ -119,9 +132,12 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				resultSet.close();
 				if (total != 0) {
 					JsonObject object = new JsonObject();
-					object.addProperty(Constants.RATING, (double) total / count);
+					double average = (double) total / count;
+					object.addProperty(Constants.RATING, average);
 					object.addProperty(Constants.COUNT, count);
-					return object;
+					if (!Double.isInfinite(average)) {
+						return object;
+					}
 				}
 			}
 
@@ -398,6 +414,39 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		}
 	}
 
+    public JsonObject getUserComment(String userId, String targetId) throws SocialActivityException {
+        JsonObject userComment = new JsonObject();
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String errorMsg = "Unable to retrieve comment for the user : " + userId;
+
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Executing: " + USER_COMMENT_SELECT_SQL);
+            }
+            connection = DSConnection.getConnection();
+            statement = connection.prepareStatement(USER_COMMENT_SELECT_SQL);
+            statement.setString(1, targetId);
+            statement.setString(2, userId);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+                int activityId = resultSet.getInt(Constants.ID_COLUMN);
+                Activity activity = new SQLActivity(body);
+                activity.setId(activityId);
+                userComment = activity.getBody();
+            }
+            resultSet.close();
+        } catch (SQLException | DataSourceException e) {
+            String message = errorMsg + e.getMessage();
+            throw new SocialActivityException(message, e);
+        } finally {
+            DSConnection.closeConnection(connection);
+        }
+        return userComment;
+    }
+
 	@Override
 	/**
 	 * Retrieve comments belongs to a particular target with likes greater than the given value.
@@ -587,5 +636,39 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		}
 
 	}
+
+	/**
+	 * Check whether the given user has already reviewed on the given targetId (AssetType + UUID)
+	 * @param targetId AssetType + UUID delimited by colon
+	 * @param userId Username with tenant domain i:e admin@carbon.super
+	 * @return Boolean whether user has already reviewed or not
+	 */
+    public boolean isReviewed(String targetId, String userId) throws SocialActivityException {
+        boolean reviewed = false;
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String errorMsg = "Unable to retrieve comments for the user : " + userId;
+
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Executing: " + IS_REVIEWED_SELECT_SQL);
+            }
+            connection = DSConnection.getConnection();
+            statement = connection.prepareStatement(IS_REVIEWED_SELECT_SQL);
+            statement.setString(1, targetId);
+            statement.setString(2, userId);
+            resultSet = statement.executeQuery();
+            reviewed = resultSet.next();
+            resultSet.close();
+        } catch (SQLException | DataSourceException e) {
+            String message = errorMsg + e.getMessage();
+            log.error(message, e);
+            throw new SocialActivityException(message, e);
+        } finally {
+            DSConnection.closeConnection(connection);
+        }
+        return reviewed;
+    }
 
 }

@@ -29,6 +29,7 @@ var api = {};
     var HTTP_GET_METHOD = 'GET';
     var HTTP_POST_METHOD = 'POST';
     var HTTP_DELETE_METHOD = 'DELETE';
+    var HTTP_PUT_METHOD = 'PUT';
     var REMOVE_URL_PATTERN = '/{context}/apis/user-review/{id}';
 
     var resolveDefaultCase = function(req, res, session) {
@@ -62,7 +63,44 @@ var api = {};
         res.addHeader("Content-Type", "application/json");
         print(result);
     };
-    
+
+    var resolvePUT = function (req, res, session) {
+        var review;
+        var contentType = req.getHeader('Content-Type');
+        if (ReqUtils.parseContentType(contentType) === 'application/json') {
+            review = req.getContent();
+        }
+        else {
+            res = ResponseProcessor.buildErrorResponse(res, 400, 'Invalid data type or malformed syntax');
+            return;
+        }
+        if (!review) {
+            res = ResponseProcessor.buildErrorResponse(res, 400, 'A review object must be provided in the body of the request.');
+            return;
+        }
+
+        var user = store.server.current(session);
+        if (!user) {
+            log.error('[user-reviews-api] Attempt to update review without a logged in user');
+            log.error(req.getRemoteAddr());
+            res = ResponseProcessor.buildErrorResponse(res, 401, 'Must be logged into update reviews');
+            return;
+        }
+
+        var actor = review.actor = {};
+        actor.id = ReviewUtils.formatUsername(user);
+        actor.objectType = 'person';
+        try {
+            var result = ReviewUtils.updateUserReview(review);
+            res.addHeader("Content-Type", "application/json");
+            print(result);
+        } catch (e) {
+            log.error('[user-reviews-api] Unable to update the review', e);
+            res = ResponseProcessor.buildErrorResponse(res, 500, 'An error has occurred while updating the review,' +
+                'please check the server logs for more details');
+        }
+    };
+
     api.resolve = function(ctx) {
         var req = ctx.request;
         var res = ctx.response;
@@ -70,6 +108,9 @@ var api = {};
         switch (request.getMethod()) {
             case HTTP_DELETE_METHOD:
                 resolveDELETE(req, res, session);
+                break;
+            case HTTP_PUT_METHOD:
+                resolvePUT(req, res, session);
                 break;
             default:
                 resolveDefaultCase(req, res, session);
