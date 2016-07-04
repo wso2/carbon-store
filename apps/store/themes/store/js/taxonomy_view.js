@@ -294,7 +294,19 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
 var selectURL = function (url) {
 
     if (window.location.href.toString().indexOf("top-assets") > 0) {
-        window.location.href = url;
+        caramel.serverRender({
+            body : 'top_assets'
+        }, {
+            url: url,
+            error : function (data) {
+                console.log(data);
+            },
+            success : function (data) {
+                $("#assets-container").html('').append(data);
+                $('.loading-animation-big').remove();
+                history.pushState("", "", url);
+            }
+        });
     } else {
         loadAssetsToPage(url);
         categorization();
