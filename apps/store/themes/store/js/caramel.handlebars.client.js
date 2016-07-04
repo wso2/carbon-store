@@ -1,11 +1,15 @@
 (function (Handlebars) {
 
-    var caramelData = 'X-Caramel-Data',
-        resources = {
-            js: {},
-            css: {},
-            code: {}
-        };
+    var caramelData = 'X-Caramel-Data';
+    var caramelCompiledData = 'X-Compiled-Templates';
+    var acceptHeader = 'Accept';
+
+    var resources = {
+        js: {},
+        css: {},
+        code: {}
+    };
+    
     /**
      * register getLoginUrl
      * @param  {[type]} options [description]
@@ -289,6 +293,20 @@
 
     caramel.unloaded = {};
 
+    /**
+     * This Function can be used to render a given template from the server side.
+     * @param areas Partial that needs to be rendered.
+     * @param options Parameters for the AJAX request
+     */
+    caramel.serverRender = function (areas, options) {
+        var headers = options.headers || (options.headers = {});
+        options.dataType = 'text';
+        headers[caramelCompiledData] = JSON.stringify(areas);
+        headers[acceptHeader] = 'text';
+        $.ajax(options);
+        return;
+    };
+    
     caramel.data = function (areas, options) {
         var err = options.error,
             success = options.success,
