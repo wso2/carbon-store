@@ -247,9 +247,9 @@
      * @param areas Partial that needs to be rendered.
      * @param options Parameters for the AJAX request
      */
-    caramel.serverRender = function(areas, options) {
+    caramel.serverRender = function (areas, options) {
         var headers = options.headers || (options.headers = {});
-        if(!options.hasOwnProperty("dataType")) {
+        if (!options.hasOwnProperty("dataType")) {
             options.dataType = 'text';
         }
         headers[caramelCompiledData] = JSON.stringify(areas);
