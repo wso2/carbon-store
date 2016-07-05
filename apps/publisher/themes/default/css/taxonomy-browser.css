@@ -157,25 +157,3 @@
 .selected-taxonomy-content button {
     padding: 1px 6px;
 }
-
-.taxonomy-dropdown-button {
-    display: inline-block;
-    float: right;
-}
-
-#taxonomy-dropdown-menu {
-    width: 100%;
-}
-
-#taxonomy-dropdown button {
-    font-weight: 300;
-    color: #eee;
-    background: #2c313b;
-    font-size: 16px;
-}
-
-.taxonomy-dropdown-button.inline > #taxonomy-dropdown button {
-    font-size: 12px;
-    height: 35px;
-    padding: 8px 16px;
-}

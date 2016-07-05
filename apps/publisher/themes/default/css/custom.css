@@ -1146,7 +1146,14 @@ input[type="text"].error-field, input[type="password"].error-field, .custom-form
     width:400px !important;
     height:34px !important;
 }
-#saveButtons{
+
+#saveButtons {
+    margin-top:30px;
+    padding-top:10px;
+    border-top:1px solid #f5f5f5;
+}
+
+#updateButtons {
     margin-top:30px;
     padding-top:10px;
     border-top:1px solid #f5f5f5;
@@ -1155,6 +1162,7 @@ input[type="text"].error-field, input[type="password"].error-field, .custom-form
 .decorated-table-heading tr th {
     background: #ccc;
 }
+
 div.notifyjs-happyblue-base {
     padding: 19px;
 }
