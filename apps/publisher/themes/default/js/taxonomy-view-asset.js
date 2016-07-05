@@ -21,6 +21,10 @@ $(function () {
                     }
                     displayValue.length = 0;
                 }
+                $('#taxonomy').collapse('show');
+            } else {
+                $('.selected-taxonomy-container').hide();
+                $('#taxonomy').append('<div id="no-table-data"><b>No taxonomy data available</b></div>');
             }
         }
     });

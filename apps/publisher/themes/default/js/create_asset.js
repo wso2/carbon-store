@@ -202,7 +202,10 @@ $(function () {
     };
 
     $('#btn-create-asset').click(function (e) {
-        $('#taxonomy-list')[0].value = selectedTaxonomy.join(',');
+        var taxonomyList = $('#taxonomy-list')[0];
+        if (selectedTaxonomy && taxonomyList) {
+            taxonomyList.value = selectedTaxonomy.join(',');
+        }
     });
 
     $('button[type=reset]').click(function (e) {
