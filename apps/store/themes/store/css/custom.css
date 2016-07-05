@@ -996,22 +996,13 @@ a.more:focus {
 }
 .action-img-icon{ width:40px; height: 40px;  margin-left: 18px; background: url("../img/icons/ico-lock.png") no-repeat scroll left top transparent; opacity: 0.5; cursor: pointer; float: left; }
 .action-title{ text-align: center; font-weight:400; font-size: 14px; line-height: 13px; cursor: pointer; text-transform: uppercase; padding: 15px 2px 2px; float: left;   }
-
-.btn-primary, .btn-secondary{
+.btn-primary {
     border:0px;
     border-radius: 0px;
     color: #fff;
     text-decoration: none;
     outline: 0;
     text-align: left;
-}
-.btn-secondary {
-    background-color: #404651;
-}
-.btn-secondary:hover,
-.btn-secondary:focus {
-    color: #fff;
-    background-color: #2C313B;
 }
 .btn-add-new {
     background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
@@ -1743,3 +1734,19 @@ a#search-info {
 }
 
 /* </Search Option Popover> */
+
+.search-wrapper {
+    width: 40%;
+}
+.search-wrapper .input-group {
+    padding-top: 3px;
+}
+.store-bookmark-link {
+    width: 154px;
+    position: absolute;
+    right: 0px;
+    top: 10px;
+}
+.store-bookmark-link a {
+    color: rgb(255, 255, 255);
+}
