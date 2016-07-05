@@ -199,7 +199,10 @@ $(function() {
     });
 
     $('#editAssetButton').click(function (e) {
-        $('#taxonomy-list')[0].value = selectedTaxonomy.join(',');
+        var taxonomyList = $('#taxonomy-list')[0];
+        if (selectedTaxonomy && taxonomyList) {
+            taxonomyList.value = selectedTaxonomy.join(',');
+        }
     });
 
     $('input[type=reset]').click(function (e) {
