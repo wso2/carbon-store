@@ -919,6 +919,7 @@ $(window).load(function () {
     nanoScrollerSelector.nanoScroller({alwaysVisible: true});
 });
 $('body').on('click', '#maximize-taxonomy', function () {
+    $(taxonomySection).find('.first-level div').removeClass('expand');
     var taxonomy = $('> .taxonomy', taxonomySection).contents();
     $('.taxonomy', taxonomyExpandView).html(taxonomy);
     taxonomySection.hide();
@@ -928,6 +929,7 @@ $('body').on('click', '#maximize-taxonomy', function () {
 });
 
 $('body').on('click', '#contract-taxonomy', function () {
+    $(taxonomyExpandView).find('.first-level div').removeClass('expand');
     var taxonomy = $('.taxonomy', taxonomyExpandView).contents();
     $('> .taxonomy', taxonomySection).html(taxonomy);
     taxonomyExpandView.hide();
