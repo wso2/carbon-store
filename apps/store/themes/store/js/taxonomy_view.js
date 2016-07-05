@@ -20,7 +20,7 @@
 var glbTaxoInstance = null;
 var BTN_REMOVE_PREFIX = "btnremove";
 var DIV_HIDDEN_PREFIX = "hiddendiv";
-var SEARCH_AND_QUERY = " AND ";
+var SEARCH_AND_QUERY = " && ";
 var assetAvailability = false;
 
 
@@ -34,26 +34,29 @@ var getSeparatedQueries = function () {
     var decodedURL = decodeURIComponent(window.location.href);
     var queryList = [];
     if (decodedURL.indexOf("q=") > 0) {
-        var combinedQueryList = otherTypeQueryArray = decodedURL.split('q=');
-        if (combinedQueryList[1].indexOf(",") > 0) {
-            var separateQueryList = combinedQueryList[1].split(",");
-            for (var count = 0; count < separateQueryList.length; count++) {
-                queryList.push(separateQueryList[count]);
+        // this added because when categorization removed it remain ?q= in the search query
+        if (decodedURL.split("?q=")[1]) {
+            var combinedQueryList = otherTypeQueryArray = decodedURL.split('q=');
+            if (combinedQueryList[1].indexOf(",") > 0) {
+                var separateQueryList = combinedQueryList[1].split(",");
+                for (var count = 0; count < separateQueryList.length; count++) {
+                    queryList.push(separateQueryList[count]);
+                }
+            } else {
+                queryList.push(combinedQueryList[1]);
             }
-        } else {
-            queryList.push(combinedQueryList[1]);
         }
     }
     return queryList;
 };
 
-var taxonomyQueryPosition = -1;
-var allQueries = [];
 
 /**
  * This method will return only taxonomy query from list of queries
  * @returns {String}
  */
+var taxonomyQueryPosition = -1;
+var allQueries = [];
 var getTaxonomyQuery = function () {
 
     var queries = allQueries = getSeparatedQueries();
@@ -381,7 +384,7 @@ function resolveDomain() {
  * @param child
  */
 var formatTaxonomyToList = function (child) {
-    var liTag = $('<li/>').attr({children: true, class: 'has-sub'});
+    var liTag = $('<li/>').attr({children: true, class: 'has-sub first-level'});
 
     var anchorT = $('<a/>').attr({
         onclick: 'onClickMenuGenerate(this);return false;',
@@ -533,13 +536,11 @@ var editClickedElement = function (element) {
             $(this).removeClass("active");
         }
     });
-    //TODO : after removing element, why there is more operations on same element ??
-    $(clonedTaxonomy).find('.hide-element').remove();
+    
     $(clonedTaxonomy).find('.hide-element').parent().find('ul').first().attr('style', '');
+    $(clonedTaxonomy).find('.hide-element').remove();
     $(clonedTaxonomy).find('.btn-add').attr('title', 'Update Filter');
     $(clonedTaxonomy).find('.btn-add').attr('onclick', 'updateTaxonomy(this);return false;');
-    $(clonedTaxonomy).find('.fw-add').removeClass('fw-add').addClass('fw-refresh');
-    $(clonedTaxonomy).find('.btn-add').removeClass('btn-add').addClass('btn-update');
     $(clonedTaxonomy).find('.btn-add').removeClass('btn-add').addClass('btn-update');
 
 
@@ -752,7 +753,7 @@ var onClickMenuGenerate = function (element) {
 
 
     collapseAndExpandElements(element);
-
+    
 };
 
 /**
@@ -818,7 +819,7 @@ var recursiveTaxonomyLoad = function (child, data) {
             });
 
             var updateButtonSpan = $('<span/>').attr({class: 'icon fw fw-stack'});
-            var ispan1xUpdate = $('<i/>').attr({class: 'fw fw-stack-1x fw-refresh'});
+            var ispan1xUpdate = $('<i/>').attr({class: 'fw fw-add fw-stack-1x'});
             var ispan2xUpdate = $('<i/>').attr({class: 'fw fw-circle-outline fw-stack-2x'});
             updateButtonSpan.append(ispan1xUpdate);
             updateButtonSpan.append(ispan2xUpdate);
@@ -936,7 +937,7 @@ $('body').on('click', '#contract-taxonomy', function () {
 
 
 $('body').on('click', '.taxonomy ul.nav li a', function () {
-    $(this).closest('.taxonomy').find('li.active').removeClass('active');
+    $(this).closest('.first-level').find('li.active').removeClass('active');
 
     if (!isFirstLevel($(this))) {
         $(this).closest('li').addClass('active');

@@ -257,7 +257,7 @@ nav.navigation .second_level > .left-menu-item {
 
 .taxonomy {
     background-color: #2c313b;
-    padding: 5px 0;
+    padding: 10px;
 }
 
 .sidebar-wrapper .taxonomy .nav i {
@@ -276,8 +276,8 @@ nav.navigation .second_level > .left-menu-item {
     padding: 6px 8px 8px;
     font-size: 11px;
     line-height: 1;
-    margin-right: 10px;
-    margin-top: 12px;
+    margin-right: 20px;
+    margin-top: 18px;
 }
 
 .taxonomy ul.nav {
@@ -476,7 +476,7 @@ nav.navigation .second_level > .left-menu-item {
 .taxonomy .filter-tag[aria-expanded="true"],
 .taxonomy .filter-tag.edit > .value-edit,
 .taxonomy .filter-tag > .value-name {
-    background-color: #555555;
+    background-color: #717171;
 }
 
 .taxonomy .filter-tag > .value-expand ul,
@@ -534,10 +534,6 @@ nav.navigation .second_level > .left-menu-item {
 .sidebar-wrapper.taxonomy-expand-view .taxonomy .filter-tag .btn-edit,
 .taxonomy .filter-tag.expand .btn-edit {
     display: inline-block;
-}
-
-.taxonomy .filter-tag > .value-truncate {
-    margin-right: 26px;
 }
 
 .taxonomy .filter-tag > .value-full {
