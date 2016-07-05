@@ -13,10 +13,13 @@ $(function () {
             if (appliedTaxonomy.length > 0) {
                 for (var key in appliedTaxonomy) {
                     if (appliedTaxonomy.hasOwnProperty(key)) {
+                        var element = appliedTaxonomy[key];
+                        getTaxonomyDisplayName(element);
                         $('.selected-taxonomy-content').append(
                             '<div style="padding: 12px"><span>'
-                            + appliedTaxonomy[key].split('/').join(' > ') + '</span></div>');
+                            + displayValue.join(' > ') + '</span></div>');
                     }
+                    displayValue.length = 0;
                 }
             }
         }

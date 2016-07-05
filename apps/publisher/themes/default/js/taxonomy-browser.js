@@ -159,6 +159,34 @@ var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
     });
 };
 
+var getTaxonomyElementDisplayName = function (taxonomyName, taxonomyPath) {
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: BASE_URL + '/' + taxonomyName + '/' + taxonomyPath,
+        success: function (results) {
+            displayValue.push(results[0].label);
+        }
+    })
+};
+
+var getTaxonomyDisplayName = function (taxonomyPath) {
+    var taxonomyPathList = taxonomyPath.split('/');
+    $.ajax({
+        type: 'GET',
+        async: false,
+        url: BASE_URL + '/' + store.publisher.type + '/?taxonomyId=' + taxonomyPathList[0],
+        success: function (results) {
+            displayValue.push(results[0].taxonomyName);
+            var path = taxonomyPathList[0];
+            for (var i = 1; i < taxonomyPathList.length; ++i) {
+                path += '/' + taxonomyPathList[i];
+                getTaxonomyElementDisplayName(results[0].taxonomyName, path);
+            }
+        }
+    });
+};
+
 /**
  * Initializes the taxonomy browser view.
  * @param appliedTaxonomy   array of applied taxonomy for the asset
@@ -179,13 +207,15 @@ var initTaxonomyBrowser = function (appliedTaxonomy) {
         for (var key in appliedTaxonomy) {
             if (appliedTaxonomy.hasOwnProperty(key)) {
                 var element = appliedTaxonomy[key];
+                getTaxonomyDisplayName(element);
                 if (selectedTaxonomy.indexOf(element) < 0) {
                     selectedTaxonomy.push(appliedTaxonomy[key]);
                     $(SELECTED_CONTENT).append('<div data-value="' + appliedTaxonomy[key] + '"><span>'
-                        + appliedTaxonomy[key].split('/').join(' > ') + '</span>'
+                        + displayValue.join(' > ') + '</span>'
                         + '<button type="button" class="btn btn-danger btn-remove">'
                         + '<i class="fw fw-cancel"></i></span></button></div>');
                 }
+                displayValue.length = 0;
             }
         }
     } else {
