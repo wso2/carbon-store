@@ -279,21 +279,18 @@ var loadURL = function (url, param) {
                 assetAvailability = false;
                 // if assets not available in page
                 $(param).toggleClass("selected");
-
-                for (var j = 0; j < globalCount; j++) {
-                    if (parseInt($(param).attr('globalid')) - 1 < j) {
-                        $("#" + j).remove();
-                    }
-                }
+                removeDropDowns(param);
+                changeComboValue(param);
 
             } else {
                 assetAvailability = true;
+                $(param).toggleClass("selected");
+                removeDropDowns(param);
+                changeComboValue(param);
 
-                $("#" + (globalCount - 1)).find('a').first().html($(param).html());
                 if ($(param).attr('children') == "true") {
-                    loadSubCategories();
-                } else {
                     $(param).toggleClass("selected");
+                    loadSubCategories();
                 }
             }
         }
@@ -306,6 +303,19 @@ var loadURL = function (url, param) {
         }
     });
 
+};
+
+var changeComboValue = function (param) {
+    var root1 = document.getElementById($(param).attr('id')).parentElement.parentElement.parentElement;
+    root1.getElementsByClassName('dropdown')[0].innerHTML = $(param).html();
+};
+
+var removeDropDowns = function (param) {
+    for (var j = 0; j < globalCount; j++) {
+        if (parseInt($(param).attr('globalid')) - 1 < j) {
+            $("#" + j).remove();
+        }
+    }
 };
 
 var loadSubCategories = function () {
@@ -362,6 +372,7 @@ var loadSubCategories = function () {
                 });
             } else {
                 var currentElement = document.getElementById(path);
+                $(currentElement).toggleClass("selected");
                 createHTMLFromJsonSub([], $(currentElement));
                 var pp = document.getElementById(path);
 
@@ -386,7 +397,9 @@ var createHTMLFromJsonSub = function (jsonInput, atag) {
         }
     }
 
-    atag.toggleClass("selected");
+    if (!atag.hasClass("selected")) {
+        atag.toggleClass("selected");
+    }
 
     if (jsonInput.length > 0) {
 
@@ -493,7 +506,7 @@ $(window).load(function () {
     if (store.taxonomyAvailability) {
 // this condition will check current page is asset list page or top asset page.
         if (window.location.href.toString().indexOf('list') > 0 || window.location.href.toString().
-                indexOf('top-assets') > 0) {
+            indexOf('top-assets') > 0) {
 
             // first ajax call when page loads
             $.ajax({
@@ -534,64 +547,69 @@ $(window).load(function () {
             });
 
             // bellow code block will generate sub categories for only
-            if (assetAvailability || store.listAssetsCount > 0) {
-                var nodes = getURL().split("/");
+            var nodes = getURL().split("/");
+            var path = nodes[0];
+            var pathLevelCount;
 
-                var path = nodes[0];
-
-                for (var i = 1; i < nodes.length; i++) {
-                    path += "/" + nodes[i];
-                    var elementRef = document.getElementById(path);
-                    // check wheather its leafnode or not
-                    if ($(elementRef).attr("children") == "true") {
-                        var taxaSub = [];
-                        $.ajax({
-                            url: caramel.context + '/apis/taxonomies?terms=' + path + "/children" + resolveDomain(),
-                            type: 'GET',
-                            async: false,
-                            headers: {
-                                Accept: "application/json"
-                            },
-                            success: function (data) {
-                                var children;
-                                try {
-                                    children = Array.isArray(data[0].children);
-                                } catch (e) {
-
-                                }
-
-                                if (children) {
-                                    data[0].id = data[0].elementName;
-                                    for (var i = 0; i < data[0].children.length; i++) {
-                                        data[0].children[i].id = data[0].elementName + "/" + data[0].children[i].elementName;
-                                    }
-                                } else {
-                                    for (var i = 0; i < (data.length); i++) {
-                                        data[i].id = $(elementRef).attr("id") + "/" + data[i].elementName;
-                                        if (data[i].text == "") {
-                                            data[i].text = data[i].elementName;
-                                        }
-                                    }
-                                }
-                                taxaSub = data;
-
-                                //since we have "/" in variable name, jquery selector cant select that element
-                                var currentElement = document.getElementById(path);
-                                createHTMLFromJsonSub(taxaSub, $(currentElement));
-
-                            },
-                            error: function () {
+            for (var i = 1; i < nodes.length; i++) {
+                path += "/" + nodes[i];
+                pathLevelCount = i;
+                var elementRef = document.getElementById(path);
+                // check wheather its leafnode or not
+                if ($(elementRef).attr("children") == "true") {
+                    var taxaSub = [];
+                    $.ajax({
+                        url: caramel.context + '/apis/taxonomies?terms=' + path + "/children" + resolveDomain(),
+                        type: 'GET',
+                        async: false,
+                        headers: {
+                            Accept: "application/json"
+                        },
+                        success: function (data) {
+                            var children;
+                            try {
+                                children = Array.isArray(data[0].children);
+                            } catch (e) {
 
                             }
-                        });
-                    } else {
-                        var currentElement = document.getElementById(path);
-                        createHTMLFromJsonSub([], $(currentElement));
-                        var pp = document.getElementById(path);
 
-                        $("#" + $(pp).attr('globalId') + " a.dropdown").toggleClass('hide-after');
+                            if (children) {
+                                data[0].id = data[0].elementName;
+                                for (var i = 0; i < data[0].children.length; i++) {
+                                    data[0].children[i].id = data[0].elementName + "/" + data[0].children[i].elementName;
+                                }
+                            } else {
+                                for (var i = 0; i < (data.length); i++) {
+                                    data[i].id = $(elementRef).attr("id") + "/" + data[i].elementName;
+                                    if (data[i].text == "") {
+                                        data[i].text = data[i].elementName;
+                                    }
+                                }
+                            }
+                            taxaSub = data;
 
-                    }
+                            //since we have "/" in variable name, jquery selector cant select that element
+                            var currentElement = document.getElementById(path);
+                            changeComboValue($(currentElement));
+                            $(currentElement).toggleClass("selected");
+                            if (assetAvailability || store.listAssetsCount > 0 ||
+                                pathLevelCount < nodes.length - 1) {
+                                $(currentElement).toggleClass("selected");
+                                createHTMLFromJsonSub(taxaSub, $(currentElement));
+                            }
+
+                        },
+                        error: function () {
+
+                        }
+                    });
+                } else {
+                    var currentElement = document.getElementById(path);
+                    createHTMLFromJsonSub([], $(currentElement));
+                    var pp = document.getElementById(path);
+
+                    $("#" + $(pp).attr('globalId') + " a.dropdown").toggleClass('hide-after');
+
                 }
             }
 
