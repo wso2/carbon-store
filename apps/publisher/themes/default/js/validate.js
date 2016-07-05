@@ -48,7 +48,7 @@ validator.addDefaultMethods = function () {
         var requirementFilled = false;
         if (elementType == "checkbox") {
             requirementFilled = $(element).is(":checked");
-        } else if (elementType == "text" || elementType == "textarea" || elementType == "password" || $(element).prop("tagName") === "SELECT") {
+        } else if (elementType == "text" || elementType == "file" || elementType == "textarea" || elementType == "password" || $(element).prop("tagName") === "SELECT") {
             requirementFilled = $(element).val().length > 0;
         }
         if (requirementFilled) {
