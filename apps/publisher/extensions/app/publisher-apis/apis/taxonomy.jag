@@ -132,6 +132,8 @@ require('/modules/publisher.js').exec(function (ctx) {
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
                                     taxaPathList);
                             return;
+                        } else {
+                            log.error("Taxonomy name not detected!");
                         }
 
                     } else {
@@ -186,6 +188,8 @@ require('/modules/publisher.js').exec(function (ctx) {
 
                             return;
 
+                        } else {
+                            log.error("Taxonomy term not detected!");
                         }
 
                     } else {
