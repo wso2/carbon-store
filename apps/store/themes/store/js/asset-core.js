@@ -15,12 +15,15 @@ var asset = {};
             method: 'POST',
             success: function (data) {
                 messages.alertSuccess("Successfully subscribed to asset");
-                $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmarked');
+                window.location.href=destination;
+                /*$('i', elem).removeClass().addClass('fw fw-bookmark store-bookmarked');
                 if ($(elem).find('#main-bookmark').length > 0) {
                     $(elem).find("i").removeClass().addClass('fa fa-star');
-                    $(elem).find('#main-bookmark').html("Bookmarked");
+                    var nextState = retrieveState(elem);
+                    persistState(elem);
+                    $(elem).find('#main-bookmark').html(nextState);
                     $(elem).attr('id', 'btn-remove-subscribe');
-                }
+                }*/
             },
             error: function () {
                 messages.alertError("Failed to bookmark this asset!");
@@ -44,12 +47,15 @@ var asset = {};
             dataType: 'text json',
             success: function (data) {
                 messages.alertSuccess("Successfully un-subscribed to asset");
-                $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
+                window.location.href=destination;
+                /*$('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
                 if ($(elem).find('#main-bookmark').length > 0) {
                     $(elem).find("i").removeClass().addClass('fw fw-bookmark');
+                    var nextState = retrieveState(elem);
+                    persistState(elem);
                     $(elem).find('#main-bookmark').html("Bookmark");
                     $(elem).attr('id', 'btn-add-gadget');
-                }
+                }*/
             },
             error: function (data) {
                 messages.alertError("Failed to un-bookmark this asset!");
