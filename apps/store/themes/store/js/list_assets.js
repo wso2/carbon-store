@@ -534,13 +534,13 @@ $(window).load(function () {
             });
 
             // bellow code block will generate sub categories for only
-            if (assetAvailability || store.listAssetsCount > 0) {
                 var nodes = getURL().split("/");
-
                 var path = nodes[0];
+                var pathLevelCount;
 
                 for (var i = 1; i < nodes.length; i++) {
                     path += "/" + nodes[i];
+                    pathLevelCount = i;
                     var elementRef = document.getElementById(path);
                     // check wheather its leafnode or not
                     if ($(elementRef).attr("children") == "true") {
@@ -577,7 +577,10 @@ $(window).load(function () {
 
                                 //since we have "/" in variable name, jquery selector cant select that element
                                 var currentElement = document.getElementById(path);
-                                createHTMLFromJsonSub(taxaSub, $(currentElement));
+                                if (assetAvailability || store.listAssetsCount > 0 ||
+                                    pathLevelCount < nodes.length -1) {
+                                    createHTMLFromJsonSub(taxaSub, $(currentElement));
+                                }
 
                             },
                             error: function () {
@@ -593,7 +596,6 @@ $(window).load(function () {
 
                     }
                 }
-            }
 
         } else {
             // alywas 0 will be first element.
