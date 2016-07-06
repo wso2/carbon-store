@@ -24,7 +24,9 @@ var format = function(context, data, page, area, meta) {
 
 var resources = function(page, meta) {
 	return {
-		js : ['asset-helpers.js', 'navigation.js', 'popover.js', 'jquery.validate.js', 'jquery.cookie.js', 'search.js', 'list_assets.js', 'categorization.js', 'categorization-data.js', 'taxonomy_view.js','wso2-visual-elements.js'],
+		js: ['asset-helpers.js', 'navigation.js', 'popover.js', 'jquery.validate.js', 'jquery.cookie.js', 'search.js',
+			'list_assets.js', 'categorization.js', 'categorization-data.js', 'taxonomy_view.js',
+			'wso2-visual-elements.js', 'select2.full.min.js'],
 		css : ['navigation.css','style-taxonomy.css', 'categorization.css', 'theme-categorization.min.css']
 	};
 };
