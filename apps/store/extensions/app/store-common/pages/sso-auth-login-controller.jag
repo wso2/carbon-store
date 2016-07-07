@@ -27,7 +27,7 @@
             ignoreReferer = request.getParameter("ignoreReferer");
     var relayState = (referer ? referer : '/store');
     var encodedSAMLAuthRequest;
-    var log = new Log();
+    var log = new Log('Store - sso-auth-login-controller.jag');
     var carbon = require('carbon');
     var superTenant = carbon.server.superTenant;
     if (referer) {
@@ -51,8 +51,7 @@
     } else {
         encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(attr.issuer);
     }
-    log.info("[STORE] LOGIN URL: " + postUrl);
-    log.info('[STORE] Initiating login request from ' + session.getId());
+
     if (!session.get("Loged")) {
         %>
 
