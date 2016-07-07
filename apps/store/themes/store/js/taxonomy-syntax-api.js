@@ -95,7 +95,7 @@ var TaxonomySyntaxAPI = {};
         var removeIndex = -1;
         //Check if there is only one operand
         if (this.hasOnlyOneOperand(operand)) {
-            removeIndex = this.operandAtIndex(operand);
+            removeIndex = this.operandIndex(operand);
             this.expression.operands.splice(removeIndex, 1);
         } else {
             //Find and remove the exact match
