@@ -227,6 +227,9 @@ var TaxonomySyntaxAPI = {};
                 entries.push(thisExpression);
             }
             output = entries.join(' ' + expression.operator + ' ');
+            if (entries.length === 1) {
+                return output;
+            }
             return '( ' + output + ' )';
         }
     }
