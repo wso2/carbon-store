@@ -18,7 +18,7 @@
  *
  */
 (function () {
-    var log = new Log(),
+    var log = new Log('Publisher - acs.jag'),
             configs = require('/config/publisher.js').config(),
             app = require('rxt').app,
             context = app.getContext(),
@@ -85,10 +85,6 @@
             session.put("LOGGED_IN_USER", sessionObj.loggedInUser);
             session.put("Loged", "true");
 
-            log.info("[PUB] session index :: " + sessionObj.sessionIndex);
-            log.info("[PUB] session :: " + sessionObj.sessionId);
-            log.info("[PUB] real session :: " + session.getId());
-
             sso_sessions[sessionObj.sessionId] = sessionObj.sessionIndex;
             var user = require('store').user;
             var username = sessionObj.loggedInUser;
@@ -104,7 +100,9 @@
 
             if (hasPublisherLoginPermission) {
                 user.emitLogin(username);
-                log.debug('user is set :::' + username);
+                if (log.isDebugEnabled()) {
+                    log.debug('user is set :::' + username);
+                }
                 response.sendRedirect(relayState ? relayState : context);
             } else {
                 log.warn('User ' + sessionObj.loggedInUser + ' does not have permission to access the publisher application.Make sure the user has the publisher role.');
@@ -112,7 +110,6 @@
             }
 
         } else {
-            log.info(' [PUB] PUB SAML LOGOUT RESPONSE, LOCAL SESSION ' + session.getId());
             sso.client.logout(session, 'publisher');
             response.sendRedirect(context);
         }
@@ -121,7 +118,6 @@
     //Handle SLO  requests
     if (samlRequest) {
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
-        log.info('PUB BACKEND LOGOUT RECIEVED FROM IDP THE INDEX IS ######' + index + ', LOCAL SESSION: ' + session.getId());
         var jSessionId = application.get('sso_sessions')[index];
         delete application.get('sso_sessions')[index];
         sso.client.logout(index, new java.lang.String('publisher'));
