@@ -204,6 +204,15 @@ h2.app-title {
 .assets-container{
     margin-top:20px;
 }
+#search-button{
+    border-radius: 0;
+    background: #fff;
+}
+.popover-content{
+    width:300px;
+    background: #efefef;
+    border:none;
+}
 .es-nav > li.advanced-search-link{
     position: absolute;
     right: 0;
@@ -1288,12 +1297,12 @@ h2.app-title {
 .popover {
     border-radius: 0;
     box-shadow: none;
-    background: #222;
+    background: #efefef;
     max-width: 384px;
 }
 
 .popover.bottom > .arrow:after {
-    border-bottom-color: #222;
+    border-bottom-color: #efefef;
 }
 
 .popover.bottom.right > .arrow {
@@ -1313,6 +1322,7 @@ h2.app-title {
 
 .popover-content {
     padding: 4px;
+    opacity: 0.8;
 }
 
 .popover ul.tiles, .popover ul.tiles > li {
@@ -1357,6 +1367,28 @@ h2.app-title {
     font-size: 12px;
     height: 28px;
     overflow: hidden;
+}
+.popover-content h3{
+    font-size: 18px;
+}
+.popover-content ul{
+    margin:0;
+    padding:0 0 0 10px;
+}
+.popover-content ul li{
+    list-style-type: none;
+    font-size: 12px;
+    padding-bottom: 5px;
+}
+.search-options-link{
+    display: block;
+    padding:5px;
+    margin-left: 20px;
+}
+.search-options-link-wrapper{
+    background: transparent;
+    padding:0 0 0 20px;
+    border:none;
 }
 .ctrl-wr-asset .ast-img {
     width: 100%;
@@ -1473,9 +1505,6 @@ span.advanced-search-icons{
     }
     span.advanced-search-icons{
         display: inline-block;
-    }
-    .bookmark-link-text{
-        display: none;
     }
     .es-navbar-nav{
         margin: 0;
@@ -1736,17 +1765,57 @@ a#search-info {
 /* </Search Option Popover> */
 
 .search-wrapper {
-    width: 40%;
+    width: 70%;
+}
+@media (max-width: 768px) {
+    .search-wrapper {
+        width: 60%;
+    }
 }
 .search-wrapper .input-group {
     padding-top: 3px;
 }
 .store-bookmark-link {
-    width: 154px;
+    width: auto;
     position: absolute;
-    right: 0px;
+    right: 30px;
     top: 10px;
 }
 .store-bookmark-link a {
     color: rgb(255, 255, 255);
+}
+@media ( max-width: 670px) {
+    .bookmark-link-text{
+        display: none;
+    }
+}
+/* ========================================================================
+ * Store my-items bookmark styling
+ * ======================================================================== */
+.confirmation-popup-container {
+    position: absolute;
+    z-index: 9999;
+    background: rgba(255, 239, 239, 0.87);
+    height: 105%;
+    display: none;
+}
+.confirmation-popup-container p {
+    position: relative;
+    top: 20%;
+    text-align: center;
+    color: rgb(159, 12, 12);
+}
+.confirmation-popup-container .btn-group {
+    bottom: 10px;
+    position: absolute;
+    margin-left: 25%;
+    display: block;
+}
+.confirmation-popup-container .yes-bookmark {
+    border: 0px;
+}
+.confirmation-popup-container .no-bookmark {
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
 }
