@@ -25,7 +25,7 @@
     var referer=require('utils').request.getReferer(request);//request.getHeader('referer');
     var ignoreReferer = request.getParameter("ignoreReferer");
     var attr = config.authentication.methods.sso.attributes;
-    var log = new Log();
+    var log = new Log('Publisher - sso-auth-login-controller.jag');
     var carbon = require('carbon');
     var superTenant = carbon.server.superTenant;
     var encodedSAMLAuthRequest;
@@ -44,8 +44,6 @@
     if(ignoreReferer){
         referer = null;
     }
-    log.info("[PUB] LOGIN URL: " + postUrl);
-    log.info('[PUB] Initiating login request from ' + session.getId());
     var relayState = (referer? referer:'/publisher');
     if (!session.get("Loged")) {
     %>
