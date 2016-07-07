@@ -1,32 +1,18 @@
-/*
- * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- *
- * WSO2 Inc. licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
 var TaxonomySyntaxAPI = {};
 (function() {
+    var SYMBOL_OR = 'OR';
+    var SYMBOL_AND = '&&';
+    var SYMBOL_EXP_START = '(';
+    var SYMBOL_EXP_STOP = ')';
     TaxonomySyntaxAPI.buildExpression = function(input, clean) {
         clean = clean || function(v) {
             return v;
         };
         return buildExpression(input, clean);
     };
-    var SYMBOL_OR = 'OR';
-    var SYMBOL_AND = '&&';
-    var SYMBOL_EXP_START = '(';
-    var SYMBOL_EXP_STOP = ')';
+    TaxonomySyntaxAPI.OR = SYMBOL_OR;
+    TaxonomySyntaxAPI.AND = SYMBOL_AND;
+    TaxonomySyntaxAPI.Expression = Expression;
 
     function Operand(value) {
         this.termString = value;
@@ -171,7 +157,7 @@ var TaxonomySyntaxAPI = {};
             return '';
         }
         if (this.operands.length === 1) {
-            return modifiedOperands;
+            return modifiedOperands[0];
         }
         return '( ' + modifiedOperands.join(' ' + this.operator + ' ') + ' )';
     };
@@ -184,6 +170,12 @@ var TaxonomySyntaxAPI = {};
         clean = clean || function(v) {
             return v;
         };
+        if (symbols.length === 1) {
+            var singleExpression = new Expression();
+            singleExpression.operands.push(symbols[0]);
+            singleExpression.operator = SYMBOL_AND;
+            return singleExpression;
+        }
         return r(symbols, symbols.pop(), new Expression(), new Expression(), clean);
     }
 
@@ -212,7 +204,6 @@ var TaxonomySyntaxAPI = {};
             return expression.buildExpressionString(decorator);
         } else {
             var entries = [];
-            // console.log('output '+ ouput);
             expression.children.forEach(function(child, index) {
                 var result = rprint(child, output, decorator);
                 if (result != '') {
@@ -221,7 +212,9 @@ var TaxonomySyntaxAPI = {};
             });
             output += entries.join(' ' + expression.operator + ' ');
             entries = [];
-            entries.push(output);
+            if (output != '') {
+                entries.push(output);
+            }
             var thisExpression = expression.buildExpressionString(decorator);
             if (thisExpression != '') {
                 entries.push(thisExpression);
