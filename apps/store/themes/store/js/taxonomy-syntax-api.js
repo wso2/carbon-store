@@ -8,7 +8,14 @@ var TaxonomySyntaxAPI = {};
         clean = clean || function(v) {
             return v;
         };
-        return buildExpression(input, clean);
+        var expression = buildExpression(input, clean);
+        if (expression.operator === SYMBOL_OR) {
+            var root = new Expression();
+            root.operator = SYMBOL_AND;
+            root.children.push(expression);
+            return root;
+        }
+        return expression;
     };
     TaxonomySyntaxAPI.OR = SYMBOL_OR;
     TaxonomySyntaxAPI.AND = SYMBOL_AND;
@@ -220,7 +227,7 @@ var TaxonomySyntaxAPI = {};
                 entries.push(thisExpression);
             }
             output = entries.join(' ' + expression.operator + ' ');
-            return output;
+            return '( ' + output + ' )';
         }
     }
     /**
