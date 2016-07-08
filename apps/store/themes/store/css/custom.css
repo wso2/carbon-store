@@ -1406,6 +1406,7 @@ h2.app-title {
 .ctrl-wr-asset .ast-content {
     background-color: #fff;
     padding-bottom:10px;
+    min-height: 105px;
 }
 
 .ctrl-wr-asset.selected {
@@ -1579,6 +1580,11 @@ span.advanced-search-icons{
     }
     .tags{
         min-width:auto!important;
+    }
+    .ctrl-wr-asset .ast-content {
+        background-color: #fff;
+        padding-bottom:10px;
+        height: 100%;
     }
 }
 .loading-animation-big{
