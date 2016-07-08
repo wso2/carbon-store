@@ -199,22 +199,24 @@ var getTaxonomyDisplayName = function (taxonomyPath) {
  * Resets taxonomy browser to the initial position.
  */
 var resetTaxonomyBrowser = function () {
-    $(COLUMN_SELECTOR + ' li').removeClass('active');
-    $(COLUMN_SELECTOR + ' li > button').remove();
-    $(COLUMN_SELECTOR + ' li.back').hide();
+    $(TAXONOMY_BROWSER).slideUp(function(){
+        $(COLUMN_SELECTOR + ' li').removeClass('active');
+        $(COLUMN_SELECTOR + ' li > button').remove();
+        $(COLUMN_SELECTOR + ' li.back').hide();
 
-    $('[data-window]:gt(0)').each(function () {
-        var parent = $(this).data('parent');
-        if (!windowObject[parent]) {
-            windowObject[parent] = $(this);
-        }
-        $(this).remove();
+        $('[data-window]:gt(0)').each(function () {
+            var parent = $(this).data('parent');
+            if (!windowObject[parent]) {
+                windowObject[parent] = $(this);
+            }
+            $(this).remove();
+        });
+        $(BREADCRUMB_SELECTOR).empty();
+
+        $('[data-window=0]').show();
     });
-    $(BREADCRUMB_SELECTOR).empty();
-    $(TAXONOMY_BROWSER).hide('slow');
     $(CANCEL_BUTTON).hide();
     $(TAXONOMY_SELECT_BUTTON).show();
-    $('[data-window=0]').show();
 };
 
 /**
@@ -231,7 +233,7 @@ function initTaxonomyBrowser(appliedTaxonomy) {
 
     if (appliedTaxonomy && appliedTaxonomy.length !== 0) {
         //if already applied tags exists
-        $(SELECTED_CONTAINER).show('slow');
+        $(SELECTED_CONTAINER).show();
 
         for (var key in appliedTaxonomy) {
             if (appliedTaxonomy.hasOwnProperty(key)) {
@@ -262,7 +264,7 @@ $(function () {
     });
 
     $(TAXONOMY_SELECT_BUTTON).click(function () {
-        $(TAXONOMY_BROWSER).show('medium');
+        $(TAXONOMY_BROWSER).slideDown();
         $(CANCEL_BUTTON).show();
         $(TAXONOMY_SELECT_BUTTON).hide();
     });
@@ -376,7 +378,7 @@ $(function () {
         }
 
         if (selectedTaxonomy.length === 1) {
-            $(SELECTED_CONTAINER).show('slow');
+            $(SELECTED_CONTAINER).slideDown();
         }
         appendButton($(this).closest('li'), false);
         $(this).remove();
@@ -405,7 +407,7 @@ $(function () {
         }
 
         if ($(SELECTED_CONTENT).children().length < 1) {
-            $(SELECTED_CONTAINER).hide('slow');
+            $(SELECTED_CONTAINER).slideUp();
         }
     });
 
