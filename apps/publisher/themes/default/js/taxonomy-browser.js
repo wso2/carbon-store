@@ -25,7 +25,7 @@ const SELECTED_CONTAINER = '.selected-taxonomy-container';
 const SELECTED_CONTENT = '.selected-taxonomy-content';
 const TAXONOMY_SELECT_BUTTON = '#taxonomy-select-button';
 const CANCEL_BUTTON = '#cancel-button';
-const BACK_LINK = '<li class="back" style="display: none;"><a href="#">..</a></li>';
+const BACK_LINK = '<li class="back" style="display: none;"><a href="#">../</a></li>';
 const RIGHT_ARROW = ' <i class="icon fw fw-right-arrow"></i>';
 
 var windowObject = {};
