@@ -1,3 +1,6 @@
+<!---
+IMPORTANT: The Sorting links are rewritten in by asset-core.js by targeting the sorting-option class name
+--->
 <div class="es-col-lg-12 col-lg-12">
     <div class="ast-container ">
         <div class="container-fluid padding-none ">
@@ -19,7 +22,9 @@
                                     {{#each sorting.list}}
                                         <li><a
                                                 data-column="@index"
-                                                class="{{#if active}}{{sortIcon}} active {{/if}} {{sortBy.label}}"
+                                                data-sort-by-query="{{sortBy.name}}"
+                                                data-sort-query="{{sortNext}}"
+                                                class="sorting-option {{#if active}}{{sortIcon}} active {{/if}} {{sortBy.label}}"
                                                 href='{{tenantedUrl ""}}/assets/{{../rxt.shortName}}/list?sortBy={{sortBy.name}}&sort={{sortNext}}&{{query}}'
                                         >
                                             {{sortBy.label}}
