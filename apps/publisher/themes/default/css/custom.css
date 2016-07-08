@@ -1462,4 +1462,7 @@ a#search-info {
     border-bottom-color: #ECECEC;
 }
 
+.lifecycle-state {
+    display: block;
+}
 /* </Search Option Popover> */

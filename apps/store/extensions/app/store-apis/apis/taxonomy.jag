@@ -56,8 +56,6 @@ require('/modules/store.js').exec(function (ctx) {
     switch (method) {
         case 'GET':// GET endpoints
             var options = ref.getQueryOptions(req.getQueryString());
-
-
             acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
             jsonHeaderAccept = acceptHeader.indexOf('application/json');
 
@@ -97,7 +95,6 @@ require('/modules/store.js').exec(function (ctx) {
                                 constants.STATUS_CODES.UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
-
 
                 } catch (e) {
 
@@ -140,7 +137,6 @@ require('/modules/store.js').exec(function (ctx) {
                         return;
                     }
 
-
                 } catch (e) {
 
                     if (e.toString().indexOf("TaxonomyException") > 0) {
@@ -180,13 +176,16 @@ require('/modules/store.js').exec(function (ctx) {
                                             defaultPagination(options, "endnode", 200), taxonomyTermOptions.name);
                                 });
                             }
-
-
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
                                     taxaPathList);
 
                             return;
 
+                        } else {
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
+                                    "Bad syntax. Please provide correct taxonomy name.");
+                            log.error('Bad syntax. Please provide correct taxonomy name.');
+                            return;
                         }
 
                     } else {
@@ -194,7 +193,6 @@ require('/modules/store.js').exec(function (ctx) {
                                 UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
-
 
                 } catch (e) {
 
@@ -213,8 +211,6 @@ require('/modules/store.js').exec(function (ctx) {
 
                     return;
                 }
-
-            } else {
 
             }
 

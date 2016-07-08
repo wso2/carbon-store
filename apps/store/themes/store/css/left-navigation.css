@@ -586,6 +586,7 @@ nav.navigation .second_level > .left-menu-item {
 .refine > .panel .checkbox {
     margin: 3px 0;
     display: block;
+    padding-left: 5px;
 }
 
 .refine a > .icon {
@@ -847,8 +848,8 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     z-index: 2;
     float: left;
     margin-bottom: 0;
-    margin-left: 20px;
-    height: 35px !important;
+    margin-left: 0;
+    height: 34px;
     margin-top: 0;
 }
 .es-input-group{
@@ -1111,10 +1112,6 @@ a#search-info{
 
     .left-col {
         margin: 2px;
-    }
-
-    .es-input-group .es-form-control {
-        margin-left: 90px;
     }
 
     .es-col-lg-12 {
@@ -1437,4 +1434,25 @@ ul.sidebar-messages > li {
 
 .btn-or-cancel {
     background: #8c8c8c;
+}
+
+.taxonomy-grouped-or-wrapper {
+    border-left: solid 2px #fff;
+    height: 100%;
+    position: absolute;
+    vertical-align: middle;
+    z-index: 2;
+}
+
+.taxonomy-grouped-or {
+    display: block;
+    position: absolute;
+    top: 50%;
+    height: 20px;
+    margin-top: -10px;
+    background: #000;
+    margin-left: -11px;
+    padding: 2px 2px 2px 2px;
+    z-index: 1;
+    font-size: 11px;
 }

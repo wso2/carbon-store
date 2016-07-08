@@ -396,3 +396,6 @@ button:hover {
     color: rgba(206, 182, 6, 0.82);
     text-shadow: 1px 1px 1px #e5df00;
 }
+.btn-flat{
+    border-radius: 0px !important;
+}
