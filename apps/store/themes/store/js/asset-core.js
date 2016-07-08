@@ -37,7 +37,6 @@ var asset = {};
         }
         $(elem).find("i").removeClass().addClass('fa fa-spinner fa-spin');
         $(elem).find('#main-bookmark').html(" Removing...");
-        $(elem).unbind('click');
         $.ajax({
             url: caramel.url('/apis/subscriptions') + '?type=' + type + '&asset=' + path,
             method: 'DELETE',
@@ -45,6 +44,7 @@ var asset = {};
             success: function (data) {
                 messages.alertSuccess("Successfully un-subscribed to asset");
                 $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
+                $(elem).parents('[class^="ctrl-wr-asset"]').fadeOut();
                 if ($(elem).find('#main-bookmark').length > 0) {
                     $(elem).find("i").removeClass().addClass('fw fw-bookmark');
                     $(elem).find('#main-bookmark').html("Bookmark");
@@ -52,7 +52,11 @@ var asset = {};
                 }
             },
             error: function (data) {
+                var parent = $(elem).parents('[class^="ctrl-wr-asset"]');
                 messages.alertError("Failed to un-bookmark this asset!");
+                $(parent.find(".confirmation-popup-container")).fadeOut();
+                parent.find('.btn-group').show();
+                parent.find('#bookmark-animation').hide();
                 $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmarked');
             }
         });
