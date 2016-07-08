@@ -42,7 +42,7 @@ public interface ActivityBrowser {
 
 	boolean isUserlikedActivity(String userId, int targetId, int like) throws SocialActivityException;
 
-	boolean isReviewed(String targetId, String userId) throws SocialActivityException;
+	boolean isPublished(String activity, String targetId, String userId) throws SocialActivityException;
 
 	JsonObject pollNewestComments(String targetId, int timestamp) throws SocialActivityException;
 

@@ -229,8 +229,8 @@ public abstract class SocialActivityService {
 	 * @param userId Username with the tenant domain i:e - admin@carbon.super
 	 *
 	 */
-	public boolean isReviewed(String targetId, String userId) throws SocialActivityException {
-		return getActivityBrowser().isReviewed(targetId, userId);
+	public boolean isPublished(String activity, String targetId, String userId) throws SocialActivityException {
+		return getActivityBrowser().isPublished(activity, targetId, userId);
 	}
 
 	/**
