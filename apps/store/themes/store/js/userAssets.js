@@ -5,10 +5,11 @@ $(function () {
     });
 
     $('.yes-bookmark').on('click', function () {
-        var elem = $($(this).parents('[class^="ctrl-wr-asset"]').find(".js_bookmark"));
+        var parent = $(this).parents('[class^="ctrl-wr-asset"]');
+        var elem = $(parent.find(".js_bookmark"));
+        parent.find('.btn-group').hide();
+        parent.find('#bookmark-animation').show();
         asset.unsubscribeBookmark(elem.data('type'), elem.data('aid'), location.href, elem);
-        $(this).parents('[class^="ctrl-wr-asset"]').fadeOut();
-
     });
 
     $('.js_bookmark').on(
