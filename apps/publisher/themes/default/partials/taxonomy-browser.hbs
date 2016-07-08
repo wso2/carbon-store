@@ -2,36 +2,18 @@
 
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-        <div class="message message-info">
-            <div class="row">
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <h4><i class="icon fw fw-info"></i>No taxonomy is applied</h4>
-                    <p>Click 'Apply Taxonomy' to apply taxonomies to the asset.</p>
-                </div>
-                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6">
-                    <div id="taxonomy-dropdown" class="dropdown pull-right">
-                        <button class="btn btn-lg btn-default dropdown-toggle" type="button" id="taxonomy-root-menu"
-                                data-toggle="dropdown">Apply Taxonomy
-                            <span class="caret"></span></button>
-                        <ul id="taxonomy-dropdown-menu" class="dropdown-menu" role="menu"
-                            aria-labelledby="taxonomy-root-menu">
-                            <!-- Dynamic content -->
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="selected-taxonomy-container">
             <div>
                 <label>Applied Taxonomies: </label>
-                <div id="dropdown-button" class="taxonomy-dropdown-button inline">
-                    <!-- Dynamic content -->
-                </div>
             </div>
             <div class="selected-taxonomy-content">
                 <!-- Dynamic content -->
             </div>
         </div>
+    </div>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <button id="taxonomy-select-button" class="btn btn-default" type="button">Select Taxonomy</button>
+        <button id="cancel-button" class="btn btn-danger" type="button">Cancel</button>
     </div>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 taxonomy-browser">
         <div class="ast-container" id="list_assets_table_body">

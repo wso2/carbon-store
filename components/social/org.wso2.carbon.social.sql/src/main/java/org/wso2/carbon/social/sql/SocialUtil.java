@@ -44,6 +44,12 @@ public class SocialUtil {
 
 	}
 
+    public static String getTenantedUsername() {
+        String username = CarbonContext.getThreadLocalCarbonContext().getUsername();
+        String domain = getTenantDomain();
+        return username + "@" + domain;
+    }
+
 	public static int getActivityLimit(int limit) {
 
 		if (limit > Constants.MAXIMUM_ACTIVITY_SELECT_COUNT || limit == 0) {

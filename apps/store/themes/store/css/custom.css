@@ -1041,10 +1041,6 @@ a.more:focus {
     background:url('../img/icons/wso2-logo-small.png') no-repeat;
 }
 
-.es-content-block{
-    padding-left: 200px;
-}
-
 .es-nav-tabs > li.active > a, .es-nav-tabs > li.active > a:hover, .es-nav-tabs > li.active > a:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
@@ -1767,6 +1763,16 @@ a#search-info {
 .search-wrapper {
     width: 70%;
 }
+@media (max-width: 1300px) {
+    .search-wrapper {
+        width: 60%;
+    }
+}
+@media (max-width: 1100px) {
+    .search-wrapper {
+        width: 45%;
+    }
+}
 @media (max-width: 768px) {
     .search-wrapper {
         width: 60%;
@@ -1818,4 +1824,10 @@ a#search-info {
     border-top: 0px;
     border-right: 0px;
     border-bottom: 0px;
+}
+.confirmation-popup-container #bookmark-animation {
+    position: absolute;
+    top: 50%;
+    margin-left: 30%;
+    display: none;
 }

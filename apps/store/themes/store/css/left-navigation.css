@@ -30,11 +30,12 @@ nav.navigation {
     position: absolute;
     z-index: 1000;
     left: 0;
+    background: #222;
 }
 
 nav.navigation > a, nav.navigation {
     display: table;
-    width: 200px;
+    width: 250px;
     height: 40px;
     color: #fff;
     text-decoration: none;
@@ -66,7 +67,7 @@ nav.navigation > a > .left-menu-item {
     padding-left: 10px;
     line-height: 40px;
     display: inline-block;
-    width: 160px;
+    width: 210px;
     float: left;
 }
 
@@ -104,7 +105,7 @@ nav.navigation > a.green.active > .left-menu-item,
 nav.navigation > a.green.hover > .left-menu-item {
     background: #212121;
     color: white;
-    width: 160px;
+    width: 210px;
     height: 40px;
 }
 
@@ -123,7 +124,7 @@ nav.navigation > a.red.active > .left-menu-item,
 nav.navigation > a.red.hover > .left-menu-item {
     background: #212121;
     color: white;
-    width: 160px;
+    width: 210px;
     height: 40px;
 }
 
@@ -142,7 +143,7 @@ nav.navigation > a.orange.active > .left-menu-item,
 nav.navigation > a.orange.hover > .left-menu-item {
     background: #212121;
     color: white;
-    width: 160px;
+    width: 210px;
     height: 40px;
 }
 
@@ -161,7 +162,7 @@ nav.navigation > a.yellow.active > .left-menu-item,
 nav.navigation > a.yellow.hover > .left-menu-item {
     background: #212121;
     color: white;
-    width: 160px;
+    width: 210px;
     height: 40px;
 }
 
@@ -180,7 +181,7 @@ nav.navigation > a.blue.active > .left-menu-item,
 nav.navigation > a.blue.hover > .left-menu-item {
     background: #212121;
     color: white;
-    width: 160px;
+    width: 210px;
     height: 40px;
 }
 
@@ -199,7 +200,7 @@ nav.navigation > a.purple.active > .left-menu-item,
 nav.navigation > a.purple.hover > .left-menu-item {
     background: #8e44ad;
     color: white;
-    width: 160px;
+    width: 210px;
     height: 40px;
 }
 
@@ -218,7 +219,7 @@ nav.navigation > a.grey.active > .left-menu-item,
 nav.navigation > a.grey.hover > .left-menu-item {
     background: #2c3e50;
     color: white;
-    width: 160px;
+    width: 210px;
     height: 40px;
 }
 nav.navigation .second_level {
@@ -320,7 +321,10 @@ nav.navigation .second_level > .left-menu-item {
     margin-bottom: 5px;
     display: none;
 }
+.taxonomy ul.nav > li ul.add {
 
+    display: block;
+}
 .taxonomy ul.nav > li .filter-tag .value-expand ul,
 .taxonomy ul.nav > li .filter-tag .value-edit > ul {
     display: block;
@@ -731,7 +735,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     width: 200px;
     padding-left: 10px;
     font-size: 18px;
-
+    color: #fff;
 }
 
 .tags-collapse {
@@ -836,11 +840,10 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     position: relative;
     z-index: 2;
     float: left;
-    width: 40%;
     margin-bottom: 0;
     margin-left: 20px;
     height: 35px !important;
-    margin-top: 3px;
+    margin-top: 0;
 }
 .es-input-group{
     position: relative;
@@ -899,8 +902,18 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     -webkit-box-shadow: inset 0 0 0 rgba(0,0,0,.075), 0 0 0 rgba(102, 175, 233, .6);
     box-shadow: inset 0 0 0 rgba(0,0,0,.075), 0 0 0 rgba(102, 175, 233, .6);
 }
-
-
+.search-wrapper{
+    margin-left: 250px;
+}
+.search-wrapper .input-group-btn{
+}
+.search-wrapper .input-group-btn button{
+    height: 34px;
+    margin-bottom: 1px;
+}
+.search-wrapper .input-group-btn button i{
+    width: 28px;
+}
 .ctrl-wr-asset  {
     position: relative;
     width: 15.2%;
@@ -976,7 +989,8 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     z-index: 999;
 }
 .asset-details-header .ast-img .ast-type-icon{
-    top:120px;
+    top: 105px;
+    left: 15px;
 }
 .ast-img .ast-type-icon i{
     font-size:2.2em;
@@ -1016,6 +1030,32 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 #social-button-div{
     padding-top:12px;
 }
+#assets-container{
+    margin-left: 250px;
+}
+.toggle-menu-left-wrapper{
+    background: transparent;
+    border:none;
+    padding:0 10px;
+    display: none;
+}
+.toggle-menu-left-bar{
+    border-bottom: solid 1px #fff;
+    width: 20px;
+    height: 1px;
+    margin-bottom: 3px;
+}
+.toggle-menu-left{
+    border-radius: 0;
+    padding-top:9px;
+    background: #000;
+}
+.search-wrapper .input-group-addon:last-child{
+    border: none;
+}
+a#search-info{
+    border: none;
+}
 /* ============================================================ */
 
 
@@ -1029,12 +1069,11 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         position: relative;
         width:19%;
         float: left;
-        margin: 0.5%;
+        margin: 0.5% 3% 0 0;
         background: #fbfbfb;
         transition: all 0.5s ease;
         border: 1px solid #F1EBEB;
         height: auto;
-        margin-right: 3%;
     }
     .wr-asset {
         width: 19%;
@@ -1057,18 +1096,12 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 /* Small Devices, Tablets */
 @media only screen and (max-width: 768px) {
-    nav.navigation > a, nav.navigation {
-        width: 45px !important;
-    }
 
     .left-menu-item {
         display: none;
     }
 
-    nav.navigation > a, nav.navigation {
-        display: table;
-        width: 52px;
-    }
+
 
     .left-col {
         margin: 2px;
@@ -1076,10 +1109,6 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
     .es-input-group .es-form-control {
         margin-left: 90px;
-    }
-
-    .tags-wrapper {
-        display: none;
     }
 
     .es-col-lg-12 {
@@ -1100,10 +1129,6 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 /* Extra Small Devices, Phones */
 @media only screen and (max-width: 480px) {
-    nav.navigation > a, nav.navigation {
-        width: 45px;
-    }
-
     .category {
         width: 75%
     }
@@ -1116,17 +1141,8 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
         display: none;
     }
 
-    nav.navigation > a, nav.navigation {
-        display: table;
-        width: 52px;
-    }
-
     .left-col {
         margin: 2px;
-    }
-
-    .tags-wrapper {
-        display: none;
     }
 
     .es-row {
@@ -1296,7 +1312,7 @@ ul.sidebar-messages > li {
 .sidebar-nav {
     position: absolute;
     top: 0;
-    width: 200px;
+    width: 250px;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -1380,4 +1396,39 @@ ul.sidebar-messages > li {
         position: relative;
         margin-right: 0;
     }
+}
+
+/* New taxonomy css */
+.taxonomy-or-sep-wrapper{
+    position: relative;
+    height: 12px;
+}
+.taxonomy-or-sep{
+    border-bottom: solid 1px#444;
+    text-align: center;
+    margin-top: 18px;
+    margin-bottom: 22px;
+    margin-right: 1px;
+}
+.taxonomy-or-sep-operation{
+    background: #444;
+    display: inline-block;
+    padding: 0 5px;
+    top: -11px;
+    position: absolute;
+}
+.taxonomy-or-sep-wrapper .btn-primary{
+    position: absolute;
+    right: 0;
+    top: -13px;
+    padding: 1px 3px 3px;
+}
+.taxonomy-group-title{
+    background: #2C313B;
+    padding-bottom: 10px;
+    font-size: 17px;
+}
+
+.btn-or-cancel {
+    background: #8c8c8c;
 }

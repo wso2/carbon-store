@@ -20,11 +20,12 @@ const BASE_URL = caramel.context + '/apis/taxonomies';
 const TAXONOMY_SELECT = '.taxonomy-select';
 const COLUMN_SELECTOR = '.taxonomy-select-window';
 const BREADCRUMB_SELECTOR = '.taxonomy-breadcrumb > ol';
-const TAXONOMY_DROPDOWN = '#taxonomy-dropdown-menu';
 const TAXONOMY_BROWSER = '.taxonomy-browser';
 const SELECTED_CONTAINER = '.selected-taxonomy-container';
 const SELECTED_CONTENT = '.selected-taxonomy-content';
-const BACK_LINK = '<li class="back" style="display: none;"><a href="#">...</a></li>';
+const TAXONOMY_SELECT_BUTTON = '#taxonomy-select-button';
+const CANCEL_BUTTON = '#cancel-button';
+const BACK_LINK = '<li class="back" style="display: none;"><a href="#">..</a></li>';
 const RIGHT_ARROW = ' <i class="icon fw fw-right-arrow"></i>';
 
 var windowObject = {};
@@ -38,14 +39,11 @@ var columnsCount;
 var initWindowColumns = function () {
     if ($(window).width() < 768) {
         columnsCount = 1;
-    }
-    else if ($(window).width() >= 768 && $(window).width() <= 992) {
+    } else if ($(window).width() >= 768 && $(window).width() <= 992) {
         columnsCount = 2;
-    }
-    else if ($(window).width() > 992 && $(window).width() <= 1200) {
+    } else if ($(window).width() > 992 && $(window).width() <= 1200) {
         columnsCount = 3;
-    }
-    else {
+    } else {
         columnsCount = 4;
     }
 };
@@ -55,14 +53,14 @@ var initWindowColumns = function () {
  * @param dataWindow    current window that the click event occurred
  */
 var updateTaxonomyWindow = function (dataWindow) {
-    if ($('[data-window=' + ( dataWindow + 1 ) + ']').length > 0) {
-        $('[data-window]:gt(' + ( dataWindow + 1 ) + ')').hide();
-        $('[data-window=' + ( dataWindow + 1 ) + ']').fadeIn();
+    if ($('[data-window=' + (dataWindow + 1) + ']').length > 0) {
+        $('[data-window]:gt(' + (dataWindow + 1) + ')').hide();
+        $('[data-window=' + (dataWindow + 1) + ']').fadeIn();
 
-        var windowToHide = ( (dataWindow + 1) - columnsCount );
+        var windowToHide = ((dataWindow + 1) - columnsCount);
 
         if (windowToHide >= 0) {
-            $('[data-window]:lt(' + ( windowToHide + 1 ) + ')').hide();
+            $('[data-window]:lt(' + (windowToHide + 1) + ')').hide();
             $('[data-window=' + (windowToHide + 1) + '] > ul > li.back').show();
         }
     }
@@ -76,18 +74,15 @@ var loadTaxonomies = function () {
         type: 'GET',
         url: BASE_URL + '?assetType=' + store.publisher.type,
         success: function (results) {
-            var html = '';
+            var html = '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 taxonomy-select-window" data-root="#"' +
+                ' data-window="0"><ul>';
             for (var key in results) {
                 if (results.hasOwnProperty(key)) {
-                    html += '<li><a role="menuitem" tabindex="-1" href="' + results[key].name + '">'
-                        + results[key].name + '</a></li>';
+                    html += '<li><a href="' + results[key].name + '">' + results[key].name + RIGHT_ARROW + '</a></li>';
                 }
             }
-            $(TAXONOMY_DROPDOWN).html(html);
-            if ($('#dropdown-button').children().length === 0) {
-                $('#taxonomy-dropdown').clone(true, true).appendTo('#dropdown-button');
-                $('#dropdown-button').find('button').removeClass('btn-default');
-            }
+            html += '</ul></div>';
+            $(TAXONOMY_SELECT).html(html);
         }
     });
 };
@@ -95,8 +90,9 @@ var loadTaxonomies = function () {
 /**
  * Loads the root level children for the given taxonomy name.
  * @param taxonomyName  name of the taxonomy
+ * @param dataWindow    window of the current element
  */
-var loadTaxonomyRoot = function (taxonomyName) {
+var loadTaxonomyRoot = function (taxonomyName, dataWindow) {
     $.ajax({
         type: 'GET',
         url: BASE_URL + '/' + taxonomyName,
@@ -105,8 +101,8 @@ var loadTaxonomyRoot = function (taxonomyName) {
                 if (results.hasOwnProperty(key)) {
                     var children = results[key].children;
                     var html = '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 taxonomy-select-window" data-root="'
-                        + taxonomyName + '" data-parent="' + taxonomyName + '" data-window="0"><ul>' + BACK_LINK;
-
+                        + taxonomyName + '" data-parent="' + taxonomyName + '" data-window="' + (dataWindow + 1)
+                        + '"><ul>' + BACK_LINK;
                     for (var index in children) {
                         if (children.hasOwnProperty(index)) {
                             var child = children[index];
@@ -120,7 +116,7 @@ var loadTaxonomyRoot = function (taxonomyName) {
                     }
                     html += '</ul></div>';
                     $(TAXONOMY_SELECT).append(html);
-                    updateTaxonomyWindow(0);
+                    updateTaxonomyWindow(dataWindow);
                 }
             }
         }
@@ -139,7 +135,8 @@ var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
         url: BASE_URL + '/' + taxonomyName + '/' + element + "?children=true",
         success: function (results) {
             var html = '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 taxonomy-select-window" data-root="'
-                + taxonomyName + '" data-parent="' + element + '" data-window="' + (dataWindow + 1) + '"><ul>' + BACK_LINK;
+                + taxonomyName + '" data-parent="' + element + '" data-window="' + (dataWindow + 1) + '"><ul>'
+                + BACK_LINK;
 
             for (var key in results) {
                 if (results.hasOwnProperty(key)) {
@@ -159,6 +156,11 @@ var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
     });
 };
 
+/**
+ * Get the name of a taxonomy element and push to a global array displayValue.
+ * @param taxonomyName  name of the taxonomy
+ * @param taxonomyPath  path of the element
+ */
 var getTaxonomyElementDisplayName = function (taxonomyName, taxonomyPath) {
     $.ajax({
         type: 'GET',
@@ -170,28 +172,54 @@ var getTaxonomyElementDisplayName = function (taxonomyName, taxonomyPath) {
     })
 };
 
+/**
+ * Get display value of taxonomy path and push to a global array displayValue.
+ * @param taxonomyPath  taxonomy path
+ */
 var getTaxonomyDisplayName = function (taxonomyPath) {
     var taxonomyPathList = taxonomyPath.split('/');
+    var taxonomyId = taxonomyPathList[0];
     $.ajax({
         type: 'GET',
         async: false,
-        url: BASE_URL + '/' + store.publisher.type + '/?taxonomyId=' + taxonomyPathList[0],
+        url: BASE_URL + '/' + store.publisher.type + '/?taxonomyId=' + taxonomyId,
         success: function (results) {
-            displayValue.push(results[0].taxonomyName);
-            var path = taxonomyPathList[0];
+            var taxonomyName = results[0].taxonomyName;
+            displayValue.push(taxonomyName);
+            var path = taxonomyId;
             for (var i = 1; i < taxonomyPathList.length; ++i) {
                 path += '/' + taxonomyPathList[i];
-                getTaxonomyElementDisplayName(results[0].taxonomyName, path);
+                getTaxonomyElementDisplayName(taxonomyName, path);
             }
         }
     });
 };
 
 /**
+ * Resets taxonomy browser to the initial position.
+ */
+var resetTaxonomyBrowser = function () {
+    $(COLUMN_SELECTOR + ' li').removeClass('active');
+    $(COLUMN_SELECTOR + ' li > button').remove();
+
+    $('[data-window]:gt(0)').each(function () {
+        var parent = $(this).data('parent');
+        if (!windowObject[parent]) {
+            windowObject[parent] = $(this);
+        }
+        $(this).remove();
+    });
+    $(BREADCRUMB_SELECTOR).empty();
+    $(TAXONOMY_BROWSER).hide('slow');
+    $(CANCEL_BUTTON).hide();
+    $(TAXONOMY_SELECT_BUTTON).show();
+};
+
+/**
  * Initializes the taxonomy browser view.
  * @param appliedTaxonomy   array of applied taxonomy for the asset
  */
-var initTaxonomyBrowser = function (appliedTaxonomy) {
+function initTaxonomyBrowser(appliedTaxonomy) {
     $(TAXONOMY_BROWSER).hide();
     if ($('#taxonomy-list')[0]) {
         $('#taxonomy-list')[0].value = '';
@@ -201,8 +229,7 @@ var initTaxonomyBrowser = function (appliedTaxonomy) {
 
     if (appliedTaxonomy && appliedTaxonomy.length !== 0) {
         //if already applied tags exists
-        $(SELECTED_CONTAINER).show();
-        $('.message-info').hide();
+        $(SELECTED_CONTAINER).show('slow');
 
         for (var key in appliedTaxonomy) {
             if (appliedTaxonomy.hasOwnProperty(key)) {
@@ -221,37 +248,25 @@ var initTaxonomyBrowser = function (appliedTaxonomy) {
     } else {
         //if not initialize to empty view
         $(SELECTED_CONTAINER).hide();
-        $('.message-info').show();
     }
     loadTaxonomies();
-};
+}
 
 $(function () {
     initWindowColumns();
 
-    $(TAXONOMY_DROPDOWN).on('click', 'a', function (e) {
-        e.preventDefault();
-        var element = $(this).attr('href');
-        var rootWindow = $('[data-window=0]');
-        if (rootWindow.length === 0) {
-            loadTaxonomyRoot(element);
-        } else {
-            $('[data-window]:eq(0), [data-window]:gt(0)').each(function () {
-                $(this).find('li').removeClass('active');
-                windowObject[$(this).data('parent')] = $(this);
-                $(this).remove();
-            });
+    $('#taxonomy').find('.collapsing-h2').click(function () {
+        resetTaxonomyBrowser();
+    });
 
-            if (windowObject[element]) {
-                $(TAXONOMY_SELECT).html(windowObject[element].first());
-                delete windowObject[element];
-                updateTaxonomyWindow(0);
-            } else {
-                loadTaxonomyRoot(element);
-            }
-        }
-        $(BREADCRUMB_SELECTOR).html('<li>' + element + RIGHT_ARROW + '</li>');
-        $(TAXONOMY_BROWSER).show();
+    $(TAXONOMY_SELECT_BUTTON).click(function () {
+        $(TAXONOMY_BROWSER).show('medium');
+        $(CANCEL_BUTTON).show();
+        $(TAXONOMY_SELECT_BUTTON).hide();
+    });
+
+    $(CANCEL_BUTTON).click(function () {
+        resetTaxonomyBrowser();
     });
 
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li:not(.back):not(.leaf) a', function (e) {
@@ -260,15 +275,11 @@ $(function () {
         var root = $(this).closest('div').data('root');
         var dataWindow = parseInt($(this).closest('div').data('window'));
 
-        $(this).closest('li').siblings().siblings().each(function () {
-            $(this).removeClass('active');
-            $('button', this).remove();
-        });
-        $(this).closest('li:not(.back)').addClass('active');
-
         $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            $(this).find('li').removeClass('active');
-            windowObject[$(this).data('parent')] = $(this);
+            var parent = $(this).data('parent');
+            if (!windowObject[parent]) {
+                windowObject[parent] = $(this);
+            }
             $(this).remove();
         });
 
@@ -277,11 +288,21 @@ $(function () {
             delete windowObject[element];
             updateTaxonomyWindow(dataWindow);
         } else {
-            loadTaxonomyChildren(root, element, dataWindow);
+            if (dataWindow === 0) {
+                loadTaxonomyRoot(element, dataWindow);
+            } else {
+                loadTaxonomyChildren(root, element, dataWindow);
+            }
         }
 
+        $(this).closest('li:not(.back)').addClass('active');
+        $(this).closest('li').siblings().each(function () {
+            $(this).removeClass('active');
+            $('button', this).remove();
+        });
+
         // Updating taxonomy breadcrumb
-        $(BREADCRUMB_SELECTOR).html($(BREADCRUMB_SELECTOR + ' > li').first());
+        $(BREADCRUMB_SELECTOR).empty();
         $(COLUMN_SELECTOR + ' ul > li').each(function () {
             if ($(this).hasClass('active')) {
                 $(BREADCRUMB_SELECTOR).append('<li>' + $('a', this).html() + '</li>');
@@ -293,42 +314,46 @@ $(function () {
         e.preventDefault();
 
         var dataWindow = $(this).closest(COLUMN_SELECTOR).data('window'),
-            windowsToHide = ( (dataWindow - 1) + columnsCount );
+            windowsToHide = ((dataWindow - 1) + columnsCount);
 
         // Hide windows that are overflowing
         $('[data-window]:gt(' + (windowsToHide - 1) + ')').hide();
         $('[data-window=' + dataWindow + '] > ul > li.back').hide();
-        $('[data-window=' + ( dataWindow - 1 ) + ']').fadeIn();
+        $('[data-window=' + (dataWindow - 1) + ']').fadeIn();
     });
 
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > a', function (e) {
         e.preventDefault();
         displayValue.length = 0;
+
+        var dataWindow = parseInt($(this).closest('div').data('window'));
+        $('[data-window]:gt(' + dataWindow + ')').each(function () {
+            if (!windowObject[parent]) {
+                windowObject[parent] = $(this);
+            }
+            $(this).remove();
+        });
+
         var elemParent = $(this).closest('li');
+        $(this).closest('li:not(.back)').addClass('active');
         elemParent.siblings().each(function () {
             $(this).removeClass('active');
             $('button', this).remove();
         });
-        $(this).closest('li:not(.back)').addClass('active');
 
         // Updating taxonomy breadcrumb
-        $(BREADCRUMB_SELECTOR).html($(BREADCRUMB_SELECTOR + ' > li').first());
+        $(BREADCRUMB_SELECTOR).empty();
         $(COLUMN_SELECTOR + ' ul > li').each(function () {
             if ($(this).hasClass('active')) {
-                // displayValue.push($('a', this).text());
                 $(BREADCRUMB_SELECTOR).append('<li>' + $('a', this).html() + '</li>');
             }
         });
 
-        //Appending the add button to leaf nodes
+        //Appending buttons to leaf nodes
         if (selectedTaxonomy.indexOf($(this).attr('href')) < 0) {
-            elemParent.append(' <button class="btn btn-add">'
-                + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
-                + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
+            appendButton(elemParent, true);
         } else {
-            elemParent.append(' <button class="btn btn-remove">'
-                + '<span class="icon fw-stack"><i class="fw fw-minus fw-stack-1x"></i>'
-                + '<i class="fw fw-ring fw-stack-2x"></i></span>  Remove</button>');
+            appendButton(elemParent, false);
         }
     });
 
@@ -349,12 +374,9 @@ $(function () {
         }
 
         if (selectedTaxonomy.length === 1) {
-            $('.message-info').hide();
-            $(SELECTED_CONTAINER).show();
+            $(SELECTED_CONTAINER).show('slow');
         }
-        $(this).closest('li').append(' <button class="btn btn-remove">'
-            + '<span class="icon fw-stack"><i class="fw fw-minus fw-stack-1x"></i>'
-            + '<i class="fw fw-ring fw-stack-2x"></i></span>  Remove</button>');
+        appendButton($(this).closest('li'), false);
         $(this).remove();
 
     });
@@ -363,21 +385,37 @@ $(function () {
         e.preventDefault();
         var selectedValue = $(this).prev('a').attr('href');
         $('[data-value="' + selectedValue + '"] > button').trigger('click');
-
-        $(this).closest('li').append(' <button class="btn btn-add">'
-            + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
-            + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
+        appendButton($(this).closest('li'), true);
         $(this).remove();
     });
 
     $(SELECTED_CONTENT).on('click', 'button', function (e) {
         e.preventDefault();
-        var removedIndex = selectedTaxonomy.indexOf($(this).closest('div').data('value'));
+        var dataValue = $(this).closest('div').data('value');
+        var removedIndex = selectedTaxonomy.indexOf(dataValue);
         selectedTaxonomy.splice(removedIndex, 1);
         $(this).closest('div').remove();
 
+        var selectedColumn = $(COLUMN_SELECTOR + ' a[href="' + dataValue + '"]').closest('li');
+        selectedColumn.find('button').remove();
+        if (selectedColumn.hasClass('active')) {
+            appendButton(selectedColumn, true);
+        }
+
         if ($(SELECTED_CONTENT).children().length < 1) {
-            initTaxonomyBrowser(null);
+            $(SELECTED_CONTAINER).hide('slow');
         }
     });
+
+    function appendButton(element, add) {
+        if (add) {
+            element.append(' <button class="btn btn-add">'
+                + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
+                + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
+        } else {
+            element.append(' <button class="btn btn-remove">'
+                + '<span class="icon fw-stack"><i class="fw fw-minus fw-stack-1x"></i>'
+                + '<i class="fw fw-ring fw-stack-2x"></i></span>  Remove</button>');
+        }
+    }
 });

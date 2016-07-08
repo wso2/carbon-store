@@ -139,6 +139,9 @@ $container.on('click', '#btn-post', function (e) {
     }
 });
 $stream.on('click', '.icon-thumbs-down', function (e) {
+    if (!store.user) {
+        return false;
+    }
     e.preventDefault();
     var $tDownBtn = $(e.target);
     var $review = $tDownBtn.parents('.com-review');
@@ -180,6 +183,9 @@ $stream.on('click', '.icon-thumbs-down', function (e) {
     }
 });
 $stream.on('click', '.icon-thumbs-up', function (e) {
+    if (!store.user) {
+        return false;
+    }
     e.preventDefault();
     var $tUpBtn = $(e.target);
     var $review = $tUpBtn.parents('.com-review');

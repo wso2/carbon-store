@@ -23,6 +23,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,7 +76,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
 			+ Constants.LIKES_COLUMN + " > ?";
 
-	public static final String IS_REVIEWED_SELECT_SQL = "SELECT "
+	public static final String IS_COMMENTED_SELECT_SQL = "SELECT "
 			+ Constants.BODY_COLUMN + " FROM "
 			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
@@ -84,10 +85,17 @@ public class SQLActivityBrowser implements ActivityBrowser {
 	public static final String SELECT_LIKE_STATUS = "SELECT "
 			+ Constants.ID_COLUMN + " FROM "
 			+ Constants.SOCIAL_LIKES_TABLE_NAME + " WHERE "
-			+ Constants.USER_COLUMN + " = ? AND " + Constants.CONTEXT_ID_COLUMN
-			+ " = ? AND " + Constants.LIKE_VALUE_COLUMN + " = ?";
+			+ Constants.USER_COLUMN + " = ? AND "
+			+ Constants.CONTEXT_ID_COLUMN + " = ? AND "
+			+ Constants.LIKE_VALUE_COLUMN + " = ?";
 
-	public static final String POLL_COMMENTS_SQL = "SELECT "
+    public static final String SELECT_TOTAL_LIKES = "SELECT COUNT("
+            + Constants.CONTEXT_ID_COLUMN + ") FROM "
+            + Constants.SOCIAL_LIKES_TABLE_NAME + " WHERE "
+            + Constants.CONTEXT_ID_COLUMN + " = ? AND "
+            + Constants.LIKE_VALUE_COLUMN + " = ?";
+
+    public static final String POLL_COMMENTS_SQL = "SELECT "
 			+ Constants.BODY_COLUMN + ", " + Constants.ID_COLUMN + " FROM "
 			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
 			+ Constants.CONTEXT_ID_COLUMN + " =? AND "
@@ -206,6 +214,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 		ResultSet resultSet;
 		String tenantDomain = SocialUtil.getTenantDomain();
 		limit = SocialUtil.getActivityLimit(limit);
+        String tenantedUsername = SocialUtil.getTenantedUsername();
 		String errorMsg = "Unable to retrieve activities. ";
 
 		try {
@@ -225,15 +234,18 @@ public class SQLActivityBrowser implements ActivityBrowser {
 					tenantDomain, order, limit, offset);
 
 			activities = new ArrayList<Activity>();
-			while (resultSet.next()) {
-				JsonObject body = (JsonObject) parser.parse(resultSet
-						.getString(Constants.BODY_COLUMN));
-				int id = resultSet.getInt(Constants.ID_COLUMN);
-				Activity activity = new SQLActivity(body);
-				activity.setId(id);
-				activities.add(activity);
-			}
-			resultSet.close();
+            while (resultSet.next()) {
+                JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+                int id = resultSet.getInt(Constants.ID_COLUMN);
+                Activity activity = new SQLActivity(body);
+                activity.setId(id);
+                activity.setLikeCount(getTotalLikes(id, 1));
+                activity.setDislikeCount(getTotalLikes(id, 0));
+                activity.setILike(isUserlikedActivity(tenantedUsername, id, 1));
+                activity.setIDislike(isUserlikedActivity(tenantedUsername, id, 0));
+                activities.add(activity);
+            }
+            resultSet.close();
 		} catch (SQLException e) {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
@@ -637,29 +649,70 @@ public class SQLActivityBrowser implements ActivityBrowser {
 
 	}
 
-	/**
-	 * Check whether the given user has already reviewed on the given targetId (AssetType + UUID)
-	 * @param targetId AssetType + UUID delimited by colon
-	 * @param userId Username with tenant domain i:e admin@carbon.super
-	 * @return Boolean whether user has already reviewed or not
-	 */
-    public boolean isReviewed(String targetId, String userId) throws SocialActivityException {
-        boolean reviewed = false;
+    /**
+     * Check whether the given user has already published the given activity on targetId (AssetType + UUID)
+     *
+     * @param activityString Stringify activity JSON, An activity can be either
+     *                       comment or like/dislike unlike/un-dislike
+     * @param targetId       AssetType + UUID delimited by colon
+     * @param userId         Username with tenant domain i:e admin@carbon.super
+     * @return Boolean whether user has already reviewed or not
+     */
+    public boolean isPublished(String activityString, String targetId, String userId) throws SocialActivityException {
+        boolean published;
+        JsonObject activityJSON;
+        int likeValue = -1;
+        try {
+            activityJSON = (JsonObject) parser.parse(activityString);
+        } catch (JsonSyntaxException e) {
+            String message = "Malformed JSON element found: " + e.getMessage();
+            log.error(message, e);
+            throw new SocialActivityException(message, e);
+        } catch (NumberFormatException e) {
+            String message = "Invalid review ID : " + e.getMessage();
+            throw new SocialActivityException(message, e);
+        }
+        SQLActivity activity = new SQLActivity(activityJSON);
+        String verb = activity.getVerb();
+        if (Constants.POST_VERB.equals(verb)) {
+            published = isCommented(targetId, userId);
+        } else {
+            if (Constants.VERB.valueOf(verb) == Constants.VERB.like) {
+                likeValue = 1;
+            } else if (Constants.VERB.valueOf(verb) == Constants.VERB.dislike) {
+                likeValue = 0;
+            }
+            int target = Integer.parseInt(targetId);
+            // Handle like,dislike,unlike,undislike verbs
+            published = isUserlikedActivity(userId, target, likeValue); //isLiked(activity,targetId,userId);
+        }
+        return published;
+    }
+
+    /**
+     * Return boolean whether the given user has already commented on the given asset
+     *
+     * @param targetId Asset type along with asset UUID
+     * @param userId   Username with domain
+     * @return boolean
+     * @throws SocialActivityException
+     */
+    private boolean isCommented(String targetId, String userId) throws SocialActivityException {
+        boolean commented;
         Connection connection = null;
         PreparedStatement statement;
         ResultSet resultSet;
         String errorMsg = "Unable to retrieve comments for the user : " + userId;
-
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Executing: " + IS_REVIEWED_SELECT_SQL);
+                log.debug("Executing: " + IS_COMMENTED_SELECT_SQL);
             }
             connection = DSConnection.getConnection();
-            statement = connection.prepareStatement(IS_REVIEWED_SELECT_SQL);
+            statement = connection.prepareStatement(IS_COMMENTED_SELECT_SQL);
             statement.setString(1, targetId);
             statement.setString(2, userId);
             resultSet = statement.executeQuery();
-            reviewed = resultSet.next();
+            commented = resultSet.next();
             resultSet.close();
         } catch (SQLException | DataSourceException e) {
             String message = errorMsg + e.getMessage();
@@ -668,7 +721,43 @@ public class SQLActivityBrowser implements ActivityBrowser {
         } finally {
             DSConnection.closeConnection(connection);
         }
-        return reviewed;
+        return commented;
     }
 
+    /**
+     * Get the total likes or dislikes for the given targetId(Review ID)
+     *
+     * @param targetId  Review ID
+     * @param likeValue Likevalue whether request total likes(1) count or dislike(0) counts
+     * @return Total number of likes/dislikes
+     * @throws SocialActivityException
+     */
+    private int getTotalLikes(int targetId, int likeValue) throws SocialActivityException {
+        int likes = 0;
+        Connection connection = null;
+        PreparedStatement statement;
+        ResultSet resultSet;
+        String errorMsg = "Unable to retrieve likes for the review : " + targetId;
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Executing: " + SELECT_TOTAL_LIKES);
+            }
+            connection = DSConnection.getConnection();
+            statement = connection.prepareStatement(SELECT_TOTAL_LIKES);
+            statement.setInt(1, targetId);
+            statement.setInt(2, likeValue);
+            resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                String resultColumn = "COUNT(" + Constants.CONTEXT_ID_COLUMN + ")";
+                likes = resultSet.getInt(resultColumn);
+            }
+            resultSet.close();
+        } catch (SQLException | DataSourceException e) {
+            String message = errorMsg + e.getMessage();
+            throw new SocialActivityException(message, e);
+        } finally {
+            DSConnection.closeConnection(connection);
+        }
+        return likes;
+    }
 }

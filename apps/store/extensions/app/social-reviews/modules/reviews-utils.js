@@ -61,13 +61,17 @@ var ReviewUtils = {};
         var myIndex;
         for (var index = 0; index < reviews.length; index++) {
             review = reviews[index];
+            review.user = false;
             usernameOnReview = review.actor.id;
+            var targetId = String(review.object.id);
             review.actor.id = cleanUsername(review.actor.id);
             review.isMyComment = (usernameOnReview === formatUsername(user));
             //Only populate review details if there is a logged in
             //user
             if (user && review.isMyComment) {
                 myIndex = index;
+            } else if (user) {
+                review.user = true;
             }
         }
         if (myIndex !== undefined) {
@@ -96,10 +100,10 @@ var ReviewUtils = {};
         var reviewJSON = JSON.stringify(review);
         var username = review.actor.id;
         var target = review.target.id;
-        var reviewed = socialSvc.isReviewed(target, username);
+        var alreadyPublished = socialSvc.isPublished(reviewJSON, target, username);
         var result = {};
         var id = -1;
-        if (!reviewed) {
+        if (!alreadyPublished) {
             id = socialSvc.publish(reviewJSON);
         }
         result.id = id;
