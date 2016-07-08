@@ -586,6 +586,7 @@ nav.navigation .second_level > .left-menu-item {
 .refine > .panel .checkbox {
     margin: 3px 0;
     display: block;
+    padding-left: 5px;
 }
 
 .refine a > .icon {
