@@ -1421,14 +1421,15 @@ ul.sidebar-messages > li {
     background: #8c8c8c;
 }
 
-.taxonomy-grouped-or-wrapper{
+.taxonomy-grouped-or-wrapper {
     border-left: solid 2px #fff;
     height: 100%;
     position: absolute;
     vertical-align: middle;
     z-index: 2;
 }
-.taxonomy-grouped-or{
+
+.taxonomy-grouped-or {
     display: block;
     position: absolute;
     top: 50%;
