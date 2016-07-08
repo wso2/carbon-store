@@ -1,36 +1,33 @@
 var asset = {};
 
 (function (asset) {
+    var PROCESSING_TEXT = "processing";
+    var SUCCESS_TEXT =  "success";
+    var ERROR_TEXT = "error";
+    var getText = function(key) {
+        return $('#main-bookmark').data(key);
+    };
     asset.process = function (type, path, destination, elem) {
         if (!store.user) {
             $('#modal-login').modal('show');
             return;
         }
         $(elem).find("i").removeClass().addClass('fa fa-spinner fa-spin');
-        $(elem).find('#main-bookmark').html(" Adding...");
+        $(elem).find('#main-bookmark').html(getText(PROCESSING_TEXT));
         $(elem).unbind('click');
         $.ajax({
             url: caramel.url('/apis/subscriptions'),
             data: {type: type, asset: path, destination: encodeURIComponent(location.href)},
             method: 'POST',
             success: function (data) {
-                messages.alertSuccess("Successfully subscribed to asset");
+                messages.alertSuccess(getText(SUCCESS_TEXT));
                 window.location.href=destination;
-                /*$('i', elem).removeClass().addClass('fw fw-bookmark store-bookmarked');
-                if ($(elem).find('#main-bookmark').length > 0) {
-                    $(elem).find("i").removeClass().addClass('fa fa-star');
-                    var nextState = retrieveState(elem);
-                    persistState(elem);
-                    $(elem).find('#main-bookmark').html(nextState);
-                    $(elem).attr('id', 'btn-remove-subscribe');
-                }*/
             },
             error: function () {
-                messages.alertError("Failed to bookmark this asset!");
+                messages.alertError(getText(ERROR_TEXT));
                 $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
             }
         });
-        //location.href = caramel.context + '/apis/subscriptions?type=' + type + '&asset=' + path + '&destination=' + encodeURIComponent(location.href);
     };
 
     asset.unsubscribeBookmark = function (type, path, destination, elem) {
@@ -39,26 +36,18 @@ var asset = {};
             return;
         }
         $(elem).find("i").removeClass().addClass('fa fa-spinner fa-spin');
-        $(elem).find('#main-bookmark').html(" Removing...");
+        $(elem).find('#main-bookmark').html(getText(PROCESSING_TEXT));
         $(elem).unbind('click');
         $.ajax({
             url: caramel.url('/apis/subscriptions') + '?type=' + type + '&asset=' + path,
             method: 'DELETE',
             dataType: 'text json',
             success: function (data) {
-                messages.alertSuccess("Successfully un-subscribed to asset");
+                messages.alertSuccess(getText(SUCCESS_TEXT));
                 window.location.href=destination;
-                /*$('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
-                if ($(elem).find('#main-bookmark').length > 0) {
-                    $(elem).find("i").removeClass().addClass('fw fw-bookmark');
-                    var nextState = retrieveState(elem);
-                    persistState(elem);
-                    $(elem).find('#main-bookmark').html("Bookmark");
-                    $(elem).attr('id', 'btn-add-gadget');
-                }*/
             },
             error: function (data) {
-                messages.alertError("Failed to un-bookmark this asset!");
+                messages.alertError(getText(ERROR_TEXT));
                 $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmarked');
             }
         });
