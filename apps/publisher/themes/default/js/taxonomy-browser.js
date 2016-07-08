@@ -199,7 +199,7 @@ var getTaxonomyDisplayName = function (taxonomyPath) {
  * Resets taxonomy browser to the initial position.
  */
 var resetTaxonomyBrowser = function () {
-    $(TAXONOMY_BROWSER).slideUp(function(){
+    $(TAXONOMY_BROWSER).slideUp(function () {
         $(COLUMN_SELECTOR + ' li').removeClass('active');
         $(COLUMN_SELECTOR + ' li > button').remove();
         $(COLUMN_SELECTOR + ' li.back').hide();
@@ -278,14 +278,7 @@ $(function () {
         var element = $(this).attr('href');
         var root = $(this).closest('div').data('root');
         var dataWindow = parseInt($(this).closest('div').data('window'));
-
-        $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            var parent = $(this).data('parent');
-            if (!windowObject[parent]) {
-                windowObject[parent] = $(this);
-            }
-            $(this).remove();
-        });
+        saveDatawindow(dataWindow);
 
         if (windowObject[element]) {
             $(TAXONOMY_SELECT).append(windowObject[element].first());
@@ -331,12 +324,7 @@ $(function () {
         displayValue.length = 0;
 
         var dataWindow = parseInt($(this).closest('div').data('window'));
-        $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            if (!windowObject[parent]) {
-                windowObject[parent] = $(this);
-            }
-            $(this).remove();
-        });
+        saveDatawindow(dataWindow);
 
         var elemParent = $(this).closest('li');
         $(this).closest('li:not(.back)').addClass('active');
@@ -411,8 +399,31 @@ $(function () {
         }
     });
 
-    function appendButton(element, add) {
-        if (add) {
+    /**
+     * Resets and save the data window to an object.
+     *
+     * @param dataWindow    data window
+     */
+    function saveDatawindow(dataWindow) {
+        $('[data-window]:gt(' + dataWindow + ')').each(function () {
+            $(this).find('li').removeClass('active');
+            $(this).find('button').remove();
+            var parent = $(this).data('parent');
+            if (!windowObject[parent]) {
+                windowObject[parent] = $(this);
+            }
+            $(this).remove();
+        });
+    }
+
+    /**
+     * Appends add or remove button to a given element.
+     *
+     * @param element   element
+     * @param isAdd     is add button
+     */
+    function appendButton(element, isAdd) {
+        if (isAdd) {
             element.append(' <button class="btn btn-add">'
                 + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
                 + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
