@@ -734,7 +734,15 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 
 }
 
+.tags-collapse {
+    visibility: hidden;
+    color: #cccccc;
+    cursor: pointer;
+}
+
 .tag-content {
+    overflow-y: hidden;
+    height: auto;
     word-wrap: break-word;
     width: 200px;
     padding-left: 10px;

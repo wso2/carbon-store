@@ -1,5 +1,30 @@
 $(function() {
 
+	var tagContentHeight = $('#tag-container').height();
+	var collapsed;
+
+	$(document).ready(function () {
+		collapsed = false;
+		if (tagContentHeight > 280) {
+			$('#tag-container').height('280px');
+			$('#tags-collapse').css("visibility", "visible");
+		}
+	});
+	$('#tags-collapse').click(function () {
+		if (!collapsed) {
+			$('#tag-container').animate({height: tagContentHeight + 20}, 500);
+			$('#tags-collapse-icon').toggleClass("fw fw-up");
+			$('#tags-collapse-text').html("Show less&nbsp;&nbsp;");
+			collapsed = true;
+		}
+		else {
+			$('#tag-container').animate({height: 280}, 500);
+			$('#tags-collapse-icon').removeClass("fw fw-up").addClass("fw fw-down");
+			$('#tags-collapse-text').html("Show all tags&nbsp;&nbsp;");
+			collapsed = false;
+		}
+	});
+
     var showError = function (message) {
         var msg = message.replace(/[0-9a-z.+]+:\s/i, '');
         $('#register-alert').html(msg).fadeIn('fast');
