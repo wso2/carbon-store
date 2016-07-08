@@ -125,4 +125,12 @@ public class SQLActivity implements Activity {
 		JsonObject object = (JsonObject) this.body.get("object");
 		object.addProperty("content", comment);
 	}
+
+    public void setILike(boolean like) {
+        this.body.addProperty("iLike", like);
+    }
+
+    public void setIDislike(boolean dislike) {
+        this.body.addProperty("iDislike", dislike);
+    }
 }

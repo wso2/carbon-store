@@ -53,4 +53,7 @@ public interface Activity {
 
 	void setComment(String comment);
 
+    void setILike(boolean like);
+
+    void setIDislike(boolean dislike);
 }
