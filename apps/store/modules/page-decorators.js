@@ -762,7 +762,7 @@ var pageDecorators = {};
      * @returns {HashMap}   map of criteria
      */
     var buildQueryMap = function (ctx, options) {
-        var possibleKeys = ['taxonomy', '_default', 'name', 'version', 'tags', 'lcName', 'lcState'];
+        var possibleKeys = ['_default', 'name', 'version', 'tags', 'lcName', 'lcState'];
         var rxtManager = ctx.rxtManager;
         var assetType = ctx.assetType;
         var map = new HashMap();
@@ -777,13 +777,18 @@ var pageDecorators = {};
             }
 
             list = new ArrayList();
-            if (possibleKeys.indexOf(key) > -1) {
-                list.add('*' + options[key] + '*');
-            } else {
-                list.add(options[key]);
-            }
 
-            map.put(searchKey, list);
+            if (searchKey === 'taxonomy') {
+                var taxonomyQuery = options.taxonomy;
+                taxonomyQuery = taxonomyQuery.replace(/\(\s/g, '(');
+                taxonomyQuery = taxonomyQuery.replace(/\s\)/g, ')');
+                list = new ArrayList();
+                list.add(taxonomyQuery);
+                map.put(searchKey, list);
+            } else if (possibleKeys.indexOf(key) > -1) {
+                list.add('*' + options[key] + '*');
+                map.put(searchKey, list);
+            }
         });
 
         if (options.category) {
