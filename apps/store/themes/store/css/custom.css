@@ -1819,3 +1819,10 @@ a#search-info {
     border-right: 0px;
     border-bottom: 0px;
 }
+.confirmation-popup-container #bookmark-animation {
+    position: absolute;
+    top: 50%;
+    margin-left: 30%;
+    color: orange;
+    display: none;
+}
