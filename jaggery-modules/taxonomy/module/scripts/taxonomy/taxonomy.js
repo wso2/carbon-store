@@ -33,7 +33,6 @@ var paginationBean = Packages.org.wso2.carbon.governance.taxonomy.beans.Paginati
      * @returns  Returns the set of taxonomy list which admin defined
      */
     taxonomy.getNodesList = function (query, startNode, endNode, displayName) {
-        try {
             queryBean = new queryBean();
             paginationBean = new paginationBean();
             queryBean.setTaxonomyName(displayName);
@@ -41,10 +40,6 @@ var paginationBean = Packages.org.wso2.carbon.governance.taxonomy.beans.Paginati
             paginationBean.setStartNode(startNode);
             paginationBean.setEndNode(endNode);
             return JSON.parse(TaxonomyService.query(queryBean,paginationBean));
-        } catch (e) {
-            log.error("Error while quering, Taxonomy osgi service through store taxonomy module. Please check " +
-                displayName + " taxonomy definition in the relevant rxt.", e);
-        }
     };
     /**
      * This method is use to get the taxonomy by rootId.
@@ -53,14 +48,10 @@ var paginationBean = Packages.org.wso2.carbon.governance.taxonomy.beans.Paginati
      * @returns  Returns the set of taxonomy list which admin defined
      */
     taxonomy.getTaxonomyName = function (query, assetType) {
-        try {
             queryBean = new queryBean();
             queryBean.setAssetType(assetType);
             queryBean.setQuery(query);
             return JSON.parse(TaxonomyService.getTaxonomyName(queryBean));
-        } catch (e) {
-            log.error("Error while quering taxonomy name, Taxonomy osgi service through store taxonomy module", e);
-        }
     };
 
 
