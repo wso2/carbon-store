@@ -1013,6 +1013,25 @@ a.more:focus {
     outline: 0;
     text-align: left;
 }
+
+.btn-taxonomy {
+    border: 0px;
+    border-radius: 0px;
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+    text-align: left;
+}
+
+.btn-taxonomy {
+    background-color: #4a505c;
+}
+
+.btn-taxonomy:hover,
+.btn-taxonomy:focus {
+    color: #fff;
+    background-color: #333945;
+}
 .btn-add-new {
     background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
 }
