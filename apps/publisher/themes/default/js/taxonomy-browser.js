@@ -25,7 +25,7 @@ const SELECTED_CONTAINER = '.selected-taxonomy-container';
 const SELECTED_CONTENT = '.selected-taxonomy-content';
 const TAXONOMY_SELECT_BUTTON = '#taxonomy-select-button';
 const CANCEL_BUTTON = '#cancel-button';
-const BACK_LINK = '<li class="back" style="display: none;"><a href="#">..</a></li>';
+const BACK_LINK = '<li class="back" style="display: none;"><a href="#">../</a></li>';
 const RIGHT_ARROW = ' <i class="icon fw fw-right-arrow"></i>';
 
 var windowObject = {};
@@ -199,18 +199,22 @@ var getTaxonomyDisplayName = function (taxonomyPath) {
  * Resets taxonomy browser to the initial position.
  */
 var resetTaxonomyBrowser = function () {
-    $(COLUMN_SELECTOR + ' li').removeClass('active');
-    $(COLUMN_SELECTOR + ' li > button').remove();
+    $(TAXONOMY_BROWSER).slideUp(function () {
+        $(COLUMN_SELECTOR + ' li').removeClass('active');
+        $(COLUMN_SELECTOR + ' li > button').remove();
+        $(COLUMN_SELECTOR + ' li.back').hide();
 
-    $('[data-window]:gt(0)').each(function () {
-        var parent = $(this).data('parent');
-        if (!windowObject[parent]) {
-            windowObject[parent] = $(this);
-        }
-        $(this).remove();
+        $('[data-window]:gt(0)').each(function () {
+            var parent = $(this).data('parent');
+            if (!windowObject[parent]) {
+                windowObject[parent] = $(this);
+            }
+            $(this).remove();
+        });
+        $(BREADCRUMB_SELECTOR).empty();
+
+        $('[data-window=0]').show();
     });
-    $(BREADCRUMB_SELECTOR).empty();
-    $(TAXONOMY_BROWSER).hide('slow');
     $(CANCEL_BUTTON).hide();
     $(TAXONOMY_SELECT_BUTTON).show();
 };
@@ -229,7 +233,7 @@ function initTaxonomyBrowser(appliedTaxonomy) {
 
     if (appliedTaxonomy && appliedTaxonomy.length !== 0) {
         //if already applied tags exists
-        $(SELECTED_CONTAINER).show('slow');
+        $(SELECTED_CONTAINER).show();
 
         for (var key in appliedTaxonomy) {
             if (appliedTaxonomy.hasOwnProperty(key)) {
@@ -260,7 +264,7 @@ $(function () {
     });
 
     $(TAXONOMY_SELECT_BUTTON).click(function () {
-        $(TAXONOMY_BROWSER).show('medium');
+        $(TAXONOMY_BROWSER).slideDown();
         $(CANCEL_BUTTON).show();
         $(TAXONOMY_SELECT_BUTTON).hide();
     });
@@ -274,14 +278,7 @@ $(function () {
         var element = $(this).attr('href');
         var root = $(this).closest('div').data('root');
         var dataWindow = parseInt($(this).closest('div').data('window'));
-
-        $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            var parent = $(this).data('parent');
-            if (!windowObject[parent]) {
-                windowObject[parent] = $(this);
-            }
-            $(this).remove();
-        });
+        saveDatawindow(dataWindow);
 
         if (windowObject[element]) {
             $(TAXONOMY_SELECT).append(windowObject[element].first());
@@ -327,12 +324,7 @@ $(function () {
         displayValue.length = 0;
 
         var dataWindow = parseInt($(this).closest('div').data('window'));
-        $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            if (!windowObject[parent]) {
-                windowObject[parent] = $(this);
-            }
-            $(this).remove();
-        });
+        saveDatawindow(dataWindow);
 
         var elemParent = $(this).closest('li');
         $(this).closest('li:not(.back)').addClass('active');
@@ -374,7 +366,7 @@ $(function () {
         }
 
         if (selectedTaxonomy.length === 1) {
-            $(SELECTED_CONTAINER).show('slow');
+            $(SELECTED_CONTAINER).slideDown();
         }
         appendButton($(this).closest('li'), false);
         $(this).remove();
@@ -403,12 +395,35 @@ $(function () {
         }
 
         if ($(SELECTED_CONTENT).children().length < 1) {
-            $(SELECTED_CONTAINER).hide('slow');
+            $(SELECTED_CONTAINER).slideUp();
         }
     });
 
-    function appendButton(element, add) {
-        if (add) {
+    /**
+     * Resets and save the data window to an object.
+     *
+     * @param dataWindow    data window
+     */
+    function saveDatawindow(dataWindow) {
+        $('[data-window]:gt(' + dataWindow + ')').each(function () {
+            $(this).find('li').removeClass('active');
+            $(this).find('button').remove();
+            var parent = $(this).data('parent');
+            if (!windowObject[parent]) {
+                windowObject[parent] = $(this);
+            }
+            $(this).remove();
+        });
+    }
+
+    /**
+     * Appends add or remove button to a given element.
+     *
+     * @param element   element
+     * @param isAdd     is add button
+     */
+    function appendButton(element, isAdd) {
+        if (isAdd) {
             element.append(' <button class="btn btn-add">'
                 + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
                 + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
@@ -416,6 +431,27 @@ $(function () {
             element.append(' <button class="btn btn-remove">'
                 + '<span class="icon fw-stack"><i class="fw fw-minus fw-stack-1x"></i>'
                 + '<i class="fw fw-ring fw-stack-2x"></i></span>  Remove</button>');
+        }
+    }
+});
+
+$(window).resize(function () {
+    var previousColumnCount = columnsCount;
+    initWindowColumns();
+    var difference = columnsCount - previousColumnCount;
+    if (difference !== 0) {
+        var dataWindows = $(COLUMN_SELECTOR).map(function () {
+            return $(this).data('window');
+        }).get();
+        var highestWindow = Math.max.apply(Math, dataWindows);
+        if (difference < 0) {
+            $('[data-window=' + (highestWindow - columnsCount) + ']').hide();
+            $('[data-window=' + (highestWindow - columnsCount + 1) + ']').find('li.back').show();
+        } else {
+            for (var i = 0; i < columnsCount; ++i) {
+                $('[data-window=' + (highestWindow - i) + ']').show();
+                $('[data-window=' + (highestWindow - i + 1) + ']').find('li.back').hide();
+            }
         }
     }
 });
