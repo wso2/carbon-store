@@ -1420,3 +1420,23 @@ ul.sidebar-messages > li {
 .btn-or-cancel {
     background: #8c8c8c;
 }
+
+.taxonomy-grouped-or-wrapper{
+    border-left: solid 2px #fff;
+    height: 100%;
+    position: absolute;
+    vertical-align: middle;
+    z-index: 2;
+}
+.taxonomy-grouped-or{
+    display: block;
+    position: absolute;
+    top: 50%;
+    height: 20px;
+    margin-top: -10px;
+    background: #000;
+    margin-left: -11px;
+    padding: 2px 2px 2px 2px;
+    z-index: 1;
+    font-size: 11px;
+}
