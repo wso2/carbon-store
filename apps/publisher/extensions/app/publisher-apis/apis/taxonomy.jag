@@ -91,7 +91,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                         return;
                     }
 
-
                 } catch (e) {
 
                     if (e.toString().indexOf("TaxonomyException") > 0) {
@@ -124,7 +123,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                         }
 
                         if (taxonomyAssetTypeOptions.name) {
-
                             taxaPathList = taxa.taxonomy.getNodesList("/*",
                                     ( options['startnode']) ? options['startnode'] : 0,
                                     (options['endnode']) ? options['endnode'] : 200, taxonomyAssetTypeOptions.name);
@@ -133,15 +131,13 @@ require('/modules/publisher.js').exec(function (ctx) {
                                     taxaPathList);
                             return;
                         } else {
-                            log.error("Taxonomy name not detected!");
+                            log.error("Please provide correct taxonomy name !");
                         }
-
                     } else {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
                                 UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
-
 
                 } catch (e) {
 
@@ -164,32 +160,25 @@ require('/modules/publisher.js').exec(function (ctx) {
             } else if (uriMatcher.match(taxonomyPatternTerm)) {
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
-
                         if (taxonomyTermOptions.term) {
-
                             if (options['children']) {
-
-
                                 taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term + "/children",
                                         ( options['startnode']) ? options['startnode'] : 0,
                                         (options['endnode']) ? options['endnode'] : 200, taxonomyTermOptions.name);
-
                             } else {
-
-
                                 taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term,
                                         ( options['startnode']) ? options['startnode'] : 0,
                                         (options['endnode']) ? options['endnode'] : 200, taxonomyTermOptions.name);
 
                             }
-
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
                                     taxaPathList);
-
                             return;
-
                         } else {
-                            log.error("Taxonomy term not detected!");
+                            response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
+                                    "Bad syntax. Please provide correct taxonomy name.");
+                            log.error('Bad syntax. Please provide correct taxonomy name.');
+                            return;
                         }
 
                     } else {
@@ -198,9 +187,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                         return;
                     }
 
-
                 } catch (e) {
-
                     if (e.toString().indexOf("TaxonomyException") > 0) {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
                                 "Bad syntax. Please provide correct syntax.");
@@ -213,11 +200,8 @@ require('/modules/publisher.js').exec(function (ctx) {
                         log.error('Error on retrieving taxonomy.Server is unable to process the request.Please check ' +
                                 'your have entered a correct query', e);
                     }
-
                     return;
                 }
-
-            } else {
 
             }
 
