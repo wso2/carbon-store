@@ -122,7 +122,8 @@ store.infiniteScroll.getItems = function(from,to,cb){
             $('.loading-animation-big').remove();
             store.doPagination = false;
             cb({},status,error);
-        }
+        },
+        cache : false
     });
     //}
 

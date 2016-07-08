@@ -321,6 +321,12 @@ nav.navigation .second_level > .left-menu-item {
     display: none;
 }
 
+.taxonomy ul.nav > li ul.add {
+
+    display: block;
+}
+
+
 .taxonomy ul.nav > li .filter-tag .value-expand ul,
 .taxonomy ul.nav > li .filter-tag .value-edit > ul {
     display: block;
@@ -968,7 +974,8 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     z-index: 999;
 }
 .asset-details-header .ast-img .ast-type-icon{
-    top:120px;
+    top: 105px;
+    left: 15px;
 }
 .ast-img .ast-type-icon i{
     font-size:2.2em;
@@ -1373,3 +1380,39 @@ ul.sidebar-messages > li {
         margin-right: 0;
     }
 }
+
+/* New taxonomy css */
+.taxonomy-or-sep-wrapper{
+    position: relative;
+    height: 12px;
+}
+.taxonomy-or-sep{
+    border-bottom: solid 1px#444;
+    text-align: center;
+    margin-top: 18px;
+    margin-bottom: 22px;
+    margin-right: 1px;
+}
+.taxonomy-or-sep-operation{
+    background: #444;
+    display: inline-block;
+    padding: 0 5px;
+    top: -11px;
+    position: absolute;
+}
+.taxonomy-or-sep-wrapper .btn-primary{
+    position: absolute;
+    right: 0;
+    top: -13px;
+    padding: 1px 3px 3px;
+}
+.taxonomy-group-title{
+    background: #2C313B;
+    padding-bottom: 10px;
+    font-size: 17px;
+}
+
+.btn-or-cancel {
+    background: #8c8c8c;
+}
+

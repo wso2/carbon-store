@@ -279,7 +279,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			selectActivityStatement = connection
 					.prepareStatement(COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
-			selectActivityStatement.setString(1, commentID);
+			selectActivityStatement.setInt(1, Integer.parseInt(commentID));
 			resultSet = selectActivityStatement.executeQuery();
 			if (!resultSet.next()) {
 				log.error("Unable to publish like activity for comment : "
@@ -337,7 +337,7 @@ public class SQLActivityPublisher extends ActivityPublisher {
 				updateActivityStatement.setString(1, json.toString());
 				updateActivityStatement.setInt(2, likeCount);
 				updateActivityStatement.setInt(3, dislikeCount);
-				updateActivityStatement.setString(4, commentID);
+				updateActivityStatement.setInt(4, Integer.parseInt(commentID));
 				updateActivityStatement.executeUpdate();
 				connection.commit();
 			}
