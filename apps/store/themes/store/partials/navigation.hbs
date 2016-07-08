@@ -14,7 +14,7 @@
    ~ limitations under the License.
    -->
 <!-- secondary header - app bar -->
-<div class="wr-asset-type-switcher">
+<div class="wr-asset-type-switcher" id="left-sidebar">
     <div class="ctrl-asset-type-switcher">
         <div class="left-menu">
             <nav class="navigation">
@@ -58,11 +58,14 @@
 <div id="nav" class="wr-app-bar">
     <div class="col-lg-12 search-row">
         <div class="search-wrapper" id="the-basics">
-
-
-
-
             <div class="input-group">
+                <span class="input-group-addon toggle-menu-left-wrapper" style="display: none">
+                    <button type="button" class="btn btn-primary toggle-menu-left">
+                        <div class="toggle-menu-left-bar"></div>
+                        <div class="toggle-menu-left-bar"></div>
+                        <div class="toggle-menu-left-bar"></div>
+                    </button>
+                </span>
                 <input  id="search"  type="text" class="typeahead es-form-control form-control"
                     {{#if rxt.pluralLabel}}
                         placeholder="Search in {{rxt.pluralLabel}}"

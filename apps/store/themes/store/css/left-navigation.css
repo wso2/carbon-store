@@ -30,6 +30,7 @@ nav.navigation {
     position: absolute;
     z-index: 1000;
     left: 0;
+    background: #222;
 }
 
 nav.navigation > a, nav.navigation {
@@ -734,7 +735,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     width: 200px;
     padding-left: 10px;
     font-size: 18px;
-
+    color: #fff;
 }
 
 .tag-content {
@@ -899,7 +900,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 .search-wrapper .input-group-btn{
 }
 .search-wrapper .input-group-btn button{
-    height: 35px;
+    height: 34px;
     margin-bottom: 1px;
 }
 .search-wrapper .input-group-btn button i{
