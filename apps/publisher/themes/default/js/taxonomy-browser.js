@@ -419,3 +419,24 @@ $(function () {
         }
     }
 });
+
+$(window).resize(function () {
+    var previousColumnCount = columnsCount;
+    initWindowColumns();
+    var difference = columnsCount - previousColumnCount;
+    if (difference !== 0) {
+        var dataWindows = $(COLUMN_SELECTOR).map(function () {
+            return $(this).data('window');
+        }).get();
+        var highestWindow = Math.max.apply(Math, dataWindows);
+        if (difference < 0) {
+            $('[data-window=' + (highestWindow - columnsCount) + ']').hide();
+            $('[data-window=' + (highestWindow - columnsCount + 1) + ']').find('li.back').show();
+        } else {
+            for (var i = 0; i < columnsCount; ++i) {
+                $('[data-window=' + (highestWindow - i) + ']').show();
+                $('[data-window=' + (highestWindow - i + 1) + ']').find('li.back').hide();
+            }
+        }
+    }
+});
