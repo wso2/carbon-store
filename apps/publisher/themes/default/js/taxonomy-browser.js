@@ -201,6 +201,7 @@ var getTaxonomyDisplayName = function (taxonomyPath) {
 var resetTaxonomyBrowser = function () {
     $(COLUMN_SELECTOR + ' li').removeClass('active');
     $(COLUMN_SELECTOR + ' li > button').remove();
+    $(COLUMN_SELECTOR + ' li.back').hide();
 
     $('[data-window]:gt(0)').each(function () {
         var parent = $(this).data('parent');
@@ -213,6 +214,7 @@ var resetTaxonomyBrowser = function () {
     $(TAXONOMY_BROWSER).hide('slow');
     $(CANCEL_BUTTON).hide();
     $(TAXONOMY_SELECT_BUTTON).show();
+    $('[data-window=0]').show();
 };
 
 /**
