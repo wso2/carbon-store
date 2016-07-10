@@ -16,7 +16,7 @@ $(function () {
                         var element = appliedTaxonomy[key];
                         getTaxonomyDisplayName(element);
                         $('.selected-taxonomy-content').append(
-                            '<div style="padding: 12px"><span>'
+                            '<div class="selected-item" style="padding: 12px"><span>'
                             + displayValue.join(' > ') + '</span></div>');
                     }
                     displayValue.length = 0;

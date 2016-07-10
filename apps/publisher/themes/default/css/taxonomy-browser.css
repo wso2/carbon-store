@@ -129,7 +129,7 @@
     padding: 5px 15px;
 }
 
-.selected-taxonomy-content div {
+.selected-item {
     background-color: #7b7c7d;
     color: #fff;
     display: inline-block;
@@ -140,20 +140,28 @@
     text-decoration: none;
 }
 
-.selected-taxonomy-content div > .btn-remove > .fw {
+.selected-item > .btn-remove > .fw {
     font-size: 8px;
 }
 
-.selected-taxonomy-content div > .btn-remove {
+.selected-item > .btn-remove {
     background-color: #dc6562;
     border: none;
     color: #fff;
 }
 
-.selected-taxonomy-content span {
-    padding: 5px 15px 10px;
+.selected-item.edit {
+    opacity: 0.5;
 }
 
-.selected-taxonomy-content button {
+.selected-item span {
+    cursor: pointer;
+    padding: 5px 15px 10px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.selected-item button {
     padding: 1px 6px;
 }

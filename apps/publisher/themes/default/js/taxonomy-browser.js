@@ -95,6 +95,7 @@ var loadTaxonomies = function () {
 var loadTaxonomyRoot = function (taxonomyName, dataWindow) {
     $.ajax({
         type: 'GET',
+        async: false,
         url: BASE_URL + '/' + taxonomyName,
         success: function (results) {
             for (var key in results) {
@@ -132,6 +133,7 @@ var loadTaxonomyRoot = function (taxonomyName, dataWindow) {
 var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
     $.ajax({
         type: 'GET',
+        async: false,
         url: BASE_URL + '/' + taxonomyName + '/' + element + "?children=true",
         success: function (results) {
             var html = '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 taxonomy-select-window" data-root="'
@@ -157,19 +159,21 @@ var loadTaxonomyChildren = function (taxonomyName, element, dataWindow) {
 };
 
 /**
- * Get the name of a taxonomy element and push to a global array displayValue.
- * @param taxonomyName  name of the taxonomy
- * @param taxonomyPath  path of the element
+ * Returns taxonomy name for a given taxonomy id.
+ * @param taxonomyId id of the taxonomy
+ * @returns {String} taxonomy name
  */
-var getTaxonomyElementDisplayName = function (taxonomyName, taxonomyPath) {
+var getTaxonomyName = function (taxonomyId) {
+    var taxonomyName = null;
     $.ajax({
         type: 'GET',
         async: false,
-        url: BASE_URL + '/' + taxonomyName + '/' + taxonomyPath,
+        url: BASE_URL + '/' + store.publisher.type + '/?taxonomyId=' + taxonomyId,
         success: function (results) {
-            displayValue.push(results[0].label);
+            taxonomyName = results[0].taxonomyName;
         }
-    })
+    });
+    return taxonomyName;
 };
 
 /**
@@ -178,21 +182,20 @@ var getTaxonomyElementDisplayName = function (taxonomyName, taxonomyPath) {
  */
 var getTaxonomyDisplayName = function (taxonomyPath) {
     var taxonomyPathList = taxonomyPath.split('/');
-    var taxonomyId = taxonomyPathList[0];
-    $.ajax({
-        type: 'GET',
-        async: false,
-        url: BASE_URL + '/' + store.publisher.type + '/?taxonomyId=' + taxonomyId,
-        success: function (results) {
-            var taxonomyName = results[0].taxonomyName;
-            displayValue.push(taxonomyName);
-            var path = taxonomyId;
-            for (var i = 1; i < taxonomyPathList.length; ++i) {
-                path += '/' + taxonomyPathList[i];
-                getTaxonomyElementDisplayName(taxonomyName, path);
+    var taxonomyName = getTaxonomyName(taxonomyPathList[0]);
+    displayValue.push(taxonomyName);
+    taxonomyPath = taxonomyPathList[0];
+    for (var i = 1; i < taxonomyPathList.length; ++i) {
+        taxonomyPath += '/' + taxonomyPathList[i];
+        $.ajax({
+            type: 'GET',
+            async: false,
+            url: BASE_URL + '/' + taxonomyName + '/' + taxonomyPath,
+            success: function (results) {
+                displayValue.push(results[0].label);
             }
-        }
-    });
+        });
+    }
 };
 
 /**
@@ -200,6 +203,7 @@ var getTaxonomyDisplayName = function (taxonomyPath) {
  */
 var resetTaxonomyBrowser = function () {
     $(TAXONOMY_BROWSER).slideUp(function () {
+        $(this).attr('edit-mode', 'false');
         $(COLUMN_SELECTOR + ' li').removeClass('active');
         $(COLUMN_SELECTOR + ' li > button').remove();
         $(COLUMN_SELECTOR + ' li.back').hide();
@@ -241,8 +245,8 @@ function initTaxonomyBrowser(appliedTaxonomy) {
                 getTaxonomyDisplayName(element);
                 if (selectedTaxonomy.indexOf(element) < 0) {
                     selectedTaxonomy.push(appliedTaxonomy[key]);
-                    $(SELECTED_CONTENT).append('<div data-value="' + appliedTaxonomy[key] + '"><span>'
-                        + displayValue.join(' > ') + '</span>'
+                    $(SELECTED_CONTENT).append('<div class="selected-item" data-value="' + appliedTaxonomy[key] + '">'
+                        + '<span>' + displayValue.join(' > ') + '</span>'
                         + '<button type="button" class="btn btn-danger btn-remove">'
                         + '<i class="fw fw-cancel"></i></span></button></div>');
                 }
@@ -258,6 +262,7 @@ function initTaxonomyBrowser(appliedTaxonomy) {
 
 $(function () {
     initWindowColumns();
+    var editedTaxonomy;
 
     $('#taxonomy').find('.collapsing-h2').click(function () {
         resetTaxonomyBrowser();
@@ -272,7 +277,8 @@ $(function () {
     $(CANCEL_BUTTON).click(function () {
         resetTaxonomyBrowser();
     });
-
+    
+    // On click of a node which is neither a leaf nor back.
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li:not(.back):not(.leaf) a', function (e) {
         e.preventDefault();
         var element = $(this).attr('href');
@@ -307,6 +313,7 @@ $(function () {
         });
     });
 
+    // on click of a back link
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.back > a', function (e) {
         e.preventDefault();
 
@@ -319,6 +326,7 @@ $(function () {
         $('[data-window=' + (dataWindow - 1) + ']').fadeIn();
     });
 
+    //On click of a leaf node. Appends add/remove button
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > a', function (e) {
         e.preventDefault();
         displayValue.length = 0;
@@ -349,38 +357,58 @@ $(function () {
         }
     });
 
+    // On click of an add/update button. Performs add/update action
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button.btn-add', function (e) {
         e.preventDefault();
         var selectedValue = $(this).prev('a').attr('href');
+        var editMode = $(TAXONOMY_BROWSER).attr('edit-mode');
         $(BREADCRUMB_SELECTOR + ' li').each(function () {
             displayValue.push($(this).text());
         });
 
         if (selectedTaxonomy.indexOf(selectedValue) < 0) {
             selectedTaxonomy.push(selectedValue);
-            $(SELECTED_CONTENT).append(
-                '<div data-value="' + selectedValue + '"><span>' + displayValue.join(' > ') + '</span>'
-                + '<button type="button" class="btn btn-danger btn-remove">'
-                + '<i class="fw fw-cancel"></i></span></button></div>');
+            if (editMode === 'true') {
+                var updatedIndex = selectedTaxonomy.indexOf(editedTaxonomy.data('value'));
+                selectedTaxonomy.splice(updatedIndex, 1);
+                editedTaxonomy.data('value', selectedValue);
+                editedTaxonomy.find('span').text(displayValue.join(' > '));
+                editedTaxonomy.removeClass('edit');
+            } else {
+                $(SELECTED_CONTENT).append(
+                    '<div class="selected-item" data-value="' + selectedValue + '"><span>' + displayValue.join(' > ')
+                    + '</span><button type="button" class="btn btn-danger btn-remove">'
+                    + '<i class="fw fw-cancel"></i></button></div>');
+            }
             displayValue.length = 0;
         }
 
         if (selectedTaxonomy.length === 1) {
             $(SELECTED_CONTAINER).slideDown();
         }
+
         appendButton($(this).closest('li'), false);
         $(this).remove();
 
+        if (editMode === 'true') {
+            resetTaxonomyBrowser();
+        }
     });
 
+    // On click of a remove button in a leaf node.
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button.btn-remove', function (e) {
         e.preventDefault();
         var selectedValue = $(this).prev('a').attr('href');
         $('[data-value="' + selectedValue + '"] > button').trigger('click');
         appendButton($(this).closest('li'), true);
         $(this).remove();
+
+        if ($(TAXONOMY_BROWSER).attr('edit-mode') === 'true') {
+            resetTaxonomyBrowser();
+        }
     });
 
+    // On click of a remove button in selected taxonomy tag. Performs remove action.
     $(SELECTED_CONTENT).on('click', 'button', function (e) {
         e.preventDefault();
         var dataValue = $(this).closest('div').data('value');
@@ -397,6 +425,29 @@ $(function () {
         if ($(SELECTED_CONTENT).children().length < 1) {
             $(SELECTED_CONTAINER).slideUp();
         }
+
+        if ($(TAXONOMY_BROWSER).attr('edit-mode') === 'true') {
+            resetTaxonomyBrowser();
+        }
+    });
+
+    // On double clicking an applied taxonomy tag. Performs browse action.
+    $(SELECTED_CONTENT).on('dblclick', 'span', function () {
+        resetTaxonomyBrowser();
+        $(TAXONOMY_BROWSER).attr('edit-mode', 'true');
+        editedTaxonomy = $(this).closest('div');
+        editedTaxonomy.addClass('edit');
+        var dataValue = editedTaxonomy.data('value').split('/');
+        var taxonomyName = getTaxonomyName(dataValue[0]);
+        $('[href=' + taxonomyName + ']').closest('li').addClass('active');
+        $('[href=' + taxonomyName + ']').trigger('click');
+
+        var element = dataValue[0];
+        for (var i = 1; i < dataValue.length; ++i) {
+            element += '/' + dataValue[i];
+            $('[href="' + element + '"]').trigger('click');
+        }
+        $(TAXONOMY_BROWSER).slideDown();
     });
 
     /**
@@ -424,9 +475,15 @@ $(function () {
      */
     function appendButton(element, isAdd) {
         if (isAdd) {
-            element.append(' <button class="btn btn-add">'
-                + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
-                + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
+            if ($(TAXONOMY_BROWSER).attr('edit-mode') === 'false') {
+                element.append(' <button class="btn btn-add">'
+                    + '<span class="icon fw-stack"><i class="fw fw-add fw-stack-1x"></i>'
+                    + '<i class="fw fw-ring fw-stack-2x"></i></span>  Add</button>');
+            } else {
+                element.append(' <button class="btn btn-add">'
+                    + '<span class="icon fw-stack"><i class="fw fw-refresh fw-stack-1x"></i>'
+                    + '<i class="fw fw-ring fw-stack-2x"></i></span>  Update</button>');
+            }
         } else {
             element.append(' <button class="btn btn-remove">'
                 + '<span class="icon fw-stack"><i class="fw fw-minus fw-stack-1x"></i>'
@@ -454,4 +511,10 @@ $(window).resize(function () {
             }
         }
     }
+});
+
+// Adding tooltip for the applied taxonomies
+$(SELECTED_CONTENT).tooltip({
+    selector: '.selected-item span',
+    title: 'Double click to edit'
 });
