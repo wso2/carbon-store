@@ -288,7 +288,8 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
                     selectURL(url + encodeURIComponent(query));
                 }
             } else {
-                selectURL(url + "?q=" + encodeURIComponent(query));
+                url =  addQueryToURL(url,"q=" + encodeURIComponent(query));
+                selectURL(url);
             }
             break;
         case "remove":
@@ -308,6 +309,22 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
             break;
     }
 };
+
+/**
+ * Adds the provided input as a query parameter to the URL
+ * @param {[type]} url   A string URL
+ * @param {[type]} input A query parameter of the format a=b,where a is the query key and b the value
+ */
+function addQueryToURL(url,input){
+  input = input ? [input] : [];
+  var urlComponents = url.split('?');
+  var urlWithOutQuery = urlComponents.slice(0,1);
+  var urlWithQueryParams = urlComponents.slice(1);
+  
+  urlWithQueryParams = (( urlWithQueryParams.length > 0 ) && (urlWithQueryParams[0] === '')) ? [] : urlWithQueryParams;
+  return urlWithOutQuery.concat(urlWithQueryParams.concat(input).join('&')).join('?');
+}
+
 
 /**
  * This method will choose , asset loading is for list assets or top assets.
