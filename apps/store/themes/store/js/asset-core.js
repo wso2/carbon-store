@@ -85,6 +85,10 @@ var asset = {};
         var matchedSortPattern = url.match(sortPattern);
         var hasSortBy = !!matchedSortByPattern;
         var hasSort = !!matchedSortPattern;
+        //Do not alter the query if there are no sort options
+        if (Object.keys(sortOptions).length < 1) {
+            return url;
+        }
         //Encode any provided sort option values
         Object.keys(sortOptions).forEach(function(key) {
             sortOptions[key] = encodeURIComponent(sortOptions[key]);
@@ -109,12 +113,19 @@ var asset = {};
         if (!hasSortBy) {
             newQueryParams.push('sortBy=' + sortOptions.sortBy);
         }
-        if (newQueryParams.length > 0) {
-            if (hasExistingQueryParams) {
-                url += '&';
-            }
-            url += newQueryParams.join('&');
+        //We did not add any new query paramters
+        if (newQueryParams.length < 1) {
+            return url;
         }
-        return url;
+        //Integrate any newly added sort parameters to the URL
+        var urlComponents = url.split('?');
+        var urlWithoutQueryParams = urlComponents.slice(0, 1);
+        var urlWithQueryParams = urlComponents.slice(1);
+        //Check if there are no query params and create an empty array
+        if ((urlWithQueryParams.length === 1) && (urlWithQueryParams[0] === '')) {
+            urlWithQueryParams = [];
+        }
+        return urlWithoutQueryParams.concat(newQueryParams.concat(urlWithQueryParams).join('&')).join('?');
     }
+
 }(asset));
