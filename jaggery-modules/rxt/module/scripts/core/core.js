@@ -1382,8 +1382,23 @@ var core = {};
     };
     core.assetTypeDeploymentTimeMap = function(tenantId){
         var server = require('store').server;
-        var systemRegistry = server.systemRegistry(tenantId);
-        var collection = systemRegistry.get(constants.ASSET_TYPES_PATH)||[];
+
+        try {
+            var PrivilegedCarbonContext = Packages.org.wso2.carbon.context.PrivilegedCarbonContext;
+            PrivilegedCarbonContext.startTenantFlow();
+            var context = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+            context.setTenantId(tenantId, true);
+
+            var systemRegistry = server.systemRegistry(tenantId);
+            var collection = systemRegistry.get(constants.ASSET_TYPES_PATH) || [];
+
+        } finally {
+            PrivilegedCarbonContext.endTenantFlow();
+            if (log.isDebugEnabled()) {
+                log.debug('endTenantFlow');
+            }
+        }
+
         var typeCollection = collection.content ||[];
         var typeResource;
         var typeResourcePath;

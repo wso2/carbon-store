@@ -1,7 +1,25 @@
+/*
+ * Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ * WSO2 Inc. licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 var TaxonomySyntaxAPI = {};
 (function() {
     var SYMBOL_OR = 'OR';
-    var SYMBOL_AND = '&&';
+    var SYMBOL_AND = 'AND';
     var SYMBOL_EXP_START = '(';
     var SYMBOL_EXP_STOP = ')';
     TaxonomySyntaxAPI.buildExpression = function(input, clean) {
@@ -173,36 +191,60 @@ var TaxonomySyntaxAPI = {};
     };
 
     function buildExpression(expression, clean) {
-        var symbols = expression.split(' ').reverse();
-        clean = clean || function(v) {
-            return v;
-        };
+        symbols = expression.split(' ');
+        symbols.reverse();
         if (symbols.length === 1) {
             var singleExpression = new Expression();
             singleExpression.operands.push(symbols[0]);
             singleExpression.operator = SYMBOL_AND;
             return singleExpression;
         }
-        return r(symbols, symbols.pop(), new Expression(), new Expression(), clean);
+        var stack = [];
+        var x = rbuild(symbols, symbols.pop(), new Expression(), stack);
+        var t = processStack(x);
+        return t;
     }
 
-    function r(symbols, currentValue, currentExpression, parentExpression, clean) {
-        if (symbols.length === 0) {
-            return currentExpression;
+    function processStack(stack) {
+        var base = new Expression();
+        base.operator = SYMBOL_AND;
+        var item;
+        if (stack.length === 1) {
+            return stack[0];
+        }
+        for (var index = 0; index < stack.length; index++) {
+            item = stack[index];
+            if (item !== SYMBOL_AND) {
+                if (item.operands.length == 1) {
+                    base.operands.push(item.operands[0]);
+                } else {
+                    base.children.push(item);
+                }
+            }
+        }
+        return base;
+    }
+
+    function rbuild(symbols, currentValue, expression, stack) {
+        if (!currentValue) {
+            //stack.push(expression);
+            return stack;
         } else if (currentValue === SYMBOL_EXP_START) {
-            return r(symbols, symbols.pop(), new Expression(), currentExpression, clean);
+            var newExpression = new Expression();
+            newExpression.operator = SYMBOL_AND;
+            return rbuild(symbols, symbols.pop(), newExpression, stack);
         } else if (currentValue === SYMBOL_EXP_STOP) {
-            parentExpression.children.push(currentExpression);
-            return r(symbols, symbols.pop(), parentExpression, new Expression(), clean);
+            stack.push(expression);
+            return rbuild(symbols, symbols.pop(), new Expression(), stack);
         } else if (currentValue === SYMBOL_AND) {
-            currentExpression.operator = SYMBOL_AND;
-            return r(symbols, symbols.pop(), currentExpression, parentExpression, clean);
+            //stack.push(SYMBOL_AND);
+            return rbuild(symbols, symbols.pop(), expression, stack);
         } else if (currentValue === SYMBOL_OR) {
-            currentExpression.operator = SYMBOL_OR;
-            return r(symbols, symbols.pop(), currentExpression, parentExpression, clean);
+            expression.operator = SYMBOL_OR;
+            return rbuild(symbols, symbols.pop(), expression, stack);
         } else {
-            currentExpression.operands.push(clean(currentValue));
-            return r(symbols, symbols.pop(), currentExpression, parentExpression, clean);
+            expression.operands.push(currentValue);
+            return rbuild(symbols, symbols.pop(), expression, stack);
         }
     }
 
@@ -211,6 +253,7 @@ var TaxonomySyntaxAPI = {};
             return expression.buildExpressionString(decorator);
         } else {
             var entries = [];
+            var previousExpressions = 0;
             expression.children.forEach(function(child, index) {
                 var result = rprint(child, output, decorator);
                 if (result != '') {
@@ -218,6 +261,7 @@ var TaxonomySyntaxAPI = {};
                 }
             });
             output += entries.join(' ' + expression.operator + ' ');
+            previousExpressions = entries.length;
             entries = [];
             if (output != '') {
                 entries.push(output);
@@ -227,6 +271,9 @@ var TaxonomySyntaxAPI = {};
                 entries.push(thisExpression);
             }
             output = entries.join(' ' + expression.operator + ' ');
+            if (previousExpressions > 1) {
+                return '( ' + output + ' )';
+            }
             if (entries.length === 1) {
                 return output;
             }
@@ -260,5 +307,14 @@ var TaxonomySyntaxAPI = {};
                 }
             }
         }
+    }
+
+    function patch_add_braces(input) {
+        var hasAnd = input.indexOf(SYMBOL_AND) > -1; //This means it has more than one operand
+        var hasNoEnclosingBraces = ((input.charAt(0) !== '(') || (input.charAt(input.length - 1) !== ')'));
+        if (hasAnd && hasNoEnclosingBraces) {
+            return '( ' + input + ' )';
+        }
+        return input;
     }
 }());

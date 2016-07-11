@@ -1,5 +1,30 @@
 $(function() {
 
+	var tagContentHeight = $('#tag-container').height();
+	var collapsed;
+
+	$(document).ready(function () {
+		collapsed = false;
+		if (tagContentHeight > 280) {
+			$('#tag-container').height('280px');
+			$('#tags-collapse').css("visibility", "visible");
+		}
+	});
+	$('#tags-collapse').click(function () {
+		if (!collapsed) {
+			$('#tag-container').animate({height: tagContentHeight + 20}, 500);
+			$('#tags-collapse-icon').toggleClass("fw fw-up");
+			$('#tags-collapse-text').html("Show less&nbsp;&nbsp;");
+			collapsed = true;
+		}
+		else {
+			$('#tag-container').animate({height: 280}, 500);
+			$('#tags-collapse-icon').removeClass("fw fw-up").addClass("fw fw-down");
+			$('#tags-collapse-text').html("Show all tags&nbsp;&nbsp;");
+			collapsed = false;
+		}
+	});
+
     var showError = function (message) {
         var msg = message.replace(/[0-9a-z.+]+:\s/i, '');
         $('#register-alert').html(msg).fadeIn('fast');
@@ -105,4 +130,41 @@ $(function() {
 
     $("[data-toggle=popover]").popover();
 
+    var addLeftPanel = function(){
+        $('#left-sidebar').hide();
+        $('#assets-container').css('margin-left','0px');
+        $('.search-wrapper').css('margin-left','0px');
+        $('.toggle-menu-left-wrapper').css('display','table-cell');
+    };
+    var removeLeftPanel = function(){
+        $('#left-sidebar').show();
+        $('#assets-container').css('margin-left','250px');
+        $('.search-wrapper').css('margin-left','250px');
+        $('.toggle-menu-left-wrapper').css('display','none');
+    };
+    var makeLeftMenuAndButtons = function(){
+        var windowSize = $(window).width();
+        if(windowSize > 768 ){
+            removeLeftPanel();
+        } else{
+            addLeftPanel();
+        }
+    };
+    $(window).resize(makeLeftMenuAndButtons);
+    $(document).ready(makeLeftMenuAndButtons);
+    var hideLeftPanel = function(){
+        $('#left-sidebar').hide();
+        $('.search-wrapper').removeAttr('style').css('margin-left','0px');
+    };
+    var showLeftPanel = function(){
+        $('#left-sidebar').show();
+        $('.search-wrapper').css('margin-left','250px').css('width','45%');
+    };
+    $('.toggle-menu-left').click(function(){
+        if($('#left-sidebar').is(":visible")){
+            hideLeftPanel();
+        } else {
+            showLeftPanel();
+        }
+    });
 });

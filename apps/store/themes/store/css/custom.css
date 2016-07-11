@@ -1013,6 +1013,25 @@ a.more:focus {
     outline: 0;
     text-align: left;
 }
+
+.btn-taxonomy {
+    border: 0px;
+    border-radius: 0px;
+    color: #fff;
+    text-decoration: none;
+    outline: 0;
+    text-align: left;
+}
+
+.btn-taxonomy {
+    background-color: #4a505c;
+}
+
+.btn-taxonomy:hover,
+.btn-taxonomy:focus {
+    color: #fff;
+    background-color: #333945;
+}
 .btn-add-new {
     background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
 }
@@ -1039,10 +1058,6 @@ a.more:focus {
 
 .btn-collapsed {
     background:url('../img/icons/wso2-logo-small.png') no-repeat;
-}
-
-.es-content-block{
-    padding-left: 200px;
 }
 
 .es-nav-tabs > li.active > a, .es-nav-tabs > li.active > a:hover, .es-nav-tabs > li.active > a:focus {
@@ -1410,6 +1425,7 @@ h2.app-title {
 .ctrl-wr-asset .ast-content {
     background-color: #fff;
     padding-bottom:10px;
+    min-height: 105px;
 }
 
 .ctrl-wr-asset.selected {
@@ -1583,6 +1599,11 @@ span.advanced-search-icons{
     }
     .tags{
         min-width:auto!important;
+    }
+    .ctrl-wr-asset .ast-content {
+        background-color: #fff;
+        padding-bottom:10px;
+        height: 100%;
     }
 }
 .loading-animation-big{
@@ -1767,6 +1788,16 @@ a#search-info {
 .search-wrapper {
     width: 70%;
 }
+@media (max-width: 1300px) {
+    .search-wrapper {
+        width: 60%;
+    }
+}
+@media (max-width: 1100px) {
+    .search-wrapper {
+        width: 45%;
+    }
+}
 @media (max-width: 768px) {
     .search-wrapper {
         width: 60%;
@@ -1774,6 +1805,7 @@ a#search-info {
 }
 .search-wrapper .input-group {
     padding-top: 3px;
+    padding-left: 15px;
 }
 .store-bookmark-link {
     width: auto;
@@ -1818,4 +1850,10 @@ a#search-info {
     border-top: 0px;
     border-right: 0px;
     border-bottom: 0px;
+}
+.confirmation-popup-container #bookmark-animation {
+    position: absolute;
+    top: 50%;
+    margin-left: 30%;
+    display: none;
 }
