@@ -32,10 +32,15 @@ var otherTypeQueryArray = [];
 var getSeparatedQueries = function () {
     var decodedURL = decodeURIComponent(window.location.href);
     var queryList = [];
-    if (decodedURL.indexOf("q=") > 0) {
+    if (decodedURL.indexOf("?") > 0) {
         // this added because when categorization removed it remain ?q= in the search query
-        if (decodedURL.split("?q=")[1]) {
-            var combinedQueryList = otherTypeQueryArray = decodedURL.split('q=');
+        if (decodedURL.split("?")[1]) {
+            debugger;
+            var combinedQueryList = otherTypeQueryArray = decodedURL.split('?');
+            if (combinedQueryList[1].indexOf("q=") == 0) {
+                combinedQueryList[1] = otherTypeQueryArray[1] = combinedQueryList[1].replaceAll("q=", "");
+            }
+
             if (combinedQueryList[1].indexOf(",") > 0) {
                 var separateQueryList = combinedQueryList[1].split(",");
                 for (var count = 0; count < separateQueryList.length; count++) {
