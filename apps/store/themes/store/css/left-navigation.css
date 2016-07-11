@@ -518,6 +518,7 @@ nav.navigation .second_level > .left-menu-item {
     background-color: #2C313B;
     min-width: 300px;
     width: 40%;
+    margin-left: 250px;
 }
 
 .taxonomy .filter-tag .btn-edit {
