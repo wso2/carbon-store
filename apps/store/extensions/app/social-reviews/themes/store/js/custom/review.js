@@ -138,13 +138,14 @@ $container.on('click', '#btn-post', function (e) {
         });
     }
 });
-$stream.on('click', '.icon-thumbs-down', function (e) {
+$stream.on('click', '.thumbs-down-button', function (e) {
     if (!store.user) {
         return false;
     }
+    console.log("tmkasun debug: thumbs-down pressed");
     e.preventDefault();
-    var $tDownBtn = $(e.target);
-    var $review = $tDownBtn.parents('.com-review');
+    var $review = $(e.target).parents(".com-review");
+    var $tDownBtn = $review.find(".thumbs-down-button > .icon-thumbs-down");
     var id = $review.attr('data-target-id');
     var $tDownCount = $review.find('.com-dislike-count');
     var activity = {
@@ -182,13 +183,13 @@ $stream.on('click', '.icon-thumbs-down', function (e) {
         $tDownBtn.addClass('selected');
     }
 });
-$stream.on('click', '.icon-thumbs-up', function (e) {
+$stream.on('click', '.thumbs-up-button', function (e) {
     if (!store.user) {
         return false;
     }
     e.preventDefault();
-    var $tUpBtn = $(e.target);
-    var $review = $tUpBtn.parents('.com-review');
+    var $review = $(e.target).parents(".com-review");
+    var $tUpBtn = $review.find(".thumbs-up-button > .icon-thumbs-up");
     var id = $review.attr('data-target-id');
     var $likeCount = $review.find('.com-like-count');
     var activity = {
