@@ -739,7 +739,21 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     color: #fff;
 }
 
+.tags-collapse {
+    visibility: hidden;
+    color: #cccccc;
+    cursor: pointer;
+}
+
+.tags-collapse-span {
+    margin-left: 80px;
+    margin-bottom: 5px;
+}
+
 .tag-content {
+    overflow-y: hidden;
+    overflow-x: hidden;
+    height: auto;
     word-wrap: break-word;
     width: 250px;
     padding-left: 10px;
