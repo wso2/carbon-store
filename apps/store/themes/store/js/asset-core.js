@@ -6,7 +6,7 @@ var asset = {};
     var ERROR_TEXT = "error";
     var getText = function (key) {
         var bookmarkData = $('.main-bookmark');
-        var text = "";
+        var text = "A message was not defined for " + key + " please check process-asset templates";
         if (bookmarkData.length) {
             text = bookmarkData.first().data(key);
         }
