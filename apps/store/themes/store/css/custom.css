@@ -1857,3 +1857,24 @@ a#search-info {
     margin-left: 30%;
     display: none;
 }
+/*
+    Navigation bar changes for the Taxonomy view
+ */
+.sidebar-wrapper nav.navigation{
+    min-height: auto;
+    padding-top:0;
+    height: auto;
+}
+nav.navigation > a.assets-show-more, nav.navigation > a.assets-show-less{
+    cursor: pointer;
+    height: auto;
+    padding: 3px 0 3px 10px;
+    display: block;
+    text-align: center;
+}
+nav.navigation > a.active{
+    position: relative;
+}
+.sidebar-wrapper nav.navigation > a.active{
+    position: inherit;
+}
