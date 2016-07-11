@@ -131,7 +131,7 @@ var api = {};
                         'Please provide taxa in the body of the request'));
                 } else {
                     var am = assetManager(req, session, options);
-                    if (checkInTaxa(taxa.taxonomy.getTaxa(), options.taxa)) {
+                    if (options.taxa) {
                         if (log.isDebugEnabled()) {
                             log.debug('taxa to add: ' + stringify(options.taxa));
                         }
