@@ -49,9 +49,9 @@
                             {{/if}}
                         {{/each}}
                     </div>
-                    <div id="tags-collapse" class="tags-collapse" align="center">
+                    <div id="tags-collapse" class="tags-collapse">
                         <p class="small">
-                            <span id="tags-collapse-text">Show all tags&nbsp;&nbsp;</span>
+                            <span id="tags-collapse-text" class="tags-collapse-span">Show all tags&nbsp;&nbsp;</span>
                         <span class="icon">
                             <i id="tags-collapse-icon" class="fw fw-down"></i>
                         </span>
@@ -108,7 +108,7 @@
 <input id="categorization-query" type="hidden" value=""/>
 
 {{#if assetCategoryDetails.hasCategories}}
-    <div class="category-wrapper">
+    <!-- div class="category-wrapper">
         {{#if assetCategoryDetails.hasCategories}}
             <div class="col-lg-12 category-content">
                 <div class="category padding-top">
@@ -140,5 +140,5 @@
                 </div>
             </div>
         {{/if}}
-    </div>
+    </div -->
 {{/if}}

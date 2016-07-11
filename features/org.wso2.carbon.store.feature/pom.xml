@@ -155,25 +155,25 @@
                                 </importFeatureDef-->
                                 <!-- SSO -->
                                 <importFeatureDef>
-                                    org.wso2.carbon.security.mgt:${carbon.identity.version}
+                                    org.wso2.carbon.security.mgt:${carbon.identity.framework.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.identity.application.authenticator.basicauth.server:${carbon.identity.version}
+                                    org.wso2.carbon.identity.application.authenticator.basicauth.server:${identity.application.auth.basic.auth.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.identity.application.authentication.framework.server:${carbon.identity.version}
+                                    org.wso2.carbon.identity.application.authentication.framework.server:${carbon.identity.framework.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.identity.authenticator.saml2.sso.server:${carbon.identity.version}
+                                    org.wso2.carbon.identity.authenticator.saml2.sso.server:${carbon.identity.saml2.version}
                                 </importFeatureDef>
                                 <feaureArtifactDef>
-                                    org.wso2.carbon.identity.sso.saml.server:${carbon.identity.version}
+                                    org.wso2.carbon.identity.sso.saml.server:${carbon.identity.saml.version}
                                 </feaureArtifactDef>
                                 <!--feaureArtifactDef>
                                     org.wso2.stratos.identity.saml2.sso.mgt.server:${carbon.platform.version}
                                 </feaureArtifactDef-->
                                 <feaureArtifactDef>
-                                    org.wso2.carbon.identity.core:${carbon.identity.version}
+                                    org.wso2.carbon.identity.core:${carbon.identity.framework.version}
                                 </feaureArtifactDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.governance.metadata.server:${carbon.governance.version}
@@ -185,16 +185,16 @@
                                     org.wso2.carbon.module.mgt.server:${carbon.deployment.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.user.mgt:${carbon.identity.version}
+                                    org.wso2.carbon.user.mgt:${carbon.identity.framework.version}
                                 </importFeatureDef>
                                 <!--importFeatureDef>
                                     org.wso2.carbon.event.server:${carbon.commons.version}
                                 </importFeatureDef-->
                                 <importFeatureDef>
-                                    org.wso2.carbon.claim.mgt.server:${carbon.identity.version}
+                                    org.wso2.carbon.claim.mgt.server:${carbon.identity.framework.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.identity.mgt:${carbon.identity.version}
+                                    org.wso2.carbon.identity.mgt:${carbon.identity.framework.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.registry.ws:${carbon.registry.version}
