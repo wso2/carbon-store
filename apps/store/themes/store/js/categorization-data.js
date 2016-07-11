@@ -39,11 +39,18 @@
         }, {
             url: url,
             success: function (data, status, xhr) {
+                debugger;
                 caramel.partials(data._.partials, function () {
                     caramel.render('categorization-entry', data.body.assets.context, function (info, content) {
                         $('#categorization-div').html(content);
                         categorization();
                         $('.refine > .panel > div').first().collapse('show');
+                    });
+                });
+
+                caramel.partials(data._.partials, function () {
+                    caramel.render('tag-cloud', data.body.assets.context, function (info, content) {
+                        $('#tags-wrapper').html(content);
                     });
                 });
             }
