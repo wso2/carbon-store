@@ -4,8 +4,13 @@ var asset = {};
     var PROCESSING_TEXT = "processing";
     var SUCCESS_TEXT =  "success";
     var ERROR_TEXT = "error";
-    var getText = function(key) {
-        return $('#main-bookmark').data(key);
+    var getText = function (key) {
+        var bookmarkData = $('.main-bookmark');
+        var text = "";
+        if (bookmarkData.length) {
+            text = bookmarkData.first().data(key);
+        }
+        return text;
     };
     asset.process = function (type, path, destination, elem) {
         if (!store.user) {

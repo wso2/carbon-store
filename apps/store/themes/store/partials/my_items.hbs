@@ -34,11 +34,11 @@
                                         <div style="width:{{../ratingPx}}px"></div>
                                     </span>
                                 </div>
-                                <a class="btn js_bookmark pull-right"
-                                   data-type="{{../type}}"
-                                   data-aid="{{../id}}">
-                                    <i class="fw fw-bookmark store-bookmarked"></i>
-                                </a>
+                                {{#mergeContext thisAsset=../this isSubscribed=true}}
+                                    <span class="my-items-bookmark pull-right">
+                                        {{> assets-utilization}}
+                                    </span>
+                                {{/mergeContext}}
                                 <div class="clearfix padding-bottom-sm"></div>
                             </div>
                         </div>
