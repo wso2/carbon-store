@@ -220,31 +220,6 @@ var categorization = function() {
         history.pushState("", "", url);
         resetPageAttributes();
         store.infiniteScroll.addItemsToPage();
-
-        if (store.taxonomyAvailability && !$("#taxonomy-section").is(':visible')) {
-            $("#taxonomy-section").show();
-
-            (store.asset) ? assetType = store.asset.type : assetType = 'all';
-            // first load of basic taxonomies
-            $.ajax({
-                url: caramel.context + '/apis/taxonomies?assetType=' + assetType + '&' + resolveDomain(),
-                type: 'GET',
-                async: false,
-                headers: {
-                    Accept: "application/json"
-                },
-                success: function (data) {
-                    if (!data[0].name) {
-                        $("#taxonomy-section").hide();
-                    }
-                    formatTaxonomyData(data);
-                },
-                error: function () {
-
-                }
-            });
-        }
-        
         setCategorizationQuery(url);
     };
 
