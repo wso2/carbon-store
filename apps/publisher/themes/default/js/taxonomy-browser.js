@@ -275,9 +275,12 @@ $(function () {
     });
 
     $(CANCEL_BUTTON).click(function () {
+        if (editedTaxonomy) {
+            editedTaxonomy.removeClass('edit');
+        }
         resetTaxonomyBrowser();
     });
-    
+
     // On click of a node which is neither a leaf nor back.
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li:not(.back):not(.leaf) a', function (e) {
         e.preventDefault();
@@ -433,7 +436,6 @@ $(function () {
 
     // On double clicking an applied taxonomy tag. Performs browse action.
     $(SELECTED_CONTENT).on('dblclick', 'span', function () {
-        resetTaxonomyBrowser();
         $(TAXONOMY_BROWSER).attr('edit-mode', 'true');
         editedTaxonomy = $(this).closest('div');
         editedTaxonomy.addClass('edit');
@@ -447,7 +449,9 @@ $(function () {
             element += '/' + dataValue[i];
             $('[href="' + element + '"]').trigger('click');
         }
+        $(TAXONOMY_SELECT_BUTTON).hide();
         $(TAXONOMY_BROWSER).slideDown();
+        $(CANCEL_BUTTON).show();
     });
 
     /**
@@ -457,7 +461,7 @@ $(function () {
      */
     function saveDatawindow(dataWindow) {
         $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            $(this).find('li').removeClass('active');
+            $(this).find('li').removeClass('active')
             $(this).find('button').remove();
             var parent = $(this).data('parent');
             if (!windowObject[parent]) {
