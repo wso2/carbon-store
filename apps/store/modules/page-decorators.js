@@ -810,6 +810,7 @@ var pageDecorators = {};
         return map;
     };
 
+   
     /**
      * Builds the criteria map to do the facet search.
      *
@@ -823,11 +824,15 @@ var pageDecorators = {};
         var keys = Object.keys(options);
         list = new ArrayList();
         keys.forEach(function (key) {
-            list.add('*' + options[key] + '*');
-            map.put(key, list);
+            if (key != "tags"){
+                list.add('*' + options[key] + '*');
+                map.put(key, list);
+            }
+
         });
         return map;
     };
+
 
     var selectedTag = function (ctx) {
 
