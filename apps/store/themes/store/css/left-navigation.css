@@ -1289,6 +1289,7 @@ a#search-info{
 .sidebar-wrapper.toggled {
     left: 0;
     right: auto;
+    margin-left: 250px;
 }
 
 .sidebar-wrapper[data-side=right].toggled {
