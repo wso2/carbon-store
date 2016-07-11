@@ -110,9 +110,9 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			+ Constants.CONTEXT_ID_COLUMN + " = ?";
 
 	private JsonParser parser = new JsonParser();
-	
-	public static Object obj = null;
-	public static Class<?> cls = null;
+
+	private static Object obj = null;
+	private static Class<?> cls = null;
 
 	@Override
 	protected long publishActivity(JsonObject jsonObject)
