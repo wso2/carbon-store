@@ -25,7 +25,7 @@ var api = {};
     var ReqUtils = utilsModule.request;
     var constants = rxtModule.constants;
     var store = require('store');
-    var log = new Log('review-api');
+    var log = new Log('user-reviews-api');
     var HTTP_GET_METHOD = 'GET';
     var HTTP_POST_METHOD = 'POST';
     var HTTP_DELETE_METHOD = 'DELETE';
@@ -81,7 +81,6 @@ var api = {};
 
         var user = store.server.current(session);
         if (!user) {
-            log.error('[user-reviews-api] Attempt to update review without a logged in user');
             log.error(req.getRemoteAddr());
             res = ResponseProcessor.buildErrorResponse(res, 401, 'Must be logged into update reviews');
             return;
@@ -95,7 +94,7 @@ var api = {};
             res.addHeader("Content-Type", "application/json");
             print(result);
         } catch (e) {
-            log.error('[user-reviews-api] Unable to update the review', e);
+            log.error('Unable to update the review', e);
             res = ResponseProcessor.buildErrorResponse(res, 500, 'An error has occurred while updating the review,' +
                 'please check the server logs for more details');
         }

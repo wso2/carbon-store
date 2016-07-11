@@ -66,6 +66,11 @@ var ReviewUtils = {};
             var targetId = String(review.object.id);
             review.actor.id = cleanUsername(review.actor.id);
             review.isMyComment = (usernameOnReview === formatUsername(user));
+            if (user) {
+                review.isUserLoggedIn = true;
+            } else {
+                review.isUserLoggedIn = false;
+            }
             //Only populate review details if there is a logged in
             //user
             if (user && review.isMyComment) {
