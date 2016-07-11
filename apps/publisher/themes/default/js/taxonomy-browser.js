@@ -246,7 +246,7 @@ function initTaxonomyBrowser(appliedTaxonomy) {
                 if (selectedTaxonomy.indexOf(element) < 0) {
                     selectedTaxonomy.push(appliedTaxonomy[key]);
                     $(SELECTED_CONTENT).append('<div class="selected-item" data-value="' + appliedTaxonomy[key] + '">'
-                        + '<span>' + displayValue.join(' > ') + '</span>'
+                        + '<span class="editable">' + displayValue.join(' > ') + '</span>'
                         + '<button type="button" class="btn btn-danger btn-remove">'
                         + '<i class="fw fw-cancel"></i></span></button></div>');
                 }
@@ -379,8 +379,8 @@ $(function () {
                 editedTaxonomy.removeClass('edit');
             } else {
                 $(SELECTED_CONTENT).append(
-                    '<div class="selected-item" data-value="' + selectedValue + '"><span>' + displayValue.join(' > ')
-                    + '</span><button type="button" class="btn btn-danger btn-remove">'
+                    '<div class="selected-item" data-value="' + selectedValue + '"><span class="editable">'
+                    + displayValue.join(' > ') + '</span><button type="button" class="btn btn-danger btn-remove">'
                     + '<i class="fw fw-cancel"></i></button></div>');
             }
             displayValue.length = 0;
@@ -435,8 +435,12 @@ $(function () {
     });
 
     // On double clicking an applied taxonomy tag. Performs browse action.
-    $(SELECTED_CONTENT).on('dblclick', 'span', function () {
+    $(SELECTED_CONTENT).on('dblclick', 'span.editable', function () {
         $(TAXONOMY_BROWSER).attr('edit-mode', 'true');
+        if(editedTaxonomy) {
+            editedTaxonomy.removeClass('edit');
+        }
+        
         editedTaxonomy = $(this).closest('div');
         editedTaxonomy.addClass('edit');
         var dataValue = editedTaxonomy.data('value').split('/');
@@ -461,7 +465,7 @@ $(function () {
      */
     function saveDatawindow(dataWindow) {
         $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            $(this).find('li').removeClass('active')
+            $(this).find('li').removeClass('active');
             $(this).find('button').remove();
             var parent = $(this).data('parent');
             if (!windowObject[parent]) {
@@ -519,6 +523,6 @@ $(window).resize(function () {
 
 // Adding tooltip for the applied taxonomies
 $(SELECTED_CONTENT).tooltip({
-    selector: '.selected-item span',
+    selector: '.selected-item span.editable',
     title: 'Double click to edit'
 });
