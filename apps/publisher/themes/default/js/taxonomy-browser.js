@@ -437,10 +437,10 @@ $(function () {
     // On double clicking an applied taxonomy tag. Performs browse action.
     $(SELECTED_CONTENT).on('dblclick', 'span.editable', function () {
         $(TAXONOMY_BROWSER).attr('edit-mode', 'true');
-        if(editedTaxonomy) {
+        if (editedTaxonomy) {
             editedTaxonomy.removeClass('edit');
         }
-        
+
         editedTaxonomy = $(this).closest('div');
         editedTaxonomy.addClass('edit');
         var dataValue = editedTaxonomy.data('value').split('/');
@@ -509,11 +509,15 @@ $(window).resize(function () {
             return $(this).data('window');
         }).get();
         var highestWindow = Math.max.apply(Math, dataWindows);
+
+        var i;
         if (difference < 0) {
-            $('[data-window=' + (highestWindow - columnsCount) + ']').hide();
-            $('[data-window=' + (highestWindow - columnsCount + 1) + ']').find('li.back').show();
+            for (i = 0; i < highestWindow - columnsCount + 1; ++i) {
+                $('[data-window=' + i + ']').hide();
+                $('[data-window=' + (i + 1) + ']').find('li.back').show();
+            }
         } else {
-            for (var i = 0; i < columnsCount; ++i) {
+            for (i = 0; i < columnsCount; ++i) {
                 $('[data-window=' + (highestWindow - i) + ']').show();
                 $('[data-window=' + (highestWindow - i + 1) + ']').find('li.back').hide();
             }
