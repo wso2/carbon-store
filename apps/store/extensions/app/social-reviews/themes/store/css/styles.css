@@ -399,3 +399,8 @@ button:hover {
 .btn-flat{
     border-radius: 0px !important;
 }
+
+a.disabled {
+    pointer-events: none;
+    cursor: default;
+}

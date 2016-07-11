@@ -25,14 +25,9 @@
                 <ul>
                     <li>
                         {{#unless isMyComment}}
-                            {{#if user}}
-                                <a class="thumbs-up-button" href="#">
+                                <a class="thumbs-up-button {{#unless ../isUserLoggedIn}}disabled{{/unless}}" href="#">
                                     <i class="icon icon-thumbs-up {{#if iLike}}selected{{/if}}"></i><span
                                         class="com-like-count">{{#if object.likes.totalItems}} {{object.likes.totalItems}} {{/if}}</span></a>
-                            {{else}}
-                                <i class="icon icon-thumbs-up"></i><span
-                                    >{{#if object.likes.totalItems}} {{object.likes.totalItems}} {{/if}}</span>
-                            {{/if}}
                         {{else}}
                             <i class="icon icon-thumbs-up {{#if iLike}}selected{{/if}}"></i><span
                                 >{{#if object.likes.totalItems}} {{object.likes.totalItems}} {{/if}}</span>
@@ -40,13 +35,8 @@
                     </li>
                     <li>
                         {{#unless isMyComment}}
-                            {{#if user}}
-                                <a class="thumbs-down-button" href="#"><i class="icon icon-thumbs-down {{#if iDislike}}selected{{/if}}"></i><span
+                                <a class="thumbs-down-button {{#unless ../isUserLoggedIn}}disabled{{/unless}}" href="#"><i class="icon icon-thumbs-down {{#if iDislike}}selected{{/if}}"></i><span
                                         class="com-dislike-count">{{#if object.dislikes.totalItems}} {{object.dislikes.totalItems}} {{/if}}</span></a>
-                            {{else}}
-                                <i class="icon icon-thumbs-down"></i><span
-                                    >{{#if object.dislikes.totalItems}} {{object.dislikes.totalItems}} {{/if}}</span>
-                            {{/if}}
                         {{else}}
                             <i class="icon icon-thumbs-down {{#if iDislike}}selected{{/if}}"></i><span
                               >{{#if object.dislikes.totalItems}} {{object.dislikes.totalItems}} {{/if}}</span>
