@@ -20,7 +20,7 @@ var categorizationArray = [];
 var categorization = function() {
 
     var updateFilters = function (url){
-        var queryArray = url.split("=")[1].split(",");
+        var queryArray = url.split("q=")[1].split(",");
         var queryObjArray = [];
         if(queryArray.length > 0){
             for(var index in queryArray){
@@ -66,7 +66,7 @@ var categorization = function() {
         if (store.asset) {
             if(window.location.href.indexOf("q=") > -1){
                 if(!isRemove){
-                    if(window.location.href.split("=")[1] !== ""){
+                    if(window.location.href.split("q=")[1] !== ""){
                         if(window.location.href.indexOf(searchQuery.split(":")[0]) > -1){
                             url = removeURLParameter(decodeURIComponent(window.location.href),
                                 data, true);
