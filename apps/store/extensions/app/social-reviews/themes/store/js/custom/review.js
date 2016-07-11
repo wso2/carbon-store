@@ -142,7 +142,6 @@ $stream.on('click', '.thumbs-down-button', function (e) {
     if (!store.user) {
         return false;
     }
-    console.log("tmkasun debug: thumbs-down pressed");
     e.preventDefault();
     var $review = $(e.target).parents(".com-review");
     var $tDownBtn = $review.find(".thumbs-down-button > .icon-thumbs-down");

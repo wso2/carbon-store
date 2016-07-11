@@ -68,10 +68,12 @@ var ReviewUtils = {};
             review.isUserLoggedIn = false;
             //Only populate review details if there is a logged in
             //user
-            if (user && review.isMyComment) {
-                myIndex = index;
-            } else if (user) {
-                review.isUserLoggedIn = true
+            if (review.isMyComment) {
+                if (user) {
+                    review.isUserLoggedIn = true
+                } else {
+                    myIndex = index;
+                }
             }
         }
         if (myIndex !== undefined) {
