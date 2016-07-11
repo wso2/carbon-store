@@ -763,16 +763,28 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     padding-top: 10px;
     float:left;
 }
-
+.tag-content > a{
+    position: relative;
+}
+.tag-content > a i.fw-cancel{
+    position: absolute;
+    right: 6px;
+    top: 4px;
+    font-size: 7px;
+    background: #000;
+    padding:3px;
+    border-radius: 10px;
+    color: #fff;
+}
 .tag-content > a > span {
-    padding: 3px 8px;
+    padding: 3px 15px 3px 8px;
     line-height: 19px;
     font-weight: 100;
     margin-right: 5px;
     margin-bottom: 5px;
     cursor: pointer;
-    border: 1px solid #2C313B;
-    background: #2C313B;
+    border: 1px solid #525252;
+    background: #171C27;
     font-size: 12px;
     color: #EFEFEF;
 }
@@ -781,7 +793,10 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     background-color: #535B6B;
     border: 1px solid #2C313B;
 }
-
+.tag-content > a > span.text-muted{
+    background: #2C313B;
+    color: #fff;
+}
 .tag-more {
     text-align: right;
     font-weight: 100;
