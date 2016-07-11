@@ -104,7 +104,7 @@ require('/modules/store.js').exec(function (ctx) {
                         log.error('Bad syntax. Please provide correct syntax.', e);
                     } else {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
-                                INTERNAL_SERVER_ERROR,
+                                        INTERNAL_SERVER_ERROR,
                                 "Error on retrieving taxonomy.Server is unable to process the request.Please check " +
                                 "your have entered a correct query");
                         log.error('Error on retrieving taxonomy.Server is unable to prddocess the request.Please ' +
@@ -118,6 +118,16 @@ require('/modules/store.js').exec(function (ctx) {
             } else if (uriMatcher.match(taxonomyPatternAssetType)) {
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
+
+
+                        if (options['taxonomyId']) {
+                            taxaPathList = taxa.taxonomy.getTaxonomyName(options['taxonomyId'],
+                                    taxonomyAssetTypeOptions.name);
+
+                            response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                    taxaPathList);
+                            return;
+                        }
 
                         if (taxonomyAssetTypeOptions.name) {
                             store.server.sandbox(options, function () {
@@ -145,7 +155,7 @@ require('/modules/store.js').exec(function (ctx) {
                         log.error('Bad syntax. Please provide correct syntax.', e);
                     } else {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
-                                INTERNAL_SERVER_ERROR,
+                                        INTERNAL_SERVER_ERROR,
                                 "Error on retrieving taxonomy.Server is unable to process the request. Please check " +
                                 "your have entered a correct query");
                         log.error('Error on retrieving taxonomy.Server is unable to process the request.Please ' +
@@ -202,7 +212,7 @@ require('/modules/store.js').exec(function (ctx) {
                         log.error('Bad syntax. Please provide correct syntax.', e);
                     } else {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
-                                INTERNAL_SERVER_ERROR,
+                                        INTERNAL_SERVER_ERROR,
                                 "Error on retrieving taxonomy. Server is unable to process the request.Please check " +
                                 "your have entered a correct query");
                         log.error('Error on retrieving taxonomy.Server is unable to process the request.Please ' +

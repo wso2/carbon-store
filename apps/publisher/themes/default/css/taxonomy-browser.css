@@ -154,12 +154,15 @@
     opacity: 0.5;
 }
 
-.selected-item span {
+.selected-item > span.editable {
     cursor: pointer;
-    padding: 5px 15px 10px;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+}
+
+.selected-item span {
+    padding: 5px 15px 10px;
 }
 
 .selected-item button {

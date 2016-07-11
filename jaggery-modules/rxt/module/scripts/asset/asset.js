@@ -590,6 +590,14 @@ var asset = {};
                 if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots
                     && !(value.indexOf('(') > -1)) {
                     value = '*'+value+'*';
+                }else if (wildcard && key != 'tags' && (value.indexOf(' OR ') > -1)){
+                    if (value.indexOf('(') > -1) {
+                        value = value.replace("(", "(*");
+                        value = value.replace(")", "*)");
+                    } else {
+                        value = '*'+value+'*';
+                    }
+                    value = value.replace(" OR ", "* OR *");
                 }
                 queryString.push(key + '=' + encodeURIComponent(value));
             }
@@ -2071,6 +2079,7 @@ var asset = {};
         } else {
             asset.uniqueColor = [Math.floor(Math.random() * defaultPalette.length)]
         }
+        asset.singularLabel = this.rxtTemplate.singularLabel;
         asset.icon = this.rxtTemplate.meta.ui.icon;
         return asset;
     };

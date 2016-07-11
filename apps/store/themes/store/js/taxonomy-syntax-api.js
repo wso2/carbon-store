@@ -24,8 +24,8 @@ var TaxonomySyntaxAPI = {};
     var SYMBOL_EXP_STOP = ')';
     TaxonomySyntaxAPI.buildExpression = function(input, clean) {
         clean = clean || function(v) {
-            return v;
-        };
+                return v;
+            };
         var expression = buildExpression(input, clean);
         if (expression.operator === SYMBOL_OR) {
             var root = new Expression();
@@ -173,8 +173,8 @@ var TaxonomySyntaxAPI = {};
     };
     Expression.prototype.buildExpressionString = function(decorator) {
         decorator = decorator || function(v) {
-            return v;
-        };
+                return v;
+            };
         var modifiedOperands = this.operands.map(function(v) {
             return decorator(v);
         });
@@ -188,6 +188,22 @@ var TaxonomySyntaxAPI = {};
     };
     Expression.prototype.compile = function(decorator) {
         return rprint(this, '', decorator);
+    };
+    /**
+     * Adding url taxonomy category retrieve options with 2d array
+     * @returns {Array}
+     */
+    Expression.prototype.groups = function() {
+        var mainCol = [];
+        this.operands.forEach(function(value) {
+            mainCol.push([value]);
+        });
+
+        this.children.forEach(function(child) {
+            mainCol.push(child.operands);
+        });
+
+        return mainCol;
     };
 
     function buildExpression(expression, clean) {
@@ -281,8 +297,8 @@ var TaxonomySyntaxAPI = {};
         }
     }
     /**
-    Performs a recursive search on an expression object to find the expression with the matching operand
-    **/
+     Performs a recursive search on an expression object to find the expression with the matching operand
+     **/
     function rsearch(expression, query) {
         if (!expression.hasChildren()) {
             var found;

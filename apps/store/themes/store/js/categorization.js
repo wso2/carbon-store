@@ -20,7 +20,7 @@ var categorizationArray = [];
 var categorization = function() {
 
     var updateFilters = function (url){
-        var queryArray = url.split("=")[1].split(",");
+        var queryArray = url.split("q=")[1].split(",");
         var queryObjArray = [];
         if(queryArray.length > 0){
             for(var index in queryArray){
@@ -66,7 +66,7 @@ var categorization = function() {
         if (store.asset) {
             if(window.location.href.indexOf("q=") > -1){
                 if(!isRemove){
-                    if(window.location.href.split("=")[1] !== ""){
+                    if(window.location.href.split("q=")[1] !== ""){
                         if(window.location.href.indexOf(searchQuery.split(":")[0]) > -1){
                             url = removeURLParameter(decodeURIComponent(window.location.href),
                                 data, true);
@@ -220,31 +220,6 @@ var categorization = function() {
         history.pushState("", "", url);
         resetPageAttributes();
         store.infiniteScroll.addItemsToPage();
-
-        if (store.taxonomyAvailability && !$("#taxonomy-section").is(':visible')) {
-            $("#taxonomy-section").show();
-
-            (store.asset) ? assetType = store.asset.type : assetType = 'all';
-            // first load of basic taxonomies
-            $.ajax({
-                url: caramel.context + '/apis/taxonomies?assetType=' + assetType + '&' + resolveDomain(),
-                type: 'GET',
-                async: false,
-                headers: {
-                    Accept: "application/json"
-                },
-                success: function (data) {
-                    if (!data[0].name) {
-                        $("#taxonomy-section").hide();
-                    }
-                    formatTaxonomyData(data);
-                },
-                error: function () {
-
-                }
-            });
-        }
-        
         setCategorizationQuery(url);
     };
 

@@ -4,8 +4,13 @@ var asset = {};
     var PROCESSING_TEXT = "processing";
     var SUCCESS_TEXT =  "success";
     var ERROR_TEXT = "error";
-    var getText = function(key) {
-        return $('#main-bookmark').data(key);
+    var getText = function (key) {
+        var bookmarkData = $('.main-bookmark');
+        var text = "A message was not defined for " + key + " please check process-asset templates";
+        if (bookmarkData.length) {
+            text = bookmarkData.first().data(key);
+        }
+        return text;
     };
     asset.process = function (type, path, destination, elem) {
         if (!store.user) {
@@ -75,6 +80,16 @@ var asset = {};
     });
 
     /*
+    We calculate the URL dynamically  by removing the tags expression from the query
+     */
+    $('.es-asset-tag').on('click', function(e) {
+        e.preventDefault();
+        var url = window.location.href;
+        url = buildTagURL(url);
+        window.location = url;
+    });
+
+    /*
     The function adds the sorting properties provided in the sorting options into
     the provided URL
      */
@@ -127,5 +142,62 @@ var asset = {};
         }
         return urlWithoutQueryParams.concat(newQueryParams.concat(urlWithQueryParams).join('&')).join('?');
     }
+
+    /**
+     * Removes the tags query from the URL
+     * @param  {[type]} url [description]
+     * @return {[type]}     [description]
+     */
+    function buildTagURL(url) {
+        var decodedURI = decodeURIComponent(url);
+        //Split by ?
+        var splitURI = decodedURI.split('?');
+        var uri = splitURI.slice(0, 1);
+        var queryParams = splitURI.slice(1) || '';
+        queryParams = (queryParams.length === 0) ? '' : queryParams[0];
+        queryParams = queryParams.split('&');
+        var qIndex = -1;
+        var qTagsIndex = -1;
+        queryParams.forEach(function(query, index) {
+            qIndex = (query.indexOf('q=') > -1) ? index : qIndex;
+        });
+        var q = [];
+        if (qIndex > -1) {
+            q = queryParams[qIndex].replace('q=', '').split(',');
+        }
+        q.forEach(function(kvPair, index) {
+            qTagsIndex = (kvPair.indexOf('tags') > -1) ? index : qTagsIndex;
+        });
+        if (qTagsIndex > -1) {
+            q.splice(qTagsIndex, 1);
+        }
+        //Remove the existing query
+        if (qIndex > -1) {
+            queryParams.splice(qIndex);
+            var qvalue = q.join(',');
+            q = (qvalue === '') ? [] : ['q=' + qvalue];
+        }
+        q = ((q.length === 1) && (q[0] === '')) ? [] : q;
+        var newQueryParams = [queryParams.concat(q).join('&')];
+        newQueryParams = ((newQueryParams.length === 1) && (newQueryParams[0] === '')) ? [] : newQueryParams;
+        return uri.concat(newQueryParams).join('?');
+    }
+
+    $('.assets-show-more').click(function(){
+        $(this).toggle();
+        $('.assets-show-less').toggle();
+        $('.navigation .all-item').show();
+    });
+
+    $('.assets-show-less').click(function(){
+        $(this).toggle();
+        $('.assets-show-more').toggle();
+        $('.navigation .all-item').each(function(){
+            if(!$(this).attr('data-selected')){
+                $(this).hide();
+            }
+        });
+    });
+
 
 }(asset));

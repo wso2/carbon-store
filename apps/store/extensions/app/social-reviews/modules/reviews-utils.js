@@ -61,22 +61,19 @@ var ReviewUtils = {};
         var myIndex;
         for (var index = 0; index < reviews.length; index++) {
             review = reviews[index];
-            review.user = false;
             usernameOnReview = review.actor.id;
             var targetId = String(review.object.id);
             review.actor.id = cleanUsername(review.actor.id);
             review.isMyComment = (usernameOnReview === formatUsername(user));
-            if (user) {
-                review.isUserLoggedIn = true;
-            } else {
-                review.isUserLoggedIn = false;
-            }
+            review.isUserLoggedIn = false;
             //Only populate review details if there is a logged in
             //user
-            if (user && review.isMyComment) {
-                myIndex = index;
-            } else if (user) {
-                review.user = true;
+            if (review.isMyComment) {
+                if (user) {
+                    review.isUserLoggedIn = true
+                } else {
+                    myIndex = index;
+                }
             }
         }
         if (myIndex !== undefined) {

@@ -22,7 +22,7 @@ var BTN_REMOVE_PREFIX = "btnremove";
 var DIV_HIDDEN_PREFIX = "hiddendiv";
 var SEARCH_AND_QUERY = " && ";
 var assetAvailability = false;
-
+var generateFromURL = false;
 
 var otherTypeQueryArray = [];
 /**
@@ -32,10 +32,15 @@ var otherTypeQueryArray = [];
 var getSeparatedQueries = function () {
     var decodedURL = decodeURIComponent(window.location.href);
     var queryList = [];
-    if (decodedURL.indexOf("q=") > 0) {
+    if (decodedURL.indexOf("?") > 0) {
         // this added because when categorization removed it remain ?q= in the search query
-        if (decodedURL.split("?q=")[1]) {
-            var combinedQueryList = otherTypeQueryArray = decodedURL.split('q=');
+        if (decodedURL.split("?")[1]) {
+            debugger;
+            var combinedQueryList = otherTypeQueryArray = decodedURL.split('?');
+            if (combinedQueryList[1].indexOf("q=") == 0) {
+                combinedQueryList[1] = otherTypeQueryArray[1] = combinedQueryList[1].replaceAll("q=", "");
+            }
+
             if (combinedQueryList[1].indexOf(",") > 0) {
                 var separateQueryList = combinedQueryList[1].split(",");
                 for (var count = 0; count < separateQueryList.length; count++) {
@@ -119,9 +124,13 @@ var resolveTaxonomyCRUDOperations = function (taxonomyId, operation) {
     if (taxonomyId) {
         switch (operation) {
             case 'add':
-                expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
-                expression.add("*" + taxonomyId + "*");
-                returnUrl = '"' + expression.compile() + '"';
+                if (multipleQueries) {
+                    expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
+                    expression.add("*" + taxonomyId + "*");
+                    returnUrl = '"' + expression.compile() + '"';
+                } else {
+                    returnUrl = '"*' + taxonomyId + '*"';
+                }
                 break;
             case 'remove':
                 expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
@@ -315,14 +324,14 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
  * @param {[type]} url   A string URL
  * @param {[type]} input A query parameter of the format a=b,where a is the query key and b the value
  */
-function addQueryToURL(url,input){
-  input = input ? [input] : [];
-  var urlComponents = url.split('?');
-  var urlWithOutQuery = urlComponents.slice(0,1);
-  var urlWithQueryParams = urlComponents.slice(1);
-  
-  urlWithQueryParams = (( urlWithQueryParams.length > 0 ) && (urlWithQueryParams[0] === '')) ? [] : urlWithQueryParams;
-  return urlWithOutQuery.concat(urlWithQueryParams.concat(input).join('&')).join('?');
+function addQueryToURL(url, input) {
+    input = input ? [input] : [];
+    var urlComponents = url.split('?');
+    var urlWithOutQuery = urlComponents.slice(0, 1);
+    var urlWithQueryParams = urlComponents.slice(1);
+    urlWithQueryParams = (( urlWithQueryParams.length > 0 ) && (urlWithQueryParams[0] === '')) ? [] :
+        urlWithQueryParams;
+    return urlWithOutQuery.concat(urlWithQueryParams.concat(input).join('&')).join('?');
 }
 
 
@@ -501,7 +510,10 @@ var displayPaths = function (element) {
     var pathArray = [];
     var pathIdArray = [];
     var taxonomyName = $('> a', glbTaxoInstance).attr('elementtext');
-    resolveTaxonomyCRUDQueries($(globalClickedElement).attr('id').replaceAll('-', '/'), "add");
+
+    if (!generateFromURL) {
+        resolveTaxonomyCRUDQueries($(globalClickedElement).attr('id').replaceAll('-', '/'), "add");
+    }
 
     for (var i = 0; i < parentElements.length; i++) {
         if (parentElements[i].nodeName == "LI") {
@@ -565,8 +577,10 @@ var onClickHideBock = function (element) {
  * @param element
  */
 var removeClickedElement = function (element) {
-    resolveTaxonomyCRUDQueries($(element).closest('.filter-tag').attr('id').split("#")[0].replaceAll('-', '/'),
-        "remove");
+    if (!generateFromURL) {
+        resolveTaxonomyCRUDQueries($(element).closest('.filter-tag').attr('id').split("#")[0].replaceAll('-', '/'),
+            "remove");
+    }
 
     // remove All selected elements
     var allMatchingElements = $("#accordion1").find('.selected-disabled');
@@ -664,8 +678,9 @@ var updateTaxonomy = function (element) {
         "oldQuery": $(element).closest('.filter-tag').attr('id').split("#")[0].replaceAll('-', '/'),
         "newQuery": $(element).closest('a').attr('id').replaceAll('-', '/')
     };
-    resolveTaxonomyCRUDQueries(updateData, "update");
-
+    if (!generateFromURL) {
+        resolveTaxonomyCRUDQueries(updateData, "update");
+    }
     var parentElements = $(globalClickedElement).parents();
     var pathArray = [];
     var pathIdArray = [];
@@ -1056,10 +1071,8 @@ $(document).ready(function () {
                 Accept: "application/json"
             },
             success: function (data) {
-                if (!data[0].name) {
-                    $("#taxonomy-section").hide();
-                }
                 formatTaxonomyData(data);
+                generateTaxonomyViewFromUrl();
             },
             error: function () {
 
@@ -1181,3 +1194,131 @@ $('.taxonomy ul.nav li a').each(function () {
             '</button>');
     }
 });
+
+var taxonomyName;
+/**
+ * This method will load taxonomy name relared to specific root id
+ *
+ * @param taxonomyId
+ */
+var clickElementByExpression = function (taxonomyId) {
+
+    $.ajax({
+        url: caramel.context + '/apis/taxonomies/' + assetType + '?taxonomyId=' + taxonomyId + "&" + resolveDomain(),
+        type: 'GET',
+        async: false,
+        headers: {
+            Accept: "application/json"
+        },
+        success: function (data) {
+            taxonomyName = data[0].taxonomyName;
+            $("#taxo" + data[0].taxonomyName).click();
+            debugger;
+
+
+        },
+        error: function () {
+
+        }
+    });
+
+};
+
+/**
+ * This method will generate taxonomy based on url when page refresh
+ *
+ */
+var generateTaxonomyViewFromUrl = function () {
+    if (window.location.href.indexOf("taxonomy") > 0) {
+        generateFromURL = true;
+        var taxonomyQuery = getTaxonomyQuery();
+        if (taxonomyQuery) {
+            var multipleQueries = taxonomyQuery.split(":");
+            multipleQueries[1] = multipleQueries[1].replace(/^\"/, '').replace(/\"/, '');
+
+        }
+
+        if (multipleQueries[1].indexOf("AND") < 0 && multipleQueries[1].indexOf("OR") < 0) {
+            multipleQueries[1] = multipleQueries[1].replace(/^\*/, '').replace(/\*/, '');
+        }
+        var expression = new TaxonomySyntaxAPI.Expression();
+        expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
+        var expressionArray = [];
+        expressionArray = expression.groups();
+
+        // inside list of paths in one taxonomy
+        for (var i = 0; i < expressionArray.length; i++) {
+            if (expressionArray[i].length > 0) {
+                var urlPaths = expressionArray[i];
+                for (var v = 0; v < urlPaths.length; v++) {
+                    urlPaths[v] = urlPaths[v].replace(/^\*/, '').replace(/\*/, '');
+                }
+                clickElementByExpression(urlPaths[0].split('/')[0]);
+                var elementId = urlPaths[0].split('/')[0];
+                var onceClicked = false;
+                // inside list of elements in one path
+                for (var j = 0; j < urlPaths.length; j++) {
+                    var listOfIds = urlPaths[j].split('/');
+                    elementId = urlPaths[j].split('/')[0];
+                    if (listOfIds.length > 2) {
+                        for (var b = 1; b < listOfIds.length; b++) {
+                            elementId += '-' + listOfIds[b];
+
+                            if (!onceClicked) {
+                                if (listOfIds.length - 1 == b) {
+                                    $("#" + elementId).find('.btn-add').click();
+                                    onceClicked = true;
+                                } else {
+                                    $("#" + elementId).click();
+                                }
+                            } else {
+
+                                if (listOfIds.length - 1 == b) {
+                                    if ($('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().last().
+                                        find(".taxonomy-or-sep-wrapper").find('.btn-primary').
+                                        attr('title') != "Cancel") {
+                                        $('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().last().
+                                        find(".taxonomy-or-sep-wrapper").find('.btn-primary').click();
+                                    }
+
+                                    $('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().find('.add').
+                                    find("#" + elementId).find('.btn-add').click();
+
+                                } else {
+                                    if ($('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().last().
+                                        find(".taxonomy-or-sep-wrapper").find('.btn-primary').
+                                        attr('title') != "Cancel") {
+                                        $('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().last().
+                                        find(".taxonomy-or-sep-wrapper").find('.btn-primary').click();
+                                    }
+                                    $('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().find(".add").
+                                    find("#" + elementId).click();
+
+                                }
+                            }
+                        }
+
+
+                    } else {
+                        elementId = listOfIds[0] + '-' + listOfIds[1];
+                        if (!onceClicked) {
+                            $("#" + elementId).find('.btn-add').click();
+                            onceClicked = true;
+                        } else {
+                            $('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().last().
+                            find(".taxonomy-or-sep-wrapper").find('.btn-primary').click();
+                            $('[data-taxonomyid=hiddendivtaxo' + taxonomyName + ']').last().find('.add').
+                            find("#" + elementId).find('.btn-add').click();
+                        }
+                    }
+
+
+                }
+            }
+
+        }
+
+    }
+    generateFromURL = false;
+
+};

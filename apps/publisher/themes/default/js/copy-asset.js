@@ -19,7 +19,7 @@ $(document).ready(function() {
                 }),
                 type: 'POST',
                 success: function(response) {
-                    messages.alertSuccess('Asset version created successfully!,You will be redirected to new asset details page in few seconds.....');
+                    messages.alertSuccess('Asset version created successfully!,You will be redirected to new asset details page in few seconds...');
                     setTimeout(function() {
                         var path = caramel.url('assets/' + assetType + '/details/' + response.data);
                         window.location = path;

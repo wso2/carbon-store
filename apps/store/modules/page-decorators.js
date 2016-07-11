@@ -722,7 +722,12 @@ var pageDecorators = {};
         var q = request.getParameter("q");
         if (q) {
             var options = parse("{" + q + "}");
-            map = buildQueryMap(ctx, options);
+            if (facetField == "tags") {
+                map = buildQueryMapTags(ctx, options);
+            } else {
+                map = buildQueryMap(ctx, options);
+            }
+
             if (options.tags) {
                 selectedTag = options.tags;
             }
@@ -804,6 +809,30 @@ var pageDecorators = {};
         }
         return map;
     };
+
+   
+    /**
+     * Builds the criteria map to do the facet search.
+     *
+     * @param ctx           context
+     * @param options       query options
+     * @returns {HashMap}   map of criteria
+     */
+    var buildQueryMapTags = function (ctx, options) {
+        var map = new HashMap();
+        var list;
+        var keys = Object.keys(options);
+        list = new ArrayList();
+        keys.forEach(function (key) {
+            if (key != "tags"){
+                list.add('*' + options[key] + '*');
+                map.put(key, list);
+            }
+
+        });
+        return map;
+    };
+
 
     var selectedTag = function (ctx) {
 
