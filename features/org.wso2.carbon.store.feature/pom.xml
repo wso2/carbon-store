@@ -158,7 +158,7 @@
                                     org.wso2.carbon.security.mgt:${carbon.identity.framework.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
-                                    org.wso2.carbon.identity.application.authenticator.basicauth.server:${carbon.identity.framework.version}
+                                    org.wso2.carbon.identity.application.authenticator.basicauth.server:${identity.application.auth.basic.auth.version}
                                 </importFeatureDef>
                                 <importFeatureDef>
                                     org.wso2.carbon.identity.application.authentication.framework.server:${carbon.identity.framework.version}
