@@ -1,10 +1,10 @@
 <div class="lifecycle-selection-area">
     {{#if assets.hasMultipleLifecycles}}
-        <h4><i class="fw fw-settings lifecycles-mgt-icon"></i> Switch Lifecycles</h4><hr/>
-
-        <div>
-            <span class='help-block'> Select a lifecycle </span>
-            <div id='current-selected-lifecycle-div' class="form-group wr-lifecycle-selection">
+        <div class="row">
+            <div class="col-lg-2">
+                <h4><i class="fw fw-settings lifecycles-mgt-icon"></i> Switch Lifecycles</h4>
+            </div>
+            <div id='current-selected-lifecycle-div col-lg-10' class="form-group wr-lifecycle-selection">
 
                 <select id='lifecycle-selector' class='form-control'>
                     {{#each assets.availableLifecycles}}
@@ -14,4 +14,5 @@
             </div>
         </div>
     {{/if}}
+    <hr/>
 </div>
