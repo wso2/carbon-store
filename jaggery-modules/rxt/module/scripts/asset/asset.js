@@ -566,10 +566,10 @@ var asset = {};
     };
 
     /**
-     * This method will replace given text in a given string
-     * @param find
-     * @param replace
-     * @returns {string}
+     * This method will replace all matched occurrences given text in a given string
+     * @param find  This value will search in string
+     * @param replace  replaced with this value
+     * @returns {string} updated string
      */
     String.prototype.replaceAll = function (find, replace) {
         var str = this;
