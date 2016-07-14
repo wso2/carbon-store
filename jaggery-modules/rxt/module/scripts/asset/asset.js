@@ -564,6 +564,18 @@ var asset = {};
         }
         return assets;
     };
+
+    /**
+     * This method will replace given text in a given string
+     * @param find
+     * @param replace
+     * @returns {string}
+     */
+    String.prototype.replaceAll = function (find, replace) {
+        var str = this;
+        return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
+    };
+
     var buildQueryString = function(query,options) {
         var queryString = [];
         var value;
@@ -587,17 +599,17 @@ var asset = {};
                 var queryWithQuots = value.match(/"(.*?)"/g);
                 value = decodeURIComponent(value);
                 //Check if wildcard search is enabled
-                if (wildcard && key != 'tags' && !(value.indexOf('&') > -1) && !queryWithQuots
+                if (wildcard && key != 'tags' && key != 'taxonomy' &&  !(value.indexOf('&') > -1) && !queryWithQuots
                     && !(value.indexOf('(') > -1)) {
                     value = '*'+value+'*';
-                }else if (wildcard && key != 'tags' && (value.indexOf(' OR ') > -1)){
+                }else if (wildcard && key != 'tags' && key != 'taxonomy' && (value.indexOf(' OR ') > -1)){
                     if (value.indexOf('(') > -1) {
-                        value = value.replace("(", "(*");
-                        value = value.replace(")", "*)");
+                        value = value.replaceAll("(", "(*");
+                        value = value.replaceAll(")", "*)");
                     } else {
                         value = '*'+value+'*';
                     }
-                    value = value.replace(" OR ", "* OR *");
+                    value = value.replaceAll(" OR ", "* OR *");
                 }
                 queryString.push(key + '=' + encodeURIComponent(value));
             }
