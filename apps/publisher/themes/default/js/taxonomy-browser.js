@@ -70,9 +70,14 @@ var updateTaxonomyWindow = function (dataWindow) {
  * Loads available taxonomies for the asset type.
  */
 var loadTaxonomies = function () {
+    var tenantDomain = '';
+    if ((store) && (store.publisher)) {
+        tenantDomain = store.publisher.tenantDomain;
+    }
+    
     $.ajax({
         type: 'GET',
-        url: BASE_URL + '?assetType=' + store.publisher.type,
+        url: BASE_URL + '?assetType=' + store.publisher.type + '&tenant=' + tenantDomain,
         success: function (results) {
             var html = '<div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 taxonomy-select-window" data-root="#"' +
                 ' data-window="0"><ul>';
