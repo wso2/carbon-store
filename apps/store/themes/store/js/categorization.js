@@ -17,7 +17,7 @@
  */
 
 var categorizationArray = [];
-var categorization = function() {
+var categorization = function () {
 
     /**
      * This method returns the query parameter by name
@@ -26,7 +26,7 @@ var categorization = function() {
      * @returns {string}    query parameter string
      */
     var getParameterByName = function (name, url) {
-        if(!url) {
+        if (!url) {
             url = window.location.href;
         }
         var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
@@ -38,24 +38,24 @@ var categorization = function() {
         return '';
     };
 
-    var updateFilters = function (url){
+    var updateFilters = function (url) {
         var queryParam = getParameterByName('q', url);
         var queryArray = [];
-        if(queryParam) {
+        if (queryParam) {
             queryArray = queryParam.split(",");
         }
         var queryObjArray = [];
-        if(queryArray.length > 0){
-            for(var index in queryArray){
+        if (queryArray.length > 0) {
+            for (var index in queryArray) {
                 var obj = queryArray[index];
                 var queryObj = {};
                 var queryObjValue = [];
                 queryObj.queryKey = obj.split(":")[0].split('\"').join('');
-                if(obj.indexOf("(") > -1){
+                if (obj.indexOf("(") > -1) {
                     var newObj = obj.split(":")[1].split('\"').join('').replace("(", "").replace(")", "");
                     queryObjValue = newObj.split("OR");
                 } else {
-                    if(obj.indexOf(":") > -1){
+                    if (obj.indexOf(":") > -1) {
                         queryObjValue.push(obj.split(":")[1].split('\"').join(''));
                     }
                 }
@@ -63,16 +63,16 @@ var categorization = function() {
                 queryObjArray.push(queryObj);
             }
 
-            for(var i in queryObjArray){
-                $('.categorization-checkbox:checkbox').each(function() {
+            for (var i in queryObjArray) {
+                $('.categorization-checkbox:checkbox').each(function () {
                     var $this = $(this);
-                    if($this.attr('name') == queryObjArray[i].queryKey){
-                        for(var k in queryObjArray[i].queryValue){
-                            if($this.attr('value').toLowerCase()
-                                == queryObjArray[i].queryValue[k].trim().toLowerCase()){
+                    if ($this.attr('name') == queryObjArray[i].queryKey) {
+                        for (var k in queryObjArray[i].queryValue) {
+                            if ($this.attr('value').toLowerCase()
+                                == queryObjArray[i].queryValue[k].trim().toLowerCase()) {
                                 $this.attr('checked', true);
-                                $("#"+$this.attr('name')).collapse('show');
-                                var icon = $("#"+$this.attr('name')).prev().find('.status').children();
+                                $("#" + $this.attr('name')).collapse('show');
+                                var icon = $("#" + $this.attr('name')).prev().find('.status').children();
                             }
                         }
                     }
@@ -87,13 +87,13 @@ var categorization = function() {
         var encodedQueryString = getEncodedQueryString(searchQuery);
         currentPage = 1;
         if (store.asset) {
-            if(window.location.href.indexOf("q=") > -1){
-                if(!isRemove){
-                    if(getParameterByName('q') !== ""){
-                        if(window.location.href.indexOf(searchQuery.split(":")[0]) > -1){
+            if (window.location.href.indexOf("q=") > -1) {
+                if (!isRemove) {
+                    if (getParameterByName('q') !== "") {
+                        if (window.location.href.indexOf(searchQuery.split(":")[0]) > -1) {
                             url = removeURLParameter(decodeURIComponent(window.location.href),
                                 data, true);
-                            if(getParameterByName('q', url) !== ""){
+                            if (getParameterByName('q', url) !== "") {
                                 url = url + "%2C" + encodedQueryString;
                             } else {
                                 url = url + encodedQueryString;
@@ -124,20 +124,20 @@ var categorization = function() {
     var getEncodedQueryString = function (searchQuery) {
         var q = {};
         var output = '';
-        if(searchQuery !== ''){
+        if (searchQuery !== '') {
             q = parseUsedDefinedQuery(searchQuery);
             q = JSON.stringify(q);
-            q = q.replace('{','').replace('}', '');
+            q = q.replace('{', '').replace('}', '');
             q = encodeURIComponent(q);
-            output =q;
+            output = q;
         }
         return output;
     };
 
-    var triggerEvent = function (data, isRemove){
+    var triggerEvent = function (data, isRemove) {
         var searchQueryString = data.parent + ":" + data.text;
 
-        if((window.location.href.indexOf(data.parent) > -1) && !isRemove){
+        if ((window.location.href.indexOf(data.parent) > -1) && !isRemove) {
             searchQueryString = updateORQuery(window.location.href, data);
         }
         search(searchQueryString, data, isRemove);
@@ -146,8 +146,8 @@ var categorization = function() {
     var updateORQuery = function (url, data) {
         var value = getParamValue(url, data.parent).trim();
         var updatedQuery = "";
-        if(value.indexOf("(") > -1){
-            updatedQuery = data.parent + ":(" + value.substring(value.indexOf("\"(")+2, value.indexOf(")\"")) + " OR "
+        if (value.indexOf("(") > -1) {
+            updatedQuery = data.parent + ":(" + value.substring(value.indexOf("\"(") + 2, value.indexOf(")\"")) + " OR "
                 + data.text + ")";
         } else {
             value = "\"" + value.split("\"").join("").trim() + "\"";
@@ -156,7 +156,7 @@ var categorization = function() {
         return updatedQuery;
     };
 
-    var removeURLParameter = function(sourceURL, data, removeWhole) {
+    var removeURLParameter = function (sourceURL, data, removeWhole) {
         var rtn = sourceURL.split("?")[0],
             param,
             params_arr = [],
@@ -166,17 +166,17 @@ var categorization = function() {
             for (var i = params_arr.length - 1; i >= 0; i -= 1) {
                 param = params_arr[i].split("=")[1];
                 var innerParams = param.split(",");
-                for(var j= innerParams.length -1; j >= 0; j -= 1){
-                    if(innerParams[j].indexOf(data.parent) > -1){
-                        if((innerParams[j].indexOf("OR") > -1) && !removeWhole){
-                            var currValues = innerParams[j].substring(innerParams[j].indexOf("\"(")+2,
+                for (var j = innerParams.length - 1; j >= 0; j -= 1) {
+                    if (innerParams[j].indexOf(data.parent) > -1) {
+                        if ((innerParams[j].indexOf("OR") > -1) && !removeWhole) {
+                            var currValues = innerParams[j].substring(innerParams[j].indexOf("\"(") + 2,
                                 innerParams[j].indexOf(")\"")).split("OR");
-                            for(var n in currValues){
-                                if(data.text == currValues[n].trim()){
+                            for (var n in currValues) {
+                                if (data.text == currValues[n].trim()) {
                                     currValues.splice(n, 1);
                                 }
                             }
-                            if(currValues.length > 1){
+                            if (currValues.length > 1) {
                                 innerParams[j] = "\"" + data.parent + "\":\"(" +
                                     currValues.map(Function.prototype.call, String.prototype.trim).join(" OR ").trim()
                                     + ")\"";
@@ -196,7 +196,7 @@ var categorization = function() {
         return rtn;
     };
 
-    var getParamValue = function(sourceURL, key) {
+    var getParamValue = function (sourceURL, key) {
         var param,
             params_arr = [],
             queryString = (sourceURL.indexOf("?") !== -1) ? sourceURL.split("?")[1] : "";
@@ -206,13 +206,13 @@ var categorization = function() {
                 param = params_arr[i].split("=")[1];
 
                 var innerParams;
-                if(param.indexOf(",") > -1){
+                if (param.indexOf(",") > -1) {
                     innerParams = param.split(",");
                 } else {
                     innerParams = param.split("%2C");
                 }
-                for(var j= innerParams.length -1; j >= 0; j -= 1){
-                    if(innerParams[j].indexOf(key) > -1){
+                for (var j = innerParams.length - 1; j >= 0; j -= 1) {
+                    if (innerParams[j].indexOf(key) > -1) {
                         return decodeURIComponent(innerParams[j]).split(":")[1];
                     }
                 }
@@ -220,7 +220,7 @@ var categorization = function() {
         }
     };
 
-    var formatSearchQuery = function(query){
+    var formatSearchQuery = function (query) {
         var searchQuery = "";
         var qjson = JSON.parse('{' + query + '}');
         var searchKeys = Object.keys(qjson);
@@ -238,7 +238,7 @@ var categorization = function() {
         return searchQuery;
     };
 
-    var loadAssets = function(url){
+    var loadAssets = function (url) {
         $('.assets-container section .ctrl-wr-asset').remove();
         history.pushState("", "", url);
         resetPageAttributes();
@@ -246,8 +246,8 @@ var categorization = function() {
         setCategorizationQuery(url);
     };
 
-    var setCategorizationQuery = function(url){
-        var searchQuery =  removeUnrelatedKeys(decodeURIComponent(url));
+    var setCategorizationQuery = function (url) {
+        var searchQuery = removeUnrelatedKeys(decodeURIComponent(url));
         $('#categorization-query').val(formatSearchQuery(searchQuery));
     };
 
@@ -257,33 +257,33 @@ var categorization = function() {
      * @param url
      * @returns {string}
      */
-    var removeUnrelatedKeys = function(url){
+    var removeUnrelatedKeys = function (url) {
         var searchQuery = getParameterByName('q', url);
-        if(!searchQuery) {
+        if (!searchQuery) {
             return '';
         }
         var keyValues = searchQuery.split(",");
-        for(var i in keyValues){
+        for (var i in keyValues) {
             var data = {};
             var isRemove = true;
             data.parent = keyValues[i].split(":")[0].split("\"").join('').trim();
             data.text = keyValues[i].split(":")[1].split("\"").join('').trim();
 
-            for(var j in categorizationArray){
-                if(categorizationArray[j] == data.parent){
+            for (var j in categorizationArray) {
+                if (categorizationArray[j] == data.parent) {
                     isRemove = false;
                     break;
                 }
             }
 
-            if(isRemove){
+            if (isRemove) {
                 url = removeURLParameter(decodeURIComponent(url), data, true);
             }
         }
 
         return decodeURIComponent(getParameterByName('q', url));
     };
-    var resetPageAttributes = function(){
+    var resetPageAttributes = function () {
         store.rows_added = 0;
         store.last_to = 0;
         store.items_per_row = 0;
@@ -292,7 +292,7 @@ var categorization = function() {
         store.infiniteScroll.recalculateRowsAdded();
     };
 
-    $('.categorization-checkbox:checkbox').click(function() {
+    $('.categorization-checkbox:checkbox').click(function () {
         var $this = $(this);
         var data = {};
         data.parent = $this.attr('name');
@@ -307,7 +307,7 @@ var categorization = function() {
         }
     });
 
-    $('.categorization-checkbox:checkbox').each(function() {
+    $('.categorization-checkbox:checkbox').each(function () {
         var $this = $(this);
         categorizationArray.push($this.attr('name'));
     });
@@ -316,22 +316,22 @@ var categorization = function() {
     categorizationArray.push("taxonomy");
 
     var url = decodeURIComponent(window.location.href);
-    if((url.indexOf("q=") > -1) && (getParameterByName('q', url) !== "")){
+    if ((url.indexOf("q=") > -1) && (getParameterByName('q', url) !== "")) {
         setCategorizationQuery(url);
     }
 
-    if($('#search').val() !== ''){
+    if ($('#search').val() !== '') {
         $('#search').val($.cookie("searchQuery"));
     }
 
-    if(url.indexOf("=") > -1){
+    if (url.indexOf("=") > -1) {
         var query = url.split("=");
-        if(query[1] !== ""){
+        if (query[1] !== "") {
             updateFilters(url);
         }
     }
 };
 
-$(function() {
+$(function () {
     categorization();
 });
