@@ -939,7 +939,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
 }
 .ctrl-wr-asset  {
     position: relative;
-    width: 15.2%;
+    width: 13.2%;
     float: left;
     margin: 0.5%;
     background: #fbfbfb;
@@ -1009,7 +1009,7 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     height:40px;
     position:absolute;
     top:110px;
-    z-index: 999;
+    z-index: 9;
 }
 .asset-details-header .ast-img .ast-type-icon{
     top: 105px;
