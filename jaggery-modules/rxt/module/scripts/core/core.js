@@ -641,29 +641,24 @@ var core = {};
             }
         }
 
-        if (taxonomies) {
-            if (taxonomies.indexOf(",") > -1) {
-                taxonomies = taxonomies.split(",");
+        if (taxonomies && (taxonomies = taxonomies.split(","))) {
 
-                for (var i = 0; i < taxonomies.length; i++) {
-                    if (TaxonomyService.getTaxonomy(taxonomies[i])) {
-                        taxonomyArray.push(taxonomies[i]);
-                    } else {
-                        log.error("The taxonomy name : " + taxonomies[i] + " not matched with rxt definition. " +
-                            "Please check you have entered the correct name");
-                    }
-                }
-            } else {
-                if (TaxonomyService.getTaxonomy(taxonomies)) {
-                    taxonomyArray.push(taxonomies);
+            for (var i = 0; i < taxonomies.length; i++) {
+                if (TaxonomyService.getTaxonomy(taxonomies[i])) {
+                    taxonomyArray.push(taxonomies[i]);
                 } else {
-                    log.error("The taxonomy name : " + taxonomies + " not matched with rxt definition. " +
+                    log.error("The taxonomy name : " + taxonomies[i] + " not matched with rxt definition. " +
                         "Please check you have entered the correct name");
-                    return null;
                 }
             }
         } else {
-            return null;
+            if (TaxonomyService.getTaxonomy(taxonomies)) {
+                taxonomyArray.push(taxonomies);
+            } else {
+                log.error("The taxonomy name : " + taxonomies + " not matched with rxt definition. " +
+                    "Please check you have entered the correct name");
+                return null;
+            }
         }
 
         return taxonomyArray;
