@@ -21,6 +21,7 @@ var server = require('store').server;
 var user = server.current(session);
 var constants = require('rxt').constants;
 var app = require('rxt').app;
+var rxtServer = require('rxt').server;
 var tenantId = constants.DEFAULT_TENANT; //Assume the user is not logged in
 //Determine if the user has logged in
 if (user) {
@@ -44,4 +45,4 @@ if (queryString) {
 if(log.isDebugEnabled()) {
     log.debug('Redirecting to the landing page: ' + redirectUrl);
 }
-response.sendRedirect(redirectUrl); %>
+response.sendRedirect(rxtServer.buildAppURL(redirectUrl)); %>

@@ -24,7 +24,7 @@
     var context = rxtAPI.app.getContext();
     //If there is no logged in user then redirect
     if (!user) {
-        response.sendRedirect(context);
+        response.sendRedirect(rxtAPI.server.buildAppURL(context));
         return;
     }
     try {
@@ -32,5 +32,5 @@
     } catch (e) {
         log.error('Unable to logout the user', e);
     }
-    response.sendRedirect(context);
+    response.sendRedirect(rxtAPI.server.buildAppURL(context));
 }(request, response, session)); %>

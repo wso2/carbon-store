@@ -49,6 +49,7 @@
         USE_ST_KEY: !attr.useTenantKey
     };
     var sso_sessions = application.get('sso_sessions');
+    var server = require('rxt').server;
 
     var loadTenant = function(username) {
         var carbon = require('carbon');
@@ -111,14 +112,17 @@
                 if (log.isDebugEnabled()) {
                     log.debug('user is set :::' + username);
                 }
-                response.sendRedirect(relayState);
+                if(relayState && relayState.indexOf(server.getProxyContextPath()) < 0) {
+                    relayState = server.getProxyContextPath() + relayState;
+                }
+                response.sendRedirect(server.buildAppURL(relayState));
             } else {
                 log.warn('User ' + sessionObj.loggedInUser + ' does not have permission to access the store application.Make sure the user has the store role.');
                 response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
             }
         } else {
             sso.client.logout(session, 'store');
-            response.sendRedirect(relayState);
+            response.sendRedirect(server.buildAppURL(relayState));
         }
     }
 

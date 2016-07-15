@@ -24,6 +24,7 @@ var configCtx = configurationContextService.getServerConfigContext();
 
 var httpPort = carbonUtils.getTransportPort(configCtx,"http");
 var httpsPort = carbonUtils.getTransportPort(configCtx,"https");
+var proxyContextPath = carbonUtils.getProxyContextPath(true);
 
 if (hostName === null || hostName === '') {
     hostName = process.getProperty('carbon.local.ip');
@@ -33,6 +34,7 @@ if (hostName === null || hostName === '') {
 process.setProperty('server.host', hostName);
 process.setProperty('http.port', httpPort.toString());
 process.setProperty('https.port', httpsPort.toString());
+process.setProperty('proxy.context.path', String(proxyContextPath));
 
 var pubConfig = require('/config/publisher.js').config();
 
@@ -43,7 +45,7 @@ var metricsAPI = require('carbon-metrics').metrics;
 
 
 caramel.configs({
-    context: '/publisher',
+    context: rxt.app.buildContext(pubConfig.server.context),
     cache: false,
     negotiation: true,
     themer: function () {

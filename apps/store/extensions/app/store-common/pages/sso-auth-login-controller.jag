@@ -20,12 +20,16 @@
 (function(){
     var configs = require('/config/store.js').config(),
             sso = require("sso"),
+            rxt = require('rxt'),
             sessionId = session.getId(),
             requestedPage = request.getParameter("requestedPage"),
             attr = configs.authentication.methods.sso.attributes,
             referer = request.getHeader("referer"),
             ignoreReferer = request.getParameter("ignoreReferer");
-    var relayState = (referer ? referer : '/store');
+    if(referer && referer.indexOf(rxt.server.getProxyContextPath()) < 0){
+        referer = rxt.server.getProxyContextPath() + referer;
+    }
+    var relayState = (referer ? referer : rxt.app.getContext());
     var encodedSAMLAuthRequest;
     var log = new Log('Store - sso-auth-login-controller.jag');
     var carbon = require('carbon');

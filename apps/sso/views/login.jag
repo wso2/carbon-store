@@ -42,6 +42,8 @@ if (relyingParty == 'publisher') {
 var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();
 var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
+var server = require('/modules/server.js');
+var commonauth = server.buildURL('/commonauth');
 var themeModule = require('/modules/theme.js');
 if(RelayState){
     if(RelayState.indexOf("register_new_user") != -1 ){
@@ -65,7 +67,7 @@ if(RelayState){
         <div class="row">
                 <!-- content -->
                 <div class="col-xs-12 col-sm-10 col-md-8 col-lg-4 wr-login col-centered">
-                    <form id="loginForm" action="/commonauth" method="POST">
+                    <form id="loginForm" action="<%=commonauth%>" method="POST">
                         <h2 class="wr-title uppercase blue-bg padding-double white boarder-bottom-blue margin-none">SIGN IN</h2>
                         <div class="clearfix"></div>
                         <div class="boarder-all ">

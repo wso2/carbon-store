@@ -12,6 +12,12 @@ var SERVER_EVENTS = 'server.events';
 
 var TENANT_CONFIGS = 'tenant.configs';
 
+var PROXY_CONTEXT_PATH = 'proxyContextPath';
+
+var SERVER_URL = 'serverURL';
+
+var PROXY_SERVER = 'proxyURL';
+
 /**
  * Initializes the server for the first time. This should be called when app is being deployed.
  * @param options
@@ -23,6 +29,11 @@ var init = function (options) {
             tenanted: options.tenanted,
             url: options.server.https
         });
+    var carbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+    var proxyContextPath = carbonUtils.getProxyContextPath(true);
+    application.put(PROXY_CONTEXT_PATH, proxyContextPath);
+    application.put(SERVER_URL, options.server.https);
+    application.put(PROXY_SERVER, options.server.proxyServer);
     application.put(SERVER, srv);
     application.put(SERVER_OPTIONS, options);
 
@@ -72,6 +83,29 @@ var init = function (options) {
             });
         loginManager.triggerEvent(configReg, user.username, tenantId, domain);
     });
+};
+
+/**
+ * This method is used to build complete url.
+ * @param path  sub context url path.
+ * @return build url with server url + proxy context path.
+ */
+var buildURL = function (path) {
+    if (path.indexOf('/') != 0) {
+        path = "/" + path;
+    }
+    if(application.get(PROXY_SERVER) && application.get(PROXY_SERVER).length > 0){
+        return application.get(PROXY_SERVER) + application.get(PROXY_CONTEXT_PATH) + path;
+    }
+    return application.get(SERVER_URL) + application.get(PROXY_CONTEXT_PATH) + path;
+};
+
+/**
+ * This method is used to get proxy context path defined in carbon.xml.
+ * @return proxy context path.
+ */
+var getProxyContextPath = function () {
+    return application.get(PROXY_CONTEXT_PATH);
 };
 
 /**

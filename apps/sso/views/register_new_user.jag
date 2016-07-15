@@ -47,6 +47,8 @@ var recoveryModule = require('account-management').recovery;
 var challengeSet = recoveryModule.getChallengeQuestionSet();
 var isPasswordRecoveryEnabled = recoveryModule.isPasswordRecoveryEnabled();
 var themeModule = require('/modules/theme.js');
+var server = require('/modules/server.js');
+var registerURL = server.buildURL('/sso/register');
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -202,7 +204,7 @@ var themeModule = require('/modules/theme.js');
 
             var formData = $("#registerForm").serialize();
 
-            $.post('/sso/register', formData, function (data) {
+            $.post('<%=registerURL%>', formData, function (data) {
                 var regFormError = $('#regFormError');
                 var regFromSuccess = $('#regFormSuc');
                 if (JSON.parse(data).error == 'false') {

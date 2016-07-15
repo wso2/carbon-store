@@ -16,7 +16,18 @@
     <h1>Error 500</h1>
     <h3>Something went wrong and we're trying to fix it.</h3>
     <h4>Please check back later</h4>
-    <h4><a href="/publisher">Home Page</a></h4>
+    <h4><a id="publisherURL">Home Page</a></h4>
 </body>
 </html>
+
+<script>
+    var a = document.getElementById('publisherURL');
+    var requestedURI = window.location.href;
+    if (requestedURI.split('publisher').length > 0 ) {
+        a.href = requestedURI.split('publisher')[0] + "publisher";
+    } else {
+        a.href = "/publisher";
+    }
+
+</script>
 

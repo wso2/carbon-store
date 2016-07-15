@@ -253,7 +253,8 @@ var engine = caramel.engine('handlebars', (function() {
                 return output;
             });
             Handlebars.registerHelper('tenantedUrl', function (path) {
-                var constants = require('rxt').constants;
+                var rxtAPI  = require('rxt');
+                var constants = rxtAPI.constants;
                 var uriPattern = '/{context}/{+suffix}';
                 var tenantedUriPattern = constants.TENANT_URL_PATTERN;// '/{context}/t/{domain}/{+any}';
 
@@ -261,10 +262,10 @@ var engine = caramel.engine('handlebars', (function() {
                 var uriMatcher = new URIMatcher(request.getRequestURI());
                 if (uriMatcher.match(tenantedUriPattern)) {
                     uriOptions = uriMatcher.elements();
-                    output = '/' + uriOptions.context + '/t/' + uriOptions.domain;
+                    output = rxtAPI.app.getContext() + '/t/' + uriOptions.domain;
                 } else if (uriMatcher.match(uriPattern)) {
                     uriOptions = uriMatcher.elements();
-                    output = '/' + uriOptions.context;
+                    output = rxtAPI.app.getContext();
                 }
                 return output + path;
             });

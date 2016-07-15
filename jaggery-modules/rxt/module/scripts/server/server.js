@@ -32,6 +32,12 @@ var server = {};
      * @param  {Object} options system configuration object
      */
     server.init = function(options) {
+        var carbonUtils = Packages.org.wso2.carbon.utils.CarbonUtils;
+        var proxyContextPath = carbonUtils.getProxyContextPath(true);
+        application.put(constants.PROXY_CONTEXT_PATH, proxyContextPath);
+        application.put(constants.SERVER_URL, options.server.https);
+        application.put(constants.PROXY_URL, options.server.proxyServer);
+
         var event = require('event');
         event.on('login', function(tenantId, user, session) {
             var rxtManager = core.rxtManager(tenantId);
@@ -57,4 +63,43 @@ var server = {};
             }
         });
     };
-}(server, core))
+
+    /**
+     * Method used to build complete server url appending proxy context path given the sub context of the url
+     * @param  sub context url (does not contain proxy contex path).
+     * @return complete url with server url + proxy context path.
+     */
+    server.buildURL = function (path) {
+        if (path.indexOf('/') != 0) {
+            path = "/" + path;
+        }
+        if(application.get(constants.PROXY_URL) && application.get(constants.PROXY_URL).length >0){
+            return application.get(constants.PROXY_URL) + application.get(constants.PROXY_CONTEXT_PATH) + path;
+        }
+        return application.get(constants.PROXY_CONTEXT_PATH) + path;
+    };
+
+    /**
+     * Method used to build complete server url. Input should contain proxy context path and application context
+     * (For ex : /publisher or /store)
+     * @param  sub context url (contain proxy context path + application context).
+     * @return complete url with server url
+     */
+    server.buildAppURL = function (path) {
+        if (path.indexOf('/') != 0) {
+            path = "/" + path;
+        }
+        if(application.get(constants.PROXY_URL) && application.get(constants.PROXY_URL).length >0){
+            return application.get(constants.PROXY_URL) + path;
+        }
+        return path;
+    };
+
+    /**
+     * Method used to get the proxy context path defined in the carbon.xml
+     * @return proxy context path.
+     */
+    server.getProxyContextPath = function () {
+        return application.get(constants.PROXY_CONTEXT_PATH);
+    }
+}(server, core));

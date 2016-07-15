@@ -1,7 +1,9 @@
 {
     "server": {
         "https": "%https.host%",
-        "http": "%http.host%"
+        "http": "%http.host%",
+        "context" : "/publisher",
+        "proxyServer" : ""
     },
     "user": {
         "username": "admin",
@@ -63,7 +65,7 @@
             },
             "basic": {
                 "attributes": {
-                    "loginURL": "%https.host%/publisher/pages/basic-auth-login"
+                    "loginURL": "%https.host%/%context%/pages/basic-auth-login"
                 }
             }
         }

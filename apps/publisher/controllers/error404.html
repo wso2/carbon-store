@@ -18,7 +18,18 @@
     <i class="icon-unlink error-icon"></i>
     <h1>Error 404</h1>
     <h3>I can't find what you are looking for.</h3>
-    <h4><a href="/publisher">Visit Publisher</a></h4>
+    <h4><a id="publisherURL">Visit Publisher</a></h4>
 </body>
 </html>
+
+<script>
+    var a = document.getElementById('publisherURL');
+    var requestedURI = window.location.href;
+    if (requestedURI.split('publisher').length > 0 ) {
+        a.href = requestedURI.split('publisher')[0] + "publisher";
+    } else {
+        a.href = "/publisher";
+    }
+
+</script>
 

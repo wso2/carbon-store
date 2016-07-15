@@ -13,6 +13,13 @@ var config;
             httpsPort = CarbonUtils.getTransportProxyPort(ccs.getServerConfigContext(), 'https'),
             carbonLocalIP = process.getProperty('carbon.local.ip'),
             httpPortPart, httpsPortPart;
+
+        var resolveProxyContext = function (value) {
+            var server = require('/modules/server.js');
+            var context = server.getProxyContextPath();
+            return value.replace('/%context%', context);
+        };
+
         if (httpPort == -1) {
             httpPort = process.getProperty('http.port');
         }
@@ -33,13 +40,13 @@ var config;
 
         pinch(config, /^/, function (path, key, value) {
             if ((typeof value === 'string') && value.indexOf('%https.host%') > -1) {
-                return value.replace('%https.host%', 'https://' + localIP + httpsPortPart);
+                return resolveProxyContext(value.replace('%https.host%', 'https://' + localIP + httpsPortPart));
             } else if ((typeof value === 'string') && value.indexOf('%http.host%') > -1) {
-                return value.replace('%http.host%', 'http://' + localIP + httpPortPart);
+                return resolveProxyContext(value.replace('%http.host%', 'http://' + localIP + httpPortPart));
             } else if ((typeof value === 'string') && value.indexOf('%https.carbon.local.ip%') > -1) {
-                return value.replace('%https.carbon.local.ip%', 'https://' + carbonLocalIP + ':' + httpsPort);
+                return resolveProxyContext(value.replace('%https.carbon.local.ip%', 'https://' + carbonLocalIP + ':' + httpsPort));
             } else if ((typeof value === 'string') && value.indexOf('%http.carbon.local.ip%') > -1) {
-                return value.replace('%http.carbon.local.ip%', 'http://' + carbonLocalIP + ':' + httpPort);
+                return resolveProxyContext(value.replace('%http.carbon.local.ip%', 'http://' + carbonLocalIP + ':' + httpPort));
             }
             return  value;
         });

@@ -1,7 +1,8 @@
 {
     "server": {
         "https": "%https.host%",
-        "http": "%http.host%"
+        "http": "%http.host%",
+        "proxyServer" : ""
     },
     "roles": {
     },
@@ -62,7 +63,7 @@
         "responseSigningEnabled" : "true",
     },
     "urls" : {
-        "publisher" : "%https.host%/publisher",
-        "store" : "%https.host%/store"
+        "publisher" : "%https.host%/%context%/publisher",
+        "store" : "%https.host%/%context%/store"
     }
 }

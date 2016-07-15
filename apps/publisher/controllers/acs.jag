@@ -40,6 +40,7 @@
                 USE_ST_KEY: !attr.useTenantKey
             };
     var sso_sessions = application.get('sso_sessions');
+    var server = require('rxt').server;
 
     var loadTenant = function(username) {
         var carbon = require('carbon');
@@ -103,7 +104,10 @@
                 if (log.isDebugEnabled()) {
                     log.debug('user is set :::' + username);
                 }
-                response.sendRedirect(relayState ? relayState : context);
+                if(relayState && relayState.indexOf(server.getProxyContextPath()) < 0) {
+                    relayState = server.getProxyContextPath() + relayState;
+                }
+                response.sendRedirect(relayState ? server.buildAppURL(relayState) : server.buildAppURL(context));
             } else {
                 log.warn('User ' + sessionObj.loggedInUser + ' does not have permission to access the publisher application.Make sure the user has the publisher role.');
                 response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
@@ -111,7 +115,7 @@
 
         } else {
             sso.client.logout(session, 'publisher');
-            response.sendRedirect(context);
+            response.sendRedirect(server.buildAppURL(context));
         }
     }
 
