@@ -19,8 +19,31 @@
 var categorizationArray = [];
 var categorization = function() {
 
+    /**
+     * This method returns the query parameter by name
+     * @param name          name of the query parameter
+     * @param url           url
+     * @returns {string}    query parameter string
+     */
+    var getParameterByName = function (name, url) {
+        if(!url) {
+            url = window.location.href;
+        }
+        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
+        var results = regex.exec(url);
+        if (results && results[2]) {
+            return decodeURIComponent(results[2].replace(/\+/g, " "));
+        }
+
+        return '';
+    };
+
     var updateFilters = function (url){
-        var queryArray = url.split("q=")[1].split(",");
+        var queryParam = getParameterByName('q', url);
+        var queryArray = [];
+        if(queryParam) {
+            queryArray = queryParam.split(",");
+        }
         var queryObjArray = [];
         if(queryArray.length > 0){
             for(var index in queryArray){
@@ -66,11 +89,11 @@ var categorization = function() {
         if (store.asset) {
             if(window.location.href.indexOf("q=") > -1){
                 if(!isRemove){
-                    if(window.location.href.split("q=")[1] !== ""){
+                    if(getParameterByName('q') !== ""){
                         if(window.location.href.indexOf(searchQuery.split(":")[0]) > -1){
                             url = removeURLParameter(decodeURIComponent(window.location.href),
                                 data, true);
-                            if(url.split("q=")[1] !== ""){
+                            if(getParameterByName('q', url) !== ""){
                                 url = url + "%2C" + encodedQueryString;
                             } else {
                                 url = url + encodedQueryString;
@@ -235,7 +258,7 @@ var categorization = function() {
      * @returns {string}
      */
     var removeUnrelatedKeys = function(url){
-        var searchQuery = url.split("q=")[1];
+        var searchQuery = getParameterByName('q', url);
         if(!searchQuery) {
             return '';
         }
@@ -258,7 +281,7 @@ var categorization = function() {
             }
         }
 
-        return decodeURIComponent(url.split("q=")[1]);
+        return decodeURIComponent(getParameterByName('q', url));
     };
     var resetPageAttributes = function(){
         store.rows_added = 0;
@@ -293,7 +316,7 @@ var categorization = function() {
     categorizationArray.push("taxonomy");
 
     var url = decodeURIComponent(window.location.href);
-    if((url.indexOf("q=") > -1) && (url.split("q=")[1] !== "")){
+    if((url.indexOf("q=") > -1) && (getParameterByName('q', url) !== "")){
         setCategorizationQuery(url);
     }
 
