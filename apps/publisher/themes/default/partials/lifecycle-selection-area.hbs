@@ -7,8 +7,11 @@
             <div id='current-selected-lifecycle-div col-lg-10' class="form-group wr-lifecycle-selection">
 
                 <select id='lifecycle-selector' class='form-control'>
+                    <option>{{assets.lifecycle}}</option>
                     {{#each assets.availableLifecycles}}
-                        <option>{{name}}</option>
+                        {{#unless active}}
+                            <option>{{name}}</option>
+                        {{/unless}}
                     {{/each}}
                 </select>
             </div>
