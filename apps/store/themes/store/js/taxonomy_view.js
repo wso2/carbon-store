@@ -20,7 +20,6 @@
 var glbTaxoInstance = null;
 var BTN_REMOVE_PREFIX = "btnremove";
 var DIV_HIDDEN_PREFIX = "hiddendiv";
-var SEARCH_AND_QUERY = " && ";
 var assetAvailability = false;
 var generateFromURL = false;
 
@@ -77,241 +76,57 @@ var getTaxonomyQuery = function () {
 };
 
 /**
- * This method will remove double quotations and taxonomy prefix of the taxonomy query, then return the rest .
- * @returns {Array}
- */
-var resolveTaxonomyURL = function () {
-    var taxonomyQuery = getTaxonomyQuery();
-    var taxonomyQueries = [];
-
-    if (taxonomyQuery) {
-        var multipleQueries = taxonomyQuery.split(":");
-        multipleQueries[1] = multipleQueries[1].replace(/^\"/, '').replace(/\"/, '').replace(/^\(/, '').
-        replace(/\)/, '');
-        if (multipleQueries[1].indexOf(SEARCH_AND_QUERY) > 0) {
-            var multipleTaxonomyQueries = multipleQueries[1].split(SEARCH_AND_QUERY);
-            for (var i = 0; i < multipleTaxonomyQueries.length; i++) {
-                taxonomyQueries.push(multipleTaxonomyQueries[i]);
-            }
-        } else {
-            taxonomyQueries.push(multipleQueries[1]);
-        }
-    }
-
-    return taxonomyQueries;
-
-};
-
-/**
- * This method will modify the url related to
- * @param taxonomyId to search through solr
- * @param operation crud operation name
- * @returns {String} updated query URL
- */
-var resolveTaxonomyCRUDOperations = function (taxonomyId, operation) {
-
-    var taxonomyQueryResult = resolveTaxonomyURL();
-    var taxonomyQuery = getTaxonomyQuery();
-    if (taxonomyQuery) {
-        var multipleQueries = taxonomyQuery.split(":");
-        multipleQueries[1] = multipleQueries[1].replace(/^\"/, '').replace(/\"/, '');
-    }
-
-    var expression = new TaxonomySyntaxAPI.Expression();
-
-    var returnUrl = "";
-    if (taxonomyId) {
-        switch (operation) {
-            case 'add':
-                if (multipleQueries) {
-                    expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
-                    expression.add("*" + taxonomyId + "*");
-                    returnUrl = '"' + expression.compile() + '"';
-                } else {
-                    returnUrl = '"*' + taxonomyId + '*"';
-                }
-                break;
-            case 'remove':
-                expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
-                expression.remove('*' + taxonomyId + '*');
-                returnUrl = expression.compile();
-
-                if (returnUrl) {
-                    returnUrl = '"taxonomy":"' + returnUrl + '"';
-                }
-                allQueries[taxonomyQueryPosition] = returnUrl;
-                var newArray = allQueries.filter(function (v) {
-                    return v !== ''
-                });
-                allQueries = newArray;
-                var retString = allQueries.join(",");
-                taxonomyQueryPosition = -1;
-                return encodeURIComponent(retString);
-                break;
-            case 'update':
-                expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
-                expression.remove('*' + taxonomyId.oldQuery + '*');
-                expression.add("*" + taxonomyId.newQuery + "*");
-                returnUrl = '"' + expression.compile() + '"';
-                break;
-            default:
-                break;
-        }
-
-    } else {
-        return "";
-    }
-
-    // used these global variable to avoid getTaxonomyQuery() method call twice
-    if (returnUrl) {
-        returnUrl = '"taxonomy":' + returnUrl;
-        if (taxonomyQueryPosition >= 0) {
-            allQueries[taxonomyQueryPosition] = returnUrl;
-        } else {
-            allQueries.push(returnUrl);
-        }
-        var originalString = allQueries.join(",");
-        taxonomyQueryPosition = -1;
-        return encodeURIComponent(originalString);
-    } else {
-        return returnUrl;
-    }
-
-};
-/**
- * This method will add new query parameter to current url
- * @param taxonomyId
- * @param taxonomyQueryResult
- * @returns String updated query
- */
-var addTaxonomyQuery = function (taxonomyId, taxonomyQueryResult) {
-
-    var mainUrl = "";
-    if (taxonomyQueryResult.length >= 1) {
-        for (var i = 0; i < taxonomyQueryResult.length; i++) {
-            if (i == 0) {
-                mainUrl += "*" + taxonomyQueryResult[i] + "*" + SEARCH_AND_QUERY;
-            } else {
-                mainUrl += taxonomyQueryResult[i] + SEARCH_AND_QUERY;
-            }
-        }
-        mainUrl += "*" + taxonomyId + "*";
-        mainUrl = '"(' + mainUrl + ')"';
-    } else {
-        mainUrl = '"' + taxonomyId + '"';
-    }
-
-    return mainUrl;
-};
-
-/**
- * this method will remove taxonomy query parameter from current url
- * @param taxonomyId
- * @param taxonomyQueryResult
- * @returns String updated query
- */
-var removeTaxonomyQuery = function (taxonomyId, taxonomyQueryResult) {
-
-    var mainUrl = "";
-    if (taxonomyQueryResult.length == 1) {
-        if (taxonomyQueryResult[0] == (taxonomyId)) {
-            mainUrl = "";
-        }
-    } else if (taxonomyQueryResult.length > 1) {
-        for (var i = 0; i < taxonomyQueryResult.length; i++) {
-            if (taxonomyQueryResult[i] != ("*" + taxonomyId + "*")) {
-                mainUrl += taxonomyQueryResult[i] + SEARCH_AND_QUERY;
-            }
-        }
-
-        if (mainUrl.substr(mainUrl.length - SEARCH_AND_QUERY.length, mainUrl.length).indexOf(SEARCH_AND_QUERY) == 0) {
-            mainUrl = mainUrl.substr(0, mainUrl.length - SEARCH_AND_QUERY.length);
-            // there may be multiple AND
-            if (mainUrl.indexOf(SEARCH_AND_QUERY) < 0) {
-                mainUrl = mainUrl.replace(/^\*/, '').replace(/\*/, '');
-                mainUrl = '"' + mainUrl + '"';
-            } else {
-                mainUrl = '"(' + mainUrl + ')"';
-            }
-        } else {
-            mainUrl = '"(' + mainUrl + ')"';
-        }
-
-    } else {
-        mainUrl = "";
-    }
-    return mainUrl;
-};
-
-/**
- * This method will updated the current taxonomy query with new query
- * @param taxonomyId
- * @param taxonomyQueryResult
- * @returns String updated query
- */
-var updateTaxonomyQuery = function (taxonomyId, taxonomyQueryResult) {
-
-    var mainUrl = "";
-
-    if (taxonomyQueryResult.length == 1) {
-        if (taxonomyQueryResult[0] == taxonomyId.oldQuery) {
-            mainUrl = '"' + taxonomyId.newQuery + '"';
-        }
-    } else if (taxonomyQueryResult.length > 1) {
-        for (var i = 0; i < taxonomyQueryResult.length; i++) {
-
-            if (taxonomyQueryResult[i] == "*" + taxonomyId.oldQuery + "*") {
-                taxonomyQueryResult[i] = '*' + taxonomyId.newQuery + '*';
-            }
-
-            if (i == taxonomyQueryResult.length - 1) {
-                mainUrl += taxonomyQueryResult[i];
-            } else {
-                mainUrl += taxonomyQueryResult[i] + SEARCH_AND_QUERY;
-            }
-        }
-        mainUrl = '"(' + mainUrl + ')"';
-    } else {
-        mainUrl = '"' + taxonomyId + '"';
-    }
-    return mainUrl;
-};
-
-/**
  * This method will manage add,remove,update functionality for taxonomy
  * @param taxonomyId
  * @param action
  */
 var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
     var url = decodeURIComponent(window.location.href);
-    var query = '"taxonomy":' + '"*' + taxonomyId + '*"';
-    var parameters = url.split('?q=');
+    var expression = new TaxonomySyntaxAPI.Expression();
+    var mainUrl = URL.buildURL(url);
+    var currentUrl;
+
     switch (action) {
         case "add":
-            if (url.indexOf("q=") > 0) {
-                // this method for resolve categorization remaining q=
-                if (url.split("?q=")[1]) {
-                    selectURL(parameters[0] + "?q=" + resolveTaxonomyCRUDOperations(taxonomyId, "add"));
-                } else {
-                    selectURL(url + encodeURIComponent(query));
-                }
+            if (url.indexOf("taxonomy") > -1) {
+                currentUrl = mainUrl.queryParam('q').get('"taxonomy"').replace(/^\"/, '').replace(/\"/, '');
+                expression = TaxonomySyntaxAPI.buildExpression(currentUrl);
+                expression.add("*" + taxonomyId + "*");
+                mainUrl.queryParam('q').set('"taxonomy"', '"' + expression.compile() + '"');
             } else {
-                url =  addQueryToURL(url,"q=" + encodeURIComponent(query));
-                selectURL(url);
+
+                if (url.indexOf("q=") > -1) {
+                    mainUrl.queryParam('q').set('"taxonomy"', '"' + "*" + taxonomyId + "*" + '"');
+                } else {
+                    mainUrl.queryParam('q', '"taxonomy":"' + "*" + taxonomyId + "*" + '"');
+                }
             }
+            renderURL(mainUrl.compile());
             break;
         case "remove":
-            if (url.indexOf("q=") > 0) {
-                var obj = resolveTaxonomyCRUDOperations(taxonomyId, "remove");
-                selectURL(parameters[0] + (obj == "" ? "" : "?q=") + obj);
-            } else {
-                selectURL(url + "?q=" + resolveTaxonomyCRUDOperations(taxonomyId, "remove"));
+            if (url.indexOf("taxonomy") > -1) {
+                currentUrl = mainUrl.queryParam('q').get('"taxonomy"').replace(/^\"/, '').replace(/\"/, '');
+                expression = TaxonomySyntaxAPI.buildExpression(currentUrl);
+                expression.remove("*" + taxonomyId + "*");
+
+                var compiledExp = expression.compile();
+                if (compiledExp) {
+                    mainUrl.queryParam('q').set('"taxonomy"', '"' + compiledExp + '"');
+                } else {
+                    mainUrl.queryParam('q').remove('"taxonomy"');
+                }
             }
+            renderURL(mainUrl.compile());
             break;
         case "update":
-            if (url.indexOf("q=") > 0) {
-                selectURL(parameters[0] + "?q=" + resolveTaxonomyCRUDOperations(taxonomyId, "update"));
+            if (url.indexOf("taxonomy") > -1) {
+                currentUrl = mainUrl.queryParam('q').get('"taxonomy"').replace(/^\"/, '').replace(/\"/, '');
+                expression = TaxonomySyntaxAPI.buildExpression(currentUrl);
+                expression.remove("*" + taxonomyId.oldQuery + "*");
+                expression.add("*" + taxonomyId.newQuery + "*");
+                mainUrl.queryParam('q', '"taxonomy":"' + expression.compile() + '"');
             }
+            renderURL(mainUrl.compile());
             break;
         default:
             break;
@@ -319,26 +134,10 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
 };
 
 /**
- * Adds the provided input as a query parameter to the URL
- * @param {[type]} url   A string URL
- * @param {[type]} input A query parameter of the format a=b,where a is the query key and b the value
- */
-function addQueryToURL(url, input) {
-    input = input ? [input] : [];
-    var urlComponents = url.split('?');
-    var urlWithOutQuery = urlComponents.slice(0, 1);
-    var urlWithQueryParams = urlComponents.slice(1);
-    urlWithQueryParams = (( urlWithQueryParams.length > 0 ) && (urlWithQueryParams[0] === '')) ? [] :
-        urlWithQueryParams;
-    return urlWithOutQuery.concat(urlWithQueryParams.concat(input).join('&')).join('?');
-}
-
-
-/**
  * This method will choose , asset loading is for list assets or top assets.
  * @param url
  */
-var selectURL = function (url) {
+var renderURL = function (url) {
 
     if (window.location.href.toString().indexOf("top-assets") > 0) {
         caramel.serverRender({
