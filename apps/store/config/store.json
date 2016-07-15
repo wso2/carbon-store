@@ -14,7 +14,8 @@
     "server": {
         "https": "%https.host%",
         "http": "%http.host%",
-        "context" : "/store"
+        "context" : "/store",
+        "proxyServer" : ""
     },
     "lifeCycleBehaviour": {
         "visibleIn": ["Published"]

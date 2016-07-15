@@ -27,6 +27,7 @@
     var attr = config.authentication.methods.sso.attributes;
     var log = new Log('Publisher - sso-auth-login-controller.jag');
     var carbon = require('carbon');
+    var rxt = require('rxt');
     var superTenant = carbon.server.superTenant;
     var encodedSAMLAuthRequest;
     if (attr.responseSigningEnabled) {
@@ -43,6 +44,9 @@
     }
     if(ignoreReferer){
         referer = null;
+    }
+    if(referer && referer.indexOf(rxt.server.getProxyContextPath()) < 0){
+        referer = rxt.server.getProxyContextPath() + referer;
     }
     var relayState = (referer? referer:'/publisher');
     if (!session.get("Loged")) {

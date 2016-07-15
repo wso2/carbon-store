@@ -12,7 +12,13 @@ var config;
             httpPort = CarbonUtils.getTransportProxyPort(ccs.getServerConfigContext(), 'http'),
             httpsPort = CarbonUtils.getTransportProxyPort(ccs.getServerConfigContext(), 'https'),
             carbonLocalIP = process.getProperty('carbon.local.ip'),
-            httpPortPart, httpsPortPart;
+            httpPortPart, httpsPortPart,
+            proxyServer = config.server.proxyServer,
+            proxyServerDefined = false;
+
+        if(proxyServer && proxyServer.length > 0){
+            proxyServerDefined = true;
+        }
 
         var resolveContext = function (value) {
             var rxt = require('rxt');
@@ -40,7 +46,11 @@ var config;
 
         pinch(config, /^/, function (path, key, value) {
             if ((typeof value === 'string') && value.indexOf('%https.host%') > -1) {
-                return resolveContext(value.replace('%https.host%', 'https://' + localIP + httpsPortPart));
+                if(proxyServerDefined) {
+                    return resolveContext(value.replace('%https.host%', proxyServer));
+                } else {
+                    return resolveContext(value.replace('%https.host%', 'https://' + localIP + httpsPortPart));
+                }
             } else if ((typeof value === 'string') && value.indexOf('%http.host%') > -1) {
                 return resolveContext(value.replace('%http.host%', 'http://' + localIP + httpPortPart));
             } else if ((typeof value === 'string') && value.indexOf('%https.carbon.local.ip%') > -1) {

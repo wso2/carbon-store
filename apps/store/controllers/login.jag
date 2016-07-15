@@ -55,10 +55,10 @@
                 endpoint = getBasicAuthLoginURL (authMethod,config);
                 break;
             case constants.AUTH_METHOD_SSO:
-                endpoint = context + '/pages/sso-login';
+                endpoint = rxtAPI.server.buildAppURL(context + '/pages/sso-login');
                 break;
             case constants.AUTH_METHOD_OTHER:
-                endpoint = context + '/pages/other-login';
+                endpoint = rxtAPI.server.buildAppURL(context + '/pages/other-login');
                 break;
             default:
                 break;

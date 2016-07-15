@@ -40,19 +40,18 @@
         var endpoint = '/pages/basic-auth-logout';
         switch (authMethod) {
             case constants.AUTH_METHOD_BASIC:
-                endpoint = '/pages/basic-auth-logout';
+                endpoint = rxtAPI.server.buildAppURL(context +'/pages/basic-auth-logout');
                 break;
             case constants.AUTH_METHOD_SSO:
-                endpoint = '/pages/sso-logout';
+                endpoint = rxtAPI.server.buildAppURL(context + '/pages/sso-logout');
                 break;
             case constants.AUTH_METHOD_OTHER:
-                endpoint = '/pages/other-logout';
+                endpoint = rxtAPI.server.buildAppURL(context  + '/pages/other-logout');
                 break;
             default:
                 break;
         }
-        url = context + endpoint;
-        return url;
+        return endpoint;
     };
     authMethod = resolveAuthMethod();
     if (!authMethod) {

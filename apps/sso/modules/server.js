@@ -16,6 +16,8 @@ var PROXY_CONTEXT_PATH = 'proxyContextPath';
 
 var SERVER_URL = 'serverURL';
 
+var PROXY_SERVER = 'proxyURL';
+
 /**
  * Initializes the server for the first time. This should be called when app is being deployed.
  * @param options
@@ -31,6 +33,7 @@ var init = function (options) {
     var proxyContextPath = carbonUtils.getProxyContextPath(true);
     application.put(PROXY_CONTEXT_PATH, proxyContextPath);
     application.put(SERVER_URL, options.server.https);
+    application.put(PROXY_SERVER, options.server.proxyServer);
     application.put(SERVER, srv);
     application.put(SERVER_OPTIONS, options);
 
@@ -90,6 +93,9 @@ var init = function (options) {
 var buildURL = function (path) {
     if (path.indexOf('/') != 0) {
         path = "/" + path;
+    }
+    if(application.get(PROXY_SERVER) && application.get(PROXY_SERVER).length > 0){
+        return application.get(PROXY_SERVER) + application.get(PROXY_CONTEXT_PATH) + path;
     }
     return application.get(SERVER_URL) + application.get(PROXY_CONTEXT_PATH) + path;
 };

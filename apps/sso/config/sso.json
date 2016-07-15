@@ -1,7 +1,8 @@
 {
     "server": {
         "https": "%https.host%",
-        "http": "%http.host%"
+        "http": "%http.host%",
+        "proxyServer" : ""
     },
     "roles": {
     },

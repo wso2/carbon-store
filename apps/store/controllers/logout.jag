@@ -54,7 +54,7 @@
             default:
                 break;
         }
-        url = context + endpoint;
+        url = rxtAPI.server.buildAppURL(context + endpoint);
         return url;
     };
     authMethod = resolveAuthMethod();

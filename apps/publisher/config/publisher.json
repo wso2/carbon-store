@@ -2,7 +2,8 @@
     "server": {
         "https": "%https.host%",
         "http": "%http.host%",
-        "context" : "/publisher"
+        "context" : "/publisher",
+        "proxyServer" : ""
     },
     "user": {
         "username": "admin",

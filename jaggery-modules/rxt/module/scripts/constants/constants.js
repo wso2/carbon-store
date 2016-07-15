@@ -39,6 +39,7 @@ var constants = {};
     constants.APP_CONTEXT = 'rxt.app.context';
     constants.PROXY_CONTEXT_PATH = 'proxyContextPath';
     constants.SERVER_URL = 'serverURL';
+    constants.PROXY_URL = 'proxyURL';
     constants.TAGS_QUERY_PATH = '/_system/config/repository/components/org.wso2.carbon.registry/queries/allTags';
     constants.ASSET_TYPES_PATH ='/_system/governance/repository/components/org.wso2.carbon.governance/types';
     constants.TAGS_SERVICE = 'org.wso2.carbon.registry.indexing.service.TermsSearchService';
