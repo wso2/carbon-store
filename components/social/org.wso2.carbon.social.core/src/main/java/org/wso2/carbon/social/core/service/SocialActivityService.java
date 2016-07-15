@@ -71,6 +71,17 @@ public abstract class SocialActivityService {
 	}
 
 	/**
+	 * Update an activity given new activity
+	 *
+	 * @param activity
+	 * @throws SocialActivityException
+	 * @throws JsonSyntaxException
+	 */
+	public String update(String activity) throws SocialActivityException {
+		return getActivityPublisher().update(activity);
+	}
+
+	/**
 	 * Allows asset id to be passed into the service and retrieve average rating
 	 * for the given asset
 	 * 
@@ -154,6 +165,23 @@ public abstract class SocialActivityService {
 	}
 
 	/**
+	 * Return springfield JSON object of the user review , for the given asset by given username.
+	 *
+	 * @param userId   User name with the tenant domain i:e = admin@carbon.super
+	 * @param targetId Asset type with asset UUID separated by colon.
+	 * @return springfield JSON object of user review
+	 * @throws SocialActivityException
+	 */
+	public String getUserComment(String userId, String targetId) throws SocialActivityException {
+		JsonObject userCommentObject = getActivityBrowser().getUserComment(userId, targetId);
+		if (userCommentObject != null) {
+			return userCommentObject.toString();
+		} else {
+			return "{}";
+		}
+	}
+
+	/**
 	 * 
 	 * @param targetId
 	 * @param timestamp
@@ -193,11 +221,28 @@ public abstract class SocialActivityService {
 	public boolean isUserliked(String userId, int targetId, int like) throws SocialActivityException {
 		return getActivityBrowser().isUserlikedActivity(userId, targetId, like);
 	}
-	
+
+	/**
+	 * Check for existing reviews for the targetId given username
+	 *
+	 * @param targetId Asset type and asset UUID delimited by colon i:e - gadget:03e25109-02d6-40c8-9994-6292737599a4
+	 * @param userId Username with the tenant domain i:e - admin@carbon.super
+	 *
+	 */
+	public boolean isPublished(String activity, String targetId, String userId) throws SocialActivityException {
+		return getActivityBrowser().isPublished(activity, targetId, userId);
+	}
+
+	/**
+	 * Rating cache keep the pre-calculated average rating value for individual asset so that
+	 * it saves computation when listing asset details with rating values
+	 * @param targetId Asset type and asset UUID delimited by semicolon i:e 'gadget:213213-214-2141A-212FA221B'
+	 * @return
+	 * @throws SocialActivityException
+	 */
 	public int warmUpRatingCache(String targetId) throws SocialActivityException {
 		return getActivityPublisher().warmUpRatingCache(targetId);
 	}
-
 
 	public abstract ActivityBrowser getActivityBrowser();
 

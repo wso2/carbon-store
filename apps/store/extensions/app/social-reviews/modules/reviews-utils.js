@@ -23,13 +23,16 @@ var ReviewUtils = {};
     var REVIEW_PAGE_OFFSET = 0;
     var log = new Log('reviews-api');
     var carbon = require('carbon');
+    var isEmpty = function (object) {
+        return Object.keys(object).length === 0;
+    };
     var getSocialSvc = function() {
         var carbon = require('carbon');
         return carbon.server.osgiService(SOCIAL_OSGI_SERVICE);
     };
     var cleanUsername = function(username) {
         return username.replace("@carbon.super", "");
-    }
+    };
     var formatUsername = function(user) {
         var domain = user ? carbon.server.tenantDomain({
             tenantId: user.tenantId
@@ -43,37 +46,77 @@ var ReviewUtils = {};
         paging.limit = paging.limit ? paging.limit : REVIEW_PAGE_LIMIT;
         return paging;
     };
-    var processUserReviews = function(socialSvc, user, reviews) {
+    var processUserReviews = function (socialSvc, user, reviews, target) {
         var review;
-        var formattedUsername = formatUsername(user);
+        var myReview;
+        var socialSvc = getSocialSvc();
+        var username = formatUsername(user);
+        myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
+        if (!isEmpty(myReview)) {
+            myReview.actor.id = cleanUsername(myReview.actor.id);
+        } else {
+            myReview = false;
+        }
         var usernameOnReview;
+        var myIndex;
         for (var index = 0; index < reviews.length; index++) {
             review = reviews[index];
             usernameOnReview = review.actor.id;
+            var targetId = String(review.object.id);
             review.actor.id = cleanUsername(review.actor.id);
+            review.isMyComment = (usernameOnReview === formatUsername(user));
+            review.isUserLoggedIn = false;
             //Only populate review details if there is a logged in
             //user
-            if (user) {
-                review.iLike = socialSvc.isUserliked(formattedUsername, review.object.id, 1);;
-                review.iDislike = socialSvc.isUserliked(formattedUsername, review.object.id, 0);;
-                review.isMyComment = (usernameOnReview === formatUsername(user)) ? true : false;
+            if (review.isMyComment) {
+                if (user) {
+                    review.isUserLoggedIn = true
+                } else {
+                    myIndex = index;
+                }
             }
         }
-        return reviews;
+        if (myIndex !== undefined) {
+            reviews.splice(myIndex, 1);
+        }
+        return {'allReviews': reviews, 'myReview': myReview};
     };
     ReviewUtils.listReviews = function(target, user, userPagination) {
         var socialSvc = getSocialSvc();
         var paging = buildPagination(userPagination || {});
         var obj = JSON.parse(String(socialSvc.getSocialObjectJson(target, paging.sortBy, paging.offset, paging.limit)));
-        return processUserReviews(socialSvc, user, obj.attachments || []);
+        return processUserReviews(socialSvc, user, obj.attachments || [], target);
     };
-    ReviewUtils.createUserReview = function(review) {
+    ReviewUtils.updateUserReview = function (review) {
         var socialSvc = getSocialSvc();
         var reviewJSON = JSON.stringify(review);
-        var id = socialSvc.publish(reviewJSON);
+        var updatedReview = JSON.parse(String(socialSvc.update(reviewJSON)));
+        updatedReview = isEmpty(updatedReview) ? null : updatedReview;
+        if (updatedReview) {
+            updatedReview.actor.id = cleanUsername(updatedReview.actor.id);
+        }
+        return updatedReview;
+    };
+    ReviewUtils.createUserReview = function (review) {
+        var socialSvc = getSocialSvc();
+        var reviewJSON = JSON.stringify(review);
+        var username = review.actor.id;
+        var target = review.target.id;
+        var alreadyPublished = socialSvc.isPublished(reviewJSON, target, username);
         var result = {};
+        var id = -1;
+        if (!alreadyPublished) {
+            id = socialSvc.publish(reviewJSON);
+        }
         result.id = id;
-        result.success = (id > -1) ? true : false;
+        result.success = (id > -1);
+        var myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
+        if (!isEmpty(myReview)) {
+            myReview.actor.id = cleanUsername(myReview.actor.id);
+        } else {
+            myReview = false;
+        }
+        result.myReview = myReview;
         return result;
     };
     ReviewUtils.removeUserReview = function(reviewId, username) {

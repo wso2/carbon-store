@@ -20,6 +20,7 @@ $(function(){
     var SEARCH_API = '/apis/assets?q=';
     var SEARCH_BUTTON = '#search-btn';
     var SEARCH_FORM = '#search-form';
+    var ADVANCE_SEARCH_TAGS = ".advance-search-tags";
     var rows_added = 0;
     var last_to = 0;
     var items_per_row = 0;
@@ -185,4 +186,10 @@ $(function(){
         }
         store.infiniteScroll.showAll(query);
     });
+
+    $(ADVANCE_SEARCH_TAGS).select2({
+            multiple: false,
+            tags: true
+        }
+    );
 });

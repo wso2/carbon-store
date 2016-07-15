@@ -611,13 +611,17 @@ var pageDecorators = {};
         page.searchHistory = {};
         page.searchHistory.queries = userApi.getSearchHistory(ctx.session, ctx.assetType);
     };
-    pageDecorators.taxonomyAvailability = function(ctx, page, utils) {
-        var app = require('rxt').app;
-        if (app.isTaxonomyEnabled()) {
-            page.taxonomyAvailability = true;
-        } else {
-            page.taxonomyAvailability = false;
-        }
+    /**
+     * This method will check for taxonomies availability in rxt definition
+     * @param ctx request meta data
+     * @param page page data
+     */
+    pageDecorators.taxonomyAvailability = function (ctx, page) {
+        var rxtModule = require('rxt');
+        var coreApi = rxtModule.core;
+        var rxtManager = coreApi.rxtManager(ctx.tenantId);
+        page.taxonomyAvailability = (rxtManager.getTaxonomyAvailability(ctx.assetType).length > 0);
+
     };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;
@@ -716,7 +720,12 @@ var pageDecorators = {};
         var q = request.getParameter("q");
         if (q) {
             var options = parse("{" + q + "}");
-            map = buildQueryMap(ctx, options);
+            if (facetField == "tags") {
+                map = buildQueryMapTags(ctx, options);
+            } else {
+                map = buildQueryMap(ctx, options);
+            }
+
             if (options.tags) {
                 selectedTag = options.tags;
             }
@@ -756,7 +765,7 @@ var pageDecorators = {};
      * @returns {HashMap}   map of criteria
      */
     var buildQueryMap = function (ctx, options) {
-        var possibleKeys = ['taxonomy', '_default', 'name', 'version', 'tags', 'lcName', 'lcState'];
+        var possibleKeys = ['_default', 'name', 'version', 'tags', 'lcName', 'lcState'];
         var rxtManager = ctx.rxtManager;
         var assetType = ctx.assetType;
         var map = new HashMap();
@@ -771,13 +780,18 @@ var pageDecorators = {};
             }
 
             list = new ArrayList();
-            if (possibleKeys.indexOf(key) > -1) {
-                list.add('*' + options[key] + '*');
-            } else {
-                list.add(options[key]);
-            }
 
-            map.put(searchKey, list);
+            if (searchKey === 'taxonomy') {
+                var taxonomyQuery = options.taxonomy;
+                taxonomyQuery = taxonomyQuery.replace(/\(\s/g, '(');
+                taxonomyQuery = taxonomyQuery.replace(/\s\)/g, ')');
+                list = new ArrayList();
+                list.add(taxonomyQuery);
+                map.put(searchKey, list);
+            } else if (possibleKeys.indexOf(key) > -1) {
+                list.add('*' + options[key] + '*');
+                map.put(searchKey, list);
+            }
         });
 
         if (options.category) {
@@ -793,6 +807,30 @@ var pageDecorators = {};
         }
         return map;
     };
+
+   
+    /**
+     * Builds the criteria map to do the facet search.
+     *
+     * @param ctx           context
+     * @param options       query options
+     * @returns {HashMap}   map of criteria
+     */
+    var buildQueryMapTags = function (ctx, options) {
+        var map = new HashMap();
+        var list;
+        var keys = Object.keys(options);
+        list = new ArrayList();
+        keys.forEach(function (key) {
+            if (key != "tags"){
+                list.add('*' + options[key] + '*');
+                map.put(key, list);
+            }
+
+        });
+        return map;
+    };
+
 
     var selectedTag = function (ctx) {
 

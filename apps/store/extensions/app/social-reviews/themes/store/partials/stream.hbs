@@ -1,8 +1,9 @@
 <script>var target = '{{id}}'; var user = '{{user}}';</script>
-
 {{#unless isLogged}}
 <div class="com-guest">
-    {{message}}
+    <div class="message message-info">
+        <h4><i class="fw fw-info"></i> {{message}}</h4>
+    </div>
 </div>
 {{/unless}}
 {{#if isLogged}}
@@ -14,7 +15,6 @@
 {{/if}}
 
 <div class="row com-stream">
-	
 	<div class="row com-sort {{#unless reviews}}com-sort-hidden{{/unless}}">
 		<ul>
 			<li>
@@ -35,9 +35,18 @@
 				{{> activity}}
 			{{/each}}
 		{{else}}
-			<p class="com-first-review">
-				Be the first one to review!
-			</p>
+            {{#if isLogged}}
+                {{#if myReview}}
+                    <div class="com-first-review message message-success">
+                        <h4><i class="fw fw-success"></i>You are the first to review this {{t type}}</h4>
+                    </div>
+                {{else}}
+                    <div class="com-first-review message message-info">
+                        <h4><i class="fw fw-info"></i>Be the first one to review!</h4>
+                        <p>Tell others what you think about this {{t type}}</p>
+                    </div>
+                {{/if}}
+            {{/if}}
 		{{/if}}
 	</div>
 	{{#if more}}

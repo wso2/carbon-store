@@ -13,52 +13,101 @@
    ~ See the License for the specific language governing permissions and
    ~ limitations under the License.
    -->
-<!-- secondary header - app bar -->
-<div class="wr-asset-type-switcher">
-    <div class="ctrl-asset-type-switcher">
-        <div class="left-menu">
-            <nav class="navigation">
-                <a href='{{tenantedUrl ""}}/pages/top-assets' class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}">
-                    <span class="icon"><i class="fw fw-store"></i></span> <span class="left-menu-item">ALL</span>
-                </a>
-                {{#with navigationBar}}
+
+<div class="sidebar-wrapper sidebar-nav toggled nano" id="left-sidebar" data-side="left" data-width="200"
+     data-offset-bottom="40" style="display: none">
+    <div class="nano-content">
+
+        <nav class="navigation">
+
+            {{#with navigationBar}}
+                {{#if noTypeSelected}}
+                    <a href='{{tenantedUrl ""}}/pages/top-assets' id="all-assets"
+                       class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}">
+                        <span class="icon"><i class="fw fw-success"></i></span> <span
+                            class="left-menu-item">{{t "All"}}</span>
+                    </a>
                     {{#each types}}
-                        <a href='{{tenantedUrl ""}}{{this.listingUrl}}' class="{{ui.iconColor}} {{this.style}}">
-                            <span class="icon"><i class="{{ui.icon}}"></i></span> <span class="left-menu-item">{{pluralLabel}}</span>
+                        <a href='{{tenantedUrl ""}}{{this.listingUrl}}' id="{{this.shortName}}"
+                           class="{{ui.iconColor}} {{this.style}}">
+                            <span class="icon"><i class="{{ui.icon}}"></i></span> <span
+                                class="left-menu-item">{{pluralLabel}}</span>
                         </a>
                     {{/each}}
-                {{/with}}
+                {{else}}
+                    {{#each types}}
+                        {{#if this.selected}}
+                            <a href='{{tenantedUrl ""}}{{this.listingUrl}}' id="{{this.shortName}}"
+                               class="{{ui.iconColor}} {{this.style}}" data-selected="true">
+                                <span class="icon"><i class="{{ui.icon}}"></i></span> <span
+                                    class="left-menu-item">{{pluralLabel}}</span>
+                            </a>
+                        {{/if}}
+                    {{/each}}
+                    <a href='{{tenantedUrl ""}}/pages/top-assets' id="all-assets"
+                       class="{{#if navigationBar.landingPage}} active home top-item {{else}} home all-item  {{/if}}"
+                       style="display: none">
+                        <span class="icon"><i class="fw fw-success"></i></span> <span
+                            class="left-menu-item">{{t "All"}}</span>
+                    </a>
+                    {{#each types}}
+                        {{#unless this.selected}}
+                            <a href='{{tenantedUrl ""}}{{this.listingUrl}}' id="{{this.shortName}}"
+                               class="{{ui.iconColor}} {{this.style}}" style="display: none;">
+                                <span class="icon"><i class="{{ui.icon}}"></i></span> <span
+                                    class="left-menu-item">{{pluralLabel}}</span>
+                            </a>
+                        {{/unless}}
+                    {{/each}}
+
+                    <a title="Show more" class="assets-show-more"><i class="fw fw-down"></i></a>
+                    <a title="Show less" class="assets-show-less" style="display: none;"><i class="fw fw-up"></i></a>
+                {{/if}}
+            {{/with}}
+        </nav>
+
+        <div id="taxonomy-section" style="display: none;">
+
+            <button type="button" class="btn btn-secondary btn-taxonomy pull-right btn-expand-taxonomy-toggle" id="maximize-taxonomy"
+                    data-toggle="tooltip" data-placement="left" title="Expand Section">
+                <i class="fw fw-expand"></i>
+            </button>
+            <nav class="taxonomy">
+                <h1>Filter by</h1>
+
+                <ul id="accordion1" class="nav nav-stacked">
+                </ul>
+
             </nav>
+	</div>
             {{#if tags}}
-                <div class="tags-wrapper">
-                    <div class="tag-title"> Tags </div>
-                    <div class="tag-content">
-                        {{#each tags}}
-                            {{#if this.selected}}
-                                {{#if ../../assetCategoryDetails.hasCategories}}
-                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
-                                {{else}}
-                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span class = "text-muted" >{{this.value}}</span></a>
-                                {{/if}}
-                            {{else}}
-                                {{#if ../../assetCategoryDetails.hasCategories}}
-                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="category":"{{../../../assetCategoryDetails.selectedCategory}}","tags":"{{this.value}}"'><span>{{this.value}}</span></a>
-                                {{else}}
-                                    <a href='{{tenantedUrl ""}}{{this.searchPage}}?q="tags":"{{this.value}}"'><span>{{this.value}}</span></a>
-                                {{/if}}
-                            {{/if}}
-                        {{/each}}
-                    </div>
+                <div class="tags-wrapper" id="tags-wrapper">
+                    {{> tag-cloud . }}
                 </div>
             {{/if}}
+    </div>
+</div>
+
+<!-- secondary header - app bar -->
+<div class="wr-asset-type-switcher" id="left-sidebar">
+    <div class="ctrl-asset-type-switcher">
+        <div class="left-menu">
         </div>
     </div>
 </div>
+
 <div class="clear-both"></div>
 <div id="nav" class="wr-app-bar">
     <div class="col-lg-12 search-row">
         <div class="search-wrapper" id="the-basics">
             <div class="input-group">
+                <span class="input-group-addon toggle-menu-left-wrapper" style="display: none">
+                    <button type="button" class="btn btn-primary toggle-menu-left">
+                        <div class="toggle-menu-left-bar"></div>
+                        <div class="toggle-menu-left-bar"></div>
+                        <div class="toggle-menu-left-bar"></div>
+                    </button>
+                </span>
                 <input  id="search"  type="text" class="typeahead es-form-control form-control"
                     {{#if rxt.pluralLabel}}
                         placeholder="Search in {{rxt.pluralLabel}}"
@@ -68,6 +117,9 @@
                         value="{{searchQuery}}">
                 <span class="input-group-btn">
                    <button class="btn btn-secondary" id="search-button" type="button"><i class="fw fw-search" aria-hidden="true"></i></button>
+                </span>
+                <span class="input-group-addon search-options-link-wrapper" id="basic-addon2">
+                    {{>search-options-popover .}}
                 </span>
             </div>
         </div>
@@ -90,7 +142,7 @@
 <input id="categorization-query" type="hidden" value=""/>
 
 {{#if assetCategoryDetails.hasCategories}}
-    <div class="category-wrapper">
+    <!-- div class="category-wrapper">
         {{#if assetCategoryDetails.hasCategories}}
             <div class="col-lg-12 category-content">
                 <div class="category padding-top">
@@ -122,5 +174,5 @@
                 </div>
             </div>
         {{/if}}
-    </div>
+    </div -->
 {{/if}}

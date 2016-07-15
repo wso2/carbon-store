@@ -1,0 +1,170 @@
+.taxonomy-select {
+    overflow: hidden;
+    border: 2px solid #eee;
+    border-right-width: 1px;
+    border-left-width: 1px;
+    margin: 0;
+}
+
+.taxonomy-select, .taxonomy-select > .taxonomy-select-window {
+    height: 300px;
+}
+
+.taxonomy-select > .taxonomy-select-window {
+    padding: 15px;
+    border-right: 1px solid #eee;
+    border-left: 1px solid #eee;
+    overflow-y: auto;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul, .taxonomy-select > .taxonomy-select-window > ul li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li > a {
+    display: block;
+    padding: 5px 8px;
+    color: #444;
+    min-height: 30px;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li.active > a, .taxonomy-select > .taxonomy-select-window > ul li.active:hover > a {
+    background: #2c313b;
+    color: #fff;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li > a > .icon {
+    margin-left: 15px;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li > a:hover {
+    background: #eee;
+}
+
+.taxonomy-select > .taxonomy-select-window > ul li.back {
+    margin-bottom: 10px;
+}
+
+.taxonomy-breadcrumb {
+    min-height: 40px;
+    background: #eee;
+    padding: 0 15px;
+}
+
+.taxonomy-breadcrumb > ol {
+    margin: 0;
+    padding: 0;
+}
+
+.taxonomy-breadcrumb > ol > li {
+    list-style: none;
+    padding: 0;
+    display: inline-block;
+    margin-right: 5px;
+    line-height: 40px;
+}
+
+.taxonomy-select-window ul > li.leaf {
+    position: relative;
+}
+
+.taxonomy-select-window ul > li.leaf a {
+    display: block;
+    padding: 5px 72px 5px 8px;
+}
+
+.taxonomy-select-window ul > li.leaf > button {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 30px;
+    font-size: small;
+    height: 30px;
+    padding: 1px 5px 0;
+    background: #828282;
+    color: #eee;
+}
+
+.taxonomy-select-window ul > li.leaf > button > .icon {
+    font-size: 9px;
+}
+
+.taxonomy-select-window ul > li.leaf > button:hover {
+    background: #525761;
+    color: #eee;
+}
+
+.taxonomy-select-window ul > li.leaf > .btn-remove {
+    background-color: #dc6562;
+    border: none;
+    color: #fff;
+}
+
+.taxonomy-select-window ul > li.leaf > .btn-remove:hover {
+    background-color: #e83438;
+}
+
+.selected-taxonomy-container {
+    background: #eee;
+    margin-bottom: 20px;
+}
+
+.selected-taxonomy-container > div > label {
+    display: inline-block;
+    padding: 0 10px 0 20px;
+    line-height: 40px;
+    font-weight: 500;
+    margin-bottom: 0;
+}
+
+.selected-taxonomy-container.view-only .selected-taxonomy-content span {
+    padding: 0;
+}
+
+.selected-taxonomy-content {
+    display: inline-block;
+    padding: 5px 15px;
+}
+
+.selected-item {
+    background-color: #7b7c7d;
+    color: #fff;
+    display: inline-block;
+    font-size: 11px;
+    line-height: 11px;
+    margin-right: 10px;
+    margin-bottom: 5px;
+    text-decoration: none;
+}
+
+.selected-item > .btn-remove > .fw {
+    font-size: 8px;
+}
+
+.selected-item > .btn-remove {
+    background-color: #dc6562;
+    border: none;
+    color: #fff;
+}
+
+.selected-item.edit {
+    opacity: 0.5;
+}
+
+.selected-item > span.editable {
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.selected-item span {
+    padding: 5px 15px 10px;
+}
+
+.selected-item button {
+    padding: 1px 6px;
+}

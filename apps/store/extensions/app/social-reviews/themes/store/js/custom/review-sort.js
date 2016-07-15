@@ -26,7 +26,7 @@ var usingTemplate = function(callback) {
         callback(Handlebars.partials['activity']);
     });
 };
-var redrawReviews = function(sortBy, callback) {
+var redrawReviews = function (sortBy, callback) {
     $('.com-sort .selected').removeClass('selected');
     var url = caramel.url('/apis/user-reviews');
     $.get(url, {
@@ -34,23 +34,43 @@ var redrawReviews = function(sortBy, callback) {
         sortBy: sortBy,
         offset: 0,
         limit: 10,
-        cacheBuster:generateCacheBuster()
-    }, function(obj) {
+        cacheBuster: generateCacheBuster()
+    }, function (obj) {
         var reviews = obj || [];
-        usingTemplate(function(template) {
+        usingTemplate(function (template) {
             var str = "";
             for (var i = 0; i < reviews.length; i++) {
                 var review = reviews[i];
-                str += template(review);
+                if (!review.isMyComment) {
+                    str += template(review);
+                }
             }
-            $stream.html(str);
-            $('.load-more').attr("value", 10);
-            $more.show();
-            $empty_list.text("");
+            if (str) {
+                $sort.removeClass('com-sort-hidden');
+                $('#'+sortBy).addClass('selected');
+                $stream.html(str);
+                $('.load-more').attr("value", 10);
+                $more.show();
+                $empty_list.text("");
+            } else {
+                $firstReview.show().removeClass('message-info').addClass('message-success');
+                var assetType = target.split(':')[0];
+                var msg = "You are the first to review this " + assetType;
+                var icon = $("<i/>", {
+                    class: "fw fw-success"
+                });
+                $firstReview.find('h4').empty().append(icon).append(msg);
+                $firstReview.find('p').empty();
+            }
             //callback && callback();
             adjustHeight();
         });
     })
+};
+var notifyError = function (error) {
+    messages.alertError(error);
+    $('#btn-post.disabled').removeClass('disabled');
+    showLoading(false)
 };
 /**
  * IE 11 caches AJAX requests, in order to by pass this behaviour

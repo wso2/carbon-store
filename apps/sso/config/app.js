@@ -21,7 +21,6 @@ user.init(configs);
 var log = new Log();
 
 storeModule.server.init(configs);
-storeModule.user.init(configs);
 event.on('tenantCreate', function (tenantId) {
     var carbon = require('carbon'),
         system = server.systemRegistry(tenantId);

@@ -55,7 +55,7 @@ var constants = {};
     constants.SOCIAL_FEATURE_SCRIPT_KEY='socialScriptSource';
     constants.SOCIAL_FEATURE_SCRIPT_TYPE_KEY='socialScriptType';
     constants.SOCIAL_FEATURE_APP_URL_KEY='socialAppUrl';
-    constants.ASSET_DEFAULT_SORT='overview_createdtime';
+    constants.ASSET_DEFAULT_SORT='createdDate';
     constants.Q_SORT='sortBy';
     constants.Q_TAG='tag';
     constants.Q_SORT_ORDER='sort';
@@ -161,7 +161,7 @@ var constants = {};
     constants.DEFAULT_ASSET_PAGIN={
         start:0,
         count:12,
-        sortBy: 'overview_createdtime',
+        sortBy: 'createdDate',
         sortOrder: 'DESC',
         paginationLimit: 100
     };

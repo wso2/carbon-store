@@ -593,7 +593,20 @@ var core = {};
         return '';
     };
     /**
-     * Returns the name of the taxoomy that is attached to assets of a given RXT type
+     * Returns the  taxonomy availability that is attached to assets of a given RXT type
+     * If no taxonomy is specified then an empty string is returned.
+     * Note: This property is specific to the ES and is defined in the configuration callback
+     * @param  {String} type  The RXT type
+     * @return {String}      The name of a taxonomy which is attached to all asset instances of an RXT type
+     */
+
+    RxtManager.prototype.getTaxonomyAvailability = function (type) {
+        var rxtDefinition = this.rxtMap[type];
+        return taxonomyAvailability(type, rxtDefinition);
+    };
+
+    /**
+     * Returns the name of the taxonomy that is attached to assets of a given RXT type
      * If no taxonomy is specified then an empty string is returned.
      * Note: This property is specific to the ES and is defined in the configuration callback
      * @param  {String} type  The RXT type
@@ -602,17 +615,45 @@ var core = {};
      */
     RxtManager.prototype.getTaxonomies = function (type) {
         var rxtDefinition = this.rxtMap[type];
-        /*   if (!rxtDefinition) {
-         log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ');
-         throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ';
-         }*/
-        // this used to identify is there any taxonomy available for asset type
+        if (!rxtDefinition) {
+            log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ');
+            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ';
+        }
+        return taxonomyAvailability(type, rxtDefinition);
+
+    };
+
+    /**
+     * This method will return the available taxonomies for a given asset type by reading tenant specific map
+     * @param type asset type
+     * @param rxtDefinition specific for a tenant
+     * @returns  array of available taxonomies
+     */
+    var taxonomyAvailability = function (type, rxtDefinition) {
+        var carbon = require('carbon');
+        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.' +
+            'ITaxonomyServices');
+        var taxonomies;
+        var taxonomyArray = [];
         if (rxtDefinition) {
             if (rxtDefinition.taxonomies && (rxtDefinition.taxonomies[0]) && (rxtDefinition.taxonomies[0].taxonomies)) {
-                return rxtDefinition.taxonomies[0].taxonomies || '';
+                taxonomies = rxtDefinition.taxonomies[0].taxonomies || '';
             }
         }
-        return '';
+
+        if (taxonomies && (taxonomies = taxonomies.split(","))) {
+
+            for (var i = 0; i < taxonomies.length; i++) {
+                if (TaxonomyService.getTaxonomy(taxonomies[i])) {
+                    taxonomyArray.push(taxonomies[i]);
+                } else {
+                    log.error("The taxonomy name : " + taxonomies[i] + " not matched with rxt definition. " +
+                        "Please check you have entered the correct name");
+                }
+            }
+        }
+
+        return taxonomyArray;
     };
     /**
      * Returns the action that is invoked when a lifecycle is first attached to an asset of a given RXT type.
@@ -1363,8 +1404,23 @@ var core = {};
     };
     core.assetTypeDeploymentTimeMap = function(tenantId){
         var server = require('store').server;
-        var systemRegistry = server.systemRegistry(tenantId);
-        var collection = systemRegistry.get(constants.ASSET_TYPES_PATH)||[];
+
+        try {
+            var PrivilegedCarbonContext = Packages.org.wso2.carbon.context.PrivilegedCarbonContext;
+            PrivilegedCarbonContext.startTenantFlow();
+            var context = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+            context.setTenantId(tenantId, true);
+
+            var systemRegistry = server.systemRegistry(tenantId);
+            var collection = systemRegistry.get(constants.ASSET_TYPES_PATH) || [];
+
+        } finally {
+            PrivilegedCarbonContext.endTenantFlow();
+            if (log.isDebugEnabled()) {
+                log.debug('endTenantFlow');
+            }
+        }
+
         var typeCollection = collection.content ||[];
         var typeResource;
         var typeResourcePath;

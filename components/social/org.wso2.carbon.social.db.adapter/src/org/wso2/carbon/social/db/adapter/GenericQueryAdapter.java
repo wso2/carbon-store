@@ -268,7 +268,7 @@ public class GenericQueryAdapter implements AdapterInterface {
 		}
 
 		insertActivityStatement = connection.prepareStatement(INSERT_LIKE_SQL);
-		insertActivityStatement.setString(1, targetId);
+		insertActivityStatement.setInt(1, Integer.parseInt(targetId));
 		insertActivityStatement.setString(2, actor);
 		insertActivityStatement.setString(3, tenantDomain);
 		insertActivityStatement.setInt(4, likeValue);

@@ -204,6 +204,15 @@ h2.app-title {
 .assets-container{
     margin-top:20px;
 }
+#search-button{
+    border-radius: 0;
+    background: #fff;
+}
+.popover-content{
+    width:300px;
+    background: #efefef;
+    border:none;
+}
 .es-nav > li.advanced-search-link{
     position: absolute;
     right: 0;
@@ -996,8 +1005,7 @@ a.more:focus {
 }
 .action-img-icon{ width:40px; height: 40px;  margin-left: 18px; background: url("../img/icons/ico-lock.png") no-repeat scroll left top transparent; opacity: 0.5; cursor: pointer; float: left; }
 .action-title{ text-align: center; font-weight:400; font-size: 14px; line-height: 13px; cursor: pointer; text-transform: uppercase; padding: 15px 2px 2px; float: left;   }
-
-.btn-primary, .btn-secondary{
+.btn-primary {
     border:0px;
     border-radius: 0px;
     color: #fff;
@@ -1005,13 +1013,24 @@ a.more:focus {
     outline: 0;
     text-align: left;
 }
-.btn-secondary {
-    background-color: #404651;
-}
-.btn-secondary:hover,
-.btn-secondary:focus {
+
+.btn-taxonomy {
+    border: 0px;
+    border-radius: 0px;
     color: #fff;
-    background-color: #2C313B;
+    text-decoration: none;
+    outline: 0;
+    text-align: left;
+}
+
+.btn-taxonomy {
+    background-color: #4a505c;
+}
+
+.btn-taxonomy:hover,
+.btn-taxonomy:focus {
+    color: #fff;
+    background-color: #333945;
 }
 .btn-add-new {
     background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
@@ -1040,6 +1059,7 @@ a.more:focus {
 .btn-collapsed {
     background:url('../img/icons/wso2-logo-small.png') no-repeat;
 }
+
 .es-nav-tabs > li.active > a, .es-nav-tabs > li.active > a:hover, .es-nav-tabs > li.active > a:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
@@ -1292,12 +1312,12 @@ h2.app-title {
 .popover {
     border-radius: 0;
     box-shadow: none;
-    background: #222;
+    background: #efefef;
     max-width: 384px;
 }
 
 .popover.bottom > .arrow:after {
-    border-bottom-color: #222;
+    border-bottom-color: #efefef;
 }
 
 .popover.bottom.right > .arrow {
@@ -1317,6 +1337,7 @@ h2.app-title {
 
 .popover-content {
     padding: 4px;
+    opacity: 0.8;
 }
 
 .popover ul.tiles, .popover ul.tiles > li {
@@ -1362,6 +1383,28 @@ h2.app-title {
     height: 28px;
     overflow: hidden;
 }
+.popover-content h3{
+    font-size: 18px;
+}
+.popover-content ul{
+    margin:0;
+    padding:0 0 0 10px;
+}
+.popover-content ul li{
+    list-style-type: none;
+    font-size: 12px;
+    padding-bottom: 5px;
+}
+.search-options-link{
+    display: block;
+    padding:5px;
+    margin-left: 20px;
+}
+.search-options-link-wrapper{
+    background: transparent;
+    padding:0 0 0 20px;
+    border:none;
+}
 .ctrl-wr-asset .ast-img {
     width: 100%;
     display: block;
@@ -1382,6 +1425,7 @@ h2.app-title {
 .ctrl-wr-asset .ast-content {
     background-color: #fff;
     padding-bottom:10px;
+    min-height: 105px;
 }
 
 .ctrl-wr-asset.selected {
@@ -1478,9 +1522,6 @@ span.advanced-search-icons{
     span.advanced-search-icons{
         display: inline-block;
     }
-    .bookmark-link-text{
-        display: none;
-    }
     .es-navbar-nav{
         margin: 0;
     }
@@ -1558,6 +1599,11 @@ span.advanced-search-icons{
     }
     .tags{
         min-width:auto!important;
+    }
+    .ctrl-wr-asset .ast-content {
+        background-color: #fff;
+        padding-bottom:10px;
+        height: 100%;
     }
 }
 .loading-animation-big{
@@ -1687,4 +1733,148 @@ ul.sort-list li a.active:hover{
 }
 .margin-bottom-align{
     margin-bottom: -10px;
+}
+
+/* Search Option Popover */
+a#search-info {
+    background: #2C313B;
+    color: #ccc;
+    font-size: 17px;
+    margin-top: -1px;
+    margin-left: 0px;
+    left:00px;
+}
+
+.es-input-group-btn > .popover {
+    background-color: #333;
+    border: 0px;
+    margin-top: 16px;
+    opacity: 0.8;
+}
+
+.es-input-group-btn > .popover > .popover-content {
+    background-color: #333;
+    border: 0px;
+    width: 320px;
+    color: #E0E0E0;
+    font-size: 12px;
+    padding: 15px;
+    line-height: 20px;
+    margin-top: 0;
+}
+
+.es-input-group-btn > .popover > .popover-content > ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+.es-input-group-btn > .popover > .popover-content > h3 {
+    padding-left: 20px;
+    margin-top: 0;
+    padding-left: 0;
+    font-size: 18px;
+}
+
+.es-input-group-btn > .popover > .popover-title {
+    display: none;
+}
+
+.es-input-group-btn > .popover.bottom > .arrow:after {
+    border-bottom-color: #333;
+}
+
+/* </Search Option Popover> */
+
+.search-wrapper {
+    width: 70%;
+}
+@media (max-width: 1300px) {
+    .search-wrapper {
+        width: 60%;
+    }
+}
+@media (max-width: 1100px) {
+    .search-wrapper {
+        width: 45%;
+    }
+}
+@media (max-width: 768px) {
+    .search-wrapper {
+        width: 60%;
+    }
+}
+.search-wrapper .input-group {
+    padding-top: 3px;
+    padding-left: 15px;
+}
+.store-bookmark-link {
+    width: auto;
+    position: absolute;
+    right: 30px;
+    top: 10px;
+}
+.store-bookmark-link a {
+    color: rgb(255, 255, 255);
+}
+@media ( max-width: 670px) {
+    .bookmark-link-text{
+        display: none;
+    }
+}
+/* ========================================================================
+ * Store my-items bookmark styling
+ * ======================================================================== */
+.confirmation-popup-container {
+    position: absolute;
+    z-index: 9999;
+    background: rgba(255, 239, 239, 0.87);
+    height: 105%;
+    display: none;
+}
+.confirmation-popup-container p {
+    position: relative;
+    top: 20%;
+    text-align: center;
+    color: rgb(159, 12, 12);
+}
+.confirmation-popup-container .btn-group {
+    bottom: 10px;
+    position: absolute;
+    margin-left: 30%;
+    display: block;
+}
+.confirmation-popup-container .yes-bookmark {
+    border: 0px;
+}
+.confirmation-popup-container .no-bookmark {
+    border-top: 0px;
+    border-right: 0px;
+    border-bottom: 0px;
+}
+.confirmation-popup-container #bookmark-animation {
+    position: absolute;
+    top: 50%;
+    margin-left: 30%;
+    display: none;
+}
+/*
+    Navigation bar changes for the Taxonomy view
+ */
+.sidebar-wrapper nav.navigation{
+    min-height: auto;
+    padding-top:0;
+    height: auto;
+}
+nav.navigation > a.assets-show-more, nav.navigation > a.assets-show-less{
+    cursor: pointer;
+    height: auto;
+    padding: 3px 0 3px 10px;
+    display: block;
+    text-align: center;
+}
+nav.navigation > a.active{
+    position: relative;
+}
+.sidebar-wrapper nav.navigation > a.active{
+    position: inherit;
 }

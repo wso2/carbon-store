@@ -18,6 +18,7 @@
  */
 var resources = function(){
 	return {
-		js:['libs/jquery.form.min.js','advance-search-api.js']
+		js:['libs/jquery.form.min.js','advance-search-api.js','select2.full.min.js'],
+		css: ['select2.min.css']
 	}
 };

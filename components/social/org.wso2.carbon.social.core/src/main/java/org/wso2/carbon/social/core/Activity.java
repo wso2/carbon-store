@@ -41,10 +41,19 @@ public interface Activity {
 
     int getRating();
 
+    String getComment();
+
 	void setLikeCount(int likeCount);
 
 	void setDislikeCount(int dislikeCount);
 
 	void setId(int id);
 
+	void setRating(int rating);
+
+	void setComment(String comment);
+
+    void setILike(boolean like);
+
+    void setIDislike(boolean dislike);
 }

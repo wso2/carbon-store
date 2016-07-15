@@ -18,7 +18,6 @@
  */
 var resources = function () {
     return {
-        js: ['lib/jquery-1.8.3.min.js', 'lib/jquery.rating.pack.js',
-            'lib/porthole.min.js', 'custom/social-height-adjustor.js', 'lib/jquery.nicescroll.min.js', 'custom/review.js']
+        js: []
     };
 };

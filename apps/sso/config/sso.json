@@ -20,6 +20,7 @@
 //         }
     "permissions": {
     },
+    "tenantConfigs": "/_system/config/sso/configs/sso.json",
     "userSpace": {
         "space": "portal",
         "options": {

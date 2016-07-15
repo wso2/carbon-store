@@ -12,6 +12,7 @@
                 {{#attributes}}
                     <div class="ctrl-wr-asset margin-top-lg">
                         <div class="confirmation-popup-container">
+                            <i id="bookmark-animation" class="fw fw-wso2-logo fw-pulse fw-5x"></i>
                             <p>Are you sure you want to remove bookmark?</p>
                             <div class="btn-group">
                                 <button type="button" class="btn btn-default yes-bookmark">Yes</button>
@@ -33,11 +34,11 @@
                                         <div style="width:{{../ratingPx}}px"></div>
                                     </span>
                                 </div>
-                                <a class="btn js_bookmark pull-right"
-                                   data-type="{{../type}}"
-                                   data-aid="{{../id}}">
-                                    <i class="fw fw-bookmark store-bookmarked"></i>
-                                </a>
+                                {{#mergeContext thisAsset=../this isSubscribed=true}}
+                                    <span class="my-items-bookmark pull-right">
+                                        {{> assets-utilization}}
+                                    </span>
+                                {{/mergeContext}}
                                 <div class="clearfix padding-bottom-sm"></div>
                             </div>
                         </div>
