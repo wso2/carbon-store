@@ -452,6 +452,7 @@ nav.navigation .second_level > .left-menu-item {
 .taxonomy .filter-tag > .value {
     padding: 3px 6px;
     display: none;
+
 }
 
 .taxonomy .filter-tag.edit > .value-edit,
@@ -559,7 +560,7 @@ nav.navigation .second_level > .left-menu-item {
 }
 
 .refine {
-    padding: 10px;
+    padding: 0 10px;
     background: #151922;
 }
 
@@ -601,7 +602,9 @@ nav.navigation .second_level > .left-menu-item {
 .refine a[aria-expanded="true"] > .icon > .fw-right:before {
     content: "\e685";
 }
-
+#categorization-div > div.panel:last-child{
+    padding-bottom: 20px;
+}
 
 /*==================== end of nav styles====================*/
 
@@ -730,12 +733,15 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     font-weight:100;
     margin-left:33px;
 }
-.tags-wrapper{margin-top: 15px;}
-.tag-title {
+.tags-wrapper{
+    margin-top: 0;
+    background: #2c313b;
+}
+div.tags-wrapper .tag-title {
     height: 40px;
     padding-top: 5px;
     width: 200px;
-    padding-left: 10px;
+    padding-left: 20px;
     font-size: 18px;
     color: #fff;
 }
@@ -757,10 +763,8 @@ a.ctrl-filter-category:hover,a.ctrl-filter-category:focus
     height: auto;
     word-wrap: break-word;
     width: 250px;
-    padding-left: 10px;
     line-height: 30px;
-    padding-bottom: 15px;
-    padding-top: 10px;
+    padding: 10px 5px 15px 10px;
     float:left;
 }
 .tag-content > a{
@@ -1435,17 +1439,21 @@ ul.sidebar-messages > li {
     padding: 0 5px;
     top: -11px;
     position: absolute;
+    left: 50%;
+    margin-left: -12px;
 }
 .taxonomy-or-sep-wrapper .btn-primary{
     position: absolute;
-    right: 0;
+    left: 50%;
     top: -13px;
     padding: 1px 3px 3px;
+    margin-left: -8px;
 }
 .taxonomy-group-title{
     background: #2C313B;
     padding-bottom: 10px;
     font-size: 17px;
+    padding-left: 10px;
 }
 
 .btn-or-cancel {
