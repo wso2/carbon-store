@@ -36,7 +36,6 @@ var core = {};
     var DEF_APP_EXTENSION_MEDIATOR = 'default.app.extension';
     var EMPTY = '';
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
-    var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
     var Character = Packages.java.lang.Character;
     var DEFAULT_TENANT = -1234;
     var utils = require('utils');
@@ -631,7 +630,9 @@ var core = {};
      * @returns  array of available taxonomies
      */
     var taxonomyAvailability = function (type, rxtDefinition) {
-
+        var carbon = require('carbon');
+        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.' +
+            'ITaxonomyServices');
         var taxonomies;
         var taxonomyArray = [];
         if (rxtDefinition) {
@@ -647,12 +648,17 @@ var core = {};
                 for (var i = 0; i < taxonomies.length; i++) {
                     if (TaxonomyService.getTaxonomy(taxonomies[i])) {
                         taxonomyArray.push(taxonomies[i]);
+                    } else {
+                        log.error("The taxonomy name : " + taxonomies[i] + " not matched with rxt definition. " +
+                            "Please check you have entered the correct name");
                     }
                 }
             } else {
                 if (TaxonomyService.getTaxonomy(taxonomies)) {
                     taxonomyArray.push(taxonomies);
                 } else {
+                    log.error("The taxonomy name : " + taxonomies + " not matched with rxt definition. " +
+                        "Please check you have entered the correct name");
                     return null;
                 }
             }
