@@ -820,8 +820,8 @@ var pageDecorators = {};
         var map = new HashMap();
         var list;
         var keys = Object.keys(options);
-        list = new ArrayList();
         keys.forEach(function (key) {
+            list = new ArrayList();
             if (key != "tags"){
                 list.add('*' + options[key] + '*');
                 map.put(key, list);
