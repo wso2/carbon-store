@@ -84,7 +84,7 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
     var url = decodeURIComponent(window.location.href);
     var expression = new TaxonomySyntaxAPI.Expression();
     var mainUrl = URL.buildURL(url);
-    var updatedUrl, currentUrl;
+    var currentUrl;
 
     switch (action) {
         case "add":
@@ -92,14 +92,16 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
                 currentUrl = mainUrl.queryParam('q').get('"taxonomy"').replace(/^\"/, '').replace(/\"/, '');
                 expression = TaxonomySyntaxAPI.buildExpression(currentUrl);
                 expression.add("*" + taxonomyId + "*");
-                updatedUrl = mainUrl.queryParam('q', '"taxonomy":"' + encodeURIComponent(expression.compile()) +
-                    '"').compile();
+                mainUrl.queryParam('q').set('"taxonomy"', '"' + expression.compile() + '"');
             } else {
-                updatedUrl = mainUrl.queryParam('q', '"taxonomy":"' + encodeURIComponent("*" + taxonomyId + "*") +
-                    '"').compile();
 
+                if (url.indexOf("q=") > -1) {
+                    mainUrl.queryParam('q').set('"taxonomy"', '"' + "*" + taxonomyId + "*" + '"');
+                } else {
+                    mainUrl.queryParam('q', '"taxonomy":"' + "*" + taxonomyId + "*" + '"');
+                }
             }
-            renderURL(updatedUrl);
+            renderURL(mainUrl.compile());
             break;
         case "remove":
             if (url.indexOf("taxonomy") > -1) {
@@ -109,15 +111,12 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
 
                 var compiledExp = expression.compile();
                 if (compiledExp) {
-                    updatedUrl = mainUrl.queryParam('q', '"taxonomy":"' + encodeURIComponent(compiledExp) +
-                        '"').compile();
+                    mainUrl.queryParam('q').set('"taxonomy"', '"' + compiledExp + '"');
                 } else {
                     mainUrl.queryParam('q').remove('"taxonomy"');
-                    updatedUrl = mainUrl.compile();
                 }
             }
-            renderURL(updatedUrl);
-
+            renderURL(mainUrl.compile());
             break;
         case "update":
             if (url.indexOf("taxonomy") > -1) {
@@ -125,10 +124,9 @@ var resolveTaxonomyCRUDQueries = function (taxonomyId, action) {
                 expression = TaxonomySyntaxAPI.buildExpression(currentUrl);
                 expression.remove("*" + taxonomyId.oldQuery + "*");
                 expression.add("*" + taxonomyId.newQuery + "*");
-                updatedUrl = mainUrl.queryParam('q', '"taxonomy":"' + encodeURIComponent(expression.compile()) +
-                    '"').compile();
+                mainUrl.queryParam('q', '"taxonomy":"' + expression.compile() + '"');
             }
-            renderURL(updatedUrl);
+            renderURL(mainUrl.compile());
             break;
         default:
             break;
