@@ -36,6 +36,7 @@ var core = {};
     var DEF_APP_EXTENSION_MEDIATOR = 'default.app.extension';
     var EMPTY = '';
     var GovernanceUtils = Packages.org.wso2.carbon.governance.api.util.GovernanceUtils;
+    var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
     var Character = Packages.java.lang.Character;
     var DEFAULT_TENANT = -1234;
     var utils = require('utils');
@@ -599,15 +600,12 @@ var core = {};
      * @param  {String} type  The RXT type
      * @return {String}      The name of a taxonomy which is attached to all asset instances of an RXT type
      */
-    RxtManager.prototype.getTaxonomyAvailability = function(type) {
+
+    RxtManager.prototype.getTaxonomyAvailability = function (type) {
         var rxtDefinition = this.rxtMap[type];
-        if (rxtDefinition) {
-            if (rxtDefinition.taxonomies) {
-                return 'true';
-            }
-        }
-        return '';
+        return taxonomyAvailability(type, rxtDefinition);
     };
+
     /**
      * Returns the name of the taxonomy that is attached to assets of a given RXT type
      * If no taxonomy is specified then an empty string is returned.
@@ -622,16 +620,47 @@ var core = {};
             log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ');
             throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ';
         }
+        return taxonomyAvailability(type, rxtDefinition);
+
+    };
+
+    /**
+     * This method will return the available taxonomies for a given asset type by reading tenant specific map
+     * @param type asset type
+     * @param rxtDefinition specific for a tenant
+     * @returns  array of available taxonomies
+     */
+    var taxonomyAvailability = function (type, rxtDefinition) {
+
+        var taxonomies;
+        var taxonomyArray = [];
         if (rxtDefinition) {
             if (rxtDefinition.taxonomies && (rxtDefinition.taxonomies[0]) && (rxtDefinition.taxonomies[0].taxonomies)) {
-                return rxtDefinition.taxonomies[0].taxonomies || '';
+                taxonomies = rxtDefinition.taxonomies[0].taxonomies || '';
             }
         }
-        if (log.isDebugEnabled()) {
-            log.debug('Unable to locate a taxonomy property in RXT in order retrieve default taxonomy name for ' + type);
-        }
-        return '';
 
+        if (taxonomies) {
+            if (taxonomies.indexOf(",") > -1) {
+                taxonomies = taxonomies.split(",");
+
+                for (var i = 0; i < taxonomies.length; i++) {
+                    if (TaxonomyService.getTaxonomy(taxonomies[i])) {
+                        taxonomyArray.push(taxonomies[i]);
+                    }
+                }
+            } else {
+                if (TaxonomyService.getTaxonomy(taxonomies)) {
+                    taxonomyArray.push(taxonomies);
+                } else {
+                    return null;
+                }
+            }
+        } else {
+            return null;
+        }
+
+        return taxonomyArray;
     };
     /**
      * Returns the action that is invoked when a lifecycle is first attached to an asset of a given RXT type.

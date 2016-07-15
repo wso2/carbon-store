@@ -647,6 +647,8 @@ var removeDeleteButtonsMainTaxonomy = function (element) {
  * @param element
  */
 var editClickedElement = function (element) {
+    //remove unwanted tooltip div element inside cloned edit view
+    $(element).closest('.filter-tag').find('.tooltip').remove();
     $(element).closest('.filter-tag').find('.value-edit').find('[aria-expanded="true"]').attr('aria-expanded', 'false');
     var openElements = $(element).closest('.filter-tag').attr('id').split('#');
 
