@@ -35,7 +35,6 @@ var getSeparatedQueries = function () {
     if (decodedURL.indexOf("?") > 0) {
         // this added because when categorization removed it remain ?q= in the search query
         if (decodedURL.split("?")[1]) {
-            debugger;
             var combinedQueryList = otherTypeQueryArray = decodedURL.split('?');
             if (combinedQueryList[1].indexOf("q=") == 0) {
                 combinedQueryList[1] = otherTypeQueryArray[1] = combinedQueryList[1].replaceAll("q=", "");
@@ -1215,9 +1214,6 @@ var clickElementByExpression = function (taxonomyId) {
         success: function (data) {
             taxonomyName = data[0].taxonomyName;
             $("#taxo" + data[0].taxonomyName).click();
-            debugger;
-
-
         },
         error: function () {
 

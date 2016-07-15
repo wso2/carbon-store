@@ -621,7 +621,7 @@ var pageDecorators = {};
         var coreApi = rxtModule.core;
         var rxtManager = coreApi.rxtManager(ctx.tenantId);
 
-        (!rxtManager.getTaxonomyAvailability(ctx.assetType)) ? page.taxonomyAvailability = false :
+        (!rxtManager.getTaxonomyAvailability(ctx.assetType).length > 0) ? page.taxonomyAvailability = false :
             page.taxonomyAvailability = true;
 
     };
