@@ -69,15 +69,10 @@ require('/modules/publisher.js').exec(function (ctx) {
                             var rxtManager = coreApi.rxtManager(tenantId);
                             var taxonomies = rxtManager.getTaxonomies(options['assetType']);
                             var jsonArray = [];
-                            var taxonomyArray;
-                            if (taxonomies.indexOf(',')) {
-                                taxonomyArray = taxonomies.split(',');
-                            } else {
-                                taxonomyArray = taxonomies;
-                            }
-                            for (var i = 0; i < taxonomyArray.length; i++) {
+
+                            for (var i = 0; i < taxonomies.length; i++) {
                                 var taxonomyObj = {};
-                                taxonomyObj.name = taxonomyArray[i];
+                                taxonomyObj.name = taxonomies[i];
                                 jsonArray.push(taxonomyObj);
                             }
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,

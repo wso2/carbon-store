@@ -35,7 +35,6 @@ var getSeparatedQueries = function () {
     if (decodedURL.indexOf("?") > 0) {
         // this added because when categorization removed it remain ?q= in the search query
         if (decodedURL.split("?")[1]) {
-            debugger;
             var combinedQueryList = otherTypeQueryArray = decodedURL.split('?');
             if (combinedQueryList[1].indexOf("q=") == 0) {
                 combinedQueryList[1] = otherTypeQueryArray[1] = combinedQueryList[1].replaceAll("q=", "");
@@ -647,6 +646,8 @@ var removeDeleteButtonsMainTaxonomy = function (element) {
  * @param element
  */
 var editClickedElement = function (element) {
+    //remove unwanted tooltip div element inside cloned edit view
+    $(element).closest('.filter-tag').find('.tooltip').remove();
     $(element).closest('.filter-tag').find('.value-edit').find('[aria-expanded="true"]').attr('aria-expanded', 'false');
     var openElements = $(element).closest('.filter-tag').attr('id').split('#');
 
@@ -1213,9 +1214,6 @@ var clickElementByExpression = function (taxonomyId) {
         success: function (data) {
             taxonomyName = data[0].taxonomyName;
             $("#taxo" + data[0].taxonomyName).click();
-            debugger;
-
-
         },
         error: function () {
 

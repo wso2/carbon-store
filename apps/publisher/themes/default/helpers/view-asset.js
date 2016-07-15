@@ -29,8 +29,9 @@ var format = function(data){
 };
 
 var resources = function(){
-	return {
-		js:['select2.min.js','tags/tags-common.js','tags/tags-init-view-asset.js','view-asset.js','taxonomy-browser.js','taxonomy-view-asset.js'],
-		css:['select2.min.css','taxonomy-browser.css']
-	}
+    return {
+        js: ['select2.min.js', 'tags/tags-common.js', 'tags/tags-init-view-asset.js', 'view-asset.js', 'taxonomy-browser.js', 'taxonomy-view-asset.js'],
+        css: ['select2.min.css', 'taxonomy-browser.css'],
+        code: ['publisher.assets.hbs']
+    }
 };

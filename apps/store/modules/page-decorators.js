@@ -620,9 +620,7 @@ var pageDecorators = {};
         var rxtModule = require('rxt');
         var coreApi = rxtModule.core;
         var rxtManager = coreApi.rxtManager(ctx.tenantId);
-
-        (!rxtManager.getTaxonomyAvailability(ctx.assetType)) ? page.taxonomyAvailability = false :
-            page.taxonomyAvailability = true;
+        page.taxonomyAvailability = (rxtManager.getTaxonomyAvailability(ctx.assetType).length > 0);
 
     };
     var getAssetManager = function(ctx) {
