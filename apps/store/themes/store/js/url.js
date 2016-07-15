@@ -16,7 +16,6 @@
  *  under the License.
  *
  */
-
 var URL = {};
 (function() {
     URL.buildURL = function(url) {
@@ -139,9 +138,11 @@ var URL = {};
         initQueryParam.apply(this);
     }
     QueryParam.prototype.set = function(key, newValue) {
-        if (!this.value instanceof ValueMap) {
-            throw 'Cannot locate key ' + key;
+        if (this.value instanceof ValueMap) {
+            this.value.set(key, newValue);
+            return this;
         }
+        this.value = new ValueMap();
         this.value.set(key, newValue);
         return this;
     };
@@ -188,6 +189,7 @@ var URL = {};
     }
 
     function ValueMap(values) {
+        values = values || [];
         this.map = {};
         that = this;
         values.forEach(function(kv) {
