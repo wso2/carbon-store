@@ -51,6 +51,7 @@
                 caramel.partials(data._.partials, function () {
                     caramel.render('tag-cloud', data.body.assets.context, function (info, content) {
                         $('#tags-wrapper').html(content);
+                        AssetEvents.registerTagHandlers();
                     });
                 });
             }

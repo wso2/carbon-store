@@ -1,10 +1,28 @@
+/*
+ *  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *
+ *  WSO2 Inc. licenses this file to you under the Apache License,
+ *  Version 2.0 (the "License"); you may not use this file except
+ *  in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing,
+ *  software distributed under the License is distributed on an
+ *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ *  KIND, either express or implied.  See the License for the
+ *  specific language governing permissions and limitations
+ *  under the License.
+ *
+ */
 var asset = {};
-
-(function (asset) {
+var AssetEvents = {};
+(function(asset) {
     var PROCESSING_TEXT = "processing";
-    var SUCCESS_TEXT =  "success";
+    var SUCCESS_TEXT = "success";
     var ERROR_TEXT = "error";
-    var getText = function (key) {
+    var getText = function(key) {
         var bookmarkData = $('.main-bookmark');
         var text = "A message was not defined for " + key + " please check process-asset templates";
         if (bookmarkData.length) {
@@ -12,7 +30,7 @@ var asset = {};
         }
         return text;
     };
-    asset.process = function (type, path, destination, elem) {
+    asset.process = function(type, path, destination, elem) {
         if (!store.user) {
             $('#modal-login').modal('show');
             return;
@@ -22,20 +40,23 @@ var asset = {};
         $(elem).unbind('click');
         $.ajax({
             url: caramel.url('/apis/subscriptions'),
-            data: {type: type, asset: path, destination: encodeURIComponent(location.href)},
-            method: 'POST',
-            success: function (data) {
-                messages.alertSuccess(getText(SUCCESS_TEXT));
-                window.location.href=destination;
+            data: {
+                type: type,
+                asset: path,
+                destination: encodeURIComponent(location.href)
             },
-            error: function () {
+            method: 'POST',
+            success: function(data) {
+                messages.alertSuccess(getText(SUCCESS_TEXT));
+                window.location.href = destination;
+            },
+            error: function() {
                 messages.alertError(getText(ERROR_TEXT));
                 $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
             }
         });
     };
-
-    asset.unsubscribeBookmark = function (type, path, destination, elem) {
+    asset.unsubscribeBookmark = function(type, path, destination, elem) {
         if (!store.user) {
             $('#modal-login').modal('show');
             return;
@@ -46,7 +67,7 @@ var asset = {};
             url: caramel.url('/apis/subscriptions') + '?type=' + type + '&asset=' + path,
             method: 'DELETE',
             dataType: 'text json',
-            success: function (data) {
+            success: function(data) {
                 messages.alertSuccess(getText(SUCCESS_TEXT));
                 $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
                 $(elem).parents('[class^="ctrl-wr-asset"]').fadeOut();
@@ -56,7 +77,7 @@ var asset = {};
                     $(elem).attr('id', 'btn-add-gadget');
                 }
             },
-            error: function (data) {
+            error: function(data) {
                 var parent = $(elem).parents('[class^="ctrl-wr-asset"]');
                 messages.alertError(getText(ERROR_TEXT));
                 $(parent.find(".confirmation-popup-container")).fadeOut();
@@ -66,8 +87,21 @@ var asset = {};
             }
         });
     };
-
-     /*
+    AssetEvents.registerTagHandlers = function() {
+        $('.es-remove-tag').on('click', function(e) {
+            e.preventDefault();
+            var url = window.location.href;
+            url = removeTagFromURL(url);
+            window.location = url;
+        });
+        $('.es-add-tag').on('click', function(e) {
+            e.preventDefault();
+            var url = window.location.href;
+            url = addTagToURL(url, this);
+            window.location = url;
+        });
+    };
+    /*
     We rewrite the url with sorting meta data.This is needed to support
     the way we filter taxonomy without a page reload
      */
@@ -76,19 +110,23 @@ var asset = {};
         var sortOptions = {};
         sortOptions.sortBy = $(this).data('sortByQuery');
         sortOptions.sort = $(this).data('sortQuery');
-        window.location= enrichUrlWithSortParams(window.location.href, sortOptions)
+        window.location = enrichUrlWithSortParams(window.location.href, sortOptions)
     });
-
-    /*
-    We calculate the URL dynamically  by removing the tags expression from the query
-     */
-    $('.es-asset-tag').on('click', function(e) {
-        e.preventDefault();
-        var url = window.location.href;
-        url = buildTagURL(url);
-        window.location = url;
+    $('.assets-show-more').click(function() {
+        $(this).toggle();
+        $('.assets-show-less').toggle();
+        $('.navigation .all-item').show();
     });
-
+    $('.assets-show-less').click(function() {
+        $(this).toggle();
+        $('.assets-show-more').toggle();
+        $('.navigation .all-item').each(function() {
+            if (!$(this).attr('data-selected')) {
+                $(this).hide();
+            }
+        });
+    });
+    AssetEvents.registerTagHandlers();
     /*
     The function adds the sorting properties provided in the sorting options into
     the provided URL
@@ -143,61 +181,29 @@ var asset = {};
         return urlWithoutQueryParams.concat(newQueryParams.concat(urlWithQueryParams).join('&')).join('?');
     }
 
-    /**
-     * Removes the tags query from the URL
-     * @param  {[type]} url [description]
-     * @return {[type]}     [description]
-     */
-    function buildTagURL(url) {
+    function addTagToURL(url, element) {
         var decodedURI = decodeURIComponent(url);
-        //Split by ?
-        var splitURI = decodedURI.split('?');
-        var uri = splitURI.slice(0, 1);
-        var queryParams = splitURI.slice(1) || '';
-        queryParams = (queryParams.length === 0) ? '' : queryParams[0];
-        queryParams = queryParams.split('&');
-        var qIndex = -1;
-        var qTagsIndex = -1;
-        queryParams.forEach(function(query, index) {
-            qIndex = (query.indexOf('q=') > -1) ? index : qIndex;
-        });
-        var q = [];
-        if (qIndex > -1) {
-            q = queryParams[qIndex].replace('q=', '').split(',');
+        var exp = URL.buildURL(decodedURI);
+        var q = exp.queryParam('q')
+        var selectedTag = $(element).data('selectedTag');
+        if ((!selectedTag) || (selectedTag === '')) {
+            throw 'Unable to locate tag details to add to the URL';
         }
-        q.forEach(function(kvPair, index) {
-            qTagsIndex = (kvPair.indexOf('tags') > -1) ? index : qTagsIndex;
-        });
-        if (qTagsIndex > -1) {
-            q.splice(qTagsIndex, 1);
+        if (!q) {
+            exp.queryParam('q', '"tags":""');
+            q = exp.queryParam('q');
         }
-        //Remove the existing query
-        if (qIndex > -1) {
-            queryParams.splice(qIndex);
-            var qvalue = q.join(',');
-            q = (qvalue === '') ? [] : ['q=' + qvalue];
-        }
-        q = ((q.length === 1) && (q[0] === '')) ? [] : q;
-        var newQueryParams = [queryParams.concat(q).join('&')];
-        newQueryParams = ((newQueryParams.length === 1) && (newQueryParams[0] === '')) ? [] : newQueryParams;
-        return uri.concat(newQueryParams).join('?');
+        q.set('"tags"', '"' + selectedTag + '"');
+        return exp.compile();
     }
 
-    $('.assets-show-more').click(function(){
-        $(this).toggle();
-        $('.assets-show-less').toggle();
-        $('.navigation .all-item').show();
-    });
-
-    $('.assets-show-less').click(function(){
-        $(this).toggle();
-        $('.assets-show-more').toggle();
-        $('.navigation .all-item').each(function(){
-            if(!$(this).attr('data-selected')){
-                $(this).hide();
-            }
-        });
-    });
-
-
+    function removeTagFromURL(url) {
+        var decodedURI = decodeURIComponent(url);
+        var exp = URL.buildURL(decodedURI);
+        var q = exp.queryParam('q')
+        if (q) {
+            q.remove('"tags"');
+        }
+        return exp.compile();
+    }
 }(asset));
