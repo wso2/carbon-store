@@ -651,14 +651,6 @@ var core = {};
                         "Please check you have entered the correct name");
                 }
             }
-        } else {
-            if (TaxonomyService.getTaxonomy(taxonomies)) {
-                taxonomyArray.push(taxonomies);
-            } else {
-                log.error("The taxonomy name : " + taxonomies + " not matched with rxt definition. " +
-                    "Please check you have entered the correct name");
-                return null;
-            }
         }
 
         return taxonomyArray;
