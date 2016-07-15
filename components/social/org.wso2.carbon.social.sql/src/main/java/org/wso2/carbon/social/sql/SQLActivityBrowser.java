@@ -90,7 +90,8 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			+ Constants.LIKE_VALUE_COLUMN + " = ?";
 
     public static final String SELECT_TOTAL_LIKES = "SELECT COUNT("
-            + Constants.CONTEXT_ID_COLUMN + ") FROM "
+            + Constants.CONTEXT_ID_COLUMN + ") AS "
+            + Constants.LIKES_COUNT_ALIAS + " FROM "
             + Constants.SOCIAL_LIKES_TABLE_NAME + " WHERE "
             + Constants.CONTEXT_ID_COLUMN + " = ? AND "
             + Constants.LIKE_VALUE_COLUMN + " = ?";
@@ -748,7 +749,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
             statement.setInt(2, likeValue);
             resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                String resultColumn = "COUNT(" + Constants.CONTEXT_ID_COLUMN + ")";
+                String resultColumn = Constants.LIKES_COUNT_ALIAS;
                 likes = resultSet.getInt(resultColumn);
             }
             resultSet.close();
