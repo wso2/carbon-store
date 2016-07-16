@@ -403,7 +403,7 @@ var removeClickedElement = function (element) {
             "remove");
     }
 
-    // remove All selected mached elements
+    // remove All selected matched elements
     var allMatchingElements = $("#accordion1").find('.selected-disabled');
 
     for (var j = 0; j < allMatchingElements.length; j++) {
