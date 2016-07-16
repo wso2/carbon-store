@@ -368,6 +368,29 @@ var onClickHideBock = function (element) {
     $(element).closest('.filter-tag').find('li').removeClass('active');
 };
 
+/**
+ * This method will update current buttons classes with suitable action
+ * @param element Element that need to update
+ */
+var updateButtonsAttributes = function (element) {
+    $(element).attr('onclick', 'onClickMenuGenerate(this);return false;');
+    $(element).find('.btn-remove').attr('onclick', 'displayPaths(this);return false;');
+    $(element).removeClass('active');
+    if ($(element).closest('.value-edit').length > 0) {
+        $(element).find('.btn-remove').attr('onclick', 'updateTaxonomy(this);return false;');
+        $(element).find('.btn-remove').removeClass('btn-remove').removeClass('btn-danger').addClass('btn-update').addClass('btn-primary').attr('title', 'Update Filter').attr('data-original-title', 'Update Filter');
+        $(element).find('.fw-minus').removeClass('fw-minus').addClass('fw-sync');
+
+        $(element).removeClass('selected-disabled');
+    } else {
+        // $(allMatchingElements[j]).attr('onclick', 'onClickMenuGenerate(this);return false;');
+        $(element).find('.btn-remove').attr('onclick', 'displayPaths(this);return false;');
+        $(element).find('.btn-remove').removeClass('btn-remove').removeClass('btn-danger').addClass('btn-add').addClass('btn-primary').attr('title', 'Add Filter').attr('data-original-title', 'Add Filter');
+        $(element).find('.fw-minus').removeClass('fw-minus').addClass('fw-add');
+
+        $(element).removeClass('selected-disabled');
+    }
+};
 
 /**
  * This method will remove selected element from the taxonomy view
@@ -380,19 +403,13 @@ var removeClickedElement = function (element) {
             "remove");
     }
 
-    // remove All selected elements
+    // remove All selected matched elements
     var allMatchingElements = $("#accordion1").find('.selected-disabled');
 
     for (var j = 0; j < allMatchingElements.length; j++) {
         if ($(allMatchingElements[j]).attr('id') == $(element).closest('.filter-tag').attr('id').split('#')[0]) {
-            $(allMatchingElements[j]).attr('onclick', 'onClickMenuGenerate(this);return false;');
-            $(allMatchingElements[j]).find('.btn-remove').attr('onclick', 'displayPaths(this);return false;');
-            $(allMatchingElements[j]).removeClass('active');
-            $(allMatchingElements[j]).find('.btn-remove').removeClass('btn-remove').removeClass('btn-danger').
-            addClass('btn-add').addClass('btn-primary').attr('title', 'Add Filter');
-            $(allMatchingElements[j]).find('.fw-minus').removeClass('fw-minus').addClass('fw-add');
+            updateButtonsAttributes($(allMatchingElements[j]));
 
-            $(allMatchingElements[j]).removeClass('selected-disabled');
         }
     }
 
@@ -491,6 +508,19 @@ var updateTaxonomy = function (element) {
             pathIdArray.push($(parentElements[i]).find('a').attr('id'));
         }
     }
+
+    // remove All selected matched elements
+    var allMatchingElements = $("#accordion1").find('.selected-disabled');
+
+    for (var j = 0; j < allMatchingElements.length; j++) {
+        if ($(allMatchingElements[j]).attr('id') == $(element).closest('.filter-tag').attr('id').split('#')[0]) {
+            updateButtonsAttributes($(allMatchingElements[j]));
+
+        }
+    }
+
+    var selectedElements = $("#accordion1").find("[id=" + $(element).closest('a').attr('id') + "]");
+    disableAllSimilarElements(selectedElements);
 
     pathArray = pathArray.reverse();
     for (var j = 0; j < pathArray.length; j++) {
