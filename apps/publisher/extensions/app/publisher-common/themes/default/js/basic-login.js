@@ -62,8 +62,11 @@ $(function () {
         },
         error: function (data) {
             var regFormError = $('#regFormError');
-            regFormError.show();
-            regFormError.text(data.responseJSON.error);
+            var errorMessage = data.responseJSON.error.replace(/^\s+|\s+$/gm,'');
+            if(errorMessage.length > 0 ){
+                regFormError.show();
+                regFormError.text(errorMessage);
+            }
             $("#basic-login-form").resetForm();
             $('#username').focus();
             $('#password-error').hide();
