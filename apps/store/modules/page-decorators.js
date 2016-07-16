@@ -820,8 +820,24 @@ var pageDecorators = {};
         var map = new HashMap();
         var list;
         var keys = Object.keys(options);
+
+        //Case #1 : Only a single tag is selected
+        //Set A - assets with the currently applied tag
+        //In this case we need to retrieve the set of tags in set A
+        if((keys.length === 1) && (keys[0]==='tags')) {
+             list = new ArrayList();
+             list.add('*' + options[keys[0]] + '*');
+             map.put(keys[0],list);
+             return map;
+        }
+
+        //Case #2 = Multiple filtering criteria with a possible tag
+        //Set B - assets satisfying the provided filter criteria
+        //We need to retrieve the tags which are in the intersection
+        //of set A and set B
         keys.forEach(function (key) {
             list = new ArrayList();
+            //Omit tags as it will return a union of set A and B
             if (key != "tags"){
                 list.add('*' + options[key] + '*');
                 map.put(key, list);
