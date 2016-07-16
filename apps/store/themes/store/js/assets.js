@@ -95,7 +95,11 @@ store.infiniteScroll.getItems = function(from,to,cb){
                     if(data.body.assets.context.assets.length != 0){
                         $('.top-assets-empty-assert').remove();
                     }
-                    $('.sort-asset-container').show();
+                    if (data.body.assets.context.assets.length > 1) {
+                        $('.sort-asset-container').show();
+                    } else {
+                        $('.sort-asset-container').hide();
+                    }
                     $('.loading-animation-big').remove();
                 });
                 if(data.body.assets.context.assets.length == 0
