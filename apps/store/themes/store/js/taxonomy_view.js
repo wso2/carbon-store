@@ -887,7 +887,7 @@ $(document).ready(function () {
         $("#taxonomy-section").hide();
     }
 
-    if ((store.taxonomyAvailability && assetAvailability) || window.location.href.indexOf('taxonomy') > -1) {
+    if (store.taxonomyAvailability &&  ((assetAvailability) ||  (window.location.href.indexOf('taxonomy') > -1)) ) {
 
         $("#taxonomy-section").show();
 
