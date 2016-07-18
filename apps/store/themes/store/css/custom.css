@@ -1804,7 +1804,7 @@ a#search-info {
 }
 .search-wrapper .input-group {
     padding-top: 3px;
-    padding-left: 15px;
+    padding-left: 0;
 }
 .store-bookmark-link {
     width: auto;
