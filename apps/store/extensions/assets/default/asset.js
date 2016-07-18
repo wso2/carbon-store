@@ -24,6 +24,9 @@ asset.manager = function(ctx) {
      */
     var buildPublishedQuery = function(query) {
         query = query || {};
+        if (query.lcState) {
+            return query;
+        }
         var isLCEnabled = ctx.rxtManager.isLifecycleEnabled(ctx.assetType);
         //If lifecycles are not enabled then do nothing
         if(!isLCEnabled){
