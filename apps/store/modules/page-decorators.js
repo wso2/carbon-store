@@ -699,6 +699,8 @@ var pageDecorators = {};
         var selectedTag;
         var map = new HashMap();
         var mediaType;
+        var app = require('rxt').app;
+        var asset = require('rxt').asset;
         var searchPage = '/pages/top-assets';
         var rxtManager = ctx.rxtManager;
         if (ctx.assetType) {
@@ -721,7 +723,7 @@ var pageDecorators = {};
         log.debug("term search query criteria:facetField " + facetField + " mediaType " + mediaType);
 
         var q = request.getParameter("q");
-        if (q) {
+/*        if (q) {
             var options = parse("{" + q + "}");
             if (facetField == "tags") {
                 map = buildQueryMapTags(ctx, options);
@@ -732,12 +734,17 @@ var pageDecorators = {};
             if (options.tags) {
                 selectedTag = options.tags;
             }
-        }
+        }*/
 
         if (facetField) {
             try {
                 buildPaginationContext(paging);
-                results = GovernanceUtils.getTermDataList(map, facetField, mediaType, authRequired);
+                //results = GovernanceUtils.getTermDataList(map, facetField, mediaType, authRequired);
+                var am = getAssetManager(ctx);
+                q = q  ? q : (q='');
+                q = parse('{' + q + '}' );
+                var query = asset.buildQuery(ctx.assetType, rxtManager, app, q);
+                results = GovernanceUtils.getTermDataList(query, facetField, mediaType, am.registry.registry);
                 var iterator = results.iterator();
                 while (iterator.hasNext()) {
                     var current = iterator.next();

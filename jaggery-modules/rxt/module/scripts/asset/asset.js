@@ -602,7 +602,7 @@ var asset = {};
                 if (wildcard && key != 'tags' && key != 'taxonomy' &&  !(value.indexOf('&') > -1) && !queryWithQuots
                     && !(value.indexOf('(') > -1)) {
                     value = '*'+value+'*';
-                }else if (wildcard && key != 'tags' && key != 'taxonomy' && (value.indexOf(' OR ') > -1)){
+                }else if (wildcard && key != 'tags' && key != 'taxonomy' && ( (value.indexOf(' OR ') > -1) || (value.indexOf(' AND ') > -1) )){
                     if (value.indexOf('(') > -1) {
                         value = value.replaceAll("(", "(*");
                         value = value.replaceAll(")", "*)");
@@ -610,6 +610,7 @@ var asset = {};
                         value = '*'+value+'*';
                     }
                     value = value.replaceAll(" OR ", "* OR *");
+                    value = value.replaceAll(" AND ", "* AND *");
                 }
                 queryString.push(key + '=' + encodeURIComponent(value));
             }
@@ -2823,4 +2824,5 @@ var asset = {};
         }
         return valid;
     };
+    asset.buildQuery=buildQuery;
 }(asset, core))
