@@ -68,13 +68,9 @@ var updateTaxonomyWindow = function (dataWindow) {
 
 /**
  * Loads available taxonomies for the asset type.
+ * @param tenantDomain  domain of the tenant
  */
-var loadTaxonomies = function () {
-    var tenantDomain = '';
-    if ((store) && (store.publisher)) {
-        tenantDomain = store.publisher.tenantDomain;
-    }
-    
+var loadTaxonomies = function (tenantDomain) {
     $.ajax({
         type: 'GET',
         url: BASE_URL + '?assetType=' + store.publisher.type + '&tenant=' + tenantDomain,
@@ -233,10 +229,15 @@ var resetTaxonomyBrowser = function () {
  * @param appliedTaxonomy   array of applied taxonomy for the asset
  */
 function initTaxonomyBrowser(appliedTaxonomy) {
+    if (store && (store.taxonomyAvailability == false)) {
+        return;
+    }
+
     $(TAXONOMY_BROWSER).hide();
     if ($('#taxonomy-list')[0]) {
         $('#taxonomy-list')[0].value = '';
     }
+
     $(SELECTED_CONTENT).empty();
     selectedTaxonomy.length = 0;
 
@@ -262,7 +263,13 @@ function initTaxonomyBrowser(appliedTaxonomy) {
         //if not initialize to empty view
         $(SELECTED_CONTAINER).hide();
     }
-    loadTaxonomies();
+
+    var tenantDomain = '';
+    if ((store) && (store.publisher)) {
+        tenantDomain = store.publisher.tenantDomain;
+    }
+
+    loadTaxonomies(tenantDomain);
 }
 
 $(function () {
