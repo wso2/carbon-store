@@ -723,18 +723,18 @@ var pageDecorators = {};
         log.debug("term search query criteria:facetField " + facetField + " mediaType " + mediaType);
 
         var q = request.getParameter("q");
-/*        if (q) {
+        if (q) {
             var options = parse("{" + q + "}");
-            if (facetField == "tags") {
+            /*if (facetField == "tags") {
                 map = buildQueryMapTags(ctx, options);
             } else {
                 map = buildQueryMap(ctx, options);
-            }
+            }*/
 
             if (options.tags) {
                 selectedTag = options.tags;
             }
-        }*/
+        }
 
         if (facetField) {
             try {
