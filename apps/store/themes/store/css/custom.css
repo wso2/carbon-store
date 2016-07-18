@@ -1737,7 +1737,7 @@ ul.sort-list li a.active:hover{
 
 /* Search Option Popover */
 a#search-info {
-    background: #2C313B;
+    background: transparent;
     color: #ccc;
     font-size: 17px;
     margin-top: -1px;
@@ -1805,7 +1805,7 @@ a#search-info {
 }
 .search-wrapper .input-group {
     padding-top: 3px;
-    padding-left: 15px;
+    padding-left: 0;
 }
 .store-bookmark-link {
     width: auto;

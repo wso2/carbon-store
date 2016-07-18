@@ -46,11 +46,16 @@ h4{font-weight: 400; font-size: 20px;}
 .assetp-properties .tab-content {
     overflow: visible;
 }
+#assets-container .nav-tabs > li > a:hover{
+    background: #161616;
+}
+#assets-container .nav-tabs > li.active > a:hover{
+    background: #fff;
+}
 #tab-reviews {
-    /*position: absolute;*/
-    /*display: block;*/
-    /*visibility: hidden;*/
-    /*top:-9999px;*/
+    border-left: solid 1px #ccc;
+    border-right: solid 1px #ccc;
+    border-bottom: solid 1px #ccc;
 }
 
 #tab-reviews li {
