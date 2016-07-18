@@ -668,10 +668,10 @@ var core = {};
                 }
 
                 var taxonomiesDefinition = rxtDefinition.taxonomies[0] || {};
-                var isGlobal = (taxonomiesDefinition.hasOwnProperty('excludeGlobal') &&
+                var excludeGlobal = (taxonomiesDefinition.hasOwnProperty('excludeGlobal') &&
                 (String(taxonomiesDefinition.excludeGlobal) === 'true') )? true : false;
-                isGlobal = isGlobal && checkGlobalTaxonomies();
-                if (!isGlobal) {
+                excludeGlobal = isGlobal && checkGlobalTaxonomies();
+                if (!excludeGlobal) {
                     returnArray = taxonomyArray.concat(getGlobalTaxonomies());
                 } else {
                     return taxonomyArray;
