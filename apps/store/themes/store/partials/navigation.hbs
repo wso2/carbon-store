@@ -79,14 +79,17 @@
                 </ul>
 
             </nav>
-	</div>
-            {{#if tags}}
-                {{#if showTagCloud}}
-                    <div class="tags-wrapper" id="tags-wrapper">
-                        {{> tag-cloud . }}
-                    </div>
-                {{/if}}
+        </div>
+        <div class="refine" id="categorization-div">
+            {{> categorization-entry .}}
+        </div>
+        {{#if tags}}
+            {{#if showTagCloud}}
+                <div class="tags-wrapper" id="tags-wrapper">
+                    {{> tag-cloud . }}
+                </div>
             {{/if}}
+        {{/if}}
     </div>
 </div>
 
