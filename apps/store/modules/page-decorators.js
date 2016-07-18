@@ -116,6 +116,9 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = false;
         page.assetCategoryDetails.values = [];
         var categoryField = ctx.rxtManager.getCategoryField(ctx.assetType);
+        if (!categoryField) {
+            return;
+        }
         var categoryValues = [];
         var field = ctx.rxtManager.getRxtField(ctx.assetType, categoryField);
         var q = request.getParameter("q");
