@@ -93,17 +93,19 @@ messages.alertInfo = function (value) {
     });
 };
 messages.alertInfoLoader = function (value) {
-    $.notify.addStyle('happyblue', {
-        html: "<div><span data-notify-html/></div>",
+    $.notify.addStyle('infoloaderblue', {
+        html: "<div><strong></strong><span data-notify-html/></div>",
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "009DA7",
-                "padding": "10px"
+                "background-color": "#009DA7",
+                "padding": "10px",
+                "font-family": "Open Sans",
+                "color": "white",
+                "font-weight": 300
             },
             superblue: {
-                "color": "white",
-                "background-color": "009DA7"
+                "color": "white"
             }
         }
     });
@@ -112,7 +114,7 @@ messages.alertInfoLoader = function (value) {
         globalPosition: 'top center',
         className: 'info',
         autoHide: false,
-        style: 'happyblue'
+        style: 'infoloaderblue'
     });
 
 };
@@ -122,12 +124,15 @@ messages.alertWarn = function (value) {
         classes: {
             base: {
                 "white-space": "nowrap",
-                "background-color": "Gold",
-                "padding": "10px"
+                "background-color": "#F0AD4E",
+                "padding": "10px",
+                "font-family": "Open Sans",
+                "color": "white",
+                "font-weight": 300
             },
             superblue: {
                 "color": "white",
-                "background-color": "yellow"
+                "background-color": "#F0AD4E"
             }
         }
     });
@@ -137,4 +142,37 @@ messages.alertWarn = function (value) {
         className: 'warn',
         style: 'happyyellow'
     });
+};
+messages.modal_pop = function (modalData) {
+    var title = modalData.title;
+    var content = modalData.content;
+    var footer = modalData.footer;
+
+    //setting title
+    if (title) {
+        $('#esModalLabel').html(title).parent().show();
+    } else {
+        $('#esModalLabel').parent().hide();
+        content += '<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+    }
+
+    //setting content
+    if (content) {
+        $('#esModalContent').show().html(content);
+    } else {
+        $('#esModalContent').hide();
+    }
+
+    //setting footer
+    if (footer) {
+        $('#esModalFooter').show().html(footer);
+    } else {
+        $('#esModalFooter').hide();
+    }
+
+    $('#esModal').modal();
+};
+
+messages.hideAlertInfoLoader = function () {
+    $('.notifyjs-happygreen-info').remove();
 };
