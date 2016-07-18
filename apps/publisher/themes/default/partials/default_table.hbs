@@ -21,7 +21,7 @@
                         {{renderCheckbox value}}
                     {{else}}
                         {{#if_equal this.type "file"}}
-                            <img alt="thumbnail" onerror="this.dataset.error = true; this.src = '';"
+                            <img alt="thumbnail" onerror="this.dataset.error = true; this.src = ''; this.style.cursor = 'default'"
                                  data-noImage="No {{label}}"
                                  data-error="false"
                                  class="image-display no-image"
