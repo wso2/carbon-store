@@ -421,6 +421,9 @@ var pageDecorators = {};
         if((page.meta.pageName === 'details')&&(page.assets.id)){
             page.appliedTags = appliedTags(resources.am,page.assets.id);
         }
+        if ((page.appliedTags && page.appliedTags.length > 0) || page.meta.pageName === 'list') {
+            page.showTagCloud = true;
+        }
         var mytags = doTermSearch(ctx,'tags', paging, true);
         var assetTags = page.appliedTags || [];
         var retTags = [];
