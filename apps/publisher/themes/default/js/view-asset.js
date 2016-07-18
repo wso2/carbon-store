@@ -3,7 +3,7 @@ $(document).ready(function () {
     image.click(function () {
         var noImage = $(this).data().error;
         if (noImage) {
-            $(this).off('click').css({cursor: 'default'});
+            $(this).attr('src','').off('click').css({cursor: 'default'});
             return false;
         }
         messages.modal_pop({content: '<img class="img-responsive" src="' + $(this).attr('src') + '" />'});
