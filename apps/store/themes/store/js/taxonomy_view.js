@@ -1059,18 +1059,18 @@ var clickElementByExpression = function (taxonomyId) {
 var generateTaxonomyViewFromUrl = function () {
     if (window.location.href.indexOf("taxonomy") > 0) {
         generateFromURL = true;
-        var taxonomyQuery = getTaxonomyQuery();
-        if (taxonomyQuery) {
-            var multipleQueries = taxonomyQuery.split(":");
-            multipleQueries[1] = multipleQueries[1].replace(/^\"/, '').replace(/\"/, '');
 
-        }
+        var url = decodeURIComponent(window.location.href);
+        var mainUrl = URL.buildURL(url);
+        var currentUrl;
 
-        if (multipleQueries[1].indexOf("AND") < 0 && multipleQueries[1].indexOf("OR") < 0) {
-            multipleQueries[1] = multipleQueries[1].replace(/^\*/, '').replace(/\*/, '');
+        currentUrl = mainUrl.queryParam('q').get('"taxonomy"').replace(/^\"/, '').replace(/\"/, '');
+
+        if (currentUrl.indexOf("AND") < 0 && currentUrl.indexOf("OR") < 0) {
+            currentUrl = currentUrl.replace(/^\*/, '').replace(/\*/, '');
         }
         var expression = new TaxonomySyntaxAPI.Expression();
-        expression = TaxonomySyntaxAPI.buildExpression(multipleQueries[1]);
+        expression = TaxonomySyntaxAPI.buildExpression(currentUrl);
         var expressionArray = [];
         expressionArray = expression.groups();
 
