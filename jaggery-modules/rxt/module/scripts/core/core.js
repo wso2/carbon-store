@@ -670,7 +670,7 @@ var core = {};
                 var taxonomiesDefinition = rxtDefinition.taxonomies[0] || {};
                 var excludeGlobal = (taxonomiesDefinition.hasOwnProperty('excludeGlobal') &&
                 (String(taxonomiesDefinition.excludeGlobal) === 'true') )? true : false;
-                excludeGlobal = isGlobal && checkGlobalTaxonomies();
+                excludeGlobal = excludeGlobal && checkGlobalTaxonomies();
                 if (!excludeGlobal) {
                     returnArray = taxonomyArray.concat(getGlobalTaxonomies());
                 } else {
