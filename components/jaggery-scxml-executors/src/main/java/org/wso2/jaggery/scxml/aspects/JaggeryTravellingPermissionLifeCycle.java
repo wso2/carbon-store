@@ -30,6 +30,7 @@ import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.w3c.dom.Element;
+import org.wso2.carbon.governance.registry.extensions.aspects.utils.LifecycleCheckpointUtils;
 import org.wso2.carbon.governance.registry.extensions.aspects.utils.LifecycleConstants;
 import org.wso2.carbon.governance.registry.extensions.aspects.utils.StatCollection;
 import org.wso2.carbon.governance.registry.extensions.aspects.utils.StatWriter;
@@ -247,6 +248,9 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
             }
 
             List<String> propertyValues = resource.getPropertyValues(lifecycleProperty);
+            // Add current lifecycle's checkpoint related properties.
+            addCheckPointProperties(resource, null);
+
             if (propertyValues != null && propertyValues.size() > 0) {
                 return;
             }
@@ -441,6 +445,8 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
                                 //                              We are going to run the custom executors now
                                 runCustomExecutorsCode(action, requestContext, transitionExecution.get(currentState)
                                         , currentState, nextState);
+                                // Update current lifecycle state duration properties.
+                                updateCheckpointProperties(resource, nextState);
                                 //                              Doing the JS execution
                                 List<ScriptBean> scriptElement = scriptElements.get(currentState);
                                 try {
@@ -892,6 +898,78 @@ public class JaggeryTravellingPermissionLifeCycle extends Aspect {
             log.error(message);
             throw new RegistryException(message);
         }
+    }
+
+    /**
+     * This method is used to add current lifecycle's checkpoint properties.
+     *
+     * @param resource      registry resource.
+     * @param nextState     next lifecycle state.
+     * @throws RegistryException
+     */
+    private void addCheckPointProperties(Resource resource, String nextState) throws RegistryException {
+
+        if (nextState == null) {
+            nextState = LifecycleCheckpointUtils.getLCInitialStateId(configurationElement);
+        }
+
+        if (nextState != null) {
+            String xpathString =
+                    LifecycleConstants.XPATH_STATE_WITH_ID + nextState + "']" + LifecycleConstants.XPATH_CHECKPOINT;
+            List checkpoints = LifecycleCheckpointUtils.evaluateXpath(configurationElement, xpathString, null);
+
+            if (!checkpoints.isEmpty()) {
+                for (Object checkpoint : checkpoints) {
+                    OMElement checkpointOMElement = (OMElement) checkpoint;
+                    String checkpointId = checkpointOMElement
+                            .getAttributeValue(new QName(LifecycleConstants.LIFECYCLE_CHECKPOINT_NAME));
+                    String checkpointDurationColour = checkpointOMElement
+                            .getAttributeValue(new QName(LifecycleConstants.LIFECYCLE_DURATION_COLOUR));
+                    String checkpointDurationMinBoundary = checkpointOMElement.getFirstElement()
+                            .getAttributeValue(new QName(LifecycleConstants.LIFECYCLE_LOWER_BOUNDARY));
+                    String checkpointDurationMaxBoundary = checkpointOMElement.getFirstElement()
+                            .getAttributeValue(new QName(LifecycleConstants.LIFECYCLE_UPPER_BOUNDARY));
+
+                    resource.addProperty(
+                            LifecycleConstants.REGISTRY_LIFECYCLE + aspectName + LifecycleConstants.CHECKPOINT,
+                            checkpointId);
+                    List<String> lcCheckpointProperties1 = new ArrayList<>();
+                    lcCheckpointProperties1.add(0, checkpointId);
+                    lcCheckpointProperties1.add(1, checkpointDurationMinBoundary);
+                    lcCheckpointProperties1.add(2, checkpointDurationMaxBoundary);
+                    lcCheckpointProperties1.add(3, LifecycleCheckpointUtils.getCurrentTime());
+                    lcCheckpointProperties1.add(4, checkpointDurationColour);
+
+                    String checkpointPropertyKey = LifecycleConstants.REGISTRY_LIFECYCLE + aspectName +
+                            LifecycleConstants.CHECKPOINT + LifecycleConstants.DOT + checkpointId;
+                    resource.removeProperty(checkpointPropertyKey);
+                    resource.setProperty(checkpointPropertyKey, lcCheckpointProperties1);
+                }
+            }
+        }
+        resource.setProperty(LifecycleConstants.REGISTRY_LIFECYCLE + aspectName + LifecycleConstants.LAST_UPDATED_TIME,
+                LifecycleCheckpointUtils.getCurrentTime());
+    }
+
+    /**
+     * This method is used to update checkpoint current state duration information.
+     *
+     * @param resource       registry resource.
+     * @param nextState      next lifecycle state.
+     * @throws RegistryException
+     */
+    private void updateCheckpointProperties(Resource resource, String nextState)
+            throws RegistryException {
+
+        String checkpointProperty = LifecycleConstants.REGISTRY_LIFECYCLE + aspectName + LifecycleConstants.CHECKPOINT;
+        List<String> checkpoints = resource.getPropertyValues(checkpointProperty);
+        if (checkpoints != null && !checkpoints.isEmpty()) {
+            for (String checkpoint : checkpoints) {
+                resource.removeProperty(checkpointProperty + LifecycleConstants.DOT + checkpoint);
+            }
+        }
+        resource.removeProperty(checkpointProperty);
+        addCheckPointProperties(resource, nextState);
     }
 
 }
