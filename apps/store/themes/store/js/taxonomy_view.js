@@ -882,12 +882,13 @@ $(document).ready(function () {
     (parseInt(store.listAssetsCount) || parseInt(store.assetCount) ) ? assetAvailability = true :
         assetAvailability = false;
 
-    if (((store.taxonomyAvailability && assetAvailability) || ((window.location.href.indexOf("top-assets") > 0) &&
-        (store.topAssettaxonomyAvailability)) ) || (window.location.href.indexOf('taxonomy') > -1)) {
+    if (window.location.href.indexOf("list") < 0 && window.location.href.indexOf("top-assets") < 0 &&
+        window.location.href.indexOf('taxonomy') < 0) {
         $("#taxonomy-section").hide();
     }
 
-    if (store.taxonomyAvailability && assetAvailability) {
+    if (((store.taxonomyAvailability && assetAvailability) || ((window.location.href.indexOf("top-assets") > 0) &&
+        (store.topAssettaxonomyAvailability)) ) || (window.location.href.indexOf('taxonomy') > -1)) {
 
         $("#taxonomy-section").show();
 

@@ -667,7 +667,9 @@ var core = {};
                     }
                 }
 
-                if (!(rxtDefinition.taxonomies[0].excludeGlobal) && checkGlobalTaxonomies()) {
+                var taxonomiesDefinition = rxtDefinition.taxonomies[0] || {};
+                var isGlobal = Boolean(taxonomiesDefinition.excludeGlobal) && checkGlobalTaxonomies();
+                if (!isGlobal) {
                     returnArray = taxonomyArray.concat(getGlobalTaxonomies());
                 } else {
                     return taxonomyArray;
@@ -694,7 +696,8 @@ var core = {};
      * @returns {Array}
      */
     var getGlobalTaxonomies = function () {
-        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
+        var TaxonomyService = carbon.server.
+        osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
         var HashMap = java.util.HashMap;
         var map = new HashMap();
         map = TaxonomyService.getTaxonomyBeanMap();
@@ -719,7 +722,8 @@ var core = {};
      * @returns {boolean}
      */
     var checkGlobalTaxonomies = function () {
-        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
+        var TaxonomyService = carbon.server.
+        osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
         var HashMap = java.util.HashMap;
         var map = new HashMap();
         map = TaxonomyService.getTaxonomyBeanMap();
