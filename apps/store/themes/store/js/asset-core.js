@@ -36,7 +36,7 @@ var AssetEvents = {};
             return;
         }
         $(elem).find("i").removeClass().addClass('fa fa-spinner fa-spin');
-        $(elem).find('#main-bookmark').html(getText(PROCESSING_TEXT));
+        $(elem).find('.main-bookmark').html(getText(PROCESSING_TEXT));
         $(elem).unbind('click');
         $.ajax({
             url: caramel.url('/apis/subscriptions'),
@@ -62,7 +62,7 @@ var AssetEvents = {};
             return;
         }
         $(elem).find("i").removeClass().addClass('fa fa-spinner fa-spin');
-        $(elem).find('#main-bookmark').html(getText(PROCESSING_TEXT));
+        $(elem).find('.main-bookmark').html(getText(PROCESSING_TEXT));
         $.ajax({
             url: caramel.url('/apis/subscriptions') + '?type=' + type + '&asset=' + path,
             method: 'DELETE',
@@ -71,11 +71,11 @@ var AssetEvents = {};
                 messages.alertSuccess(getText(SUCCESS_TEXT));
                 $('i', elem).removeClass().addClass('fw fw-bookmark store-bookmark');
                 $(elem).parents('[class^="ctrl-wr-asset"]').fadeOut();
-                if ($(elem).find('#main-bookmark').length > 0) {
+                if ($(elem).find('.main-bookmark').length > 0) {
                     $(elem).find("i").removeClass().addClass('fw fw-bookmark');
-                    $(elem).find('#main-bookmark').html("Bookmark");
                     $(elem).attr('id', 'btn-add-gadget');
                 }
+                window.location.href = destination;
             },
             error: function(data) {
                 var parent = $(elem).parents('[class^="ctrl-wr-asset"]');
