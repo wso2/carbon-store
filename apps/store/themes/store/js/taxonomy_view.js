@@ -882,8 +882,8 @@ $(document).ready(function () {
     (parseInt(store.listAssetsCount) || parseInt(store.assetCount) ) ? assetAvailability = true :
         assetAvailability = false;
 
-    if (window.location.href.indexOf("list") < 0 && window.location.href.indexOf("top-assets") < 0 &&
-        window.location.href.indexOf('taxonomy') < 0) {
+    if (((store.taxonomyAvailability && assetAvailability) || ((window.location.href.indexOf("top-assets") > 0) &&
+        (store.topAssettaxonomyAvailability)) ) || (window.location.href.indexOf('taxonomy') > -1)) {
         $("#taxonomy-section").hide();
     }
 

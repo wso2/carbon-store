@@ -605,6 +605,10 @@ var core = {};
         return taxonomyAvailability(type, rxtDefinition);
     };
 
+    RxtManager.prototype.getTopAssetTaxonomyAvailability = function () {
+        return checkGlobalTaxonomies();
+    };
+
     /**
      * Returns the name of the taxonomy that is attached to assets of a given RXT type
      * If no taxonomy is specified then an empty string is returned.
@@ -635,25 +639,103 @@ var core = {};
             'ITaxonomyServices');
         var taxonomies;
         var taxonomyArray = [];
+        var returnArray = [];
         if (rxtDefinition) {
-            if (rxtDefinition.taxonomies && (rxtDefinition.taxonomies[0]) && (rxtDefinition.taxonomies[0].taxonomies)) {
-                taxonomies = rxtDefinition.taxonomies[0].taxonomies || '';
+            if (rxtDefinition.taxonomies && (rxtDefinition.taxonomies[0]) && (rxtDefinition.taxonomies[0].taxonomy)) {
+                taxonomies = rxtDefinition.taxonomies[0].taxonomy || '';
+            }
+        } else {
+            return returnArray;
+        }
+
+        if (rxtDefinition && rxtDefinition.taxonomies) {
+            // taxonomy element will be there in rxt definition
+            if (taxonomies) {
+                var queryBean = Packages.org.wso2.carbon.governance.taxonomy.beans.QueryBean;
+                queryBean = new queryBean();
+
+                for (var i = 0; i < taxonomies.length; i++) {
+                    queryBean.setTaxonomyName(taxonomies[i].name);
+                    if (TaxonomyService.getTaxonomyBean(queryBean)) {
+                        if (!taxonomies[i].disable) {
+                            taxonomyArray.push(taxonomies[i].name);
+                        }
+
+                    } else {
+                        log.error("The taxonomy name : " + taxonomies[i].name + " not matched with rxt definition. " +
+                            "Please check you have entered the correct name");
+                    }
+                }
+
+                if (!(rxtDefinition.taxonomies[0].excludeGlobal) && checkGlobalTaxonomies()) {
+                    returnArray = taxonomyArray.concat(getGlobalTaxonomies());
+                } else {
+                    return taxonomyArray;
+                }
+            } else {
+                // no taxonomy element  in rxt definition
+                if (checkGlobalTaxonomies() && !rxtDefinition.taxonomies[0].excludeGlobal) {
+                    returnArray = getGlobalTaxonomies();
+                }
+            }
+
+        } else {
+            // this will trigger when there is no taxonomies element in RXT
+            if (checkGlobalTaxonomies()) {
+                returnArray = getGlobalTaxonomies();
             }
         }
 
-        if (taxonomies && (taxonomies = taxonomies.split(","))) {
+        return returnArray;
+    };
 
-            for (var i = 0; i < taxonomies.length; i++) {
-                if (TaxonomyService.getTaxonomy(taxonomies[i])) {
-                    taxonomyArray.push(taxonomies[i]);
-                } else {
-                    log.error("The taxonomy name : " + taxonomies[i] + " not matched with rxt definition. " +
-                        "Please check you have entered the correct name");
+    /**
+     * This method will return all global taxonomy list
+     * @returns {Array}
+     */
+    var getGlobalTaxonomies = function () {
+        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
+        var HashMap = java.util.HashMap;
+        var map = new HashMap();
+        map = TaxonomyService.getTaxonomyBeanMap();
+        var entries = map.entrySet().iterator();
+        var topAssetArray = [];
+
+        while (entries.hasNext()) {
+            var obj = entries.next();
+
+            if (obj.getValue().isTaxonomyGlobal()) {
+
+                topAssetArray.push(obj.getKey());
+            }
+        }
+
+        return topAssetArray;
+
+    };
+    /**
+     * Check for global taxonomy availability
+     *
+     * @returns {boolean}
+     */
+    var checkGlobalTaxonomies = function () {
+        var TaxonomyService = carbon.server.osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
+        var HashMap = java.util.HashMap;
+        var map = new HashMap();
+        map = TaxonomyService.getTaxonomyBeanMap();
+        if (map) {
+            var entries = map.entrySet().iterator();
+            while (entries.hasNext()) {
+                var obj = entries.next();
+
+                if (obj.getValue().isTaxonomyGlobal()) {
+                    return true;
                 }
             }
         }
 
-        return taxonomyArray;
+        return false;
+
     };
     /**
      * Returns the action that is invoked when a lifecycle is first attached to an asset of a given RXT type.
