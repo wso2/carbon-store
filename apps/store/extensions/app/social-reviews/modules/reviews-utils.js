@@ -51,11 +51,15 @@ var ReviewUtils = {};
         var myReview;
         var socialSvc = getSocialSvc();
         var username = formatUsername(user);
+        var isUserLoggedIn = false;
         myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
         if (!isEmpty(myReview)) {
             myReview.actor.id = cleanUsername(myReview.actor.id);
         } else {
             myReview = false;
+        }
+        if (user) {
+            isUserLoggedIn = true;
         }
         var usernameOnReview;
         var myIndex;
@@ -65,15 +69,10 @@ var ReviewUtils = {};
             var targetId = String(review.object.id);
             review.actor.id = cleanUsername(review.actor.id);
             review.isMyComment = (usernameOnReview === formatUsername(user));
-            review.isUserLoggedIn = false;
-            //Only populate review details if there is a logged in
-            //user
+            review.isUserLoggedIn = isUserLoggedIn;
+            //Record the index of the review for deletion, if review is made by current user
             if (review.isMyComment) {
-                if (user) {
-                    review.isUserLoggedIn = true
-                } else {
-                    myIndex = index;
-                }
+                myIndex = index;
             }
         }
         if (myIndex !== undefined) {
