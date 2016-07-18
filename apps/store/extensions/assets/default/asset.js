@@ -141,7 +141,7 @@ asset.configure = function() {
                 iconColor: 'purple'
             },
             categories: {
-                categoryField: 'overview_category'
+                categoryField: ''
             },
             categorization: {
                 solarFacetsEnabled: true,
