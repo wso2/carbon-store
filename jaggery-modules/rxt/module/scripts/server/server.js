@@ -70,7 +70,7 @@ var server = {};
      * @return complete url with server url + proxy context path.
      */
     server.buildURL = function (path) {
-        if (path.indexOf('/') != 0) {
+        if ( (path.indexOf('/') != 0) && ( path.indexOf('http') != 0 ) ) {
             path = "/" + path;
         }
         if(application.get(constants.PROXY_URL) && application.get(constants.PROXY_URL).length >0){
@@ -86,7 +86,7 @@ var server = {};
      * @return complete url with server url
      */
     server.buildAppURL = function (path) {
-        if (path.indexOf('/') != 0) {
+        if ( (path.indexOf('/') != 0) && ( path.indexOf('http') != 0 ) ) {
             path = "/" + path;
         }
         if(application.get(constants.PROXY_URL) && application.get(constants.PROXY_URL).length >0){
