@@ -248,7 +248,7 @@ asset.configure = function() {
                 }
             },
             notifications:{
-                enabled:true
+                enabled:false
             },
             thumbnail: 'images_thumbnail',
             banner: 'images_banner',
