@@ -69,19 +69,47 @@ require('/modules/store.js').exec(function (ctx) {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
 
                         if (options['assetType']) {
-                            var coreApi = rxtModule.core;
-                            var rxtManager = coreApi.rxtManager(tenantId);
-                            var taxonomies = rxtManager.getTaxonomies(options['assetType']);
-                            var jsonArray = [];
 
-                            for (var i = 0; i < taxonomies.length; i++) {
-                                var taxonomyObj = {};
-                                taxonomyObj.name = taxonomies[i];
-                                jsonArray.push(taxonomyObj);
+                            if (options['assetType']=="all") {
+                                var TaxonomyService = carbon.server.
+                                osgiService('org.wso2.carbon.governance.taxonomy.services.ITaxonomyServices');
+                                var HashMap = java.util.HashMap;
+                                var map = new HashMap();
+                                map = TaxonomyService.getTaxonomyBeanMap();
+
+                                var entries = map.entrySet().iterator();
+                                var topAssetArray = [];
+                                while (entries.hasNext()) {
+                                    var obj = entries.next();
+
+                                    if (obj.getValue().isTaxonomyGlobal()) {
+                                        var taxonomyObject = {};
+                                        taxonomyObject.name = obj.getKey();
+                                        topAssetArray.push(taxonomyObject);
+                                    }
+                                }
+
+                                response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                        topAssetArray);
+                                return;
+
+                            } else {
+                                var coreApi = rxtModule.core;
+                                var rxtManager = coreApi.rxtManager(tenantId);
+                                var taxonomies = rxtManager.getTaxonomies(options['assetType']);
+                                var jsonArray = [];
+
+                                for (var i = 0; i < taxonomies.length; i++) {
+                                    var taxonomyObj = {};
+                                    taxonomyObj.name = taxonomies[i];
+                                    jsonArray.push(taxonomyObj);
+                                }
+                                response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
+                                        jsonArray);
+                                return;
                             }
-                            response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
-                                    jsonArray);
-                            return;
+
+
                         }
 
                     } else {

@@ -624,7 +624,7 @@ var pageDecorators = {};
         var coreApi = rxtModule.core;
         var rxtManager = coreApi.rxtManager(ctx.tenantId);
         page.taxonomyAvailability = (rxtManager.getTaxonomyAvailability(ctx.assetType).length > 0);
-
+        page.topAssetTaxonomyAvailability = (rxtManager.getTopAssetTaxonomyAvailability());
     };
     var getAssetManager = function(ctx) {
         //       var asset = require('rxt').asset;
