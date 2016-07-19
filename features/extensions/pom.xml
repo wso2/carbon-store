@@ -18,12 +18,12 @@
     <parent>
         <groupId>org.wso2.carbon.store</groupId>
         <artifactId>carbon-store</artifactId>
-        <version>2.4.1-SNAPSHOT</version>
+        <version>2.4.1</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <artifactId>extensions-feature</artifactId>
-    <version>2.4.1-SNAPSHOT</version>
+    <version>2.4.1</version>
     <modelVersion>4.0.0</modelVersion>
     <packaging>pom</packaging>
     <name>WSO2 Carbon - Store Extensions Feature Aggregator Module</name>

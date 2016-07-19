@@ -2,12 +2,12 @@
    <parent>
        <groupId>org.wso2.carbon.store</groupId>
        <artifactId>social</artifactId>
-        <version>2.4.1-SNAPSHOT</version>
+        <version>2.4.1</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>org.wso2.carbon.social.core</artifactId>
-    <version>2.4.1-SNAPSHOT</version>
+    <version>2.4.1</version>
     <packaging>bundle</packaging>
     <name>WSO2 Carbon - Social - Core</name>
     <build>
