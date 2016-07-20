@@ -67,12 +67,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                         if (options['assetType']) {
                             var coreApi = rxtModule.core;
                             var rxtManager = coreApi.rxtManager(tenantId);
-                            var taxonomies;
-                            if (tenantId !== '-1234') {
-                                taxonomies = rxtManager.getTaxonomies(options['assetType'], tenantId);
-                            } else {
-                                taxonomies = rxtManager.getTaxonomies(options['assetType']);
-                            }
+                            var taxonomies = rxtManager.getTaxonomies(options['assetType']);
                             var jsonArray = [];
 
                             for (var i = 0; i < taxonomies.length; i++) {

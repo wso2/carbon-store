@@ -97,11 +97,14 @@ require('/modules/store.js').exec(function (ctx) {
                                 var coreApi = rxtModule.core;
                                 var rxtManager = coreApi.rxtManager(tenantId);
                                 var taxonomies;
-                                if (tenantId !== '-1234') {
-                                    taxonomies = rxtManager.getTaxonomies(options['assetType'], tenantId);
-                                } else {
+                                var server = require('store').server;
+                                server.sandbox({
+                                    tenantId: tenantId,
+                                    username: user ? user.username : carbon.user.anonUser,
+                                    request: ctx.request
+                                },function(){
                                     taxonomies = rxtManager.getTaxonomies(options['assetType']);
-                                }
+                                });
                                 var jsonArray = [];
 
                                 for (var i = 0; i < taxonomies.length; i++) {

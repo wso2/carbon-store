@@ -628,35 +628,6 @@ var core = {};
     };
 
     /**
-     * Returns the name of the taxonomy that is attached to assets of a given RXT type
-     * If no taxonomy is specified then an empty string is returned.
-     * Note: This property is specific to the ES and is defined in the configuration callback
-     * @param  {String} type  The RXT type
-     * @return {String}      The name of a taxonomy which is attached to all asset instances of an RXT type
-     * @throws Unable to locate the rxt definition for type in order to return taxonomy
-     */
-    RxtManager.prototype.getTaxonomies = function (type, tenantId) {
-        try {
-            var PrivilegedCarbonContext = Packages.org.wso2.carbon.context.PrivilegedCarbonContext;
-            PrivilegedCarbonContext.startTenantFlow();
-            var context = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-            context.setTenantId(tenantId, true);
-            var rxtDefinition = this.rxtMap[type];
-            if (!rxtDefinition) {
-                log.error('Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ');
-                throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return taxonomy ';
-            }
-            return taxonomyAvailability(type, rxtDefinition);
-        } finally {
-            PrivilegedCarbonContext.endTenantFlow();
-            if (log.isDebugEnabled()) {
-                log.debug('endTenantFlow');
-            }
-        }
-
-    };
-
-    /**
      * This method will return the available taxonomies for a given asset type by reading tenant specific map
      * @param type asset type
      * @param rxtDefinition specific for a tenant
