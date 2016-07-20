@@ -194,8 +194,7 @@ var TaxonomySyntaxAPI = {};
         //return rprint(this, '', decorator);
         return patch_add_braces(rprint(this, '', decorator));
     };
-
-     /**
+    /**
      * Adding url taxonomy category retrieve options with 2d array
      * @returns {Array}
      */
@@ -204,11 +203,9 @@ var TaxonomySyntaxAPI = {};
         this.operands.forEach(function(value) {
             mainCol.push([value]);
         });
-
         this.children.forEach(function(child) {
             mainCol.push(child.operands);
         });
-
         return mainCol;
     };
 
@@ -222,7 +219,7 @@ var TaxonomySyntaxAPI = {};
             return singleExpression;
         }
         var stack = [];
-        var x = rbuild(symbols, symbols.pop(), new Expression(), stack);
+        var x = rbuild(symbols, symbols.pop(), null, stack);
         var t = processStack(x);
         return t;
     }
@@ -258,6 +255,9 @@ var TaxonomySyntaxAPI = {};
             //stack.push(expression);
             return stack;
         } else if (currentValue === SYMBOL_EXP_START) {
+            if (expression) {
+                stack.push(expression);
+            }
             var newExpression = new Expression();
             newExpression.operator = SYMBOL_AND;
             return rbuild(symbols, symbols.pop(), newExpression, stack);
