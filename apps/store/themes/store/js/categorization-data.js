@@ -39,7 +39,6 @@
         }, {
             url: url,
             success: function (data, status, xhr) {
-                debugger;
                 caramel.partials(data._.partials, function () {
                     caramel.render('categorization-entry', data.body.assets.context, function (info, content) {
                         $('#categorization-div').html(content);
