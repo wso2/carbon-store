@@ -96,6 +96,7 @@ require('/modules/store.js').exec(function (ctx) {
                             } else {
                                 var coreApi = rxtModule.core;
                                 var rxtManager = coreApi.rxtManager(tenantId);
+                                var taxonomies;
                                 if (tenantId !== '-1234') {
                                     taxonomies = rxtManager.getTaxonomies(options['assetType'], tenantId);
                                 } else {
