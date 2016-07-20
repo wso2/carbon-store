@@ -15,7 +15,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 var TaxonomySyntaxAPI = {};
 (function() {
     var SYMBOL_OR = 'OR';
@@ -24,8 +23,8 @@ var TaxonomySyntaxAPI = {};
     var SYMBOL_EXP_STOP = ')';
     TaxonomySyntaxAPI.buildExpression = function(input, clean) {
         clean = clean || function(v) {
-                return v;
-            };
+            return v;
+        };
         var expression = buildExpression(input, clean);
         if (expression.operator === SYMBOL_OR) {
             var root = new Expression();
@@ -173,8 +172,8 @@ var TaxonomySyntaxAPI = {};
     };
     Expression.prototype.buildExpressionString = function(decorator) {
         decorator = decorator || function(v) {
-                return v;
-            };
+            return v;
+        };
         var modifiedOperands = this.operands.map(function(v) {
             return decorator(v);
         });
@@ -184,12 +183,19 @@ var TaxonomySyntaxAPI = {};
         if (this.operands.length === 1) {
             return modifiedOperands[0];
         }
-        return '( ' + modifiedOperands.join(' ' + this.operator + ' ') + ' )';
+        var content = modifiedOperands.join(' ' + this.operator + ' ');
+        if (this.operator === SYMBOL_OR) {
+            content = '( ' + content + ' )'
+        }
+        return content;
+        //return '( ' + modifiedOperands.join(' ' + this.operator + ' ') + ' )';
     };
     Expression.prototype.compile = function(decorator) {
-        return rprint(this, '', decorator);
+        //return rprint(this, '', decorator);
+        return patch_add_braces(rprint(this, '', decorator));
     };
-    /**
+
+     /**
      * Adding url taxonomy category retrieve options with 2d array
      * @returns {Array}
      */
@@ -230,13 +236,19 @@ var TaxonomySyntaxAPI = {};
         }
         for (var index = 0; index < stack.length; index++) {
             item = stack[index];
-            if (item !== SYMBOL_AND) {
+            // if (item !== SYMBOL_AND) {
+            if (item.operator === SYMBOL_AND) {
+                item.operands.forEach(function(operand) {
+                    base.operands.push(operand);
+                });
+            } else {
                 if (item.operands.length == 1) {
                     base.operands.push(item.operands[0]);
                 } else {
                     base.children.push(item);
                 }
             }
+            //}
         }
         return base;
     }
@@ -254,6 +266,7 @@ var TaxonomySyntaxAPI = {};
             return rbuild(symbols, symbols.pop(), new Expression(), stack);
         } else if (currentValue === SYMBOL_AND) {
             //stack.push(SYMBOL_AND);
+            expression.operator = SYMBOL_AND;
             return rbuild(symbols, symbols.pop(), expression, stack);
         } else if (currentValue === SYMBOL_OR) {
             expression.operator = SYMBOL_OR;
@@ -297,8 +310,8 @@ var TaxonomySyntaxAPI = {};
         }
     }
     /**
-     Performs a recursive search on an expression object to find the expression with the matching operand
-     **/
+    Performs a recursive search on an expression object to find the expression with the matching operand
+    **/
     function rsearch(expression, query) {
         if (!expression.hasChildren()) {
             var found;
