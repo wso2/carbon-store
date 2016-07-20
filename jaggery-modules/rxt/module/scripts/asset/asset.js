@@ -554,9 +554,17 @@ var asset = {};
         log.debug('performing a non group search');
         //query = addWildcard(query);
         try {
-            assets = this.am.search(query, paging);
+            if ((query.hasOwnProperty(constants.Q_PROP_WILDCARD)) && (query[constants.Q_PROP_WILDCARD] === false)) {
+                delete query[constants.Q_PROP_WILDCARD];
+                assets = this.am.strictSearch(query, paging);
+            } else {
+                if ((query.hasOwnProperty(constants.Q_PROP_WILDCARD))) {
+                    delete query[constants.Q_PROP_WILDCARD];
+                }
+                assets = this.am.search(query, paging);
+            }
             addAssetsMetaData(assets, this);
-        }catch (e){
+        } catch (e) {
             log.debug('PaginationContext parameter\'s start index seems to be greater than the limit count. Please verify your parameters');
         }
         finally {

@@ -94,7 +94,7 @@ messages.alertInfo = function (value) {
 };
 messages.alertInfoLoader = function (value) {
     $.notify.addStyle('infoloaderblue', {
-        html: "<div><strong></strong><span data-notify-html/></div>",
+        html: "<span data-notify-html/>",
         classes: {
             base: {
                 "white-space": "nowrap",
@@ -104,8 +104,9 @@ messages.alertInfoLoader = function (value) {
                 "color": "white",
                 "font-weight": 300
             },
-            superblue: {
-                "color": "white"
+            supergreen: {
+                "color": "white",
+                "background-color": "#009DA7"
             }
         }
     });
