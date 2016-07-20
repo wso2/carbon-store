@@ -314,7 +314,7 @@ asset.renderer = function(ctx) {
             }
         }
         if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session)
-            && permissionAPI.hasAssetPagePermission(type, 'update', user.tenantId, username) && page.assets.version) {
+            && permissionAPI.hasAssetPagePermission(type, 'update', user.tenantId, username) && ctx.rxtManager.getVersionAttribute(type)) {
             navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
 
