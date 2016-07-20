@@ -23,7 +23,10 @@
         if (typeof history.onpushstate == "function") {
             history.onpushstate({state: state});
         }
-        loadCategorizationEntries(url);
+        if (!(state && state.categorization == true)) {
+            loadCategorizationEntries(url);
+        }
+        loadTagEntries(url);
         return pushState.apply(history, arguments);
     };
 
@@ -46,7 +49,22 @@
                         $('.refine > .panel > div').first().collapse('show');
                     });
                 });
+            }
+        });
+    }
 
+    /**
+     * This method loads the tag-cloud partial data when selection query changes.
+     *
+     * @param url   url to load the data from
+     */
+    function loadTagEntries(url) {
+        caramel.data({
+            title: null,
+            body: ['assets']
+        }, {
+            url: url,
+            success: function (data, status, xhr) {
                 caramel.partials(data._.partials, function () {
                     caramel.render('tag-cloud', data.body.assets.context, function (info, content) {
                         $('#tags-wrapper').html(content);

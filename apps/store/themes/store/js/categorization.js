@@ -240,7 +240,7 @@ var categorization = function () {
 
     var loadAssets = function (url) {
         $('.assets-container section .ctrl-wr-asset').remove();
-        history.pushState("", "", url);
+        history.pushState({categorization: true}, "", url);
         resetPageAttributes();
         store.infiniteScroll.addItemsToPage();
         setCategorizationQuery(url);
