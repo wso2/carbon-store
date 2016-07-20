@@ -71,7 +71,7 @@ $(function () {
                     }, 1000);
                 return false;
             }
-            messages.alertInfoLoader('<i class="fa fa-spinner fa-spin"></i> <strong>Creating the new asset</strong>.Please wait .....');
+            messages.alertInfoLoader('<i class="fa fa-spinner fa-pulse" id="assetLoader"></i> <strong>Creating the new asset</strong>. Please wait...<i class="fa fa-close" onclick="clearWaiting()"></i>');
         },
         success: function (data) {
             var options = obtainFormMeta('#form-asset-create');
