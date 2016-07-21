@@ -1397,6 +1397,7 @@ sup.required-field{
 }
 .no-image {
     position: relative;
+    padding-right: 55px;
 }
 .no-image::after {
     content: "\2757 " " " attr(data-noImage);
