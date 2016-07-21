@@ -97,6 +97,8 @@ store.infiniteScroll.getItems = function(from,to,cb){
                     }
                     if (data.body.assets.context.assets.length > 1) {
                         $('.sort-asset-container').show();
+                    } else if ($('.assets-container div.ctrl-wr-asset').length > 1) {
+                        $('.sort-asset-container').show();
                     } else {
                         $('.sort-asset-container').hide();
                     }
