@@ -1,24 +1,32 @@
 <!--
   Asset utilization icons if the user has subscribed to this asset
 -->
-<span class="main-bookmark" data-processing=" Adding..." data-success="Successfully bookmarked the asset"
-      data-error="Failed to bookmark this asset!">
-    {{#if thisAsset.isSubscribed}}
+
+{{#if thisAsset.isSubscribed}}
+    <span class="main-bookmark" data-processing=" Removing..." data-success="Successfully removed the bookmark from asset"
+          data-error="Failed to un-bookmark this asset!">
         <a class="btn" href="#modal-add-gadget"
            data-toggle="modal"
            data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"><i
                 class="fw fw-bookmark store-bookmarked"></i></a>
-    {{else}}
-        {{#if isSubscribed}}
+        </span>
+{{else}}
+    {{#if isSubscribed}}
+        <span class="main-bookmark" data-processing=" Removing..." data-success="Successfully removed the bookmark from asset"
+              data-error="Failed to un-bookmark this asset!">
             <a class="btn" href="#modal-add-gadget"
                data-toggle="modal"
                data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"><i
                     class="fw fw-bookmark store-bookmarked"></i></a>
-        {{else}}
-            <a class="btn js_bookmark left"
-               href='#'
-               data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"><i class="fw fw-bookmark store-bookmark"></i></a>
+            </span>
+    {{else}}
+        <span class="main-bookmark" data-processing=" Adding..." data-success="Successfully bookmarked the asset"
+              data-error="Failed to bookmark this asset!">
 
-        {{/if}}
-    {{/if}}
+                <a class="btn js_bookmark left"
+                   href='#'
+                   data-aid="{{thisAsset.id}}" data-type="{{thisAsset.type}}"><i
+                        class="fw fw-bookmark store-bookmark"></i></a>
 </span>
+    {{/if}}
+{{/if}}
