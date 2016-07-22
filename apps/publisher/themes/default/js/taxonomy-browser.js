@@ -184,6 +184,9 @@ var getTaxonomyName = function (taxonomyId) {
 var getTaxonomyDisplayName = function (taxonomyPath) {
     var taxonomyPathList = taxonomyPath.split('/');
     var taxonomyName = getTaxonomyName(taxonomyPathList[0]);
+    if (!taxonomyName) {
+        return;
+    }
     displayValue.push(taxonomyName);
     taxonomyPath = taxonomyPathList[0];
     for (var i = 1; i < taxonomyPathList.length; ++i) {
@@ -249,6 +252,9 @@ function initTaxonomyBrowser(appliedTaxonomy) {
             if (appliedTaxonomy.hasOwnProperty(key)) {
                 var element = appliedTaxonomy[key];
                 getTaxonomyDisplayName(element);
+                if (displayValue.length == 0) {
+                    continue;
+                }                
                 if (selectedTaxonomy.indexOf(element) < 0) {
                     selectedTaxonomy.push(appliedTaxonomy[key]);
                     $(SELECTED_CONTENT).append('<div class="selected-item" data-value="' + appliedTaxonomy[key] + '">'

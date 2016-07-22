@@ -15,6 +15,9 @@ $(function () {
                     if (appliedTaxonomy.hasOwnProperty(key)) {
                         var element = appliedTaxonomy[key];
                         getTaxonomyDisplayName(element);
+                        if (displayValue.length == 0) {
+                            continue;
+                        }
                         $('.selected-taxonomy-content').append(
                             '<div class="selected-item" style="padding: 12px"><span>'
                             + displayValue.join(' > ') + '</span></div>');
