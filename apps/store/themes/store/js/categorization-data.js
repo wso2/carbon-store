@@ -36,6 +36,14 @@
  * @param url   url to load the data from
  */
 function loadCategorizationEntries(url) {
+    var exp = URL.buildURL(decodeURIComponent(url));
+    if (exp.queryParam('q')) {
+        $('.refine > .panel > div').each(function () {
+            exp.queryParam('q').remove('"' + $(this).attr('id') + '"');
+        });
+        url = exp.compile();
+    }
+
     caramel.data({
         title: null,
         body: ['assets']
