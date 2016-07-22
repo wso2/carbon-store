@@ -147,10 +147,14 @@ var URL = {};
         return this;
     };
     QueryParam.prototype.get = function(key) {
+        //Retrieve the value of the query param
+        if (!key) {
+            return this.value;
+        }
         if (this.value instanceof ValueMap) {
             return this.value.get(key);
         }
-        return this.value;
+        return null;
     };
     QueryParam.prototype.remove = function(key) {
         if (this.value instanceof ValueMap) {
