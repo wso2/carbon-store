@@ -147,16 +147,15 @@ var URL = {};
         return this;
     };
     QueryParam.prototype.get = function(key) {
-        if (!this.value instanceof ValueMap) {
-            throw 'Cannot locate key ' + key;
+        if (this.value instanceof ValueMap) {
+            return this.value.get(key);
         }
-        return this.value.get(key);
+        return this.value;
     };
     QueryParam.prototype.remove = function(key) {
-        if (!this.value instanceof ValueMap) {
-            throw 'Cannot locate key ' + key;
+        if (this.value instanceof ValueMap) {
+            this.value.remove(key);
         }
-        this.value.remove(key);
         return this;
     };
     QueryParam.prototype.compile = function() {
