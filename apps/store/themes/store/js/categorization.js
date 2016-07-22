@@ -117,8 +117,10 @@ var categorization = function () {
         $('.search-bar h2').find('.page').text(' / Search: "' + searchQuery + '"');
     };
 
-    var buildParams = function (query) {
-        return 'q=' + query;
+    var buildParams = function(query) {
+        var params = window.location.href.split('?')[1];
+        params = params ? params + '&q=' + query : 'q=' + query;
+        return params;
     };
 
     var getEncodedQueryString = function (searchQuery) {
