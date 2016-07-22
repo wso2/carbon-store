@@ -82,34 +82,23 @@ var categorization = function () {
     };
 
     var search = function (searchQuery, data, isRemove) {
-        var url;
-
-        var encodedQueryString = getEncodedQueryString(searchQuery);
+        var url = decodeURIComponent(window.location.href);
+        var expression = URL.buildURL(url);
+        var query = searchQuery.split(':');
         currentPage = 1;
         if (store.asset) {
-            if (window.location.href.indexOf("q=") > -1) {
+            if (expression.queryParam('q')) {
                 if (!isRemove) {
-                    if (getParameterByName('q') !== "") {
-                        if (window.location.href.indexOf(searchQuery.split(":")[0]) > -1) {
-                            url = removeURLParameter(decodeURIComponent(window.location.href),
-                                data, true);
-                            if (getParameterByName('q', url) !== "") {
-                                url = url + "%2C" + encodedQueryString;
-                            } else {
-                                url = url + encodedQueryString;
-                            }
-                        } else {
-                            url = window.location.href + "%2C" + encodedQueryString;
-                        }
-                    } else {
-                        url = window.location.href + encodedQueryString;
-                    }
+                    debugger;
+                    expression.queryParam('q').remove('"' + data.parent + '"');
+                    expression.compile();
+                    expression.queryParam('q').set('"' + query[0] + '"', '"' + query[1] + '"');
+                    url = expression.compile();
                 } else {
-                    url = removeURLParameter(decodeURIComponent(window.location.href), data, false);
+                    url = removeURLParameter(url, data, false);
                 }
-
             } else {
-                url = caramel.tenantedUrl('/assets/' + store.asset.type + '/list?' + buildParams(encodedQueryString));
+                url = caramel.tenantedUrl('/assets/' + store.asset.type + '/list?' + buildParams(getEncodedQueryString(searchQuery)));
             }
             loadAssets(url);
         }
@@ -167,7 +156,7 @@ var categorization = function () {
             params_arr = queryString.split("&");
             for (var i = params_arr.length - 1; i >= 0; i -= 1) {
                 param = params_arr[i].split("=")[1];
-                var innerParams = param.split(",");
+                var innerParams = param ? param.split(",") : [];
                 for (var j = innerParams.length - 1; j >= 0; j -= 1) {
                     if (innerParams[j].indexOf(data.parent) > -1) {
                         if ((innerParams[j].indexOf("OR") > -1) && !removeWhole) {
@@ -242,7 +231,7 @@ var categorization = function () {
 
     var loadAssets = function (url) {
         $('.assets-container section .ctrl-wr-asset').remove();
-        history.pushState("", "", url);
+        history.pushState({categorization: true}, "", url);
         resetPageAttributes();
         store.infiniteScroll.addItemsToPage();
         setCategorizationQuery(url);
