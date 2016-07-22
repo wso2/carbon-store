@@ -89,7 +89,6 @@ var categorization = function () {
         if (store.asset) {
             if (expression.queryParam('q')) {
                 if (!isRemove) {
-                    debugger;
                     expression.queryParam('q').remove('"' + data.parent + '"');
                     expression.compile();
                     expression.queryParam('q').set('"' + query[0] + '"', '"' + query[1] + '"');
@@ -106,7 +105,7 @@ var categorization = function () {
         $('.search-bar h2').find('.page').text(' / Search: "' + searchQuery + '"');
     };
 
-    var buildParams = function(query) {
+    var buildParams = function (query) {
         var params = window.location.href.split('?')[1];
         params = params ? params + '&q=' + query : 'q=' + query;
         return params;
