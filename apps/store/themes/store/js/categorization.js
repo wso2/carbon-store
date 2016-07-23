@@ -38,6 +38,10 @@ var categorization = function () {
         return '';
     };
 
+    /**
+     * This method updates the categorization option state on query change
+     * @param url   window url
+     */
     var updateFilters = function (url) {
         var queryParam = getParameterByName('q', url);
         var queryArray = [];
@@ -53,7 +57,7 @@ var categorization = function () {
                 queryObj.queryKey = obj.split(":")[0].split('\"').join('');
                 if (obj.indexOf("(") > -1) {
                     var newObj = obj.split(":")[1].split('\"').join('').replace("(", "").replace(")", "");
-                    queryObjValue = newObj.split("OR");
+                    queryObjValue = newObj.split(" OR ");
                 } else {
                     if (obj.indexOf(":") > -1) {
                         queryObjValue.push(obj.split(":")[1].split('\"').join(''));
@@ -63,21 +67,37 @@ var categorization = function () {
                 queryObjArray.push(queryObj);
             }
 
-            for (var i in queryObjArray) {
-                $('.categorization-checkbox:checkbox').each(function () {
-                    var $this = $(this);
-                    if ($this.attr('name') == queryObjArray[i].queryKey) {
-                        for (var k in queryObjArray[i].queryValue) {
-                            if ($this.attr('value').toLowerCase()
-                                == queryObjArray[i].queryValue[k].trim().toLowerCase()) {
-                                $this.attr('checked', true);
-                                $("#" + $this.attr('name')).collapse('show');
-                                var icon = $("#" + $this.attr('name')).prev().find('.status').children();
-                            }
-                        }
+            $('.refine > .panel > div').each(function () {
+                var field = $(this).attr('id');
+                var queryObject = queryObjArray.filter(function (queryObj) {
+                    return queryObj.queryKey == field;
+                });
+
+                if (queryObject.length == 0) {
+                    return;
+                }
+
+                var queryValues = (queryObject.length == 1) ? queryObject[0].queryValue : null;
+
+                $(this).find('input:checkbox').each(function () {
+                    var valueIndex = queryValues ? queryValues.indexOf($(this).attr('value').toLowerCase()) : -1;
+                    if (valueIndex > -1) {
+                        $(this).attr('checked', true);
+                        queryValues.splice(valueIndex, 1);
+                        $(this).closest('#' + field).collapse('show');
                     }
                 });
-            }
+
+                for (var value in queryValues) {
+                    var data = {};
+                    if (queryValues.hasOwnProperty(value)) {
+                        data.parent = field;
+                        data.text = queryValues[value];
+                        url = removeURLParameter(decodeURIComponent(url), data, false);
+                    }
+                }
+                history.replaceState({categorization: true}, "", url);
+            });
         }
     };
 
@@ -97,7 +117,8 @@ var categorization = function () {
                     url = removeURLParameter(url, data, false);
                 }
             } else {
-                url = caramel.tenantedUrl('/assets/' + store.asset.type + '/list?' + buildParams(getEncodedQueryString(searchQuery)));
+                url = caramel.tenantedUrl('/assets/' + store.asset.type + '/list?' +
+                    buildParams(getEncodedQueryString(searchQuery)));
             }
             loadAssets(url);
         }
