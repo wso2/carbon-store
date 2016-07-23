@@ -1,4 +1,11 @@
 $(document).ready(function() {
+    // Create version when the Enter key is pressed
+    $("#new-version").keyup(function(event){
+        if(event.keyCode == 13){
+            $("#btn-create-version").click();
+        }
+    });
+
     $('#btn-create-version').on('click', function(e) {
         e.preventDefault();
         var newVersion = $('#new-version').val();
