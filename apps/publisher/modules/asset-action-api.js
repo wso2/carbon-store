@@ -281,9 +281,13 @@ var api = {};
             }
             return errorMsg(msg(500, 'New version of asset of id:'+ options.id + ' could not be created.'));
 
-        } catch (e) {
-            log.error('Asset of type: ' + options.type + ' was not created due to ' ,e);
-            return errorMsg(msg(500, 'New version of asset of id :'+ options.id + ' could not be created.'));
+        } catch (err) {
+            if (String(err).indexOf('contains one or more illegal characters') > -1) {
+                return errorMsg(msg(400, 'Contains one or more illegal characters (~!@#;%^*()+={}|\\<>"\',), Version could not be created.'));
+            }
+            else {
+                return errorMsg(msg(500, 'New version of asset of id :' + options.id + ', Version could not be created.'));
+            }
         }
     };
     api.attachLifecycles = function(req, res, session, options) {
