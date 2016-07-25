@@ -198,9 +198,66 @@ $(function () {
         return arr;
     };
 
+    /**
+     * This method checks if the search query has matching open and closed brackets.
+     * @param query         search query
+     * @returns {boolean}   true if query is valid
+     */
+    var checkParentheses = function (query) {
+        var parentheses = "()",
+            stack = [],
+            i, character, positions;
+
+        for (i = 0; character = query[i]; i++) {
+            positions = parentheses.indexOf(character);
+
+            if (positions === -1) {
+                continue;
+            }
+
+            if (positions % 2 === 0) {
+                stack.push(positions + 1);
+            } else {
+                if (stack.length === 0 || stack.pop() !== positions) {
+                    return false;
+                }
+            }
+        }
+
+        return stack.length === 0;
+    };
+
+    /**
+     * Simple validator for the search query. Validates for enclosed quotations and parenthesis.
+     * @param query         search query
+     * @returns {boolean}   validity of the query.
+     */
+    var validateQuery = function (query) {
+        query = decodeURIComponent(query);
+        var matches = query.match(/\\"/g);
+        var count = matches ? matches.length : 0;
+        if (count % 2 !== 0) {
+            return false;
+        }
+        return checkParentheses(query);
+    };
+
     var search = function () {
-        var url, searchVal = getSearchFields('#advanced-search');//$('#search').val();
-        //var url, searchVal = test($('#search').val());
+        var url, searchVal = getSearchFields('#advanced-search');
+        if (!validateQuery(searchVal)) {
+            messages.alertError("Syntax error in search query. Please correct and submit again.");
+            var searchBox = $('#search');
+            searchBox
+                .addClass('has-error')
+                .keyup(function () {
+                    if (validateQuery(getSearchFields('#advanced-search'))) {
+                        searchBox.removeClass('has-error');
+                    } else {
+                        searchBox.addClass('has-error');
+                    }
+                });
+            return;
+        }
         currentPage = 1;
         var path = window.location.href;//current page path
         if (store.asset) {
