@@ -76,7 +76,7 @@
         samlRespObj = sso.client.getSamlObject(samlResponse);
         //If response signing is enabled we  to validate it before performing
         //login or logout operations
-        if (attr.responseSigningEnabled && !sso.client.validateSignature(samlRespObj, keyStoreProps)) {
+        if ((!samlRespObj)||(!sso.client.validateSamlResponse(samlRespObj,attr,keyStoreProps))) {
             log.error('SAML response object validation failure.');
             response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
             return;
