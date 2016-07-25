@@ -48,7 +48,7 @@
         }
     },
     "search": {
-        "defaultSearchTemplate":"name=*$input*&content=*$input*"
+        "defaultSearchTemplate":"name=*$input* OR *$input*"
     },
     "metrics":{
         "enabled":false,

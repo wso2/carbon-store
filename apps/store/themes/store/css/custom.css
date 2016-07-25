@@ -208,6 +208,13 @@ h2.app-title {
     border-radius: 0;
     background: #fff;
 }
+
+#search.has-error {
+    -webkit-box-shadow: inset 13px -2px 13px -12px rgba(224, 4, 4, 0.61);
+    -moz-box-shadow: inset 13px -2px 13px -12px rgba(224, 4, 4, 0.61);
+    box-shadow: inset 13px -2px 13px -12px rgba(224, 4, 4, 0.61);
+}
+
 .popover-content{
     width:300px;
     background: #efefef;
