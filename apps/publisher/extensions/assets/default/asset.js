@@ -196,7 +196,7 @@ asset.configure = function() {
                 lifecycleMgtViewEnabled:false
             },
             ui: {
-                icon: 'fw fw-resource'
+                icon: 'fw fw-web-app'
             },
             categories: {
                 categoryField: 'overview_category'
