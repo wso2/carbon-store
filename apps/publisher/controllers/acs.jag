@@ -65,15 +65,19 @@
     //Handle SSO login and logout
     if (samlResponse) {
         samlRespObj = sso.client.getSamlObject(samlResponse);
-        //If response signing is enabled we  to validate it before performing
-        //login or logout operations
-        if ((!samlRespObj)||(!sso.client.validateSamlResponse(samlRespObj,attr,keyStoreProps))) {
+        if (!samlRespObj) {
             log.error('SAML response object validation failure.');
             response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
             return;
         }
 
         if (!sso.client.isLogoutResponse(samlRespObj)) {
+            
+            if (!sso.client.validateSamlResponse(samlRespObj,attr,keyStoreProps)) {
+                log.error('SAML response object validation failure.');
+                response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
+                return;
+            }            
 
             var sessionObj = sso.client.decodeSAMLLoginResponse(samlRespObj, samlResponse, sessionId);
 
