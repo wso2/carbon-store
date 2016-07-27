@@ -1,19 +1,17 @@
 /*
- * Copyright (c) 2013-2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ * Copyright (c) WSO2 Inc. (http://wso2.com) All Rights Reserved.
  *
- *  WSO2 Inc. licenses this file to you under the Apache License,
- *  Version 2.0 (the "License"); you may not use this file except
- *  in compliance with the License.
- *  You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *  http://www.apache.org/licenses/LICENSE-2.0
+ *        http://www.apache.org/licenses/LICENSE-2.0
  *
- *  Unless required by applicable law or agreed to in writing,
- *  software distributed under the License is distributed on an
- *  "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- *  KIND, either express or implied.  See the License for the
- *  specific language governing permissions and limitations
- *  under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 
 $(function () {
@@ -230,77 +228,25 @@ $(function () {
     };
 
     /**
-     * Validates the value part of the query (query -> collection of "field:value").
-     * @param value         search value
-     * @returns {boolean}   validity of the value.
-     */
-    var validateValue = function (value) {
-        var regex;
-        if (value.indexOf('\\"') > -1) {
-            regex = /^".*"$/;
-            if (!regex.test(value)) {
-                return false;
-            }
-            var matches = value.match(/\\"/g);
-            var count = matches ? matches.length : 0;
-            if (count % 2 !== 0) {
-                return false;
-            }
-        }
-
-        if (value.indexOf("(") > -1 || value.indexOf(")") > -1) {
-            value = value.replace(/"/g, '');
-            regex = /^\(.*\)$/;
-            if (!(regex.test(value) || value.endsWith('OR'))) {
-                return false;
-            }
-            var queryParts = value.split(/(?:OR|AND)/g);
-            var re = /\s*/;
-            for(var index in queryParts) {
-                if(queryParts.hasOwnProperty(index)) {
-                    if(!re.test(queryParts[index].replace(/(?:\(|\))/g,''))) {
-                        return false;
-                    }
-                }
-            }
-            return checkParentheses(value);
-        }
-
-        return true;
-    };
-
-    /**
-     * Simple validator for the search query.
+     * Simple validator for the search query. Validates for enclosed quotations and parenthesis.
      * @param query         search query
      * @returns {boolean}   validity of the query.
      */
     var validateQuery = function (query) {
         query = decodeURIComponent(query);
-        var queryEntries = query.split(",");
-        if(!queryEntries) {
-            return true;
+        var matches = query.match(/\\"/g);
+        var count = matches ? matches.length : 0;
+        if (count % 2 !== 0) {
+            return false;
         }
-        for(var entry in queryEntries) {
-            if(queryEntries.hasOwnProperty(entry)) {
-                var queryItem = queryEntries[entry];
-                if(queryItem.indexOf(":")) {
-                    queryItem = queryItem.split(":")[1];
-                }
-
-                if(!queryItem) {
-                    return false;
-                } else {
-                    return validateValue(queryItem);
-                }
-            }
-        }
+        return checkParentheses(query);
     };
 
     var search = function () {
         var url, searchVal = getSearchFields('#advanced-search');
-        var searchBox = $('#search');
-        if (searchBox.val() && !validateQuery(searchVal)) {
+        if (!validateQuery(searchVal)) {
             messages.alertError("Syntax error in search query. Please correct and submit again.");
+            var searchBox = $('#search');
             searchBox
                 .addClass('has-error')
                 .keyup(function () {
