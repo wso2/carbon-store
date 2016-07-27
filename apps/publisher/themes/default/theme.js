@@ -99,8 +99,8 @@ var engine = caramel.engine('handlebars', (function() {
                     for (var index in values) {
                         value = values[index];
                         var delimter = value.indexOf(':')
-                        var option = value.substring(0, delimter);
-                        var text = value.substring(delimter + 1, value.length);
+                        var option = Handlebars.Utils.escapeExpression(value.substring(0, delimter));
+                        var text = Handlebars.Utils.escapeExpression(value.substring(delimter + 1, value.length));
                         if ((field.url == 'true'|| field.url == true) && text && text.lastIndexOf('http', 0) === 0){
                             output += '<tr><td>' + option + '</td><td><a href="'+text+'">' + text + '</a></td></tr>';
                         } else {
@@ -159,9 +159,9 @@ var engine = caramel.engine('handlebars', (function() {
                         out += '</tr><tr>';
                     }
                     if (fields[key].url == 'true' && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
-                        out += '<td><a href="'+fields[key].value+'">' + (fields[key].value || ' ') + '</a></td>';
+                        out += '<td><a href="'+Handlebars.Utils.escapeExpression(fields[key].value)+'">' + Handlebars.Utils.escapeExpression(fields[key].value || ' ') + '</a></td>';
                     } else if(fields[key].value) {
-                        out += '<td>' + (fields[key].value || ' ') + '</td>';
+                        out += '<td>' + Handlebars.Utils.escapeExpression(fields[key].value || ' ') + '</td>';
                     } else {
                         out+='';
                     }
