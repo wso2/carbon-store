@@ -23,6 +23,10 @@ asset.configure = function() {
         	lifecycle: {
                 name: 'MobileAppLifeCycle',
                 defaultAction: 'Create'
+            },
+            ui: {
+                icon: 'fw fw-website',
+                iconColor: 'red'
             }
         }
     };
