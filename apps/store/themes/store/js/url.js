@@ -183,7 +183,7 @@ var URL = {};
     function reconstructQueryParam() {
         var value = this.value;
         if (this.value instanceof ValueMap) {
-            value = value.compile();
+            value = encodeURIComponent(value.compile());
         }
         if (value === '') {
             return '';
