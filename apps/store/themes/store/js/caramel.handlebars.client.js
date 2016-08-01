@@ -312,6 +312,7 @@
             success = options.success,
             headers = options.headers || (options.headers = {});
         options.dataType = 'json';
+        options.cache = false;
         /*        options.success = function (data, status, xhr) {
          success(null, data);
          };
