@@ -116,7 +116,7 @@ var pageDecorators = {};
                 entry = {};
                 entry.active = false;
                 entry.name = lifecycle;
-                if (page.assets.lifecycle === lifecycle) {
+                if (String(page.assets.lifecycle) === String(lifecycle)) {
                     entry.active = true;
                 }
                 modifiedLifecycles.push(entry);
