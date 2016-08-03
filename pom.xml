@@ -683,13 +683,13 @@
         <h2.wso2.version>1.2.140.wso2v3</h2.wso2.version>
 
         <jaggery.feature.version>0.12.6</jaggery.feature.version>
-        <caramel.feature.version>1.5.5-SNAPSHOT</caramel.feature.version>
-        <handlebars.feature.version>1.5.5-SNAPSHOT</handlebars.feature.version>
-        <markdown.feature.version>1.5.5-SNAPSHOT</markdown.feature.version>
-        <carbon.feature.version>1.5.5-SNAPSHOT</carbon.feature.version>
-        <process.feature.version>1.5.5-SNAPSHOT</process.feature.version>
-        <uuid.feature.version>1.5.5-SNAPSHOT</uuid.feature.version>
-        <sso.feature.version>1.5.5-SNAPSHOT</sso.feature.version>
+        <caramel.feature.version>1.5.5</caramel.feature.version>
+        <handlebars.feature.version>1.5.5</handlebars.feature.version>
+        <markdown.feature.version>1.5.5</markdown.feature.version>
+        <carbon.feature.version>1.5.5</carbon.feature.version>
+        <process.feature.version>1.5.5</process.feature.version>
+        <uuid.feature.version>1.5.5</uuid.feature.version>
+        <sso.feature.version>1.5.5</sso.feature.version>
         <jaggery-test.feature.version>1.2.2</jaggery-test.feature.version>
         <slf4j.wso2.version>1.5.10.wso2v1</slf4j.wso2.version>
         <log4j.version>1.2.17</log4j.version>
