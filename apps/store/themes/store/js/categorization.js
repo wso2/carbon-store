@@ -31,6 +31,9 @@ var categorization = function () {
         }
         url = decodeURIComponent(url);
         var queryParam = URL.buildURL(url).queryParam(name);
+        if (!queryParam) {
+            return '';
+        }
         var queryParamValue = queryParam.value ? queryParam.value : '';
         return queryParamValue ? decodeURIComponent(queryParamValue.toString()) : '';
     };
