@@ -29,13 +29,10 @@ var categorization = function () {
         if (!url) {
             url = window.location.href;
         }
-        var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)");
-        var results = regex.exec(url);
-        if (results && results[2]) {
-            return decodeURIComponent(results[2].replace(/\+/g, " "));
-        }
-
-        return '';
+        url = decodeURIComponent(url);
+        var queryParam = URL.buildURL(url).queryParam(name);
+        var queryParamValue = queryParam.value ? queryParam.value : '';
+        return queryParamValue ? decodeURIComponent(queryParamValue.toString()) : '';
     };
 
     /**
@@ -96,6 +93,7 @@ var categorization = function () {
                         url = removeURLParameter(decodeURIComponent(url), data, false);
                     }
                 }
+                url = URL.buildURL(url).compile();
                 history.replaceState({categorization: true}, "", url);
             });
         }
