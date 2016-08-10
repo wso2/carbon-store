@@ -146,7 +146,7 @@ var engine = caramel.engine('handlebars', (function() {
             };
             var renderHeadingFieldPreview = function(table) {
                 var fields = table.fields;
-                var columns = table.columns;
+                var columns = ('columns' in table ) ? table.columns : 3;
                 var index = 0;
                 var out = '<tr>';
                 //The table should only be drawn if it is not empty
@@ -154,7 +154,7 @@ var engine = caramel.engine('handlebars', (function() {
                     return '';
                 }
                 for (var key in fields) {
-                    if ((index % 3) == 0) {
+                    if ((index % columns) == 0) {
                         index = 0;
                         out += '</tr><tr>';
                     }
@@ -397,11 +397,11 @@ var engine = caramel.engine('handlebars', (function() {
 
             var renderEditableHeadingField = function(table) {
                 var fields = table.fields;
-                var columns = table.columns;
+                var columns = ('columns' in table ) ? table.columns : 3;
                 var index = 0;
                 var out = '<tr>';
                 for (var key in fields) {
-                    if ((index % 3) == 0) {
+                    if ((index % columns) == 0) {
                         index = 0;
                         out += '</tr><tr>';
                     }
