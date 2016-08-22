@@ -741,7 +741,7 @@ var asset = {};
             log.debug('[pagination-context] successfully destroyed context')
         }
     };
-    var buildQuery = function(type, rxtManager, app, query){
+    var buildQuery = function (type, rxtManager, app, query) {
         var q = '';
         var options = {};
         options.wildcard = true; //Assume that wildcard is enabled
@@ -751,11 +751,11 @@ var asset = {};
             delete query[constants.Q_PROP_GROUP];
         }
         options.wildcard = resolveWildcard(query);
-        if(query.hasOwnProperty("_default")){
+        if (query.hasOwnProperty("_default")) {
             query = buildDefaultSearchString(type, rxtManager, app, query);
             return query;
         }
-        q  = buildQueryString(query, options);
+        q = buildQueryString(query, options);
         return q;
     };
     var doAdvanceSearch = function(type,query,paging,registry,rxtManager,tenantId) {
@@ -789,7 +789,6 @@ var asset = {};
                 log.debug('[advance search] building query ');
             }
             q = buildQuery(type, rxtManager, app, query);
-            //log.info(q);
             if (log.isDebugEnabled()) {
                 log.debug('[advance-search] searching with query: '+q+' [mediaType] '+mediaType);
             }
@@ -811,13 +810,13 @@ var asset = {};
      * @param app
      * @returns {string}
      */
-    var getSearchTemplate = function(type, rxtManager, app){
+    var getSearchTemplate = function (type, rxtManager, app) {
         var template = rxtManager.defaultSearchString(type);
-        if(template){
+        if (template) {
             return template;
         } else {
             template = app.defaultSearchTemplate();
-            if(template){
+            if (template) {
                 return template;
             } else {
                 return defaultSearchTemplateImpl();
@@ -833,17 +832,17 @@ var asset = {};
      * @param query
      * @returns {*}
      */
-    var buildDefaultSearchString = function(type, rxtManager, app, query){
+    var buildDefaultSearchString = function (type, rxtManager, app, query) {
         var splitFunc = rxtManager.defaultSearchSplit(type);
         var searchTemplate = getSearchTemplate(type, rxtManager, app);
         var newStr = splitFunc(query._default, searchTemplate);
-        //Append the rest of the query
+        //Append rest of the query
         var keys = Object.keys(query);
-        if(keys.length > 1){
-            for(var j=0; j<keys.length; j++){
-                if(keys[j].toString() != "_default"){
-                    if(keys[j].toString() == "taxonomy"){
-                        newStr = newStr + "&" + keys[j] + "=*" + encodeURIComponent(query[keys[j]]) +  "*";
+        if (keys.length > 1) {
+            for (var j = 0; j < keys.length; j++) {
+                if (keys[j].toString() != "_default") {
+                    if (keys[j].toString() == "taxonomy") {
+                        newStr = newStr + "&" + keys[j] + "=*" + encodeURIComponent(query[keys[j]]) + "*";
                     } else {
                         newStr = newStr + "&" + keys[j].replace("_", ":") + "=" + encodeURIComponent(query[keys[j]]);
                     }
@@ -859,8 +858,8 @@ var asset = {};
      * @param term
      * @returns {string}
      */
-    var defaultSearchTemplateImpl = function(){
-        return constants.DEFAULT_SEARCH_ATTRIBUTE+":$input";
+    var defaultSearchTemplateImpl = function () {
+        return constants.DEFAULT_SEARCH_ATTRIBUTE + ":$input";
     };
 
     AssetManager.prototype.advanceSearch = function(query,paging) {

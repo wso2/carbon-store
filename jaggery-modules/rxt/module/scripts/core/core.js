@@ -168,8 +168,8 @@ var core = {};
      * @param term
      * @returns {string}
      */
-    var defaultSearchTemplateImpl = function(term){
-        return constants.DEFAULT_SEARCH_ATTRIBUTE+":"+term;
+    var defaultSearchTemplateImpl = function (term) {
+        return constants.DEFAULT_SEARCH_ATTRIBUTE + ":" + term;
     };
     /**
      * Represents an interface for managing interactions with the different
@@ -801,8 +801,8 @@ var core = {};
         }
         return false;
     };
-    RxtManager.prototype.defaultSearchSplit = function(type){
-        if(!type){
+    RxtManager.prototype.defaultSearchSplit = function (type) {
+        if (!type) {
             var userMod = require('store').user;
             var configs = userMod.configs(this.registry.tenantId) || {};
             var templateFuncCommon = configs.defaultSearchSplit || defaultSearchTemplateImpl;
@@ -824,7 +824,7 @@ var core = {};
                 + '.Make sure the meta property is present in the configuration callback of the asset.js');
         }
     };
-    RxtManager.prototype.defaultSearchString = function(type){
+    RxtManager.prototype.defaultSearchString = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);
@@ -840,7 +840,7 @@ var core = {};
                 + '.Make sure the meta property is present in the configuration callback of the asset.js');
         }
     };
-    RxtManager.prototype.collapseInCount = function(type){
+    RxtManager.prototype.collapseInCount = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
             log.error('Unable to locate the rxt definition for type: ' + type);

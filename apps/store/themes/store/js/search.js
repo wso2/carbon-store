@@ -163,8 +163,8 @@ $(function () {
         return output;
     };
 
-    var setDefaultSearchQuery = function(query){
-        return "_default:" +query;
+    var setDefaultSearchQuery = function (query) {
+        return "_default:" + query;
     };
 
     /***
