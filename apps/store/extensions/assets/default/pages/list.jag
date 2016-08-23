@@ -75,12 +75,12 @@ require('/modules/store.js').exec(function(ctx) {
         categorizationFields.push({"name" : {"fullName" : "taxonomy"}});
         categorizationFields.push({"name" : {"fullName" : "mediaType"}});
         var queryParams = q.split(",");
-        for(var i=0; i < queryParams.length; ++i){
+        for (var i = 0; i < queryParams.length; ++i) {
             var queryParam = queryParams[i];
-            for (var index=0; index < categorizationFields.length; index++) {
+            for (var index = 0; index < categorizationFields.length; index++) {
                 var categorizationField = categorizationFields[index];
                 var fieldName = categorizationField.name.fullName;
-                if(queryParam.indexOf(fieldName) > -1){
+                if (queryParam.indexOf(fieldName) > -1) {
                     queryParams.splice(i--, 1);
                 }
             }
