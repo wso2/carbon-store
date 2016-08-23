@@ -35,14 +35,11 @@ require('/modules/publisher.js').exec(function (ctx) {
     var username = user ? user.username : carbon.user.anonUser;
     var tenantId;
     var taxaPathList = [];
-
     var taxonomyPatternDefault = '/{context}/apis/taxonomies';
     var taxonomyPatternAssetType = '/{context}/apis/taxonomies/{name}';
     var taxonomyPatternTerm = '/{context}/apis/taxonomies/{name}/{+term}';
 
-
     uriMatcher.match(taxonomyPatternDefault);
-    var taxonomyDefaultOptions = uriMatcher.elements() || {};
     uriMatcher.match(taxonomyPatternAssetType);
     var taxonomyAssetTypeOptions = uriMatcher.elements() || {};
     uriMatcher.match(taxonomyPatternTerm);
@@ -51,15 +48,12 @@ require('/modules/publisher.js').exec(function (ctx) {
     switch (method) {
         case 'GET':// GET endpoints
             var options = ref.getQueryOptions(req.getQueryString());
-
             acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
             jsonHeaderAccept = acceptHeader.indexOf('application/json');
-
             var tenantDomains = options.tenant ? options.tenant : MultiTenantConstants.SUPER_TENANT_DOMAIN_NAME;
             tenantId = carbon.server.tenantId({domain: tenantDomains});
             options.tenantId = tenantId;
             options.username = username;
-
             if (uriMatcher.match(taxonomyPatternDefault)) {
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
@@ -69,7 +63,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                             var rxtManager = coreApi.rxtManager(tenantId);
                             var taxonomies = rxtManager.getTaxonomies(options['assetType']);
                             var jsonArray = [];
-
                             for (var i = 0; i < taxonomies.length; i++) {
                                 var taxonomyObj = {};
                                 taxonomyObj.name = taxonomies[i];
@@ -79,15 +72,12 @@ require('/modules/publisher.js').exec(function (ctx) {
                                     jsonArray);
                             return;
                         }
-
                     } else {
                         response = responseProcessor.buildErrorResponse(res,
                                 constants.STATUS_CODES.UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
-
                 } catch (e) {
-
                     if (e.toString().indexOf("TaxonomyException") > 0) {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
                                 "Bad syntax. Please provide correct syntax.");
@@ -99,15 +89,11 @@ require('/modules/publisher.js').exec(function (ctx) {
                         log.error('Error on retrieving taxonomy.Server is unable to process the request.Please check ' +
                                 'your have entered a correct query', e);
                     }
-
                     return;
                 }
-
-
             } else if (uriMatcher.match(taxonomyPatternAssetType)) {
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
-
                         if (options['taxonomyId']) {
                             taxaPathList = taxa.taxonomy.getTaxonomyName(options['taxonomyId'],
                                     taxonomyAssetTypeOptions.name);
@@ -116,7 +102,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                                     taxaPathList);
                             return;
                         }
-
                         if (taxonomyAssetTypeOptions.name) {
                             taxaPathList = taxa.taxonomy.getNodesList("/*",
                                     ( options['startnode']) ? options['startnode'] : 0,
@@ -133,9 +118,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                                 UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
-
                 } catch (e) {
-
                     if (e.toString().indexOf("TaxonomyException") > 0) {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
                                 "Bad syntax. Please provide correct syntax.");
@@ -148,10 +131,8 @@ require('/modules/publisher.js').exec(function (ctx) {
                         log.error('Error on retrieving taxonomy.Server is unable to process the request.Please check ' +
                                 'your have entered a correct query', e);
                     }
-
                     return;
                 }
-
             } else if (uriMatcher.match(taxonomyPatternTerm)) {
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
@@ -164,7 +145,6 @@ require('/modules/publisher.js').exec(function (ctx) {
                                 taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term,
                                         ( options['startnode']) ? options['startnode'] : 0,
                                         (options['endnode']) ? options['endnode'] : 200, taxonomyTermOptions.name);
-
                             }
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
                                     taxaPathList);
@@ -175,13 +155,11 @@ require('/modules/publisher.js').exec(function (ctx) {
                             log.error('Bad syntax. Please provide correct taxonomy name.');
                             return;
                         }
-
                     } else {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.
                                 UNSUPPORTED_MEDIATYPE, "error : Unsupported Media Type");
                         return;
                     }
-
                 } catch (e) {
                     if (e.toString().indexOf("TaxonomyException") > 0) {
                         response = responseProcessor.buildErrorResponse(res, constants.STATUS_CODES.BAD_REQUEST,
@@ -197,9 +175,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                     }
                     return;
                 }
-
             }
-
             break;
         default:
             response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_IMPLEMENTED,
