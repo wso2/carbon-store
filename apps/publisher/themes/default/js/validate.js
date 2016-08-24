@@ -21,6 +21,9 @@ validator.validateMethods = {};
 validator.customMethods = [];
 validator.VALIDATED_ELEMENTS = 'input[type="text"],input[type="file"],input[type="password"],input[type="checkbox"],textarea,select';
 validator.VALIDATED_EVENTS ="focus blur keyup change";
+function isTextArea(el){
+    return ($(el).prop('tagName') === 'TEXTAREA');
+}
 /*
  The function add a method to the validation queue
  @validation: key for the method
@@ -48,7 +51,7 @@ validator.addDefaultMethods = function () {
         var requirementFilled = false;
         if (elementType == "checkbox") {
             requirementFilled = $(element).is(":checked");
-        } else if (elementType == "text" || elementType == "file" || elementType == "textarea" || elementType == "password" || $(element).prop("tagName") === "SELECT") {
+        } else if (elementType == "text" || elementType == "file" || elementType == "textarea" || elementType == "password" || $(element).prop("tagName") === "SELECT" || isTextArea(element)) {
             requirementFilled = $(element).val().length > 0;
         }
         if (requirementFilled) {
