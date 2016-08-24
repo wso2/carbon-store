@@ -50,13 +50,13 @@ store.infiniteScroll.addItemsToPage = function(cb){
 
     var from = 0;
     var to = 0;
-    if(row_current > store.rows_added && store.doPagination){
+    if (row_current > store.rows_added && store.doPagination) {
         from = store.rows_added * store.items_per_row;
-        to = row_current*store.items_per_row;
+        to = row_current * store.items_per_row;
         store.last_to = to; //We store this os we can recalculate rows_added when resolution change
         store.rows_added = row_current;
 
-        store.infiniteScroll.getItems(from,to,cb);
+        store.infiniteScroll.getItems(from, to, cb);
 
     }
 
@@ -72,7 +72,7 @@ store.infiniteScroll.getItems = function(from,to,cb){
     // Returns the jQuery ajax method
     var url = caramel.tenantedUrl(store.asset.paging.url+"&paginationLimit=" + to + "&start="+from+"&count="+count+store.infiniteScroll.setQueryParams(path));
 
-    if(!store.firstRun) {
+    if (!store.firstRun) {
         caramel.render('loading', 'Loading assets.', function (info, content) {
             $('.loading-animation-big').remove();
             $('body').append($(content));
@@ -87,12 +87,14 @@ store.infiniteScroll.getItems = function(from,to,cb){
     }, {
         url : url,
         success : function(data, status, xhr) {
-            if(data.body.assets.context.assets.length == 0) store.doPagination = false;
+            if (data.body.assets.context.assets.length == 0) {
+                store.doPagination = false;
+            }
             caramel.partials(data._.partials, function() {
                 caramel.render('assets-thumbnails', data.body.assets.context, function (info, content) {
                     $('.assets-container section').show();
                     $('.assets-container section').append($(content));
-                    if(data.body.assets.context.assets.length != 0){
+                    if (data.body.assets.context.assets.length != 0) {
                         $('.top-assets-empty-assert').remove();
                     }
                     if (data.body.assets.context.assets.length > 1) {
@@ -104,17 +106,19 @@ store.infiniteScroll.getItems = function(from,to,cb){
                     }
                     $('.loading-animation-big').remove();
                 });
-                if(data.body.assets.context.assets.length == 0
+                //This IF statement checks if there are no assets returned and whether the section html is not empty
+                if (data.body.assets.context.assets.length == 0
                     && (!$('.assets-container section').html() || ($('.assets-container section').html()
-                    && $('.assets-container section').html().trim() == ''))){
+                    && $('.assets-container section').html().trim() == ''))) {
                     caramel.render('assets', data.body.assets.context, function (info, content) {
-                        if($('.assets-container').html().indexOf('top-assets-empty-assert') <= -1){
-                            if(store.user){
+                        if ($('.assets-container').html().indexOf('top-assets-empty-assert') <= -1) {
+                            if (store.user) {
                                 $('.assets-container').
                                     append("<div class='top-assets-empty-assert'>There are no assets available</div>");
                             } else {
                                 $('.assets-container').
-                                    append("<div class='top-assets-empty-assert'>There are no publicly available assets." +
+                                    append("<div class='top-assets-empty-assert'>" +
+                                    "There are no publicly available assets." +
                                     " Please login to access your assets</div>");
                             }
                             $('.sort-asset-container').hide();
@@ -183,7 +187,7 @@ $(function() {
     /*
      * Sort button event handler
      * */
-    $('#sortDropdown').click(function(e){
+    $('#sortDropdown').click(function (e) {
         e.preventDefault();
     });
     /*

@@ -353,6 +353,7 @@ var categorization = function () {
 
     if (url.indexOf("=") > -1) {
         var query = url.split("=");
+        //1 in query[1] is the value of the query parameter
         if (query[1] !== "") {
             updateFilters(url);
         }

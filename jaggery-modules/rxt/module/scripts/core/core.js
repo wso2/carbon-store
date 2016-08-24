@@ -784,6 +784,11 @@ var core = {};
         }
         return false;
     };
+    /***
+     * This method will return true if the categorization fields are to be returned from Solr
+     * @param type
+     * @returns {*}
+     */
     RxtManager.prototype.isSolarFacetsEnabled = function(type){
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
@@ -840,6 +845,11 @@ var core = {};
                 + '.Make sure the meta property is present in the configuration callback of the asset.js');
         }
     };
+    /***
+     * This collapseInCount method returns the number of fields to be shown in the filtering UI by default
+     * @param type
+     * @returns {*}
+     */
     RxtManager.prototype.collapseInCount = function (type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
