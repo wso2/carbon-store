@@ -1,5 +1,5 @@
 /*
- *  Copyright (c) 2005-2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+ *  Copyright (c) 2016, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
  *
  *  WSO2 Inc. licenses this file to you under the Apache License,
  *  Version 2.0 (the "License"); you may not use this file except
@@ -20,7 +20,7 @@ var resources = function (page, meta) {
     return {
         template: 'header.hbs',
         css: ['left-navigation.css', 'font-wso2.css', 'typeahead.css'],
-        js: ['typeahead.bundle.min.js', 'typeahead.js','taxonomy-syntax-api.js'],
-        code: ['taxonomy-meta-data.hbs','tenant-meta-data.hbs']
+        js: ['typeahead.bundle.min.js', 'typeahead.js', 'taxonomy-syntax-api.js'],
+        code: ['taxonomy-meta-data.hbs', 'tenant-meta-data.hbs']
     };
 };

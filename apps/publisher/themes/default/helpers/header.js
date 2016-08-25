@@ -17,8 +17,8 @@
  *
  */
 
-var resources = function(){
+var resources = function () {
     return {
-        code:['taxonomy-meta-data.hbs']
+        code: ['taxonomy-meta-data.hbs']
     }
 };
