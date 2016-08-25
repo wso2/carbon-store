@@ -16,7 +16,7 @@
  */
 require('/modules/publisher.js').exec(function (ctx) {
     var log = new Log('asset_api_categories');
-    var taxa = require('taxonomy');
+    var Taxonomy = require('taxonomy').taxonomy;
     var rxtModule = require('rxt');
     var responseProcessor = require('utils').response;
     var res = ctx.response;
@@ -38,7 +38,7 @@ require('/modules/publisher.js').exec(function (ctx) {
     var taxonomyPatternDefault = '/{context}/apis/taxonomies';
     var taxonomyPatternAssetType = '/{context}/apis/taxonomies/{name}';
     var taxonomyPatternTerm = '/{context}/apis/taxonomies/{name}/{+term}';
-
+    var ACCEPT_HEADER = "Accept";
     uriMatcher.match(taxonomyPatternDefault);
     uriMatcher.match(taxonomyPatternAssetType);
     var taxonomyAssetTypeOptions = uriMatcher.elements() || {};
@@ -48,8 +48,8 @@ require('/modules/publisher.js').exec(function (ctx) {
     switch (method) {
         case 'GET':// GET endpoints
             var options = ref.getQueryOptions(req.getQueryString());
-            acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
-            jsonHeaderAccept = acceptHeader.indexOf('application/json');
+            acceptHeader = req.getHeader(constants.ACCEPT_HEADER) || constants.ACCEPT_ALL;
+            jsonHeaderAccept = acceptHeader.indexOf(constants.APPLICATION_JSON);
             var tenantDomains = options.tenant ? options.tenant : MultiTenantConstants.SUPER_TENANT_DOMAIN_NAME;
             tenantId = carbon.server.tenantId({domain: tenantDomains});
             options.tenantId = tenantId;
@@ -95,7 +95,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
                         if (options['taxonomyId']) {
-                            taxaPathList = taxa.taxonomy.getTaxonomyName(options['taxonomyId'],
+                            taxaPathList = Taxonomy.getTaxonomyName(options['taxonomyId'],
                                     taxonomyAssetTypeOptions.name);
 
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
@@ -103,7 +103,7 @@ require('/modules/publisher.js').exec(function (ctx) {
                             return;
                         }
                         if (taxonomyAssetTypeOptions.name) {
-                            taxaPathList = taxa.taxonomy.getNodesList("/*",
+                            taxaPathList = Taxonomy.getNodesList("/*",
                                     ( options['startnode']) ? options['startnode'] : 0,
                                     (options['endnode']) ? options['endnode'] : 200, taxonomyAssetTypeOptions.name);
 
@@ -138,11 +138,11 @@ require('/modules/publisher.js').exec(function (ctx) {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
                         if (taxonomyTermOptions.term) {
                             if (options['children']) {
-                                taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term + "/children",
+                                taxaPathList = Taxonomy.getNodesList(taxonomyTermOptions.term + "/children",
                                         ( options['startnode']) ? options['startnode'] : 0,
                                         (options['endnode']) ? options['endnode'] : 200, taxonomyTermOptions.name);
                             } else {
-                                taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term,
+                                taxaPathList = Taxonomy.getNodesList(taxonomyTermOptions.term,
                                         ( options['startnode']) ? options['startnode'] : 0,
                                         (options['endnode']) ? options['endnode'] : 200, taxonomyTermOptions.name);
                             }

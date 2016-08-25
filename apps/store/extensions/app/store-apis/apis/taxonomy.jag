@@ -16,7 +16,7 @@
  */
 require('/modules/store.js').exec(function (ctx) {
     var log = new Log('asset_api_categories');
-    var taxa = require('taxonomy');
+    var Taxonomy = require('taxonomy').taxonomy;
     var rxtModule = require('rxt');
     var responseProcessor = require('utils').response;
     var res = ctx.response;
@@ -40,7 +40,6 @@ require('/modules/store.js').exec(function (ctx) {
     var taxonomyPatternAssetType = '/{context}/apis/taxonomies/{name}';
     var taxonomyPatternTerm = '/{context}/apis/taxonomies/{name}/{+term}';
 
-
     uriMatcher.match(taxonomyPatternDefault);
     uriMatcher.match(taxonomyPatternAssetType);
     var taxonomyAssetTypeOptions = uriMatcher.elements() || {};
@@ -55,8 +54,8 @@ require('/modules/store.js').exec(function (ctx) {
     switch (method) {
         case 'GET':// GET endpoints
             var options = ref.getQueryOptions(req.getQueryString());
-            acceptHeader = req.getHeader('Accept') || constants.ACCEPT_ALL;
-            jsonHeaderAccept = acceptHeader.indexOf('application/json');
+            acceptHeader = req.getHeader(constants.ACCEPT_HEADER) || constants.ACCEPT_ALL;
+            jsonHeaderAccept = acceptHeader.indexOf(constants.APPLICATION_JSON);
 
             var tenantDomains = options.tenant ? options.tenant : MultiTenantConstants.SUPER_TENANT_DOMAIN_NAME;
             tenantId = carbon.server.tenantId({domain: tenantDomains});
@@ -133,7 +132,7 @@ require('/modules/store.js').exec(function (ctx) {
                 try {
                     if (jsonHeaderAccept >= 0 || acceptHeader == constants.ACCEPT_ALL) {
                         if (options['taxonomyId']) {
-                            taxaPathList = taxa.taxonomy.getTaxonomyName(options['taxonomyId'],
+                            taxaPathList = Taxonomy.taxonomy.getTaxonomyName(options['taxonomyId'],
                                     taxonomyAssetTypeOptions.name);
                             response = responseProcessor.buildSuccessResponseForRxt(res, constants.STATUS_CODES.OK,
                                     taxaPathList);
@@ -141,7 +140,7 @@ require('/modules/store.js').exec(function (ctx) {
                         }
                         if (taxonomyAssetTypeOptions.name) {
                             store.server.sandbox(options, function () {
-                                taxaPathList = taxa.taxonomy.getNodesList("/*",
+                                taxaPathList = Taxonomy.getNodesList("/*",
                                         defaultPagination(options, "startnode", 0),
                                         defaultPagination(options, "endnode", 200), taxonomyAssetTypeOptions.name);
                             });
@@ -176,13 +175,13 @@ require('/modules/store.js').exec(function (ctx) {
                         if (taxonomyTermOptions.term) {
                             if (options['children']) {
                                 store.server.sandbox(options, function () {
-                                    taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term + "/children",
+                                    taxaPathList = Taxonomy.getNodesList(taxonomyTermOptions.term + "/children",
                                             defaultPagination(options, "startnode", 0),
                                             defaultPagination(options, "endnode", 200), taxonomyTermOptions.name);
                                 });
                             } else {
                                 store.server.sandbox(options, function () {
-                                    taxaPathList = taxa.taxonomy.getNodesList(taxonomyTermOptions.term,
+                                    taxaPathList = Taxonomy.getNodesList(taxonomyTermOptions.term,
                                             defaultPagination(options, "startnode", 0),
                                             defaultPagination(options, "endnode", 200), taxonomyTermOptions.name);
                                 });
