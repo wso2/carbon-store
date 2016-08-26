@@ -38,7 +38,6 @@ require('/modules/publisher.js').exec(function (ctx) {
     var taxonomyPatternDefault = '/{context}/apis/taxonomies';
     var taxonomyPatternAssetType = '/{context}/apis/taxonomies/{name}';
     var taxonomyPatternTerm = '/{context}/apis/taxonomies/{name}/{+term}';
-    var ACCEPT_HEADER = "Accept";
     uriMatcher.match(taxonomyPatternDefault);
     uriMatcher.match(taxonomyPatternAssetType);
     var taxonomyAssetTypeOptions = uriMatcher.elements() || {};
