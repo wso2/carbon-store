@@ -303,7 +303,8 @@
     <caramel.feature.version>1.0.1</caramel.feature.version>
     <wso2.slf4j.version>1.5.10.wso2v1</wso2.slf4j.version>
     <sso.hostobjects.version>1.0.1</sso.hostobjects.version>
-
+    <xmlsec.version>1.5.2</xmlsec.version>
+    <imp.pkg.version.xmlsec>[1.4.2, 2.0.0)</imp.pkg.version.xmlsec>
     <rhino.osgi.version>1.7.0.R4.wso2v1</rhino.osgi.version>
     <commons-codec.osgi.version>1.4.0.wso2v1</commons-codec.osgi.version>
     <opensaml2.wso2.version>2.4.1.wso2v1</opensaml2.wso2.version>

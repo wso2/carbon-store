@@ -51,6 +51,11 @@
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.santuario</groupId>
+            <artifactId>xmlsec</artifactId>
+            <version>${xmlsec.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -70,6 +75,9 @@
                         <Export-Package>
                             org.wso2.store.sso.common.*;
                         </Export-Package>
+                        <Import-Package>
+                            org.apache.xml.security.*;version="${imp.pkg.version.xmlsec}"
+                        </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>
