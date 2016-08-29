@@ -141,7 +141,7 @@ var client = {};
  */
 client.validateSamlResponse = function(samlObj, props, keyStoreProps) {
     props = props || {};
-    var Util = Packages.org.jaggeryjs.modules.sso.common.util.Util;
+    var Util = Packages.org.wso2.store.sso.common.util.Util;
     var propList = createProperties(props);
     var DEFAULT_TO_TRUE = true;
     var DEFAULT_TO_FALSE = false;
