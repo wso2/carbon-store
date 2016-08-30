@@ -101,7 +101,7 @@
             var modifiedUsername = user.removeTenantDomainFromUsername(username);
             var hasPublisherLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
                 modifiedUsername);
-            sso.client.login(sessionObj.sessionIndex, 'publisher', session);
+            sso.client.login(sessionObj.sessionIndex, new java.lang.String(attr.issuer), session);
 
             if (hasPublisherLoginPermission) {
                 user.emitLogin(username);
@@ -118,7 +118,7 @@
             }
 
         } else {
-            sso.client.logout(session, 'publisher');
+            sso.client.logout(session, new java.lang.String(attr.issuer));
             response.sendRedirect(server.buildAppURL(context));
         }
     }
@@ -128,7 +128,7 @@
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
         var jSessionId = application.get('sso_sessions')[index];
         delete application.get('sso_sessions')[index];
-        sso.client.logout(index, new java.lang.String('publisher'));
+        sso.client.logout(index, new java.lang.String(attr.issuer));
     }
 }());
 %>
