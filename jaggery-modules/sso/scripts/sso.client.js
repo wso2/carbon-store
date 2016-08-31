@@ -203,7 +203,7 @@ function createProperties(props) {
  * resolving tenant details
  */
 function callValidateAssertionSignature(samlObj, config) {
-    var Util = Packages.org.jaggeryjs.modules.sso.common.util.Util;
+    var Util = Packages.org.wso2.store.sso.common.util.Util;
     var tDomain, tId;
     var carbon = require('carbon');
     if (config.USE_ST_KEY) {
