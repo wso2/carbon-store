@@ -110,7 +110,7 @@
             var modifiedUsername = user.removeTenantDomainFromUsername(username);
             var hasStoreLoginPermission = permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId,
                 modifiedUsername);
-            sso.client.login(sessionObj.sessionIndex, new java.lang.String(attr.issuer), session);
+            sso.client.login(sessionObj.sessionIndex, attr.issuer, session);
 
             if (hasStoreLoginPermission) {
                 user.emitLogin(username);
@@ -126,7 +126,7 @@
                 response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
             }
         } else {
-            sso.client.logout(session, new java.lang.String(attr.issuer));
+            sso.client.logout(session, attr.issuer);
             response.sendRedirect(server.buildAppURL(relayState));
         }
     }
@@ -136,7 +136,7 @@
         var index = sso.client.decodeSAMLLogoutRequest(sso.client.getSamlObject(samlRequest));
         var jSessionId = application.get('sso_sessions')[index];
         delete application.get('sso_sessions')[index];
-        sso.client.logout(index, new java.lang.String(attr.issuer));
+        sso.client.logout(index, attr.issuer);
     }
 }());
 %>
