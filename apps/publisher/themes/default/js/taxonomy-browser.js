@@ -416,7 +416,7 @@ $(function () {
         }
     });
 
-    // On click of a remove button in a leaf node.
+    // On click of a remove button in a leaf node, removes the selected taxonomy tag.
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button.btn-remove', function (e) {
         e.preventDefault();
         var selectedValue = $(this).prev('a').attr('href');
