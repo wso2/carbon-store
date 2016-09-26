@@ -235,18 +235,18 @@ public class SQLActivityBrowser implements ActivityBrowser {
 					tenantDomain, order, limit, offset);
 
 			activities = new ArrayList<Activity>();
-            while (resultSet.next()) {
-                JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
-                int id = resultSet.getInt(Constants.ID_COLUMN);
-                Activity activity = new SQLActivity(body);
-                activity.setId(id);
-                activity.setLikeCount(getTotalLikes(id, 1));
-                activity.setDislikeCount(getTotalLikes(id, 0));
-                activity.setILike(isUserlikedActivity(tenantedUsername, id, 1));
-                activity.setIDislike(isUserlikedActivity(tenantedUsername, id, 0));
-                activities.add(activity);
-            }
-            resultSet.close();
+			while (resultSet.next()) {
+				JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+				int id = resultSet.getInt(Constants.ID_COLUMN);
+				Activity activity = new SQLActivity(body);
+				activity.setId(id);
+				activity.setLikeCount(getTotalLikes(id, 1));
+				activity.setDislikeCount(getTotalLikes(id, 0));
+				activity.setILike(isUserlikedActivity(tenantedUsername, id, 1));
+				activity.setIDislike(isUserlikedActivity(tenantedUsername, id, 0));
+				activities.add(activity);
+			}
+			resultSet.close();
 		} catch (SQLException e) {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
@@ -662,15 +662,15 @@ public class SQLActivityBrowser implements ActivityBrowser {
     public boolean isPublished(String activityString, String targetId, String userId) throws SocialActivityException {
         boolean published;
         JsonObject activityJSON;
-        int likeValue = -1;
+        int likeValue;
         try {
             activityJSON = (JsonObject) parser.parse(activityString);
         } catch (JsonSyntaxException e) {
-            String message = "Malformed JSON element found: " + e.getMessage();
+            String message = "Malformed JSON element found!";
             log.error(message, e);
             throw new SocialActivityException(message, e);
         } catch (NumberFormatException e) {
-            String message = "Invalid review ID : " + e.getMessage();
+            String message = "Invalid review ID";
             throw new SocialActivityException(message, e);
         }
         SQLActivity activity = new SQLActivity(activityJSON);
@@ -682,6 +682,8 @@ public class SQLActivityBrowser implements ActivityBrowser {
                 likeValue = 1;
             } else if (Constants.VERB.valueOf(verb) == Constants.VERB.dislike) {
                 likeValue = 0;
+            } else {
+	            likeValue = -1;
             }
             int target = Integer.parseInt(targetId);
             // Handle like,dislike,unlike,undislike verbs
