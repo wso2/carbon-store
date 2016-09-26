@@ -31,12 +31,12 @@ $(function () {
         //object.These duplicates need to be removed and a single
         //_tags entry created in their place
 
-        arr.forEach(function(entry){
-            if(entry.name !== '_tags'){
+        arr.forEach(function (entry) {
+            if (entry.name !== '_tags') {
                 modifiedArr.push(entry);
             } else {
                 tagEntry = entry;
-                if(tagEntry == undefined) {
+                if (tagEntry == undefined) {
                     return;
                 }
                 tagEntry.value = tagsAPI.selectedTags();
@@ -55,7 +55,6 @@ $(function () {
                 var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
                 createButton.parent().append($content);
             });*/
-            // populateTags(arr);
             if (!validator.isValidForm('form-asset-create')) {
                 window.scrollTo(0, 0);
                 $('div.error').each(function () {
