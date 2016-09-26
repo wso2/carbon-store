@@ -289,7 +289,7 @@ var engine = caramel.engine('handlebars', (function() {
             };
             var renderOptions = function(value, values, field, mode, count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
-                var out = '<select ' + renderFieldMetaData(field,id,mode) + '>';
+                var out = '<select ' + renderFieldMetaData(field, id, mode) + '>';
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
