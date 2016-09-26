@@ -41,7 +41,7 @@ var metrics = {};
         return WSO2_METRICS_ENABLED;
     };
     var isTraceLogsEnabled = function(){
-        if(typeof WSO2_METRIC_TRACE_LOGS_ENABLED === 'undefined'){
+        if (typeof WSO2_METRIC_TRACE_LOGS_ENABLED === 'undefined') {
             WSO2_METRIC_TRACE_LOGS_ENABLED = application.get(WSO2_CONSTANT_METRIC_TRACE_LOGS_ENABLED);
         }
         return WSO2_METRIC_TRACE_LOGS_ENABLED;
@@ -85,12 +85,12 @@ var metrics = {};
     metrics.isTraceLogsEnabled = function(){
         return isTraceLogsEnabled();
     };
-    metrics.trace = function(){
-        if(!isTraceLogsEnabled()){
+    metrics.trace = function () {
+        if (!isTraceLogsEnabled()) {
             return;
         }
-        var template = [getAppName(),'[TID:',getTransactionID(),']'].join(' ');
+        var template = [getAppName(), '[TID:', getTransactionID(), ']'].join(' ');
         var userArgs = Array.prototype.slice.call(arguments);
-        log.info(template+userArgs.join(' '));
+        log.info(template + userArgs.join(' '));
     };
 }(metrics));
