@@ -289,7 +289,7 @@ var engine = caramel.engine('handlebars', (function() {
             };
             var renderOptions = function(value, values, field, mode, count) {
                 var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
-                var out = '<select ' + renderFieldMetaData(field,id,mode) + '>';
+                var out = '<select ' + renderFieldMetaData(field, id, mode) + '>';
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
@@ -304,14 +304,14 @@ var engine = caramel.engine('handlebars', (function() {
             };
 
 
-            var renderOptionsForOptionsText = function(value, values, field,mode) {
-                var id=field.name.tableQualifiedName+'_option';
-                var out = '<select ' + renderFieldMetaData(field,id,mode) + '>';
+            var renderOptionsForOptionsText = function (value, values, field, mode) {
+                var id = field.name.tableQualifiedName + '_option';
+                var out = '<select ' + renderFieldMetaData(field, id, mode) + '>';
 
                 for (var index in values) {
                     if (value && values[index].value == value) {
                         out += '<option selected="selected">' + Handlebars.Utils.escapeExpression(value) + '</option>';
-                    }else{
+                    } else {
                         out += '<option>' + Handlebars.Utils.escapeExpression(values[index].value) + '</option>';
                     }
                 }

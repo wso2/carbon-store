@@ -214,7 +214,7 @@ var result;
     };
     var processTags = function (assetReq) {
         if (assetReq._tags) {
-            return assetReq._tags;//.split(',');
+            return assetReq._tags;
         } else {
             return [];
         }

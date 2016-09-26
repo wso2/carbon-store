@@ -42,7 +42,7 @@ var mapper = function (path) {
 var handleApiEndpoint = function (request, session, uriParams) {
     var type = uriParams.type;
     var tenantId = getTenantId(request, session);
-    if(!validateType(type, tenantId)){
+    if (!validateType(type, tenantId)) {
         response = responseProcessor.buildErrorResponse(response, 404,
                 'Unabled to locate a active endpoint for the type: ' + type);
         return;
@@ -145,7 +145,7 @@ var getTenantId = function(request, session) {
     var tenantAPI = require('/modules/tenant-api.js').api;
     var tenantId;
     var domain = request.getHeader("domain");
-    if(!domain){
+    if (!domain) {
         var tenantDetails = tenantAPI.createTenantDetails(request, session);
         tenantId = tenantDetails.tenantId;
     }

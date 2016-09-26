@@ -263,8 +263,9 @@ var api = {};
         for (var index in resources) {
             if (resources.hasOwnProperty(index)) {
                 var resource = resources[index];
-                if(resource.version === newVersion){
-                    return errorMsg(msg(409, 'Conflict in versions: '+ newVersion + ' already exist!')); /* REST POST request "409 Conflict" since the resource pointed exists.*/
+                if (resource.version === newVersion) {
+                    return errorMsg(msg(409, 'Conflict in versions: ' + newVersion + ' already exist!'));
+                    /* REST POST request "409 Conflict" since the resource pointed exists.*/
                 }
             }
         }

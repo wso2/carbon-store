@@ -1285,9 +1285,10 @@ var core = {};
     RxtManager.prototype.getSortingAttributes = function(type) {
         var rxtDefinition = this.rxtMap[type];
         if (!rxtDefinition) {
-            log.error('Unable to locate the rxt definition for type: ' + type +
-                ' in order to return sortable field names');
-            throw 'Unable to locate the rxt definition for type: ' + type + ' in order to return sortable field names ';
+            var message = 'Unable to locate the rxt definition for type: ' + type
+                + ' in order to return sortable field names ';
+            log.error(message);
+            throw message;
         }
         if ((rxtDefinition.meta) && (rxtDefinition.meta.sorting) && (rxtDefinition.meta.sorting.attributes)) {
             return rxtDefinition.meta.sorting.attributes;
