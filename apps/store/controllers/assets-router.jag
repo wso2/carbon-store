@@ -124,7 +124,7 @@ var server = require('store').server;
 var user = server.current(session);
 
 //Check if asset type is enabled
-var validateType = function (type, tenantId){
+var validateType = function (type, tenantId) {
     var availableTypes = rxt.app.getUIActivatedAssets(tenantId);
     for (var index in availableTypes) {
         if(availableTypes[index] === type){
