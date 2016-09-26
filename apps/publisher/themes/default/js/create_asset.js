@@ -51,10 +51,6 @@ $(function () {
             var createButton = $('#btn-create-asset');
             createButton.attr('disabled', 'disabled');
             createButton.next().attr('disabled', 'disabled');
-            /*caramel.render('loading', 'Creating asset. Please wait..', function (info, content) {
-                var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
-                createButton.parent().append($content);
-            });*/
             if (!validator.isValidForm('form-asset-create')) {
                 window.scrollTo(0, 0);
                 $('div.error').each(function () {
