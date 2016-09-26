@@ -199,7 +199,7 @@ var pageDecorators = {};
         page.assetCategoryFilterDetails = updatedCategorizationFields;
         page.isVisible = isVisible;
     };
-    pageDecorators.recentAssetsOfActivatedTypes = function(ctx, page) {
+    pageDecorators.recentAssetsOfActivatedTypes = function (ctx, page) {
         var app = require('rxt').app;
         var asset = require('rxt').asset;
         var permissions = require('rxt').permissions;
@@ -224,7 +224,7 @@ var pageDecorators = {};
         var query = buildRecentAssetQuery(q);
         var username = ctx.username || null;
         var tenantId = ctx.tenantId;
-        var canBookmark = function(type) {
+        var canBookmark = function (type) {
             return permissions.hasAssetPermission(permissions.ASSET_BOOKMARK, type, tenantId, username);
         };
         var bookmarkPerms = {};
@@ -238,21 +238,21 @@ var pageDecorators = {};
 
         // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
         // case 1 : Search query provided with mediaType search
-        if(isMediaType(query,types)){
+        if (isMediaType(query, types)) {
             tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
                 type: query.mediaType
             });
             assets = tenantAssetResources.am.advanceSearch(query, paging);
             isMoreAssets = assets.length >= paging.paginationLimit;
-            if(isMoreAssets) {
+            if (isMoreAssets) {
                 assets.pop();
             }
             page.recentAssets = [];
             page.recentAssetsByType = [];
             typeDetails = ctx.rxtManager.getRxtTypeDetails(query.mediaType);
             page.recentAssetsByType.push({
-                assets:assets,
-                rxt:typeDetails,
+                assets: assets,
+                rxt: typeDetails,
                 moreAssets: isMoreAssets
             });
             return;
