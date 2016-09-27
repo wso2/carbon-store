@@ -56,11 +56,11 @@ try{
             if (file.isExists()) {
                 request.getMappedPath = mapper(path);
                 var username = user ? user.username : null;
-                var isAuthorized = rxtAPI.permissions.hasAppAPIPermission(page,tenantId,username);
+                var isAuthorized = rxtAPI.permissions.hasAppAPIPermission(page, tenantId, username);
                 //We should send a 404 error as returning a 401 error would indicate
                 //that such an endpoint exists to attackers
-                if(!isAuthorized){
-                    log.error('user '+username+' does not have permission to access the api '+page);
+                if (!isAuthorized) {
+                    log.error('user ' + username + ' does not have permission to access the api ' + page);
                     msg = 'Unable to locate api : ' + args.suffix;
                     response = responseProcessor.buildErrorResponse(response, 404, msg);
                 } else {
