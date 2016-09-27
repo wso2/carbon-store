@@ -28,9 +28,13 @@ const CANCEL_BUTTON = '#cancel-button';
 const BACK_LINK = '<li class="back" style="display: none;"><a href="#">../</a></li>';
 const RIGHT_ARROW = ' <i class="icon fw fw-right-arrow"></i>';
 
+//Represents an DOM object which includes the contents of one column of the taxonomy browser.
 var windowObject = {};
+//Holds an array of selected taxonomy tags.
 var selectedTaxonomy = [];
+//Holds the display value of taxonomy path.
 var displayValue = [];
+//Represents the number of columns in the taxonomy browser.
 var columnsCount;
 
 /**
@@ -384,6 +388,7 @@ $(function () {
         var selectedValue = $(this).prev('a').attr('href');
         var editMode = $(TAXONOMY_BROWSER).attr('edit-mode');
         $(BREADCRUMB_SELECTOR + ' li').each(function () {
+            //Get selected taxonomy display value from the taxonomy browser breadcrumb and push to the display value.
             displayValue.push($(this).text());
         });
 

@@ -571,6 +571,7 @@ var pageDecorators = {};
             sortBy = match ? match[1] : sortBy;
             match = queryString.match(/sort=([^&;]+)/);
             sort = match ? match[1] : sort;
+            //matches the search query part from the query string. (i.e. the part starts with "q=")
             match = queryString.match(/q=([^&;]+)/);
             query = match ? match[0] : match;
         }
