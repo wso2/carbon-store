@@ -313,8 +313,9 @@ asset.renderer = function(ctx) {
                 navList.push('Lifecycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
-        if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session)
-            && permissionAPI.hasAssetPagePermission(type, 'update', user.tenantId, username) && ctx.rxtManager.getVersionAttribute(type)) {
+        var hasWritePermission = permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session);
+        var hasUpdatePermission = permissionAPI.hasAssetPagePermission(type, 'update', user.tenantId, username);
+        if (hasWritePermission && hasUpdatePermission && ctx.rxtManager.getVersionAttribute(type)) {
             navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
         }
 
