@@ -270,7 +270,7 @@ var asset = {};
                 delete options[constants.Q_PROP_DEFAULT];
                 isDefault = true;
             }
-            if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+            if (options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)) {
                 options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
             }
 
@@ -378,7 +378,7 @@ var asset = {};
             if ((options.hasOwnProperty(constants.Q_PROP_DEFAULT)) && (options[constants.Q_PROP_DEFAULT] === true)) {
                 isDefault = true;
             }
-            if(options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)){
+            if (options.attributes.hasOwnProperty(constants.ASSET_PROVIDER)) {
                 options.attributes[constants.ASSET_PROVIDER] = options.attributes[constants.ASSET_PROVIDER].replace('@', ':');
             }
             //If the asset is retrieved via a get it will contain a content property
