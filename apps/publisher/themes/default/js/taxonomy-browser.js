@@ -252,6 +252,7 @@ function initTaxonomyBrowser(appliedTaxonomy) {
         //if already applied tags exists
         $(SELECTED_CONTAINER).show();
 
+        //Following loop reads the applied taxonomy tags and append these tags to the selected taxonomy container.
         for (var key in appliedTaxonomy) {
             if (appliedTaxonomy.hasOwnProperty(key)) {
                 var element = appliedTaxonomy[key];
@@ -523,6 +524,10 @@ $(function () {
     }
 });
 
+/*
+ This function adjusts the number of columns displayed in the taxonomy browser based on the window length. This function
+ provides the responsiveness of the taxonomy browser.
+ */
 $(window).resize(function () {
     var previousColumnCount = columnsCount;
     initWindowColumns();

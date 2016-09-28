@@ -70,14 +70,14 @@ var categorization = function () {
             $('.refine > .panel > div').each(function () {
                 var field = $(this).attr('id');
                 var queryObject = queryObjArray.filter(function (queryObj) {
-                    return queryObj.queryKey == field;
+                    return queryObj.queryKey === field;
                 });
 
                 if (queryObject.length == 0) {
                     return;
                 }
 
-                var queryValues = (queryObject.length == 1) ? queryObject[0].queryValue : null;
+                var queryValues = (queryObject.length === 1) ? queryObject[0].queryValue : null;
 
                 $(this).find('input:checkbox').each(function () {
                     var valueIndex = queryValues ? queryValues.indexOf($(this).attr('value').toLowerCase()) : -1;
