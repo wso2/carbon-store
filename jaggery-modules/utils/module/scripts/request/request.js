@@ -77,8 +77,7 @@ var log = new Log('request_module');
         var searchKeys = Object.keys(qjson);
         if ((searchKeys.length === 1) && (searchKeys.indexOf("_default") >= 0)) {
             searchQuery += qjson[searchKeys.pop()];
-        }
-        else {
+        } else {
             for (var keyIndex in searchKeys) {
                 var key = searchKeys[keyIndex];
                 var value = qjson[key];
