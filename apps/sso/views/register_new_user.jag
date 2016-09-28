@@ -115,7 +115,7 @@ var registerURL = server.buildURL('/sso/register');
                                         var elements = uriMater.match(constants.TENANT_URL_PATTERN) || uriMater.match(constants.DEFAULT_SUPER_TENANT_URL_PATTERN);
                                         var domain = elements.domain;
                                         var carbon = require('carbon');
-                                        urlTenantId = carbon.server.tenantId({domain: domain}); //TODO: change this logic once tenanted URLs are introduced to publisher as well
+                                        urlTenantId = carbon.server.tenantId({domain: domain});
                                         return urlTenantId;
                                     }
                                     var SSO_TENANT_CONFIG_PATH = '/_system/config/sso/configs/sso.json';
