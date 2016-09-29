@@ -127,7 +127,7 @@ var user = server.current(session);
 var validateType = function (type, tenantId) {
     var availableTypes = rxt.app.getUIActivatedAssets(tenantId);
     for (var index in availableTypes) {
-        if(availableTypes[index] === type){
+        if (availableTypes[index] === type) {
             return true;
         }
     }
