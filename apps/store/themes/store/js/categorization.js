@@ -70,7 +70,7 @@ var categorization = function () {
             $('.refine > .panel > div').each(function () {
                 var field = $(this).attr('id');
                 var queryObject = queryObjArray.filter(function (queryObj) {
-                    return queryObj.queryKey === field;
+                    return (queryObj.queryKey === field);
                 });
 
                 if (queryObject.length == 0) {
