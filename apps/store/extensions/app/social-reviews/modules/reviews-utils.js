@@ -52,6 +52,8 @@ var ReviewUtils = {};
         var socialSvc = getSocialSvc();
         var username = formatUsername(user);
         var isUserLoggedIn = false;
+        var usernameOnReview;
+        var myIndex;
         myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
         if (!isEmpty(myReview)) {
             myReview.actor.id = cleanUsername(myReview.actor.id);
@@ -61,8 +63,6 @@ var ReviewUtils = {};
         if (user) {
             isUserLoggedIn = true;
         }
-        var usernameOnReview;
-        var myIndex;
         for (var index = 0; index < reviews.length; index++) {
             review = reviews[index];
             usernameOnReview = review.actor.id;
