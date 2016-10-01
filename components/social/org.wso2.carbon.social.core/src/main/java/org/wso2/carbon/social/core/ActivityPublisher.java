@@ -62,8 +62,8 @@ public abstract class ActivityPublisher {
 		try {
 			jsonActivity = (JsonObject) parser.parse(activity);
 		} catch (JsonSyntaxException e) {
-			String message = "Malformed JSON element found: " + e.getMessage();
-			throw new SocialActivityException(message, e);
+			String message = "Malformed JSON element found!";
+			throw new SocialActivityException(message);
 		}
 		JsonObject updatedActivity = updateActivity(jsonActivity);
 		return updatedActivity.toString();
