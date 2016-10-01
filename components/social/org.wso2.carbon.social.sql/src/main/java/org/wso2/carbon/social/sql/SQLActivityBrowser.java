@@ -139,15 +139,15 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				total = resultSet.getInt(Constants.RATING_TOTAL);
 				count = resultSet.getInt(Constants.RATING_COUNT);
 				resultSet.close();
-				if (total != 0) {
-					JsonObject object = new JsonObject();
-					double average = (double) total / count;
-					object.addProperty(Constants.RATING, average);
-					object.addProperty(Constants.COUNT, count);
-					if (!Double.isInfinite(average)) {
-						return object;
-					}
-				}
+                if (total != 0) {
+                    JsonObject object = new JsonObject();
+                    double average = (double) total / count;
+                    object.addProperty(Constants.RATING, average);
+                    object.addProperty(Constants.COUNT, count);
+                    if (!Double.isInfinite(average)) {
+                        return object;
+                    }
+                }
 			}
 
 		} catch (SQLException e) {
