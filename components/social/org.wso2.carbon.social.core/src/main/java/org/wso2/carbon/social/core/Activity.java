@@ -49,8 +49,16 @@ public interface Activity {
 
 	void setId(int id);
 
+    /**
+     *
+     * @param rating Set rating to current Activity
+     */
     void setRating(int rating);
 
+    /**
+     *
+     * @param comment Add comment to current activity , This will override the (if)existing comment.
+     */
     void setComment(String comment);
 
     void setILike(boolean like);
