@@ -118,6 +118,13 @@ var ReviewUtils = {};
         result.myReview = myReview;
         return result;
     };
+    /**
+     * Remove review made by given username..
+     *
+     * @param reviewId ID of the review which want to remove
+     * @param username Username of the reviewer
+     * @return boolean Whether user review has removed successfully or not
+     */
     ReviewUtils.removeUserReview = function(reviewId, username) {
         var socialSvc = getSocialSvc();
         var removed = socialSvc.removeActivity(reviewId, username);
