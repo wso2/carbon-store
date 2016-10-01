@@ -718,9 +718,9 @@ public class SQLActivityBrowser implements ActivityBrowser {
             commented = resultSet.next();
             resultSet.close();
         } catch (SQLException | DataSourceException e) {
-            String message = errorMsg + e.getMessage();
-            log.error(message, e);
-            throw new SocialActivityException(message, e);
+            String message = errorMsg;
+            log.error(message);
+            throw new SocialActivityException(message);
         } finally {
             DSConnection.closeConnection(connection);
         }
