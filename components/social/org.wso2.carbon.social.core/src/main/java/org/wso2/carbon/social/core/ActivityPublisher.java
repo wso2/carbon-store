@@ -57,17 +57,17 @@ public abstract class ActivityPublisher {
 		return publishActivity(jsonObject);
 	}
 
-	public String update(String activity) throws SocialActivityException {
-		JsonObject jsonActivity;
-		try {
-			jsonActivity = (JsonObject) parser.parse(activity);
-		} catch (JsonSyntaxException e) {
-			String message = "Malformed JSON element found!";
-			throw new SocialActivityException(message);
-		}
-		JsonObject updatedActivity = updateActivity(jsonActivity);
-		return updatedActivity.toString();
-	}
+    public String update(String activity) throws SocialActivityException {
+        JsonObject jsonActivity;
+        try {
+            jsonActivity = (JsonObject) parser.parse(activity);
+        } catch (JsonSyntaxException e) {
+            String message = "Malformed JSON element found!";
+            throw new SocialActivityException(message);
+        }
+        JsonObject updatedActivity = updateActivity(jsonActivity);
+        return updatedActivity.toString();
+    }
 
 	protected abstract long publishActivity(JsonObject activity) throws SocialActivityException;
 
