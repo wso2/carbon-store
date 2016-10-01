@@ -116,11 +116,19 @@ public class SQLActivity implements Activity {
 		object.addProperty("id", id);
 	}
 
+	/**
+	 *
+	 * @param rating Set rating to current Activity
+	 */
 	public void setRating(int rating) {
 		JsonObject object = (JsonObject) this.body.get("object");
 		object.addProperty("rating", rating);
 	}
 
+	/**
+	 *
+	 * @param comment Add comment to current activity , This will override the (if)existing comment.
+	 */
 	public void setComment(String comment) {
 		JsonObject object = (JsonObject) this.body.get("object");
 		object.addProperty("content", comment);
