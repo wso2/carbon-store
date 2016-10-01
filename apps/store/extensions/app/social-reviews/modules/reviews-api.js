@@ -29,6 +29,9 @@ var api = {};
     var HTTP_GET_METHOD = 'GET';
     var HTTP_POST_METHOD = 'POST';
     var HTTP_DELETE_METHOD = 'DELETE';
+    var CONTENT_TYPE = "application/json";
+    var HEADER_NAME = "Content-Type";
+
 
     var resolveGET = function(req, res, session) {
         var opts = ReqUtils.getQueryOptions(req.getQueryString());
@@ -43,7 +46,7 @@ var api = {};
         
         var target = opts.target; 
         var reviews = ReviewUtils.listReviews(target, user, opts);
-        res.addHeader("Content-Type", "application/json");
+        res.addHeader(HEADER_NAME, CONTENT_TYPE);
         print(reviews.allReviews);
     };
 
@@ -51,8 +54,8 @@ var api = {};
         var review;
         var tenantApi = require('/modules/tenant-api.js').api;
         var tenantContext = tenantApi.tenantContext(session);
-        var contentType = req.getHeader('Content-Type');
-        if (ReqUtils.parseContentType(contentType) === 'application/json') {
+        var contentType = req.getHeader(HEADER_NAME);
+        if (ReqUtils.parseContentType(contentType) === CONTENT_TYPE) {
             review = req.getContent();
         }
         if (!review) {
@@ -72,7 +75,7 @@ var api = {};
         var actor = review.actor = {};
         actor.id = ReviewUtils.formatUsername(user);
         actor.objectType = 'person';
-        res.addHeader("Content-Type", "application/json");
+        res.addHeader(HEADER_NAME, CONTENT_TYPE);
 
         try {
             var result = ReviewUtils.createUserReview(review);
