@@ -80,8 +80,8 @@ public abstract class SocialActivityService {
      * @throws JsonSyntaxException
      */
     public String update(String activity) throws SocialActivityException {
-		return getActivityPublisher().update(activity);
-	}
+        return getActivityPublisher().update(activity);
+    }
 
 	/**
 	 * Allows asset id to be passed into the service and retrieve average rating
