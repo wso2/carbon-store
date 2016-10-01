@@ -49,9 +49,9 @@ public interface Activity {
 
 	void setId(int id);
 
-	void setRating(int rating);
+    void setRating(int rating);
 
-	void setComment(String comment);
+    void setComment(String comment);
 
     void setILike(boolean like);
 
