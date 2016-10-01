@@ -70,14 +70,16 @@ public abstract class SocialActivityService {
 		return serializedActivities;
 	}
 
-	/**
-	 * Update an activity given new activity
-	 *
-	 * @param activity
-	 * @throws SocialActivityException
-	 * @throws JsonSyntaxException
-	 */
-	public String update(String activity) throws SocialActivityException {
+    /**
+     * Update an activity given new activity,
+     * Retrieve the current activity by activitiId and Replace the existing activity information with the
+     * given {activity} object
+     * @param activity Stringify activity JSON, An activity can be either
+     *                       comment or like/dislike unlike/un-dislike
+     * @throws SocialActivityException
+     * @throws JsonSyntaxException
+     */
+    public String update(String activity) throws SocialActivityException {
 		return getActivityPublisher().update(activity);
 	}
 
