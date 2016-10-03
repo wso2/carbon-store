@@ -73,7 +73,7 @@ var log = new Log('request_module');
      * */
     request.formatSearchQuery = function (queryString) {
         var searchQuery = "";
-        var qjson = parse('{' + queryString + '}');
+        var qjson = parse("{" + queryString + "}");
         var searchKeys = Object.keys(qjson);
         if ((searchKeys.length === 1) && (searchKeys.indexOf("_default") >= 0)) {
             searchQuery += qjson[searchKeys.pop()];
@@ -89,7 +89,7 @@ var log = new Log('request_module');
     };
     // Fix for REGISTRY-3245
     request.parseContentType = function(contentTypString) {
-        var comps = contentTypString.split(';');
+        var comps = contentTypString.split(";");
         return comps[0];
     };
 
