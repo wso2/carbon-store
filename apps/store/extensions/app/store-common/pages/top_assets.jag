@@ -87,6 +87,5 @@ require('/modules/store.js').exec(function (ctx) {
     } finally {
         metrics.stop();
     }
-    //print(page);
 }, request, response, session);
 %>
