@@ -193,7 +193,8 @@ $(function () {
             $('.field-title').eq(index).addClass("collapsed");
         }
     });
-   
+    /* When initializing the taxonomy browser, we should pass if there are any applied taxonomies. Passing null here
+     as creating a new asset could not have pre selected taxonomies. */
     initTaxonomyBrowser(null);
 
     String.prototype.replaceAll = function (find, replace) {
@@ -208,6 +209,10 @@ $(function () {
         }
     });
 
+    /**
+     * This resets the selected taxonomies. Since this is the asset creation page no pre applied taxonomies available.
+     * Hence passing null.
+     */
     $('button[type=reset]').click(function (e) {
         initTaxonomyBrowser(null);
     });

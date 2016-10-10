@@ -23,7 +23,7 @@
         if (typeof history.onpushstate == "function") {
             history.onpushstate({state: state});
         }
-        if (!state || state.categorization == false) {
+        if (!state || !state.categorization) {
             loadCategorizationEntries(url);
         }
         loadTagEntries(url);
@@ -45,7 +45,6 @@ function loadCategorizationEntries(url) {
     }
 
     caramel.data({
-        title: null,
         body: ['assets']
     }, {
         url: url,
@@ -67,7 +66,6 @@ function loadCategorizationEntries(url) {
  */
 function loadTagEntries(url) {
     caramel.data({
-        title: null,
         body: ['assets']
     }, {
         url: url,
