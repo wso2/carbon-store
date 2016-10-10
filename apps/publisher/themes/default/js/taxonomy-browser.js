@@ -41,11 +41,12 @@ var columnsCount;
  * Initializes the taxonomy browser window column size based on the window size.
  */
 var initWindowColumns = function () {
-    if ($(window).width() < 768) {
+    var window = $(window);
+    if (window.width() < 768) {
         columnsCount = 1;
-    } else if ($(window).width() >= 768 && $(window).width() <= 992) {
+    } else if (window.width() >= 768 && window.width() <= 992) {
         columnsCount = 2;
-    } else if ($(window).width() > 992 && $(window).width() <= 1200) {
+    } else if (window.width() > 992 && window.width() <= 1200) {
         columnsCount = 3;
     } else {
         columnsCount = 4;
@@ -259,7 +260,7 @@ function initTaxonomyBrowser(appliedTaxonomy) {
                 getTaxonomyDisplayName(element);
                 if (displayValue.length == 0) {
                     continue;
-                }                
+                }
                 if (selectedTaxonomy.indexOf(element) < 0) {
                     selectedTaxonomy.push(appliedTaxonomy[key]);
                     $(SELECTED_CONTENT).append('<div class="selected-item" data-value="' + appliedTaxonomy[key] + '">'
@@ -307,9 +308,10 @@ $(function () {
     // On click of a node which is neither a leaf nor back.
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li:not(.back):not(.leaf) a', function (e) {
         e.preventDefault();
-        var element = $(this).attr('href');
-        var root = $(this).closest('div').data('root');
-        var dataWindow = parseInt($(this).closest('div').data('window'));
+        var liElement = $(this);
+        var element = liElement.attr('href');
+        var root = liElement.parent('div').data('root');
+        var dataWindow = parseInt(liElement.parent('div').data('window'));
         saveDatawindow(dataWindow);
 
         if (windowObject[element]) {
@@ -324,17 +326,17 @@ $(function () {
             }
         }
 
-        $(this).closest('li:not(.back)').addClass('active');
-        $(this).closest('li').siblings().each(function () {
-            $(this).removeClass('active');
-            $('button', this).remove();
+        liElement.closest('li:not(.back)').addClass('active');
+        liElement.closest('li').siblings().each(function () {
+            liElement.removeClass('active');
+            $('button', liElement).remove();
         });
 
         // Updating taxonomy breadcrumb
         $(BREADCRUMB_SELECTOR).empty();
         $(COLUMN_SELECTOR + ' ul > li').each(function () {
-            if ($(this).hasClass('active')) {
-                $(BREADCRUMB_SELECTOR).append('<li>' + $('a', this).html() + '</li>');
+            if (liElement.hasClass('active')) {
+                $(BREADCRUMB_SELECTOR).append('<li>' + $('a', liElement).html() + '</li>');
             }
         });
     });
@@ -356,27 +358,27 @@ $(function () {
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > a', function (e) {
         e.preventDefault();
         displayValue.length = 0;
-
-        var dataWindow = parseInt($(this).closest('div').data('window'));
+        var leafElement = $(this);
+        var dataWindow = parseInt(leafElement.parent('div').data('window'));
         saveDatawindow(dataWindow);
 
-        var elemParent = $(this).closest('li');
-        $(this).closest('li:not(.back)').addClass('active');
+        var elemParent = leafElement.closest('li');
+        leafElement.closest('li:not(.back)').addClass('active');
         elemParent.siblings().each(function () {
-            $(this).removeClass('active');
-            $('button', this).remove();
+            leafElement.removeClass('active');
+            $('button', leafElement).remove();
         });
 
         // Updating taxonomy breadcrumb
         $(BREADCRUMB_SELECTOR).empty();
         $(COLUMN_SELECTOR + ' ul > li').each(function () {
-            if ($(this).hasClass('active')) {
-                $(BREADCRUMB_SELECTOR).append('<li>' + $('a', this).html() + '</li>');
+            if (leafElement.hasClass('active')) {
+                $(BREADCRUMB_SELECTOR).append('<li>' + $('a', leafElement).html() + '</li>');
             }
         });
 
         //Appending buttons to leaf nodes
-        if (selectedTaxonomy.indexOf($(this).attr('href')) < 0) {
+        if (selectedTaxonomy.indexOf(leafElement.attr('href')) < 0) {
             appendButton(elemParent, true);
         } else {
             appendButton(elemParent, false);
@@ -386,11 +388,12 @@ $(function () {
     // On click of an add/update button. Performs add/update action
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button.btn-add', function (e) {
         e.preventDefault();
-        var selectedValue = $(this).prev('a').attr('href');
+        var addButton = $(this);
+        var selectedValue = addButton.prev('a').attr('href');
         var editMode = $(TAXONOMY_BROWSER).attr('edit-mode');
         $(BREADCRUMB_SELECTOR + ' li').each(function () {
             //Get selected taxonomy display value from the taxonomy browser breadcrumb and push to the display value.
-            displayValue.push($(this).text());
+            displayValue.push(addButton.text());
         });
 
         if (selectedTaxonomy.indexOf(selectedValue) < 0) {
@@ -414,8 +417,8 @@ $(function () {
             $(SELECTED_CONTAINER).slideDown();
         }
 
-        appendButton($(this).closest('li'), false);
-        $(this).remove();
+        appendButton(addButton.closest('li'), false);
+        addButton.remove();
 
         if (editMode === 'true') {
             resetTaxonomyBrowser();
@@ -425,10 +428,11 @@ $(function () {
     // On click of a remove button in a leaf node, removes the selected taxonomy tag.
     $(TAXONOMY_SELECT).on('click', COLUMN_SELECTOR + ' li.leaf > button.btn-remove', function (e) {
         e.preventDefault();
-        var selectedValue = $(this).prev('a').attr('href');
+        var btnRemove = $(this);
+        var selectedValue = btnRemove.prev('a').attr('href');
         $('[data-value="' + selectedValue + '"] > button').trigger('click');
-        appendButton($(this).closest('li'), true);
-        $(this).remove();
+        appendButton(btnRemove.closest('li'), true);
+        btnRemove.remove();
 
         if ($(TAXONOMY_BROWSER).attr('edit-mode') === 'true') {
             resetTaxonomyBrowser();
@@ -438,10 +442,11 @@ $(function () {
     // On click of a remove button in selected taxonomy tag. Performs remove action.
     $(SELECTED_CONTENT).on('click', 'button', function (e) {
         e.preventDefault();
-        var dataValue = $(this).closest('div').data('value');
+        var button = $(this);
+        var dataValue = button.closest('div').data('value');
         var removedIndex = selectedTaxonomy.indexOf(dataValue);
         selectedTaxonomy.splice(removedIndex, 1);
-        $(this).closest('div').remove();
+        button.closest('div').remove();
 
         var selectedColumn = $(COLUMN_SELECTOR + ' a[href="' + dataValue + '"]').closest('li');
         selectedColumn.find('button').remove();
@@ -465,7 +470,7 @@ $(function () {
             editedTaxonomy.removeClass('edit');
         }
 
-        editedTaxonomy = $(this).closest('div');
+        editedTaxonomy = $(this).parent('div');
         editedTaxonomy.addClass('edit');
         var dataValue = editedTaxonomy.data('value').split('/');
         var taxonomyName = getTaxonomyName(dataValue[0]);
@@ -489,13 +494,14 @@ $(function () {
      */
     function saveDatawindow(dataWindow) {
         $('[data-window]:gt(' + dataWindow + ')').each(function () {
-            $(this).find('li').removeClass('active');
-            $(this).find('button').remove();
-            var parent = $(this).data('parent');
+            var windowElement = $(this);
+            windowElement.find('li').removeClass('active');
+            windowElement.find('button').remove();
+            var parent = windowElement.data('parent');
             if (!windowObject[parent]) {
-                windowObject[parent] = $(this);
+                windowObject[parent] = windowElement;
             }
-            $(this).remove();
+            windowElement.remove();
         });
     }
 
