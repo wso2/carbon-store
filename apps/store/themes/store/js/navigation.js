@@ -143,6 +143,12 @@ $(function() {
         }
     });
 
+
+	/**
+	 * Code for the tags collapsible. 280px is equivalent to 10 rows of tags.
+	 * Therefore, if there are more than 10 tag rows, collapsible is enables. Else it will be disabled. 
+	 * */
+
 	var collapsed;
 	$(document).ready(function () {
 		collapsed = false;
