@@ -36,7 +36,7 @@ $(function () {
                 modifiedArr.push(entry);
             } else {
                 tagEntry = entry;
-                if (tagEntry === undefined) {
+                if (!tagEntry) {
                     return;
                 }
                 tagEntry.value = tagsAPI.selectedTags();
