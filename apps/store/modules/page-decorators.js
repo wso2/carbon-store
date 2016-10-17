@@ -238,7 +238,7 @@ var pageDecorators = {};
 
         // check whether the given query is a mediaType search query. Due to REGISTRY-3379.
         // case 1 : Search query provided with mediaType search
-        if(isMediaType(query,types)){
+        if (isMediaType(query, types)) {
             tenantAssetResources = tenantApi.createTenantAwareAssetResources(ctx.session, {
                 type: query.mediaType
             });
@@ -305,14 +305,14 @@ var pageDecorators = {};
     /**
      * Method to check whether a user has entered a mediaType search query.
      */
-    var isMediaType = function(q,types){
+    var isMediaType = function (q, types) {
          var hasMediaType = q ? Boolean(q.mediaType) : false;
          //if a query is not provided or if media type is not provided we will skip media scoping
          if(!hasMediaType) {
             return hasMediaType;
          }
          var mediaType = q.mediaType;
-        return types.filter(function(type){
+        return types.filter(function (type) {
             return type === q.mediaType.toLowerCase();
         }).length > 0 ;
     };
