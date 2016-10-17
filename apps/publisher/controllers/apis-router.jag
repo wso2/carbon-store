@@ -38,7 +38,7 @@ var mapper = function(path) {
 };
 try {
     response.addHeader('Cache-Control' ,'no-cache,no-store');
-    metrics.start("apis-router","router");
+    metrics.start("apis-router", "router");
     if (uriMatcher.match(API_URL)) {
         var args = uriMatcher.elements();
         var tenantId = DEFAULT_TENANT; //Assume that the tenant will be the super tenant
