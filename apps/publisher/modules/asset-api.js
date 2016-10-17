@@ -442,7 +442,7 @@ var result;
      * @return updated-asset
      */
     api.update = function (options, req, res, session) {
-        metrics.start("asset-api","update");
+        metrics.start("asset-api", "update");
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var rxtManager = getRxtManager(session,options.type);
