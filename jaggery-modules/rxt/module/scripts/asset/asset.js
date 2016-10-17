@@ -317,7 +317,8 @@ var asset = {};
         var path = asset.path;
         var actions = [];
         if(!path) {
-            log.error('Unable to finish post create actions as the asset path was not located.Subsequent CRUD operations may fail for asset '+asset.id);
+            log.error('Unable to finish post create actions as the asset path was not located.' +
+                'Subsequent CRUD operations may fail for asset ' + asset.id);
             metrics.stop();
             return false;
         }
