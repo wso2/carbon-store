@@ -11,13 +11,13 @@ $(function () {
                 var elem = $(this);
                 asset.unsubscribeBookmark(elem.data('type'), elem.data('aid'), location.href, elem);
             }
-        },'#btn-remove-subscribe').on(
+        }, '#btn-remove-subscribe').on(
         {
             click: function () {
                 var elem = $(this);
                 asset.process(elem.data('type'), elem.data('aid'), location.href, elem);
             }
-        },'#btn-add-gadget');
+        }, '#btn-add-gadget');
 
 
     $("a[data-toggle='tooltip']").tooltip();

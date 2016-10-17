@@ -20,6 +20,11 @@ var $container = $(".com-container");
 var getTextArea = function () {
     return $('.com-container #com-body');
 };
+/**
+ * @external JQuerySelector
+ * Return the Jquery selector for the currently logged users review section
+ * @return {JQuerySelector} JQuerySelector for my-review DOM element
+ */
 var getMyReviewElement = function () {
     return $('.com-container .my-review');
 };
@@ -36,6 +41,14 @@ var $lastReview = $('.load-more');
 var $more = $('#more');
 var $empty_list = $('#empty_list');
 var windowProxy;
+
+/**
+ * Publish or persiste the given activity in the database.
+ * @param {JSON} activity JSON Object need to be published, This should follow the standard activity Object structure
+ * @param {Function} onSuccess Method need to be executed in an event of success AJAX return
+ * @param {Function} onError Method need to be executed in an event of failure AJAX return
+ * @return {Number} Void
+ */
 var publish = function (activity, onSuccess, onError) {
     if (activity.target) {
         activity.context = {
@@ -56,9 +69,18 @@ var publish = function (activity, onSuccess, onError) {
         error: onError
     });
 };
+/**
+ * Show given message(msg) as an alert using common alert message template
+ * @param {Number} msg Message need to be displaied as an aleart
+ * @return {Number} Void
+ */
 var showAlert = function (msg) {
     getAlertElement().html(msg).fadeIn("fast");
 };
+/**
+ * Show/Hide loading animation according to the given status.
+ * @param {Boolean} status Show loading animation if true else hide
+ */
 var showLoading = function (status) {
     if (status) {
         getAlertElement().html('').css('display', 'inline-block').addClass('com-alert-wait');

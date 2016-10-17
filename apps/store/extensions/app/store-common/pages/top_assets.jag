@@ -80,13 +80,12 @@ require('/modules/store.js').exec(function (ctx) {
     }
     var qtemp = ctx.request.getParameter('q') || '';
     var searchQuery = utilsRequest.formatSearchQuery(qtemp);
-    output.searchQuery = decodeURIComponent(searchQuery)||'';
+    output.searchQuery = decodeURIComponent(searchQuery) || '';
     try {
         metrics.start("org.wso2.store.store-common.top-assets.caramel.render");
         caramel.render(output);
     } finally {
         metrics.stop();
     }
-    //print(page);
 }, request, response, session);
 %>

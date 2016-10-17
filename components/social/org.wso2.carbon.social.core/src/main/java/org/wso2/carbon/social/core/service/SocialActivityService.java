@@ -70,16 +70,18 @@ public abstract class SocialActivityService {
 		return serializedActivities;
 	}
 
-	/**
-	 * Update an activity given new activity
-	 *
-	 * @param activity
-	 * @throws SocialActivityException
-	 * @throws JsonSyntaxException
-	 */
-	public String update(String activity) throws SocialActivityException {
-		return getActivityPublisher().update(activity);
-	}
+    /**
+     * Update an activity given new activity,
+     * Retrieve the current activity by activitiId and Replace the existing activity information with the
+     * given {activity} object
+     * @param activity Stringify activity JSON, An activity can be either
+     *                       comment or like/dislike unlike/un-dislike
+     * @throws SocialActivityException
+     * @throws JsonSyntaxException
+     */
+    public String update(String activity) throws SocialActivityException {
+        return getActivityPublisher().update(activity);
+    }
 
 	/**
 	 * Allows asset id to be passed into the service and retrieve average rating
@@ -218,7 +220,7 @@ public abstract class SocialActivityService {
 	 * @param like
 	 * @return
 	 */
-	public boolean isUserliked(String userId, int targetId, int like) throws SocialActivityException {
+	public boolean isUserLiked(String userId, int targetId, int like) throws SocialActivityException {
 		return getActivityBrowser().isUserlikedActivity(userId, targetId, like);
 	}
 

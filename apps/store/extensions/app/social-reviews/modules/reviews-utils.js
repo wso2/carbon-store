@@ -52,6 +52,8 @@ var ReviewUtils = {};
         var socialSvc = getSocialSvc();
         var username = formatUsername(user);
         var isUserLoggedIn = false;
+        var usernameOnReview;
+        var myIndex;
         myReview = JSON.parse(String(socialSvc.getUserComment(username, target)));
         if (!isEmpty(myReview)) {
             myReview.actor.id = cleanUsername(myReview.actor.id);
@@ -61,8 +63,6 @@ var ReviewUtils = {};
         if (user) {
             isUserLoggedIn = true;
         }
-        var usernameOnReview;
-        var myIndex;
         for (var index = 0; index < reviews.length; index++) {
             review = reviews[index];
             usernameOnReview = review.actor.id;
@@ -118,6 +118,13 @@ var ReviewUtils = {};
         result.myReview = myReview;
         return result;
     };
+    /**
+     * Remove review made by given username..
+     *
+     * @param reviewId ID of the review which want to remove
+     * @param username Username of the reviewer
+     * @return boolean Whether user review has removed successfully or not
+     */
     ReviewUtils.removeUserReview = function(reviewId, username) {
         var socialSvc = getSocialSvc();
         var removed = socialSvc.removeActivity(reviewId, username);

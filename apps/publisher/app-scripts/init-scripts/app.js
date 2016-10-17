@@ -43,7 +43,6 @@ var rxt=require('rxt');
 var lifecycle=require('lifecycle');
 var metricsAPI = require('carbon-metrics').metrics;
 
-
 caramel.configs({
     context: rxt.app.buildContext(pubConfig.server.context),
     cache: false,

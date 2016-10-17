@@ -69,8 +69,7 @@ var api = {};
         var contentType = req.getHeader('Content-Type');
         if (ReqUtils.parseContentType(contentType) === 'application/json') {
             review = req.getContent();
-        }
-        else {
+        } else {
             res = ResponseProcessor.buildErrorResponse(res, 400, 'Invalid data type or malformed syntax');
             return;
         }

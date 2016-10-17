@@ -139,15 +139,15 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				total = resultSet.getInt(Constants.RATING_TOTAL);
 				count = resultSet.getInt(Constants.RATING_COUNT);
 				resultSet.close();
-				if (total != 0) {
-					JsonObject object = new JsonObject();
-					double average = (double) total / count;
-					object.addProperty(Constants.RATING, average);
-					object.addProperty(Constants.COUNT, count);
-					if (!Double.isInfinite(average)) {
-						return object;
-					}
-				}
+                if (total != 0) {
+                    JsonObject object = new JsonObject();
+                    double average = (double) total / count;
+                    object.addProperty(Constants.RATING, average);
+                    object.addProperty(Constants.COUNT, count);
+                    if (!Double.isInfinite(average)) {
+                        return object;
+                    }
+                }
 			}
 
 		} catch (SQLException e) {
@@ -452,8 +452,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
             }
             resultSet.close();
         } catch (SQLException | DataSourceException e) {
-            String message = errorMsg + e.getMessage();
-            throw new SocialActivityException(message, e);
+            throw new SocialActivityException(errorMsg, e);
         } finally {
             DSConnection.closeConnection(connection);
         }
@@ -683,7 +682,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
             } else if (Constants.VERB.valueOf(verb) == Constants.VERB.dislike) {
                 likeValue = 0;
             } else {
-	            likeValue = -1;
+                likeValue = -1;
             }
             int target = Integer.parseInt(targetId);
             // Handle like,dislike,unlike,undislike verbs
@@ -718,9 +717,9 @@ public class SQLActivityBrowser implements ActivityBrowser {
             commented = resultSet.next();
             resultSet.close();
         } catch (SQLException | DataSourceException e) {
-            String message = errorMsg + e.getMessage();
-            log.error(message, e);
-            throw new SocialActivityException(message, e);
+            String message = errorMsg;
+            log.error(message);
+            throw new SocialActivityException(message);
         } finally {
             DSConnection.closeConnection(connection);
         }

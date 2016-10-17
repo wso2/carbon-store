@@ -55,7 +55,6 @@ $(function () {
                 var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
                 createButton.parent().append($content);
             });*/
-            // populateTags(arr);
             if (!validator.isValidForm('form-asset-create')) {
                 window.scrollTo(0, 0);
                 $('div.error').each(function () {

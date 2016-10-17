@@ -38,10 +38,26 @@ public interface ActivityBrowser {
 
 	JsonObject getTopComments(String targetId, int likes) throws SocialActivityException;
 
+	/**
+	 *  Get comment with the targetId for the user with the given userId
+	 * @param userId Username with tenant domain i:e admin@carbon.super
+	 * @param targetId AssetType + UUID delimited by colon
+	 * @return JsonObject Comment JsonObject with text
+	 * @throws SocialActivityException
+	 */
 	JsonObject getUserComment(String userId, String targetId) throws SocialActivityException;
 
 	boolean isUserlikedActivity(String userId, int targetId, int like) throws SocialActivityException;
 
+	/**
+	 * Check whether the given user has already published the given activity on targetId (AssetType + UUID)
+	 *
+	 * @param activity Stringify activity JSON, An activity can be either
+	 *                       comment or like/dislike unlike/un-dislike
+	 * @param targetId       AssetType + UUID delimited by colon
+	 * @param userId         Username with tenant domain i:e admin@carbon.super
+	 * @return Boolean whether user has already reviewed or not
+	 */
 	boolean isPublished(String activity, String targetId, String userId) throws SocialActivityException;
 
 	JsonObject pollNewestComments(String targetId, int timestamp) throws SocialActivityException;

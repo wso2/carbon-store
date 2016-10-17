@@ -583,12 +583,12 @@ var permissions = {};
         var isAuthorized = false;
         try {
             if ((!username) || (username === wso2AnonUsername())) {
-                 if(log.isDebugEnabled()){
-                    log.debug('[permissions] username not provided to check ' + permission + '.The anon role will be used to check permissions');                    
-                 }
+                if (log.isDebugEnabled()) {
+                    log.debug('[permissions] username not provided to check ' + permission + '.The anon role will be used to check permissions');
+                }
                 isAuthorized = authorizer.isRoleAuthorized(getAnonRole(), permission, action);
             } else {
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug('[permissions] using username: ' + username + ' to check permission');
                 }
                 isAuthorized = authorizer.isUserAuthorized(username, permission, action);
@@ -948,7 +948,7 @@ var permissions = {};
     };
 
     permissions.SYSTEM_ANON_ROLE = 'SYSTEM/wso2.anonymous.role';
-    permissions.checkActionPermissionforPath = function(path,action,tenantId,username) {
+    permissions.checkActionPermissionforPath = function (path, action, tenantId, username) {
         var username = typeof username !== 'undefined' ?  username : null; // Default parameter set to null
         var server = require('store').server;
         var isAuthorized = false;
@@ -961,12 +961,13 @@ var permissions = {};
 
         try {
             if ((!username) || (username === wso2AnonUsername())) {
-                if(log.isDebugEnabled()){
-                    log.debug('[permissions] username not provided to check ' + permission + '.The anon role will be used to check permissions');
+                if (log.isDebugEnabled()) {
+                    log.debug('[permissions] username not provided to check ' +
+                        permission + '.The anon role will be used to check permissions');
                 }
                 isAuthorized = authorizer.isRoleAuthorized(permissions.SYSTEM_ANON_ROLE, path, action);
             } else {
-                if(log.isDebugEnabled()) {
+                if (log.isDebugEnabled()) {
                     log.debug('[permissions] using username: ' + username + ' to check permission');
                 }
                 isAuthorized = authorizer.isUserAuthorized(username, path, action);

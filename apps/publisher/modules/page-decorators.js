@@ -203,10 +203,10 @@ var pageDecorators = {};
                 }
             }
             //sortCombined is a string in the format -overview_createdtime
-            if(new RegExp("^[+]").test(sortCombined)){
+            if (new RegExp("^[+]").test(sortCombined)) {
                 sort = "+";
                 sortBy = sortCombined.substring(1);
-            }else if(new RegExp("^[-]").test(sortCombined)){
+            } else if (new RegExp("^[-]").test(sortCombined)) {
                 sort = "-";
                 sortBy = sortCombined.substring(1);
             }
@@ -218,12 +218,12 @@ var pageDecorators = {};
             sortObj.active = false;
             sortObj.sortNext = "+";
             sortObj.sortIcon = "sorting_asc";
-            if(sortable[i].name == sortBy) {
-                if(sort == "+") {
+            if (sortable[i].name == sortBy) {
+                if (sort == "+") {
                     sortingListSelected.helpIcon = "fw-sort-up margin-bottom-align";
                     sortObj.sortNext = "-";
                     sortObj.sortIcon = "sorting_asc";
-                } else if(sort == "-") {
+                } else if (sort == "-") {
                     sortingListSelected.helpIcon = "fw-sort-down margin-top-align";
                     sortObj.sortNext = "+";
                     sortObj.sortIcon = "sorting_desc";

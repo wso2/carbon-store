@@ -352,7 +352,7 @@ var result;
      * @return The created asset or null if failed to create the asset
      */
     api.create = function (options, req, res, session) {
-        metrics.start("asset-api","create");
+        metrics.start("asset-api", "create");
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var assetReq = req.getAllParameters('UTF-8'); //get asset attributes from the request
@@ -442,7 +442,7 @@ var result;
      * @return updated-asset
      */
     api.update = function (options, req, res, session) {
-        metrics.start("asset-api","update");
+        metrics.start("asset-api", "update");
         var assetModule = rxtModule.asset;
         var am = assetModule.createUserAssetManager(session, options.type);
         var rxtManager = getRxtManager(session,options.type);

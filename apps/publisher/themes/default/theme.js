@@ -288,7 +288,7 @@ var engine = caramel.engine('handlebars', (function() {
                 return output;
             };
             var renderOptions = function(value, values, field, mode, count) {
-                var id=(count)?field.name.tableQualifiedName+'_option_'+count:undefined;
+                var id = (count) ? field.name.tableQualifiedName + '_option_' + count : undefined;
                 var out = '<select ' + renderFieldMetaData(field, id, mode) + '>';
 
                 for (var index in values) {
@@ -555,7 +555,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
                 var username = options.hash.username;
-                var isAuthorized =options.hash.auth ? options.hash.auth : false;
+                var isAuthorized = options.hash.auth ? options.hash.auth : false;
                 var missingParams = (!key) || (!type) || (!tenantId) || (!username);
                 //If the user is forcing the view to render
                 if(isAuthorized){
@@ -578,7 +578,7 @@ var engine = caramel.engine('handlebars', (function() {
                 var type = options.hash.type;
                 var tenantId = options.hash.tenantId;
                 var username = options.hash.username;
-                var isAuthorized =options.hash.auth ? options.hash.auth : false;
+                var isAuthorized = options.hash.auth ? options.hash.auth : false;
                 var missingParams = (!key) || (!tenantId) || (!username);
                 //If the user is forcing the view to render
                 if(isAuthorized){
