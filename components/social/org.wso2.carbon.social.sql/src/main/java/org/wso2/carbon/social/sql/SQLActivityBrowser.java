@@ -452,8 +452,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
             }
             resultSet.close();
         } catch (SQLException | DataSourceException e) {
-            String message = errorMsg;
-            throw new SocialActivityException(message);
+            throw new SocialActivityException(errorMsg, e);
         } finally {
             DSConnection.closeConnection(connection);
         }
