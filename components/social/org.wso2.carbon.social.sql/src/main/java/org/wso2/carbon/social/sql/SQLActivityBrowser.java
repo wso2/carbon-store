@@ -682,7 +682,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
             } else if (Constants.VERB.valueOf(verb) == Constants.VERB.dislike) {
                 likeValue = 0;
             } else {
-	            likeValue = -1;
+                likeValue = -1;
             }
             int target = Integer.parseInt(targetId);
             // Handle like,dislike,unlike,undislike verbs
