@@ -17,7 +17,8 @@
  *
  */
 $(function () {
-    validator.initValidationEvents('form-asset-create',function(){});
+    validator.initValidationEvents('form-asset-create', function () {
+    });
     $('#btn-create-asset').removeAttr('disabled');
     var obtainFormMeta = function (formId) {
         return $(formId).data();
@@ -31,12 +32,12 @@ $(function () {
         //object.These duplicates need to be removed and a single
         //_tags entry created in their place
 
-        arr.forEach(function(entry){
-            if(entry.name !== '_tags'){
+        arr.forEach(function (entry) {
+            if (entry.name !== '_tags') {
                 modifiedArr.push(entry);
             } else {
                 tagEntry = entry;
-                if(tagEntry == undefined) {
+                if (tagEntry == undefined) {
                     return;
                 }
                 tagEntry.value = tagsAPI.selectedTags();
@@ -52,9 +53,9 @@ $(function () {
             createButton.attr('disabled', 'disabled');
             createButton.next().attr('disabled', 'disabled');
             /*caramel.render('loading', 'Creating asset. Please wait..', function (info, content) {
-                var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
-                createButton.parent().append($content);
-            });*/
+             var $content = $(content).removeClass('loading-animation-big').addClass('loading-animation');
+             createButton.parent().append($content);
+             });*/
             // populateTags(arr);
             if (!validator.isValidForm('form-asset-create')) {
                 window.scrollTo(0, 0);
@@ -83,11 +84,11 @@ $(function () {
         error: function (response) {
             var result;
             messages.hideAlertInfoLoader();
-            if (response && response.responseText){
+            if (response && response.responseText) {
                 result = JSON.parse(response.responseText);
             }
-            if (result && result.moreInfomation){
-                messages.alertError('Unable to create the '+ PublisherUtils.resolveCurrentPageAssetType()+ ' instance.'+result.moreInfomation);
+            if (result && result.moreInfomation) {
+                messages.alertError('Unable to create the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.' + result.moreInfomation);
             } else {
                 messages.alertError('Unable to add the ' + PublisherUtils.resolveCurrentPageAssetType() + ' instance.');
             }
@@ -120,18 +121,18 @@ $(function () {
     $('#form-asset-create input[type="text"]').each(initDatePicker);
 
 
-    var removeUnboundRow = function(link){
+    var removeUnboundRow = function (link) {
         var table = link.closest('table');
         var requiredOneRow = false;
-        var numberOfRows = $('tr',table).length;
-        if(table.attr('data-required-row')){
+        var numberOfRows = $('tr', table).length;
+        if (table.attr('data-required-row')) {
             requiredOneRow = true;
         }
-        if(requiredOneRow && numberOfRows == 2){
+        if (requiredOneRow && numberOfRows == 2) {
             messages.alertError('Required to have at-least one row.');
             return false;
         }
-        if(numberOfRows == 2){
+        if (numberOfRows == 2) {
             table.hide();
         }
         link.closest('tr').remove();
@@ -143,12 +144,17 @@ $(function () {
         table.find('thead').show();
         var referenceRow = $('#table_reference_' + tableName);
         var newRow = referenceRow.clone().removeAttr('id');
+        $('input[type="text"]', newRow).each(function () {
+            var attr = $(this).attr('data-original-title');
+            if (typeof attr !== typeof undefined && attr !== false) {
+                $(this).attr('title', $(this).attr('data-original-title'));
+            }
+        });
         $('input[type="text"]', newRow).val('');
         table.show().append(newRow);
         table.find('thead').show();
-        $('input[type="text"]', newRow).each(initDatePicker);
-
     });
+
     $('.js-unbounded-table').on('click', 'a', function (event) {
         removeUnboundRow($(event.target));
     });
@@ -174,10 +180,10 @@ $(function () {
     $('#form-asset-create a.collapsing-h2').off('click', '**').on('click', function (e) {
         e.preventDefault();
         var $panel = $(this).parent().next();
-        if($panel.is(":visible")){
+        if ($panel.is(":visible")) {
             $panel.slideUp();
             $(this).parent().addClass('collapsed');
-        }else{
+        } else {
             $panel.slideDown();
             $(this).parent().removeClass('collapsed');
         }
@@ -193,7 +199,7 @@ $(function () {
             $('.field-title').eq(index).addClass("collapsed");
         }
     });
-   
+
     initTaxonomyBrowser(null);
 
     String.prototype.replaceAll = function (find, replace) {
