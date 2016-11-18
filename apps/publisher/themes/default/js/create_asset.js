@@ -144,7 +144,7 @@ $(function () {
         table.find('thead').show();
         var referenceRow = $('#table_reference_' + tableName);
         var newRow = referenceRow.clone().removeAttr('id');
-        $('input[type="text"]', newRow).each(function () {
+        $('[data-toggle="tooltip"]', newRow).each(function () {
             var attr = $(this).attr('data-original-title');
             if (typeof attr !== typeof undefined && attr !== false) {
                 $(this).attr('title', $(this).attr('data-original-title'));
