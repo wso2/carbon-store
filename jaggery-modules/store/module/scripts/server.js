@@ -65,9 +65,9 @@ var server = {};
                 TenantAxisUtils = org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
 
             //check whether tenantCreate has been called
-            if (!reg.exists(options.tenantConfigs)) {
+            //if (!reg.exists(options.tenantConfigs)) {
                 event.emit('tenantCreate', tenantId);
-            }
+            //}
 
             //initialize tenant registry
             if (carbon.server.superTenant.tenantId != tenantId) {

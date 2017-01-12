@@ -28,13 +28,13 @@
     "userSpace": "/_system/governance/users",
     "roles": {
         "Internal/store": {
-            "/permission/admin/login": ["ui.execute"]
+
         }
     },
     "userRoles": ["Internal/store"],
     "permissions": {
         "login": {
-            "/permission/admin/login": ["ui.execute"]
+
         }
     },
     "paths": {
