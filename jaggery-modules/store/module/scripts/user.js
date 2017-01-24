@@ -109,12 +109,13 @@ var user = {};
                 carbon.registry.actions.DELETE,
                 carbon.registry.actions.AUTHORIZE
             ];
+            /* Remove unwanted permission from store user.
             p = opts.permissions.login;
             for (r in p) {
                 if (p.hasOwnProperty(r)) {
                     perms[r] = p[r];
                 }
-            }
+            }*/
             if (!um.roleExists(role)) {
                 um.addRole(role, [], perms);
             }
