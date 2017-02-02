@@ -23,6 +23,12 @@ asset.manager = function(ctx) {
     return {
         create: function(options) {
             var ref = require('utils').time;
+            var namespaceAttribute = this.rxtManager.getNamespaceAttribute(this.type);
+
+            if (namespaceAttribute) {
+                options.namespaceAttribute = namespaceAttribute;
+            }
+
             //Check if the options object has a createdtime attribute and populate it
             if ((options.attributes) && ctx.rxtManager.getRxtField(ctx.assetType, 'overview_createdtime')) {
                 options.attributes.overview_createdtime = ref.getCurrentTime();
