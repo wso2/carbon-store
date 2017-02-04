@@ -260,6 +260,9 @@ var pageDecorators = {};
             return;
         }
         breadcrumb.crumb(page.assets.name.toUpperCase(),utils.buildUrl('details')+'/'+page.assets.id);
+        if (page.assets.version) {
+            breadcrumb.crumb(page.assets.version, utils.buildUrl('details') + '/' + page.assets.id);
+        }
         page.breadcrumb = breadcrumb.build();
     };
     /**
