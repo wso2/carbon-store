@@ -23,6 +23,7 @@ var api = {};
     var ACTION_CHANGE_STATE = 'change-state';
     var ACTION_CHECKLIST = 'checklist';
     var ACTION_UPDATE_CHECKLIST = 'update-checklist';
+    var ACTION_UPDATE_VOTE = 'update-vote';
     var ACTION_LC_HISTORY = 'lifecycle-history';
     var ACTION_LC_VIEW = 'lifecycles';
     var ACTION_LC_ADD =  'attach-lifecycles';
@@ -183,6 +184,30 @@ var api = {};
             return successMsg(msg(200, 'The checklist was updated successfully'));
         }
         return errorMsg(msg(500, 'The checklist was not updated'));
+    };
+
+    api.updateVote = function(req, res, session, options) {
+        var success;
+        var body;
+        if (!req.getContent() || !req.getContentType() === 'application/json') {
+            var message = 'Vote items must be sent in the body of the request and content type should be set to application/json';
+            throw exceptionModule.buildExceptionObject(message, constants.STATUS_CODES.BAD_REQUEST);
+        }
+        body = req.getContent();
+        if((typeof body) == 'string'){
+            try {
+                body = parse(body);
+            } catch (e) {
+                var message = 'Error while parsing the message payload, please send correct content';
+                throw exceptionModule.buildExceptionObject(message, constants.STATUS_CODES.BAD_REQUEST);
+            }
+        }
+        options.votes = body.votes || [];
+        success = lifecycleAPI.vote(options, req, res, session);
+        if (success) {
+            return successMsg(msg(200, 'The vote was updated successfully'));
+        }
+        return errorMsg(msg(500, 'The vote was not updated'));
     };
     api.lifecycleHistory = function(req, res, session, options) {
         var history = lifecycleAPI.getHistory(options, req, res, session);
@@ -377,6 +402,9 @@ var api = {};
                 break;
             case ACTION_UPDATE_CHECKLIST:
                 result = api.updateCheckList(req, res, session, options);
+                break;
+            case ACTION_UPDATE_VOTE:
+                result = api.updateVote(req, res, session, options);
                 break;
             case ACTION_LC_HISTORY:
                 result = api.lifecycleHistory(req, res, session, options);

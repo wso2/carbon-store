@@ -1,0 +1,12 @@
+{{#if voteItems}}
+    <h3>Lifecycle Vote</h3>
+    {{#each voteItems}}
+        {{#if visible}}
+            <div class="checkbox"><label> <input type="checkbox" data-index="{{order}}" {{#if isUserVoted}}
+                                                 checked {{/if}}> <b> {{action}} </b> : {{currentVote}} out
+                                                                                      of {{requiredVote}} </label></div>
+        {{/if}}
+    {{/each}}
+
+{{/if}}
+

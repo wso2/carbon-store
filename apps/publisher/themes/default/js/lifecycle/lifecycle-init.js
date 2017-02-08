@@ -148,6 +148,15 @@ $(function() {
             });
         });
     };
+    var wireVoteHandlers = function(container) {
+        $(id(container)).find('input:checkbox').each(function() {
+            $(this).on('click', function(e) {
+                var index = $(this).data('index');
+                var state = $(this).is(':checked');
+                LifecycleAPI.lifecycle().updateVote(index, state);
+            });
+        });
+    };
     var renderTransitionInputs = function(action) {
         var impl = LifecycleAPI.lifecycle();
         if (!impl) {
@@ -321,6 +330,20 @@ $(function() {
         var container = config(constants.CONTAINER_CHECKLIST_AREA);
         $(id(container)).html('');
     };
+
+    var renderVoteItems = function() {
+        var container = config(constants.CONTAINER_VOTE_AREA);
+        var impl = LifecycleAPI.lifecycle();
+        if (impl) {
+            var data = {};
+            data.voteItems = impl.setVoteActions();
+            renderPartial(constants.CONTAINER_VOTE_AREA, constants.CONTAINER_VOTE_AREA , data, wireVoteHandlers);
+        }
+    };
+    var unrenderVoteItems = function() {
+        var container = config(constants.CONTAINER_VOTE_AREA);
+        $(id(container)).html('');
+    };
     var renderTransitionUI = function(action) {
         // var container = config(constants.CONTAINER_TRANSITION_UI_AREA);
         // var impl = LifecycleAPI.lifecycle();
@@ -380,6 +403,26 @@ $(function() {
         container.html('');
         container.attr('style', '');
     };
+    //Blocks user interaction with the vote
+    var blockVote = function() {
+        var voteContainer = config(constants.CONTAINER_VOTE_OVERLAY);
+        var container = $(id(voteContainer));
+        container.html('<img src="' + spinnerURL() + '" /> Updating vote');
+        container.css('position', 'absolute');
+        container.css('z-index', 2);
+        container.css('display', 'block');
+        container.css('background-color', 'grey');
+        container.css('top', 0);
+        container.css('bottom', 0);
+        container.css('left', 0);
+        container.css('right', 0);
+    };
+    var unblockVote = function() {
+        var voteContainer = config(constants.CONTAINER_VOTE_OVERLAY);
+        var container = $(id(voteContainer));
+        container.html('');
+        container.attr('style', '');
+    };
     var hightlightCurrentStateNode = function() {
         var currentState = LifecycleAPI.lifecycle().currentState;
         var stateNode = LifecycleAPI.lifecycle().stateNode(currentState);
@@ -408,6 +451,7 @@ $(function() {
             }
             renderLCActions();
             renderChecklistItems();
+            renderVoteItems();
             renderDeleteActions();
             $(id(config(constants.CONTAINER_LC_NOTIFICATIONS_AREA))).html('');
         }
@@ -421,6 +465,7 @@ $(function() {
         hightlightCurrentStateNode();
         unrenderLCActions();
         unrenderChecklistItems();
+        unrenderVoteItems();
         if (!LifecycleAPI.lifecycle().isLCActionsPermitted) {
             LifecycleAPI.notify(config(constants.MSG_WARN_CANNOT_CHANGE_STATE), {
                 type: constants.NOTIFICATION_WARN,
@@ -431,13 +476,16 @@ $(function() {
         }
         renderLCActions();
         renderChecklistItems();
+        renderVoteItems();
         renderDeleteActions();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_START, function() {
         blockChecklist();
+        blockVote();
     });
     LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS, function() {
         unblockChecklist();
+        unblockVote();
         hightlightCurrentStateNode();
         renderStateInformation();
         if (LifecycleAPI.lifecycle().nextStates().length == 0) {
@@ -448,9 +496,11 @@ $(function() {
             renderServerWarning(config(constants.MSG_WARN_NO_TRAVERSABLE_STATE));
             hideCommentInputArea();
             renderChecklistItems();
+            renderVoteItems();
             return;
         }
         renderChecklistItems();
+        renderVoteItems();
         renderLCActions();
         renderDeleteActions();
     });
@@ -468,6 +518,18 @@ $(function() {
     LifecycleAPI.event(constants.EVENT_UPDATE_CHECKLIST_FAILED, function() {
         unblockChecklist();
         LifecycleAPI.notify(config(constants.MSG_ERROR_CHECKLIST_UPDATE), {
+            type: 'error'
+        });
+    });
+    LifecycleAPI.event(constants.EVENT_UPDATE_VOTE_START, function() {
+        blockVote();
+    });
+    LifecycleAPI.event(constants.EVENT_UPDATE_VOTE_SUCCESS, function() {
+        unblockVote();
+    });
+    LifecycleAPI.event(constants.EVENT_UPDATE_VOTE_FAILED, function() {
+        unblockVote();
+        LifecycleAPI.notify(config(constants.MSG_ERROR_VOTE_UPDATE), {
             type: 'error'
         });
     });

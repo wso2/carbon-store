@@ -1791,6 +1791,45 @@ var asset = {};
         }
         return success;
     };
+
+    AssetManager.prototype.invokeLifecycleVote = function(asset, voteIndex, voteState) {
+        var success = false;
+        var lifecycleName = resolveLCName(arguments, asset, 3);
+        if (!asset) {
+            if (log.isDebugEnabled()) {
+                log.debug('Unable to locate asset details in order to invoke vote item state change');
+            }
+            return success;
+        }
+        //Check if a vote state has been provided
+        if (voteState == null) {
+            if (log.isDebugEnabled()) {
+                log.debug('The vote item at index ' + voteIndex + ' cannot be changed as the vote item state is not provided.');
+            }
+            return success;
+        }
+        //Obtain the number of vote for this state
+        var voteItems = this.am.manager.manager.getAllVotingItems(lifecycleName);
+        //Check if the vote index is valid
+        if ((voteIndex < 0) || (voteIndex > voteItems.length)) {
+            log.error('The provided vote item index ' + voteIndex + ' is not valid.It must be between 0 and ' + voteItems.length);
+            throw 'The provided vote item index ' + voteIndex + ' is not valid.It must be between 0 and ' + voteItems.length;
+        }
+        success = true; //Assume the vote invocation will succeed
+        //These methods do not return a boolean value indicating if the item was checked or unchecked
+        //TODO: We could invoke getCheckLifecycleCheckItems and check the item index to see if the operation was successfull.
+        try {
+            if (voteState == true) {
+                this.am.manager.manager.vote(voteIndex, lifecycleName);
+            } else {
+                this.am.manager.manager.unvote(voteIndex, lifecycleName);
+            }
+        } catch (e) {
+            log.error(e);
+            success = false;
+        }
+        return success;
+    };
     /**
      * Returns all of the check list items for the asset
      * @param  {Object} asset An asset instance
