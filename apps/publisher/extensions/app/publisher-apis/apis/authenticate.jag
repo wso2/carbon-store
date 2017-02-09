@@ -31,12 +31,15 @@
  */
 var log = new Log('login-api');
 var user = require('store').user;
+var storeAPI = require('store');
 var constants = require("rxt").constants;
+var permissionAPI = require('rxt').permissions;
 var credentials = {};
 var result = {};
 var METHOD = request.getMethod();
 var responseProcessor = require('utils').response;
 response.contentType = 'application/json';
+var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
 var SESSION_MAP = 'sso_sessions'; //We need to create the session map as it is required by the session listener
 
 /**
@@ -65,6 +68,25 @@ var addToSessionMap = function (app, sessionInstance) {
     }
 };
 
+var authenticate = function (username, password) {
+    var carbon = require('carbon');
+    return storeAPI.server.instance().authenticate(username, password);
+};
+
+var loadTenant = function (username) {
+    var carbon = require('carbon');
+    var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+    var TenantAxisUtils = Packages.org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+    var service;
+    var ctx;
+    var domain = MultitenantUtils.getTenantDomain(username);
+    if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
+        service = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+        ctx = service.getServerConfigContext();
+        TenantAxisUtils.setTenantAccessed(domain, ctx);
+    }
+};
+
 switch (METHOD) {
     case 'POST'://request method is POST
         //TODO change the authorization model to oauth or a proper on
@@ -85,22 +107,54 @@ switch (METHOD) {
 
                     //Add to the session map as it is required by the session listener
                     addToSessionMap(application, session);
-                    response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK, {'sessionId': session.getId()});
-                }
-                else {
-                    response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED, 'error on authentication api', response, 'username/password is incorrect', '', []);
+                    response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK,
+                                                                      {'sessionId': session.getId()});
+                } else {
+                    try {
+                        authenticated = authenticate(credentials.username, credentials.password);
 
+                        var usr = carbon.server.tenantUser(credentials.username);
+
+                        var modifiedUsername = usr.username;
+                        if (usr.tenantId != MultitenantConstants.SUPER_TENANT_ID) {
+                            modifiedUsername = storeAPI.user.removeTenantDomainFromUsername(credentials.username);
+                        }
+                        var tenantInfo = carbon.server.tenantUser(credentials.username);
+                        storeAPI.server.sandbox(tenantInfo, function () {
+                            session.put("LOGGED_IN_USER", credentials.username);
+                            session.put("Loged", "true");
+                            loadTenant(credentials.username);
+                            storeAPI.user.loadTenant(credentials.username);
+                            //STEP 3 : Decide if the user has permission to log into the application
+                            hasPublisherLoginPermission =
+                                    permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId, modifiedUsername);
+
+                            //STEP 4 : Emit the login event only if the user is authorized
+                            if (hasPublisherLoginPermission) {
+                                storeAPI.user.emitLogin(credentials.username);
+                            }
+                        });
+                        response = responseProcessor.buildSuccessResponse(response, constants.STATUS_CODES.OK,
+                                                                          {'sessionId': session.getId()});
+                    } catch (e) {
+                        response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.UNAUTHORIZED,
+                                                                               'error on authentication api', response,
+                                                                               'username/password is incorrect', '',
+                                                                               []);
+                    }
                 }
             }catch(e){
-                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND, 'error on authentication api', response, 'Non existing domain name',e.message, []);
-
+                response = responseProcessor.buildErrorResponseDefault(constants.STATUS_CODES.NOT_FOUND,
+                                                                       'error on authentication api', response,
+                                                                       'Non existing domain name', e.message, []);
             }
 
         }
         break;
 
     default:// other methods       
-        result = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.BAD_REQUEST, 'Your request malformed!');
+        result = responseProcessor.buildErrorResponse(response, constants.STATUS_CODES.BAD_REQUEST,
+                                                      'Your request malformed!');
 }
 
 %>
