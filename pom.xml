@@ -630,21 +630,21 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <!--<carbon.platform.version>4.3.0-SNAPSHOT</carbon.platform.version>-->
-        <carbon.kernel.version>4.4.7</carbon.kernel.version>
+        <carbon.kernel.version>4.4.11</carbon.kernel.version>
         <carbon.social.version>2.4.8-SNAPSHOT</carbon.social.version>
 
         <carbon.store.version>2.4.8-SNAPSHOT</carbon.store.version>
         <!--repo versions-->
 
         <carbon.commons.version>4.5.4</carbon.commons.version>
-        <carbon.registry.version>4.6.0</carbon.registry.version>
-        <carbon.governance.version>4.7.1</carbon.governance.version>
+        <carbon.registry.version>4.6.2</carbon.registry.version>
+        <carbon.governance.version>4.7.3</carbon.governance.version>
         <carbon.deployment.version>4.7.0</carbon.deployment.version>
-        <carbon.identity.framework.version>5.2.0</carbon.identity.framework.version>
-        <carbon.identity.basicauth.version>5.1.1</carbon.identity.basicauth.version>
-        <carbon.identity.saml2.version>5.1.2</carbon.identity.saml2.version>
-        <carbon.identity.saml.version>5.1.1</carbon.identity.saml.version>
-        <identity.application.auth.basic.auth.version>5.1.1</identity.application.auth.basic.auth.version>
+        <carbon.identity.framework.version>5.7.5</carbon.identity.framework.version>
+        <carbon.identity.basicauth.version>5.3.0</carbon.identity.basicauth.version>
+        <carbon.identity.saml2.version>5.2.0</carbon.identity.saml2.version>
+        <carbon.identity.saml.version>5.3.0</carbon.identity.saml.version>
+        <identity.application.auth.basic.auth.version>5.3.0</identity.application.auth.basic.auth.version>
         <carbon.multitenancy.version>4.5.2</carbon.multitenancy.version>
         <carbon.analytics.common.version>5.0.8</carbon.analytics.common.version>
 

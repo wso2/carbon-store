@@ -32,6 +32,7 @@ var LifecycleUtils = {};
     constants.API_FETCH_STATE = 'apiFetchState';
     constants.API_FETCH_HISTORY = 'apiFetchHistory';
     constants.API_UPDATE_CHECKLIST = 'apiUpdateChecklist';
+    constants.API_UPDATE_VOTE = 'apiUpdateVote';
     constants.UI_LIFECYCLE_SELECT_ID = '#lifecycle-selector';
     constants.UI_LIFECYCLE_SELECT_BOX = 'ul.lifecycle-dropdown-menu li a';
     constants.UI_LIFECYCLE_COMMENT_CONTAINER = 'lifecycleCommentContainer';
@@ -41,6 +42,8 @@ var LifecycleUtils = {};
     constants.CONTAINER_RENDERING_AREA = 'lifecycleRenderingArea';
     constants.CONTAINER_CHECKLIST_AREA = 'lifecycleChecklistArea';
     constants.CONTAINER_CHECKLIST_OVERLAY = 'lifecycleChecklistBlock';
+    constants.CONTAINER_VOTE_AREA = 'lifecycleVoteArea';
+    constants.CONTAINER_VOTE_OVERLAY = 'lifecycleVoteBlock';
     constants.CONTAINER_LC_ACTION_OVERLAY = 'lifecycleActionOverlay';
     constants.CONTAINER_HISTORY_AREA = 'lifecycleHistoryArea';
     constants.CONTAINER_INFORMATION_AREA = 'lifecycleInformationArea';
@@ -70,6 +73,9 @@ var LifecycleUtils = {};
     constants.EVENT_UPDATE_CHECKLIST_START = 'event.update.checklist.start';
     constants.EVENT_UPDATE_CHECKLIST_SUCCESS = 'event.update.checklist.success';
     constants.EVENT_UPDATE_CHECKLIST_FAILED = 'event.update.checklist.failed';
+    constants.EVENT_UPDATE_VOTE_START = 'event.update.vote.start';
+    constants.EVENT_UPDATE_VOTE_SUCCESS = 'event.update.vote.success';
+    constants.EVENT_UPDATE_VOTE_FAILED = 'event.update.vote.failed';
     constants.EVENT_FETCH_HISTORY_START = 'event.fetch.history.start';
     constants.EVENT_FETCH_HISTORY_SUCCESS = 'event.fetch.history.success';
     constants.EVENT_FETCH_HISTORY_FAILED = 'event.fetch.history.failed';
@@ -85,6 +91,8 @@ var LifecycleUtils = {};
     constants.MSG_ERROR_STATE_CHANGE = 'msgStateChangeError';
     constants.MSG_SUCCESS_CHECKLIST_UPDATE = 'msgChecklistUpdateSuccess';
     constants.MSG_ERROR_CHECKLIST_UPDATE = 'msgChecklistUpdateError';
+    constants.MSG_SUCCESS_VOTE_UPDATE = 'msgVoteUpdateSuccess';
+    constants.MSG_ERROR_VOTE_UPDATE = 'msgVoteUpdateError';
     constants.MSG_ERROR_LC_DETACH = 'msgDetachLcError';
     constants.MSG_ERROR_LC_ATTACH = 'msgAttachLcError';
     constants.CONTAINER_DELETE_ACTION_AREA = 'deleteActionArea';
@@ -504,6 +512,15 @@ var LifecycleUtils = {};
         }
         return caramel.url(apiBase + '/' + asset.id + apiUpdateChecklist + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName);
     };
+    LifecycleImpl.prototype.urlUpdateVote = function() {
+        var apiBase = LifecycleUtils.config(constants.API_BASE);
+        var apiUpdateVote = LifecycleUtils.config(constants.API_UPDATE_VOTE);
+        var asset = LifecycleUtils.currentAsset();
+        if ((!asset) || (!asset.id)) {
+            throw 'Unable to locate details about asset';
+        }
+        return caramel.url(apiBase + '/' + asset.id + apiUpdateVote + '?type=' + asset.type + '&lifecycle=' + this.lifecycleName);
+    };
     LifecycleImpl.prototype.urlFetchHistory = function() {
         var apiBase = LifecycleUtils.config(constants.API_BASE);
         var apiFetchHistory = LifecycleUtils.config(constants.API_FETCH_HISTORY);
@@ -567,6 +584,23 @@ var LifecycleUtils = {};
         state.allowedActions = actions;
 
         return state.allowedActions;
+    };
+
+    LifecycleImpl.prototype.setVoteActions = function(actions) {
+        var currentState = this.currentState;
+        var state = this.stateMap.states[currentState] || {};
+        var datamodel;
+        if (actions) {
+            //console.log('changing vote state');
+            datamodel = (state.datamodel) ? state.datamodel : (state.datamodel = {});
+            datamodel.voteActions = actions;
+            state.voteActions = actions;
+            return state.voteActions;
+            
+        } else {
+            datamodel = state.datamodel || {};
+            return datamodel.voteActions ? datamodel.voteActions : [];
+        }
     };
     LifecycleImpl.prototype.nextStateByAction = function(action, state) {
         //Get tinformation about the state
@@ -662,6 +696,31 @@ var LifecycleUtils = {};
             }
         });
     };
+
+    LifecycleImpl.prototype.updateVote = function(voteIndex, checked) {
+        var data = {};
+        var entry = {};
+        entry.index = voteIndex;
+        entry.checked = checked;
+        data.votes = [];
+        data.votes.push(entry);
+        LifecycleAPI.event(constants.EVENT_UPDATE_VOTE_START);
+        var that = this;
+        $.ajax({
+                   type: 'POST',
+                   url: this.urlUpdateVote(),
+                   data: JSON.stringify(data),
+                   contentType: 'application/json',
+                   success: function() {
+                       //Update the internal vote items
+                       LifecycleAPI.event(constants.EVENT_UPDATE_VOTE_SUCCESS);
+                       that.fetchState();
+                   },
+                   error: function() {
+                       LifecycleAPI.event(constants.EVENT_UPDATE_VOTE_FAILED);
+                   }
+               });
+    };
     LifecycleImpl.prototype.fetchState = function() {
         LifecycleAPI.event(constants.EVENT_FETCH_STATE_START);
         var that = this;
@@ -682,6 +741,7 @@ var LifecycleUtils = {};
                 }
                 that.checklist(data.checkItems);
                 that.setAllowedActions(data.approvedActions);
+                that.setVoteActions(data.lifecycleVote);
                 that.currentLCStateDurationColour = data.currentLCStateDurationColour;
                 that.currentLCStateDuration = data.currentLCStateDuration;
                 LifecycleAPI.event(constants.EVENT_FETCH_STATE_SUCCESS);

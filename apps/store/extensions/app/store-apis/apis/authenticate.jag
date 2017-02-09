@@ -30,12 +30,17 @@
  */
 var log = new Log('login-api');
 var user = require('store').user;
+var storeAPI = require('store');
 var credentials = {};
 var result = {};
 var method = request.getMethod();
 var responseProcessor = require('utils').response;
 response.contentType = 'application/json';
+var permissionAPI = require('rxt').permissions;
 var SESSION_MAP = 'sso_sessions'; //We need to create the session map as it is required by the session listener
+var MultitenantConstants = Packages.org.wso2.carbon.base.MultitenantConstants;
+
+
 /**
  * The function adds the session to a session map.If a session map is not present
  * in the application context it is added
@@ -58,6 +63,25 @@ var addToSessionMap = function(app, sessionInstance) {
     }
 };
 
+var authenticate = function (username, password) {
+    var carbon = require('carbon');
+    return storeAPI.server.instance().authenticate(username, password);
+};
+
+var loadTenant = function (username) {
+    var carbon = require('carbon');
+    var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+    var TenantAxisUtils = Packages.org.wso2.carbon.core.multitenancy.utils.TenantAxisUtils;
+    var service;
+    var ctx;
+    var domain = MultitenantUtils.getTenantDomain(username);
+    if (domain != null && !MultitenantConstants.SUPER_TENANT_DOMAIN_NAME.equals(domain)) {
+        service = carbon.server.osgiService('org.wso2.carbon.utils.ConfigurationContextService');
+        ctx = service.getServerConfigContext();
+        TenantAxisUtils.setTenantAccessed(domain, ctx);
+    }
+};
+
 switch(method){
     case 'POST':
         credentials.username = request.getParameter('username');
@@ -77,10 +101,37 @@ switch(method){
                 response = responseProcessor.buildSuccessResponse(response,200,{'sessionId':session.getId()});
                 //Add to the session map as it is required by the session listener
                 addToSessionMap(application, session);
-            } else {       
-                //response.status = 401;     
-                response = responseProcessor.buildErrorResponse(response,401,'username/password is incorrect');
+            } else {
+                try {
+                    authenticated = authenticate(credentials.username, credentials.password);
 
+                    var usr = carbon.server.tenantUser(credentials.username);
+
+                    var modifiedUsername = usr.username;
+                    if (usr.tenantId != MultitenantConstants.SUPER_TENANT_ID) {
+                        modifiedUsername = storeAPI.user.removeTenantDomainFromUsername(credentials.username);
+                    }
+                    var tenantInfo = carbon.server.tenantUser(credentials.username);
+                    storeAPI.server.sandbox(tenantInfo, function () {
+                        session.put("LOGGED_IN_USER", credentials.username);
+                        session.put("Loged", "true");
+                        loadTenant(credentials.username);
+                        storeAPI.user.loadTenant(credentials.username);
+                        //STEP 3 : Decide if the user has permission to log into the application
+                        hasPublisherLoginPermission =
+                                permissionAPI.hasAppPermission('APP_LOGIN', usr.tenantId, modifiedUsername);
+
+                        //STEP 4 : Emit the login event only if the user is authorized
+                        if (hasPublisherLoginPermission) {
+                            storeAPI.user.emitLogin(credentials.username);
+                        }
+                    });
+                    response = responseProcessor.buildSuccessResponse(response,200,{'sessionId':session.getId()});
+                } catch (e) {
+                    response = responseProcessor.buildErrorResponse(response, 401, 'username/password is incorrect');
+                    //response.status = 401;
+
+                }
             }
         }        
         break;

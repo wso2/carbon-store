@@ -281,6 +281,27 @@ var error = '';
         }
         return checkItems;
     };
+
+    var setLifecycleVotes = function (approvedActions, lifeCycleApprovalBean) {
+        voteItems = [];
+        for (var i = 0; i < lifeCycleApprovalBean.size(); i++) {
+            var item = lifeCycleApprovalBean.get(i);
+            var voteItem =  new Object();
+            voteItem.name = item.getName();
+            voteItem.action = item.getName();
+            voteItem.currentVote = item.getCurrentVote();
+            voteItem.requiredVote = item.getRequiredVote();
+            voteItem.order = item.getOrder();
+            voteItem.isUserVoted = item.getValue();
+            if ('true' == item.getVisible()) {
+                voteItem.visible = true;
+            } else {
+                voteItem.visible = false;
+            }
+            voteItems[item.getOrder()] = voteItem;
+        }
+        return voteItems;
+    };
     /**
      * this method returns an object with all allowed lc actions
      * @param approvedActions
@@ -381,6 +402,66 @@ var error = '';
         }
         return success;
     };
+
+    var updateVoteState = function (voteIndex, voteStatus, asset, state, am, lcName) {
+        //Check if the index provided is valid
+        var msg;
+        if ((voteIndex < 0) || (voteIndex > state.lifecycleVote.length - 1)) {
+            msg = 'Unable to change the state of the vote item as the index does not point to' + ' a valid vote.The vote index must be between 0 and ' + (state.lifecycleVote.length - 1)  + '.';
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
+        }
+        //Check if the vote item state is the same as the next state
+        if (state.lifecycleVote[voteIndex].isUserVoted == voteStatus) {
+            msg = 'The state of the vote at index ' + voteIndex + ' was not changed as it is already ' + voteStatus;
+            if(log.isDebugEnabled()){
+                log.debug(msg);
+            }
+            return;
+            //throw msg;
+        }
+        //Invoke the state change
+        try {
+            var assert = am.am.manager.getGenericArtifact(asset.id);
+            if (voteStatus == true) {
+                assert.vote(voteIndex, lcName);
+            } else {
+                assert.unvote(voteIndex, lcName);
+            }
+        } catch (e) {
+            if (log.isDebugEnabled()) {
+                log.debug(e);
+            }
+            msg = 'Unable to change the state of vote ' + voteIndex + ' to ' + voteStatus;
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.INTERNAL_SERVER_ERROR);
+        }
+    };
+
+    var updateVoteStates = function (options, asset, am, state) {
+        var success = false;
+        var msg = '';
+        var lcName = resolveLifecycle(options, asset);
+        //Check if the current state has any vote
+        if ((state.votes) && (state.votes.length < 1)) {
+            msg = 'Unable to change the state of the vote as the current state(' + state.id + ') does not have any votes';
+            throw exceptionModule.buildExceptionObject(msg, constants.STATUS_CODES.BAD_REQUEST);
+        }
+        //Assume checking items will succeed
+        success = true;
+        var votesList = options.votes;
+        var voteIndex;
+        var voteState;
+        var vote;
+        //Go through each check item in the check items
+        for (var index in votesList) {
+            vote = votesList[index];
+            voteIndex = vote.index;
+            voteState = vote.checked;
+            if ((voteIndex != null) && (voteState == true || voteState == false)) {
+                updateVoteState(voteIndex, voteState, asset, state, am, lcName);
+            }
+        }
+        return success;
+    };
     var dateHistory = function (timeStamp) {
         var res = timeStamp.split(" ");
         return res[0];
@@ -438,6 +519,7 @@ var error = '';
         state.approvedActions = setAvailableApprovedActions(state.approvedActions, lcCheckedStates,asset,session);
         state.isLCActionsPermitted = isLCActionsPermitted(state.approvedActions); //(state.approvedActions.length > 0 ) ? true : false;//isLCActionsPermitted(asset, options, req, res, session);
         state.checkItems = setCurrentCheckItemState(state.checkItems, lcCheckedStates, state.isLCActionsPermitted);
+        state.lifecycleVote = setLifecycleVotes(state.lifecycleVote,lcCheckedStates.getLifeCycleApprovalBeanList());
         state.currentLCStateDurationColour = lcCheckedStates.getLifeCycleCurrentStateDurationColour();
         state.currentLCStateDuration = lcCheckedStates.getLifeCycleCurrentStateDuration();
         return state;
@@ -502,6 +584,22 @@ var error = '';
         validateAsset(asset, options);
         var state = this.getState(options, req, res, session);
         isSuccess = updateCheckItemStates(options, asset, am, state);
+        return isSuccess;
+    };
+
+    api.vote = function (options, req, res, session) {
+        var isSuccess = false;
+        validateOptions(options);
+        var assetApi = rxtModule.asset;
+        var am = assetApi.createUserAssetManager(session, options.type);
+        var asset = getAsset(options, am);
+        if(!isLCActionsPermitted(asset, options, req, res, session)){
+            var error = 'User not permmited to update vote of asset of id: ' + options.id;
+            throw exceptionModule.buildExceptionObject(error, constants.STATUS_CODES.UNAUTHORIZED);
+        }
+        validateAsset(asset, options);
+        var state = this.getState(options, req, res, session);
+        isSuccess = updateVoteStates(options, asset, am, state);
         return isSuccess;
     };
     api.getHistory = function (options, req, res, session) {
