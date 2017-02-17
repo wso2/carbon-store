@@ -112,7 +112,7 @@
         response.code = 200;
         var result = {};
         result.success = true;
-        result.referer = params.referer;
+        result.referer = Packages.org.owasp.encoder.Encode.forHtml(params.referer);
         print(result);
     } else {
         log.warn('User ' + username + ' does not have permission to log into the store application.Make sure the user has the store role.');

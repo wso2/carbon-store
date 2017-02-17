@@ -23,9 +23,24 @@
 	var getClaims = function(dialect) {
 		var claims = [];
 
-		var admin = new Packages.org.wso2.carbon.claim.mgt.ClaimAdminService();
+		//var admin = new Packages.org.wso2.carbon.claim.mgt.ClaimAdminService();
+        var admin = new Packages.org.wso2.carbon.identity.claim.metadata.mgt.ClaimMetadataManagementServiceImpl();
+        var localClaims = admin.getLocalClaims("carbon.super");
+        for (var i = 0; i < localClaims.size(); i++) {
+            var c = localClaims.get(i);
 
-		var defaultClaims = admin.getClaimMappingByDialect(dialect).claimMappings;
+            var claim = {
+                claimUri: c.getClaimURI(),
+                displayTag: c.getClaimProperties().get('DisplayName'),
+                isRequired: c.getClaimProperties().get('Required'),
+                regex: c.getClaimProperties().get('RegEx'),
+                value: c.getClaimProperties().get('Default'),
+                displayOrder: c.getClaimProperties().get('DisplayOrder')
+            };
+            claims.push(claim);
+        }
+
+		/*var defaultClaims = admin.getClaimMappingByDialect(dialect).claimMappings;
 
 		for (var i = 0; i < defaultClaims.length; i++) {
 			var c = defaultClaims[i].getClaim();
@@ -40,7 +55,7 @@
 			};
 
 			claims.push(claim);
-		}
+		}*/
 
 		return claims;
 	};
