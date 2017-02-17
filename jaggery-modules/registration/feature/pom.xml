@@ -20,7 +20,7 @@
         <groupId>org.wso2.carbon.store</groupId>
         <artifactId>registration-parent</artifactId>
 
-        <version>2.4.9-SNAPSHOT</version>
+        <version>2.4.9</version>
 
         <relativePath>../pom.xml</relativePath>
     </parent>
