@@ -72,6 +72,10 @@ $(function() {
             editButton.removeAttr('disabled');
             editButton.next().removeAttr('disabled');
             $('.loading-animation').css('display','none');
+            setTimeout(
+                function () {
+                    window.location.reload();
+                }, 1500);
         },
         error: function (response) {
             var result;
