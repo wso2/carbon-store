@@ -28,6 +28,11 @@
         return;
     }
     try {
+        if (user) {
+            var currentTime = Packages.java.util.Calendar.getInstance().getTime();
+            var date = Packages.java.text.SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
+            log.info('\'' + user.username + '\' logged out from Store at ' + date.format(currentTime));
+        }
         session.invalidate();
     } catch (e) {
         log.error('Unable to logout the user', e);

@@ -78,6 +78,11 @@
     }
 
     if(!authenticated) {
+        if (username) {
+            var currentTime = Packages.java.util.Calendar.getInstance().getTime();
+            var date = Packages.java.text.SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
+            log.warn('Failed Store login attempt \'' + username + '\' at ' + date.format(currentTime));
+        }
         utils.response.buildErrorResponse(response, 401, "The provided username and password combination is incorrect.");
         return;
     }
@@ -109,6 +114,11 @@
     //STEP 5 : Determine the final response emitted to the user depending
     //         on whether he has login permission
     if(hasPublisherLoginPermission) {
+        if (username) {
+            var currentTime = Packages.java.util.Calendar.getInstance().getTime();
+            var date = Packages.java.text.SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
+            log.info('\'' + username + '\' logged into Store at ' + date.format(currentTime));
+        }
         response.code = 200;
         var result = {};
         result.success = true;
