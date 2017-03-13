@@ -23,15 +23,14 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
 import org.wso2.carbon.social.core.Activity;
 import org.wso2.carbon.social.core.ActivityBrowser;
 import org.wso2.carbon.social.core.SocialActivityException;
-import org.wso2.carbon.social.sql.Constants;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -40,8 +39,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.wso2.carbon.social.sql.SocialUtil;
 
 /**
  * 
@@ -209,13 +206,23 @@ public class SQLActivityBrowser implements ActivityBrowser {
 					tenantDomain, order, limit, offset);
 
 			activities = new ArrayList<Activity>();
-			while (resultSet.next()) {
-				JsonObject body = (JsonObject) parser.parse(resultSet
-						.getString(Constants.BODY_COLUMN));
-				int id = resultSet.getInt(Constants.ID_COLUMN);
-				Activity activity = new SQLActivity(body);
-				activity.setId(id);
-				activities.add(activity);
+			if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+				while (resultSet.next()) {
+					JsonObject body = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+					int id = resultSet.getInt(Constants.ID_COLUMN);
+					Activity activity = new SQLActivity(body);
+					activity.setId(id);
+					activities.add(activity);
+				}
+			} else {
+				while (resultSet.next()) {
+					JsonObject body = (JsonObject) parser.parse(new String(resultSet.getBytes(Constants.BODY_COLUMN), 
+																Constants.UTF8));
+					int id = resultSet.getInt(Constants.ID_COLUMN);
+					Activity activity = new SQLActivity(body);
+					activity.setId(id);
+					activities.add(activity);
+				}
 			}
 			resultSet.close();
 		} catch (SQLException e) {
@@ -243,6 +250,10 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			log.error(message, e);
 			throw new SocialActivityException(message, e);
 		} catch (InvocationTargetException e) {
+			String message = errorMsg + e.getMessage();
+			log.error(message, e);
+			throw new SocialActivityException(message, e);
+		} catch (UnsupportedEncodingException e) {
 			String message = errorMsg + e.getMessage();
 			log.error(message, e);
 			throw new SocialActivityException(message, e);
@@ -422,9 +433,15 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			connection = DSConnection.getConnection();
 			statement = connection.prepareStatement(SELECT_LIKE_STATUS);
 			statement.setString(1, userId);
-			statement.setString(2, targetId);
-			statement.setInt(3, like);
 			resultSet = statement.executeQuery();
+
+			if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+				statement.setString(2, targetId);
+				statement.setInt(3, like);
+			} else {
+				statement.setLong(2, Long.parseLong(targetId));
+				statement.setShort(3, (short)like);
+			}
 
 			if (resultSet.next()) {
 				return true;

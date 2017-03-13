@@ -18,25 +18,23 @@
 
 package org.wso2.carbon.social.sql;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.sql.PreparedStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.ndatasource.common.DataSourceException;
-import org.wso2.carbon.social.sql.Constants;
-import org.wso2.carbon.social.sql.SocialUtil;
 import org.wso2.carbon.social.core.Activity;
 import org.wso2.carbon.social.core.ActivityPublisher;
 import org.wso2.carbon.social.core.SocialActivityException;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 /**
  * 
@@ -130,6 +128,9 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			log.error(errorMessage + e.getMessage(), e);
 			throw new SocialActivityException(errorMessage, e);
 		} catch (JsonSyntaxException e){
+			log.error(errorMessage + e.getMessage(), e);
+			throw new SocialActivityException(errorMessage, e);
+		} catch (UnsupportedEncodingException e) {
 			log.error(errorMessage + e.getMessage(), e);
 			throw new SocialActivityException(errorMessage, e);
 		}
@@ -246,10 +247,12 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	 * @return long
 	 * @throws SQLException
 	 * @throws DataSourceException
-	 * @throws SocialActivityException 
+	 * @throws SocialActivityException
+	 * @throws UnsupportedEncodingException on errors while trying to convert to JSON
 	 */
 	private long publishLikeActivity(SQLActivity activity)
-			throws JsonSyntaxException, SQLException, DataSourceException, SocialActivityException {
+			throws JsonSyntaxException, SQLException, DataSourceException, SocialActivityException,
+			       UnsupportedEncodingException {
 
 		Connection connection = null;
 		PreparedStatement selectActivityStatement;
@@ -273,15 +276,23 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			selectActivityStatement = connection
 					.prepareStatement(COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
-			selectActivityStatement.setString(1, commentID);
+			if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+				selectActivityStatement.setString(1, commentID);
+			} else {
+				selectActivityStatement.setLong(1, Long.parseLong(commentID));
+			}
 			resultSet = selectActivityStatement.executeQuery();
 			if (!resultSet.next()) {
 				log.error("Unable to publish like activity for comment : "
 						+ commentID);
 			} else {
-				JsonObject currentBody;
-				currentBody = (JsonObject) parser.parse(resultSet
-						.getString(Constants.BODY_COLUMN));
+				JsonObject currentBody = null;
+				if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+					currentBody = (JsonObject) parser.parse(resultSet.getString(Constants.BODY_COLUMN));
+				} else {
+					currentBody = (JsonObject) parser.parse(new String(resultSet.getBytes(Constants.BODY_COLUMN),
+					                                                   Constants.UTF8));
+				}
 
 				Activity commentActivity = new SQLActivity(currentBody);
 
@@ -332,6 +343,17 @@ public class SQLActivityPublisher extends ActivityPublisher {
 				updateActivityStatement.setInt(2, likeCount);
 				updateActivityStatement.setInt(3, dislikeCount);
 				updateActivityStatement.setString(4, commentID);
+				if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+					updateActivityStatement.setString(1, json.toString());
+					updateActivityStatement.setInt(2, likeCount);
+					updateActivityStatement.setInt(3, dislikeCount);
+					updateActivityStatement.setString(4, commentID);
+				} else {
+					updateActivityStatement.setBytes(1, json.toString().getBytes());
+					updateActivityStatement.setShort(2, (short)likeCount);
+					updateActivityStatement.setShort(3, (short)dislikeCount);
+					updateActivityStatement.setLong(4, Long.parseLong(commentID));
+				}
 				updateActivityStatement.executeUpdate();
 				connection.commit();
 			}
@@ -350,6 +372,9 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			throw e;
 		} catch (JsonSyntaxException e) {
 			log.error("Malformed JSON element found: " + e.getMessage(), e);
+			throw e;
+		} catch (UnsupportedEncodingException e) {
+			log.error(errorStr + e.getMessage(), e);
 			throw e;
 		} finally {
 			DSConnection.closeConnection(connection);
@@ -371,7 +396,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			deleteActivityStatement = connection
 					.prepareStatement(DELETE_LIKE_ACTIVITY);
-			deleteActivityStatement.setString(1, targetId);
+			if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+				deleteActivityStatement.setString(1, targetId);
+			} else {
+				deleteActivityStatement.setLong(1, Long.parseLong(targetId));
+			}
 			deleteActivityStatement.setString(2, actor);
 			deleteActivityStatement.executeUpdate();
 
@@ -514,7 +543,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 				}
 
 				deleteComment = connection.prepareStatement(DELETE_COMMENT_SQL);
-				deleteComment.setString(1, activityId);
+				if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+					deleteComment.setString(1, activityId);
+				} else {
+					deleteComment.setLong(1, Long.parseLong(activityId));
+				}
 				ret = deleteComment.executeUpdate();
 			}
 			connection.commit();
@@ -536,6 +569,9 @@ public class SQLActivityPublisher extends ActivityPublisher {
 		} catch (DataSourceException e) {
 			log.error(errorMessage + e.getMessage(), e);
 			throw new SocialActivityException(errorMessage, e);
+		} catch (UnsupportedEncodingException e) {
+			log.error(errorMessage + e.getMessage(), e);
+			throw new SocialActivityException(errorMessage, e);
 		} finally {
 			DSConnection.closeConnection(connection);
 		}
@@ -550,10 +586,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 	 * @return boolean
 	 * @throws SQLException
 	 * @throws SocialActivityException
+	 * @throws UnsupportedEncodingException on errors while trying to convert to Json format
 	 */
 	private boolean removeRating(String activityId, Connection connection,
 			String userId) throws SQLException, JsonSyntaxException,
-			SocialActivityException {
+	                              SocialActivityException, UnsupportedEncodingException {
 		ResultSet selectResultSet;
 		ResultSet cacheResultSet;
 		PreparedStatement selectStatement;
@@ -567,7 +604,11 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 			selectStatement = connection
 					.prepareStatement(COMMENT_ACTIVITY_SELECT_SQL);
-			selectStatement.setString(1, activityId);
+			if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+				selectStatement.setString(1, activityId);
+			} else {
+				selectStatement.setLong(1, Long.parseLong(activityId));
+			}
 			selectResultSet = selectStatement.executeQuery();
 
 			if (!selectResultSet.next()) {
@@ -575,9 +616,13 @@ public class SQLActivityPublisher extends ActivityPublisher {
 						+ activityId);
 				return false;
 			} else {
-				JsonObject body;
-					body = (JsonObject) parser.parse(selectResultSet
-							.getString(Constants.BODY_COLUMN));
+				JsonObject body = null;
+				if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
+					body = (JsonObject) parser.parse(selectResultSet.getString(Constants.BODY_COLUMN));
+				} else {
+					body = (JsonObject) parser.parse(new String(selectResultSet.getBytes(Constants.BODY_COLUMN),
+					                                            Constants.UTF8));
+				}
 				
 				Activity activity = new SQLActivity(body);
 				String actorId = activity.getActorId();
@@ -636,6 +681,9 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			log.error(
 					"Malformed JSON element found: " + e.getMessage(),
 					e);
+			throw e;
+		} catch (UnsupportedEncodingException e) {
+			log.error("Unable to convert body to JSON format. " + e.getMessage(), e);
 			throw e;
 		}
 	}
