@@ -338,11 +338,6 @@ public class SQLActivityPublisher extends ActivityPublisher {
 
 				updateActivityStatement = connection
 						.prepareStatement(COMMENT_ACTIVITY_UPDATE_SQL);
-
-				updateActivityStatement.setString(1, json.toString());
-				updateActivityStatement.setInt(2, likeCount);
-				updateActivityStatement.setInt(3, dislikeCount);
-				updateActivityStatement.setString(4, commentID);
 				if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
 					updateActivityStatement.setString(1, json.toString());
 					updateActivityStatement.setInt(2, likeCount);
