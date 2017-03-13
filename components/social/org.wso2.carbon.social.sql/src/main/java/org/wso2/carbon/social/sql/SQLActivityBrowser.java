@@ -433,7 +433,6 @@ public class SQLActivityBrowser implements ActivityBrowser {
 			connection = DSConnection.getConnection();
 			statement = connection.prepareStatement(SELECT_LIKE_STATUS);
 			statement.setString(1, userId);
-			resultSet = statement.executeQuery();
 
 			if (!cls.toString().contains(Constants.POSTGRESQL_QUERY_ADAPTER)) {
 				statement.setString(2, targetId);
@@ -442,7 +441,7 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				statement.setLong(2, Long.parseLong(targetId));
 				statement.setShort(3, (short)like);
 			}
-
+			resultSet = statement.executeQuery();
 			if (resultSet.next()) {
 				return true;
 			}
