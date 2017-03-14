@@ -117,6 +117,9 @@
                 if (log.isDebugEnabled()) {
                     log.debug('user is set :::' + username);
                 }
+                var currentTime = Packages.java.util.Calendar.getInstance().getTime();
+                var date = Packages.java.text.SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
+                log.info('\'' + username + '\' logged into Store at ' + date.format(currentTime));
                 if(relayState && relayState.indexOf(server.getProxyContextPath()) < 0) {
                     relayState = server.getProxyContextPath() + relayState;
                 }
@@ -126,6 +129,12 @@
                 response.sendError(401, 'You do not have permission to login to this application.Please contact your administrator and request permission.');
             }
         } else {
+            var user = session.get("LOGGED_IN_USER");
+            if (user) {
+                var currentTime = Packages.java.util.Calendar.getInstance().getTime();
+                var date = Packages.java.text.SimpleDateFormat("'['yyyy-MM-dd HH:mm:ss,SSSZ']'");
+                log.info('\'' + user + '\' logged out from Publisher at ' + date.format(currentTime));
+            }
             sso.client.logout(session, attr.issuer);
             response.sendRedirect(server.buildAppURL(relayState));
         }
