@@ -158,7 +158,7 @@ var engine = caramel.engine('handlebars', (function() {
                         index = 0;
                         out += '</tr><tr>';
                     }
-                    if (fields[key].url == 'true' && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
+                    if (fields[key].url === true && fields[key].value && fields[key].value.lastIndexOf('http', 0) === 0){
                         out += '<td><a href="'+Handlebars.Utils.escapeExpression(fields[key].value)+'">' + Handlebars.Utils.escapeExpression(fields[key].value || ' ') + '</a></td>';
                     } else if(fields[key].value) {
                         out += '<td>' + Handlebars.Utils.escapeExpression(fields[key].value || ' ') + '</td>';
@@ -184,7 +184,12 @@ var engine = caramel.engine('handlebars', (function() {
                             fields[key].value = [fields[key].value];
                         }
                         var value = fields[key].value[index] ? fields[key].value[index] : ' ';
-                        out += '<td style="width:'+100/columnCount+'%">' + Handlebars.Utils.escapeExpression(value) + '</td>';
+                        if (fields[key].url === true && value.lastIndexOf('http', 0) === 0) {
+                            // we are not formatting this code due to readability issues.
+                            out += '<td style="width:' + 100 / columnCount + '%"><a href="' + Handlebars.Utils.escapeExpression(value) + '">' + Handlebars.Utils.escapeExpression(value) + '</a></td>';
+                        } else {
+                            out += '<td style="width:'+100/columnCount+'%">' + Handlebars.Utils.escapeExpression(value) + '</td>';
+                        }
                     }
                     out += '</tr>';
                 }
@@ -254,7 +259,8 @@ var engine = caramel.engine('handlebars', (function() {
                 if( (typeof(field.required) == "boolean" && field.required) || (typeof(field.required) == "string" && field.required == "true" )){
                     isRequired = true;
                 }
-//                var isRequired=(field.required == 'true' || ( field.required && field.required != "false"))? true : false; //field.required is not boolean
+//                var isRequired=(field.required == 'true' || ( field.required && field.required != "false"))? true :
+// false; //field.required is not boolean
                 if(field.validate){
                     className += ' validate-regexp';
                     meta += ' data-regexp=\'' + field.validate + '\' ';
