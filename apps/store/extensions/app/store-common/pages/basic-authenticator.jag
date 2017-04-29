@@ -98,6 +98,12 @@
     //STEP 2 : Iniate loading of tenant resources
     var tenantInfo = carbon.server.tenantUser(username);
     storeAPI.server.sandbox(tenantInfo,function(){
+        if (request.getSession) {
+            if (session && !session.isNew()) {
+                session.invalidate();
+            }
+            session = request.getSession(true);
+        }
         session.put("LOGGED_IN_USER", username);
         session.put("Loged", "true");
         loadTenant(username);

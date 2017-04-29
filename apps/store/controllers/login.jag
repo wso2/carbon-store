@@ -55,6 +55,12 @@
                 endpoint = getBasicAuthLoginURL (authMethod,config);
                 break;
             case constants.AUTH_METHOD_SSO:
+                if (request.getSession) {
+                    if (session && !session.isNew()) {
+                        session.invalidate();
+                    }
+                    session = request.getSession(true);
+                }
                 endpoint = rxtAPI.server.buildAppURL(context + '/pages/sso-login');
                 break;
             case constants.AUTH_METHOD_OTHER:
