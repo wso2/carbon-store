@@ -84,9 +84,7 @@ public class SocialUtil {
 
 	public static String getSocialAdaptorImplClass() throws IOException,
 			SocialActivityException {
-		String configPath = CarbonUtils.getCarbonHome() + File.separator
-				+ "repository" + File.separator + "conf" + File.separator
-				+ "social.xml";
+		String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "social.xml";
 		File socialXML = new File(configPath);
 		try {
 			InputStream inStream = new FileInputStream(socialXML);
