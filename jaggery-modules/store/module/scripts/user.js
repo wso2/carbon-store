@@ -286,7 +286,7 @@ var user = {};
         var usr = carbon.server.tenantUser(username.toLowerCase());
         var um = server.userManager(usr.tenantId);
         var usr = um.getUser(usr.username);
-        event.emit('login', usr.tenantId, usr, session);
+        event.emit('login', usr.tenantId, usr, request.getSession(false));
     };
 
     user.loginWithSAML = function (username) {

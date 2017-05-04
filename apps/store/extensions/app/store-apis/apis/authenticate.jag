@@ -113,6 +113,12 @@ switch(method){
                     }
                     var tenantInfo = carbon.server.tenantUser(credentials.username);
                     storeAPI.server.sandbox(tenantInfo, function () {
+                        if (request.getSession) {
+                            if (session && !session.isNew()) {
+                                session.invalidate();
+                            }
+                            session = request.getSession(true);
+                        }
                         session.put("LOGGED_IN_USER", credentials.username);
                         session.put("Loged", "true");
                         loadTenant(credentials.username);
