@@ -64,6 +64,9 @@ public class Constants {
 	public static final String SUPER_TENANT_DOMAIN = "carbon.super";
 	public static final String AVERAGE_RATING = "rating_average";
 
+	public static final String POSTGRESQL_QUERY_ADAPTER = "PostgreSQLQueryAdapter";
+	public static final String UTF8 = "UTF-8";
+
 	public static enum VERB {
 		like, dislike, unlike, undislike;
 	}
