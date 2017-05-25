@@ -59,10 +59,10 @@ var client = {};
      * getting url encoded saml authentication request
      * @param issuerId
      */
-    client.getEncodedSAMLAuthRequest = function (issuerId) {
+    client.getEncodedSAMLAuthRequest = function (issuerId, acsUrl, destination, requestSigningEnabled) {
         return Util.encode(
             Util.marshall(
-                new Packages.org.wso2.store.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId)
+                new Packages.org.wso2.store.sso.common.builders.AuthReqBuilder().buildAuthenticationRequest(issuerId, acsUrl, destination, requestSigningEnabled)
             ));
     };
 
