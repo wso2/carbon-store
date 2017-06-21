@@ -43,6 +43,8 @@ public class X509CredentialImpl implements X509Credential {
 
     private PublicKey publicKey = null;
     private X509Certificate signingCert = null;
+    private X509Certificate entityCertificate = null;
+    private PrivateKey privateKey = null;
 
     /**
      * The key is constructed form modulus and exponent.
@@ -64,6 +66,12 @@ public class X509CredentialImpl implements X509Credential {
         signingCert = cert;
     }
 
+    public X509CredentialImpl(SSOAgentX509Credential credential) {
+        publicKey = credential.getPublicKey();
+        this.entityCertificate = credential.getEntityCertificate();
+        this.privateKey = credential.getPrivateKey();
+    }
+
     /**
      * Retrieves the publicKey
      */
@@ -78,8 +86,7 @@ public class X509CredentialImpl implements X509Credential {
     // ********** Not implemented **************************************************************
 
     public X509Certificate getEntityCertificate() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.entityCertificate;
     }
 
     public Collection<X509CRL> getCRLs() {
@@ -113,8 +120,7 @@ public class X509CredentialImpl implements X509Credential {
     }
 
     public PrivateKey getPrivateKey() {
-        // TODO Auto-generated method stub
-        return null;
+        return this.privateKey;
     }
 
     public SecretKey getSecretKey() {
