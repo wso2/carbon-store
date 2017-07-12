@@ -36,6 +36,11 @@ $(function() {
 
     validator.initValidationEvents('form-asset-update',function(){});
     $('#editAssetButton').removeAttr('disabled');
+    $('select').each(function (index) {
+        if ($(this).attr('data-valcount')) {
+            $(this).select2();
+        }
+    });
     var obtainFormMeta = function(formId) {
         return $(formId).data();
     };
@@ -144,6 +149,7 @@ $(function() {
         table.show().append(newRow);
         table.find('thead').show();
         $('input[type="text"]',newRow).each(initDatePicker);
+        $('select',newRow).select2();
 
     });
     $('.js-unbounded-table').on('click','a',function(event){

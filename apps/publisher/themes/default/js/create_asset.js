@@ -20,6 +20,11 @@ $(function () {
     validator.initValidationEvents('form-asset-create', function () {
     });
     $('#btn-create-asset').removeAttr('disabled');
+    $('select').each(function (index) {
+        if ($(this).attr('data-valcount')) {
+            $(this).select2();
+        }
+    });
     var obtainFormMeta = function (formId) {
         return $(formId).data();
     };
@@ -153,6 +158,7 @@ $(function () {
         $('input[type="text"]', newRow).val('');
         table.show().append(newRow);
         table.find('thead').show();
+        $('select',newRow).select2();
     });
 
     $('.js-unbounded-table').on('click', 'a', function (event) {
