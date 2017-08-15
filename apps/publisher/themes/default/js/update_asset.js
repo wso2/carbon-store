@@ -217,6 +217,7 @@ $(function() {
 
     $('input[type=reset]').click(function (e) {
         initTaxonomyBrowser(appliedTaxonomy);
+        resetTaxonomyBrowser();
     });
 });
 
