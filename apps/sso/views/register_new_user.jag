@@ -217,7 +217,13 @@ var registerURL = server.buildURL('/sso/register');
                 } else {
                     regFromSuccess.hide();
                     regFormError.show();
-                    regFormError.text(JSON.parse(data).msg);
+
+                    var errorMsg = JSON.parse(data).msg;
+                    if (errorMsg) {
+                        errorMsg = errorMsg.replace("UserAlreadyExistingUsername", "Username");
+                    }
+
+                    regFormError.text(errorMsg);
                 }
             });
         }
