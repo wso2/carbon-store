@@ -313,6 +313,11 @@ asset.renderer = function(ctx) {
                 navList.push('Lifecycle', 'btn-lifecycle', util.buildUrl('lifecycle') + '/' + id);
             }
         }
+        // Fix REGISTRY-3926, only render association page if user has permission
+        if (permissionAPI.hasAssetPermission(permissionAPI.ASSET_ASSOCIATIONS, ctx.assetType, ctx.session)) {
+               navList.push('Associations', 'btn-association', util.buildAppPageUrl('associations') + '/' + ctx.assetType + '/' + id);
+        }
+
         if (permissionAPI.hasActionPermissionforPath(path, 'write', ctx.session)
             && permissionAPI.hasAssetPagePermission(type, 'update', user.tenantId, username) && ctx.rxtManager.getVersionAttribute(type)) {
             navList.push('Version', 'btn-copy', util.buildUrl('copy') + '/' + id);
