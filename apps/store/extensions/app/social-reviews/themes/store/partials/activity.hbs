@@ -23,7 +23,7 @@
         <div class="row">
             <div class="com-thumbs">
                 <ul>
-                    <li>
+                    <li title={{t "Like"}}>
                         {{#unless isMyComment}}
                             <a class="thumbs-up-button {{#unless ../isUserLoggedIn}}disabled{{/unless}}" href="#">
                                 <i class="icon icon-thumbs-up {{#if iLike}}selected{{/if}}"></i><span
@@ -33,7 +33,7 @@
                         >{{#if object.likes.totalItems}} {{object.likes.totalItems}} {{/if}}</span>
                         {{/unless}}
                     </li>
-                    <li>
+                    <li title={{t "Dislike"}}>
                         {{#unless isMyComment}}
                             <a class="thumbs-down-button {{#unless ../isUserLoggedIn}}disabled{{/unless}}" href="#"><i class="icon icon-thumbs-down {{#if iDislike}}selected{{/if}}"></i><span
                                     class="com-dislike-count">{{#if object.dislikes.totalItems}} {{object.dislikes.totalItems}} {{/if}}</span></a>
