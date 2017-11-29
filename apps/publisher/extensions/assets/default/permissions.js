@@ -130,6 +130,10 @@ var tenantLoad = function(ctx) {
         return ctx.utils.assetFeaturePermissionString('update', ctx.type);
     };
     Permissions.ASSET_LIFECYCLE = '/permission/admin/manage/resources/govern/lifecycles';
+
+    // Fix REGISTRY-3926, only render association page if user has permission
+    Permissions.ASSET_ASSOCIATIONS = '/permission/admin/manage/resources/associations';
+
     if(log.isDebugEnabled()){
         log.debug('Registering asset permissions not in the WSO2 permission tree');
     }

@@ -340,6 +340,7 @@ var permissions = {};
     permissions.ASSET_DELETE = 'ASSET_DELETE';
     permissions.ASSET_SEARCH = 'ASSET_SEARCH';
     permissions.ASSET_LIFECYCLE = 'ASSET_LIFECYCLE';
+    permissions.ASSET_ASSOCIATIONS = 'ASSET_ASSOCIATIONS';
     permissions.ASSET_BOOKMARK = 'ASSET_BOOKMARK';
     permissions.APP_LOGIN = 'APP_LOGIN'
     permissions.APP_STATISTICS = 'APP_STATISTICS';
