@@ -190,7 +190,7 @@ var createQuery = function(options) {
     var category = options.category || undefined;
     var searchQueryString = '?';
     input = input.trim();
-    if (input.indexOf(":") == -1 && input.trim() !== "") {
+    if (input && input.indexOf(":") == -1) {
         input = setDefaultSearchQuery(input);
     }
     q = parseUsedDefinedQuery(input);
@@ -209,8 +209,8 @@ var createQuery = function(options) {
     }
     return searchUrl + searchQueryString;
 };
-var setDefaultSearchQuery = function(query){
-    return "_default:" +query;
+var setDefaultSearchQuery = function (query) {
+    return "_default:" + query;
 };
 var initSearch = function() {
     //Support for searching when pressing enter

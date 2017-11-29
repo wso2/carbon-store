@@ -163,8 +163,8 @@ $(function () {
         return output;
     };
 
-    var setDefaultSearchQuery = function(query){
-        return "_default:" +query;
+    var setDefaultSearchQuery = function (query) {
+        return "_default:" + query;
     };
 
     /***
@@ -185,10 +185,10 @@ $(function () {
             term = term.trim(); //Remove any whitespaces
             //If this term is not empty and does not have a : then it should be appended to the
             //previous term
-            if((!isEmpty(term))&&(isTokenizedTerm(term))){
-                previous = arr.length -1;
-                if(previous>=0) {
-                    arr[previous]= arr[previous]+' '+term;
+            if ((!isEmpty(term)) && (isTokenizedTerm(term))) {
+                previous = arr.length - 1;
+                if (previous >= 0) {
+                    arr[previous] = arr[previous] + ' ' + term;
                 }
             } else {
                 arr.push(term);

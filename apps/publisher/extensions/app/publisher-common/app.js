@@ -53,12 +53,12 @@ app.server = function(ctx) {
             defaultSearchSplit: function(term, searchTemplate){
                 var terms ;
                 var newStr = "";
-                if(term.indexOf("\"") > -1){
+                if (term.indexOf("\"") > -1) {
                     terms = term.split("\" \"");
-                    for(var i=0; i<terms.length; i++){
-                        if(i == 0){
+                    for (var i = 0; i < terms.length; i++) {
+                        if (i == 0) {
                             terms[i] = terms[i] + "\"";
-                        } else if(i == terms.length-1){
+                        } else if (i == terms.length - 1) {
                             terms[i] = "\"" + terms[i];
                         } else {
                             terms[i] = "\"" + terms[i] + "\"";
@@ -68,26 +68,26 @@ app.server = function(ctx) {
                     terms = term.split(" ");
                 }
 
-                if(terms.length == 1){
-                    if(term.indexOf("\"") > -1){
-                        newStr = searchTemplate.replace(/\*\$input\*/g,function(){
+                if (terms.length == 1) {
+                    if (term.indexOf("\"") > -1) {
+                        newStr = searchTemplate.replace(/\*\$input\*/g, function () {
                             return term;
                         });
                     } else {
-                        newStr = searchTemplate.replace(/\$input/g,function(){
+                        newStr = searchTemplate.replace(/\$input/g, function () {
                             return term;
                         });
                     }
                 } else {
                     var orString = "(";
-                    for(var i=0; i<terms.length; i++){
-                        if(orString != "("){
+                    for (var i = 0; i < terms.length; i++) {
+                        if (orString != "(") {
                             orString = orString + " OR ";
                         }
                         orString = orString + terms[i];
                     }
                     orString = orString + ")";
-                    newStr = searchTemplate.replace(/\*\$input\*/g,function(){
+                    newStr = searchTemplate.replace(/\*\$input\*/g, function () {
                         return orString;
                     });
                 }

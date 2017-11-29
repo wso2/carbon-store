@@ -315,7 +315,6 @@ var app = {};
         if ((serverConfigs.defaultSearchSplit) && (serverConfigs.defaultSearchSplit.length > 0)) {
             //Overriding extensions will completely replace the default search template
             configs.defaultSearchSplit = serverConfigs.defaultSearchSplit;
-            //configs.disabledAssets = disabledAssets.concat(serverConfigs.disabledAssets);
             log.info('Default search template: ' + stringify(configs.defaultSearchSplit));
         }
 

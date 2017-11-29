@@ -141,6 +141,12 @@ var pageDecorators = {};
         page.assetCategoryDetails.hasCategories = true;
         page.assetCategoryDetails.values = categoryValues;
     };
+    /***
+     * This method reads the rxt file and gets the options text fields and converts them into a JSON Object and
+     * returns it to the categorization model in the front end
+     * @param ctx
+     * @param page
+     */
     pageDecorators.assetCategoryFilterDetails = function (ctx, page) {
         if (page.meta.pageName != 'list') {
             return;
@@ -151,7 +157,7 @@ var pageDecorators = {};
         var updatedCategorizationFields = [];
         var isVisible = false;
 
-        for (var index=0; index < categorizationFields.length; index++) {
+        for (var index = 0; index < categorizationFields.length; index++) {
             var updatedCategorizationField = {};
             var categorizationField = categorizationFields[index];
             var parentId = categorizationField.name.fullName;
@@ -161,6 +167,7 @@ var pageDecorators = {};
             updatedCategorizationField.priority = categorizationField.priority;
             updatedCategorizationField.id = parentId;
             updatedCategorizationField.divId = parentId + index;
+            updatedCategorizationField.isCollapseIn = false;
             if (ctx.rxtManager.isSolarFacetsEnabled(ctx.assetType)) {
                 childValues = doTermSearch(ctx,
                     parentId, paging, true);
@@ -168,13 +175,12 @@ var pageDecorators = {};
                 childValues = categorizationField.values[0].value;
             }
 
-            if (index < ctx.rxtManager.collapseInCount(ctx.assetType)){
+            //This collapseInCount method returns the number of fields to be shown in the filtering UI by default
+            if (index < ctx.rxtManager.collapseInCount(ctx.assetType)) {
                 updatedCategorizationField.isCollapseIn = true;
-            } else {
-                updatedCategorizationField.isCollapseIn = false;
             }
 
-            for(var childIndex=0; childIndex < childValues.length; childIndex++){
+            for (var childIndex = 0; childIndex < childValues.length; childIndex++) {
                 var childCategorizationField = {};
                 var localField = childValues[childIndex];
                 childCategorizationField.text = localField.value;
@@ -186,8 +192,8 @@ var pageDecorators = {};
             updatedCategorizationField.children = childFields;
             updatedCategorizationFields.push(updatedCategorizationField);
         }
-        for(var i=0; i < updatedCategorizationFields.length; i++){
-            if(updatedCategorizationFields[i].children.length != 0){
+        for (var i = 0; i < updatedCategorizationFields.length; i++) {
+            if (updatedCategorizationFields[i].children.length != 0) {
                 isVisible = true;
             }
         }

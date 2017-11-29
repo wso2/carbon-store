@@ -168,6 +168,15 @@ var categorization = function () {
         return updatedQuery;
     };
 
+    /***
+     * This method removes the given parameter from the URL.
+     * When the removeWhole is false it will only remove the value of the given data.
+     * If it is true this will remove the whole given data
+     * @param sourceURL
+     * @param data
+     * @param removeWhole
+     * @returns {*}
+     */
     var removeURLParameter = function (sourceURL, data, removeWhole) {
         var rtn = sourceURL.split("?")[0],
             param,
@@ -208,6 +217,12 @@ var categorization = function () {
         return rtn;
     };
 
+    /**
+     * This method returns the value of a particular parameter when the key is given
+     * @param sourceURL
+     * @param key
+     * @returns {*}
+     */
     var getParamValue = function (sourceURL, key) {
         var param,
             params_arr = [],
@@ -338,6 +353,7 @@ var categorization = function () {
 
     if (url.indexOf("=") > -1) {
         var query = url.split("=");
+        //1 in query[1] is the value of the query parameter
         if (query[1] !== "") {
             updateFilters(url);
         }
