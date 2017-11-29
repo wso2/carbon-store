@@ -95,7 +95,7 @@ if(RelayState){
                                 <input type="hidden" name="RelayState" value="<%=RelayState%>">
                                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 form-group">
                                     <% if (isPasswordRecoveryEnabled) { %>
-                                        <a href="confirm-recovery">Forgot your password?</a>
+                                        <a href="confirm-recovery" class="font-large">Forgot your password?</a> <br/>
                                     <% }%>
                                     <% include(themeModule.getThemedUrl('includes/login_links.jag')); %>
                                 </div>
