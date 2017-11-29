@@ -222,5 +222,6 @@ $(function () {
 
     $('button[type=reset]').click(function (e) {
         initTaxonomyBrowser(null);
+        resetTaxonomyBrowser();
     });
 });
