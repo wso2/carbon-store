@@ -802,7 +802,7 @@ var core = {};
         return false;
     };
     RxtManager.prototype.defaultSearchSplit = function(type){
-        if(!type){
+        if (!type) {
             var userMod = require('store').user;
             var configs = userMod.configs(this.registry.tenantId) || {};
             var templateFuncCommon = configs.defaultSearchSplit || defaultSearchTemplateImpl;
@@ -1019,7 +1019,7 @@ var core = {};
             for (var fieldName in table.fields) {
                 field = table.fields[fieldName];
                 if (field.type == fieldType) {
-                    if(field.categorization){
+                    if (field.categorization) {
                         result.push(field);
                     }
                 }

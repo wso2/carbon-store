@@ -186,8 +186,8 @@ var pageDecorators = {};
             updatedCategorizationField.children = childFields;
             updatedCategorizationFields.push(updatedCategorizationField);
         }
-        for(var i=0; i < updatedCategorizationFields.length; i++){
-            if(updatedCategorizationFields[i].children.length != 0){
+        for (var i = 0; i < updatedCategorizationFields.length; i++) {
+            if (updatedCategorizationFields[i].children.length != 0) {
                 isVisible = true;
             }
         }
