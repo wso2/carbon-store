@@ -660,10 +660,9 @@ var core = {};
                         if (!taxonomies[i].disable) {
                             taxonomyArray.push(taxonomies[i].name);
                         }
-
                     } else {
-                        log.error("The taxonomy name : " + taxonomies[i].name + " not matched with rxt definition. " +
-                            "Please check you have entered the correct name");
+                        log.error("Taxonomy name: " + taxonomies[i].name + " does not match with the RXT " +
+                            "definition.Please check you have entered the correct name");
                     }
                 }
 
