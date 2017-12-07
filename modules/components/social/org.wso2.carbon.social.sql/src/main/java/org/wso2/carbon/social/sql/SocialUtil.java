@@ -47,6 +47,12 @@ public class SocialUtil {
 
 	}
 
+	/**
+	 * Return the tenantDomain for the given tenantId.
+	 * @param tenantId
+	 * @return tenantDomain for the given tenantId.
+	 * @throws SocialActivityException
+	 */
 	public static String getTenantDomainFromTenantId(int tenantId) throws SocialActivityException{
 		String tenantDomainName = null;
 		try {
