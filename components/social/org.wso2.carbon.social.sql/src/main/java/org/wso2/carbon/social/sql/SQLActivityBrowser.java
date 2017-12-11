@@ -406,6 +406,8 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				int id = resultSet.getInt(Constants.ID_COLUMN);
 				Activity activity = new SQLActivity(body);
 				activity.setId(id);
+                activity.setLikeCount(getTotalLikes(id, 1));
+                activity.setDislikeCount(getTotalLikes(id, 0));
 				comments.add(activity.getBody());
 			}
 			resultSet.close();
@@ -448,6 +450,8 @@ public class SQLActivityBrowser implements ActivityBrowser {
                 int activityId = resultSet.getInt(Constants.ID_COLUMN);
                 Activity activity = new SQLActivity(body);
                 activity.setId(activityId);
+                activity.setLikeCount(getTotalLikes(activityId, 1));
+                activity.setDislikeCount(getTotalLikes(activityId, 0));
                 userComment = activity.getBody();
             }
             resultSet.close();
@@ -541,6 +545,8 @@ public class SQLActivityBrowser implements ActivityBrowser {
 				int activityId = resultSet.getInt(Constants.ID_COLUMN);
 				Activity activity = new SQLActivity(body);
 				activity.setId(activityId);
+                activity.setLikeCount(getTotalLikes(activityId, 1));
+                activity.setDislikeCount(getTotalLikes(activityId, 0));
 				comments.add(activity.getBody());
 			}
 			resultSet.close();
