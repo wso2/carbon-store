@@ -1,0 +1,12 @@
+
+/* Move down content because of the fixed navbar */
+body {
+    padding-top: 50px;
+}
+
+#divA {
+    background: #f0f0f0;
+    margin-bottom: 20px;
+    padding: 5px;
+}
+

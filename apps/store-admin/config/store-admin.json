@@ -1,0 +1,21 @@
+{ "server": {
+    "https": "%https.host%",
+    "http": "%http.host%"
+},
+    "user": {
+        "username": "admin",
+        "password": "admin"
+    },
+
+    "ssoConfiguration": {
+        "enabled": false,
+        "issuer": "store-admin",
+        "identityProviderURL": "%https.carbon.local.ip%/samlsso",
+        "keyStorePassword": "wso2carbon",
+        "identityAlias": "wso2carbon",
+        "responseSigningEnabled": "true",
+        "publisherAcs": "%https.host%/store-admin/sso",
+        "keyStoreName": "/repository/resources/security/wso2carbon.jks"
+    }
+
+}

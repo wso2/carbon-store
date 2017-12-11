@@ -1,0 +1,43 @@
+<%
+(function(){
+
+    var sso = require("sso"),
+        sessionId = session.getId();
+    var referer=request.getHeader('referer');
+    var relayState = (referer? referer:'/store-admin');
+
+    var opts={};
+    opts.issuer = 'store-admin';
+    opts.identityProviderURL = 'https://localhost:9443/samlsso';
+    var encodedSAMLAuthRequest = sso.client.getEncodedSAMLAuthRequest(opts.issuer);
+    var log = new Log();
+    var postUrl = opts.identityProviderURL;
+    log.info('Login URL: '+postUrl);
+    log.info('SAML: '+encodedSAMLAuthRequest);
+
+    var server = require('store').server;
+    var newSession = server.current(session);
+    if (!newSession) {
+%>
+
+    <div>
+        <p>You are now being redirected to Identity Server. If the
+        redirection fails, please click on the button below.</p>
+        <form method="post" action="<%=postUrl%>">
+            <p>
+                <input type="hidden" name="SAMLRequest" value="<%= encodedSAMLAuthRequest %>"/>
+                <input type="hidden" name="RelayState" value="<%= relayState %>"/>
+                <input type="hidden" name="SSOAuthSessionID" value="<%= sessionId %>"/>
+                <button type="submit">Redirect manually</button>
+            </p>
+        </form>
+    </div>
+
+    <script type = "text/javascript" >
+        document.forms[0].submit();
+    </script>
+
+<%
+    }
+}());
+%>
