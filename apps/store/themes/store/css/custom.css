@@ -1042,31 +1042,6 @@ a.more:focus {
 .btn-add-new {
     background:url('../img/icons/ico-add-new.png') 0.8em 1em no-repeat;
 }
-
-.btn-stats {
-    background:url('../img/icons/ico-stats.png') 0.8em 1em no-repeat;
-}
-
-.btn-edit {
-    background:url('../img/icons/ico-edit.png') 0.8em 1em no-repeat;
-}
-
-.btn-overview {
-    background:url('../img/icons/ico-overview.png') 0.8em 1em no-repeat;
-}
-
-.btn-lifecycle {
-    background:url('../img/icons/ico-lifecycle.png') 0.8em 1em no-repeat;
-}
-
-.btn-copy {
-    background:url('../img/icons/ico-edit.png') 0.8em 1em no-repeat;
-}
-
-.btn-collapsed {
-    background:url('../img/icons/wso2-logo-small.png') no-repeat;
-}
-
 .es-nav-tabs > li.active > a, .es-nav-tabs > li.active > a:hover, .es-nav-tabs > li.active > a:focus {
     -moz-border-bottom-colors: none;
     -moz-border-left-colors: none;
