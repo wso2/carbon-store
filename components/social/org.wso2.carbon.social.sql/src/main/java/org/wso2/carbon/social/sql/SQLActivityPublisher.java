@@ -66,6 +66,14 @@ public class SQLActivityPublisher extends ActivityPublisher {
 			+ " WHERE "
 			+ Constants.ID_COLUMN + " = ?";
 
+	private static final String COMMENT_ACTIVITY_SELECT_FOR_UPDATE_COMMENT_SQL = "SELECT "
+			+ Constants.BODY_COLUMN + " , "
+			+ Constants.ID_COLUMN
+			+ " FROM "
+			+ Constants.SOCIAL_COMMENTS_TABLE_NAME
+			+ " WHERE "
+			+ Constants.ID_COLUMN + " = ? AND " + Constants.USER_COLUMN + " = ?";
+
 	public static final String COMMENT_ACTIVITY_SELECT_SQL = "SELECT "
 			+ Constants.BODY_COLUMN + " FROM "
 			+ Constants.SOCIAL_COMMENTS_TABLE_NAME + " WHERE "
@@ -694,13 +702,15 @@ public class SQLActivityPublisher extends ActivityPublisher {
             connection = DSConnection.getConnection();
             connection.setAutoCommit(false);
             String commentID = updatedActivity.getId();
+            String userID = updatedActivity.getActorId();
 
             if (log.isDebugEnabled()) {
-                log.debug("Executing: " + COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
+                log.debug("Executing: " + COMMENT_ACTIVITY_SELECT_FOR_UPDATE_COMMENT_SQL);
             }
 
-            selectActivityStatement = connection.prepareStatement(COMMENT_ACTIVITY_SELECT_FOR_UPDATE_SQL);
+            selectActivityStatement = connection.prepareStatement(COMMENT_ACTIVITY_SELECT_FOR_UPDATE_COMMENT_SQL);
             selectActivityStatement.setString(1, commentID);
+            selectActivityStatement.setString(2, userID);
             resultSet = selectActivityStatement.executeQuery();
             if (!resultSet.next()) {
                 String message = "Invalid comment ID: Unable to update comment for : " + commentID;
