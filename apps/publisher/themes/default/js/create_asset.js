@@ -118,6 +118,7 @@ $(function () {
                     if ($('#closeOnSelect input').attr('checked')) {
                         $(el).DatePickerHide();
                     }
+                    $(el).trigger('change');
                 }
             });
         }
