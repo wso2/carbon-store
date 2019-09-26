@@ -1210,9 +1210,10 @@ var core = {};
         var components = getFieldNameParts(name);
         tableName = components.tableName;
         fieldName = components.fieldName;
-        //Convert the table and field names to lowercase
-        tableName = tableName ? tableName.toLowerCase() : '';
-        fieldName = fieldName ? fieldName.toLowerCase() : '';
+        //Convert the table and field names to camelcase
+        tableName = tableName ? createCamelCaseName(tableName) : '';
+        fieldName = fieldName ? createCamelCaseName(fieldName) : '';
+
         var field = null;
         if (!template) {
             log.error('Unable to locate the rxt definition for type: ' + type);
